@@ -7,6 +7,8 @@ Da eseguire ogni 2-3 ore (vedi workflow GitHub Actions).
 Nessun limite di chiamate: Google News RSS e' pubblico e gratuito.
 """
 
+import html
+import re
 import time
 import urllib.parse
 from datetime import datetime, timedelta, timezone
@@ -20,6 +22,8 @@ from config import (
     NEWS_MAX_AGE_DAYS,
 )
 from utils import load_state, save_state, send_telegram_message, trim_list
+
+TAG_RE = re.compile(r"<[^>]+>")
 
 
 def build_google_news_url(query: str) -> str:
@@ -44,7 +48,6 @@ def is_recent_enough(entry) -> bool:
     """
     published_struct = entry.get("published_parsed")
     if not published_struct:
-        # Se manca la data, la teniamo per non perdere notizie valide
         return True
     published_dt = datetime.fromtimestamp(time.mktime(published_struct), tz=timezone.utc)
     cutoff = datetime.now(timezone.utc) - timedelta(days=NEWS_MAX_AGE_DAYS)
@@ -68,16 +71,45 @@ def format_source(entry) -> str:
     return ""
 
 
+def clean_summary(entry, title: str, max_chars: int = 220) -> str:
+    """
+    Estrae un breve estratto leggibile dal campo 'summary' del feed,
+    ripulito da tag HTML. Se non aggiunge informazioni rispetto al
+    titolo (Google News a volte ripete solo il nome della fonte),
+    restituisce stringa vuota.
+    """
+    raw = entry.get("summary", "")
+    if not raw:
+        return ""
+    text = TAG_RE.sub(" ", raw)
+    text = html.unescape(text)
+    text = re.sub(r"\s+", " ", text).strip()
+
+    if not text or text.lower() == title.strip().lower():
+        return ""
+    if len(text) < 25:
+        return ""
+
+    if len(text) > max_chars:
+        text = text[:max_chars].rsplit(" ", 1)[0] + "…"
+    return text
+
+
 def build_message(entry, league_name: str, emoji: str, category_label: str) -> str:
-    """Costruisce un messaggio Telegram ben formattato, con titolo cliccabile."""
+    """Costruisce un messaggio Telegram ben formattato, con titolo cliccabile,
+    breve estratto (se disponibile) e anteprima automatica con immagine."""
     title = entry.get("title", "Notizia")
     link = entry.get("link", "")
     source = format_source(entry)
     date_str = format_date(entry)
+    summary = clean_summary(entry, title)
 
     lines = [f"{emoji} <b>{category_label}</b> — {league_name}"]
     lines.append("")
     lines.append(f'<a href="{link}">{title}</a>')
+
+    if summary:
+        lines.append(f"<i>{summary}</i>")
 
     meta_parts = [p for p in [source, date_str] if p]
     if meta_parts:
@@ -112,7 +144,7 @@ def run():
                     continue
 
                 testo = build_message(item, league_name, emoji, label)
-                send_telegram_message(testo)
+                send_telegram_message(testo, disable_preview=False)
                 new_seen.append(uid)
                 seen.add(uid)
                 any_new = True
