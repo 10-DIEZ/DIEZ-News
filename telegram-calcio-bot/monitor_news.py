@@ -3,27 +3,30 @@ Controlla le notizie via Google News RSS (gratis, nessuna API key) per:
 - cambio allenatore (esoneri, dimissioni, nuovi allenatori)
 - turnover / probabili formazioni / titolari in dubbio
 
-Da eseguire ogni 2-3 ore (vedi workflow GitHub Actions).
+Da eseguire ogni 5 minuti (vedi workflow GitHub Actions).
 Nessun limite di chiamate: Google News RSS e' pubblico e gratuito.
+
+I link di Google News sono "mascherati" (news.google.com/rss/articles/...):
+vengono risolti nel link reale dell'articolo cosi' Telegram puo' generare
+la sua anteprima grande automatica (immagine + titolo + descrizione),
+esattamente come un post di un canale news.
 """
 
-import html
-import re
 import time
 import urllib.parse
 from datetime import datetime, timedelta, timezone
 
 import feedparser
+from googlenewsdecoder import gnewsdecoder
 
 from config import (
     COACH_CHANGE_KEYWORDS,
     LEAGUES,
     LINEUP_RUMOR_KEYWORDS,
     NEWS_MAX_AGE_DAYS,
+    NEWS_MAX_ITEMS_PER_QUERY,
 )
 from utils import load_state, save_state, send_telegram_message, trim_list
-
-TAG_RE = re.compile(r"<[^>]+>")
 
 
 def build_google_news_url(query: str) -> str:
@@ -33,7 +36,7 @@ def build_google_news_url(query: str) -> str:
     return f"https://news.google.com/rss/search?q={encoded}&hl=it&gl=IT&ceid=IT:it"
 
 
-def search_news(query: str, max_items: int = 8) -> list:
+def search_news(query: str, max_items: int = NEWS_MAX_ITEMS_PER_QUERY) -> list:
     """Interroga Google News RSS e restituisce le voci trovate."""
     url = build_google_news_url(query)
     feed = feedparser.parse(url)
@@ -54,68 +57,37 @@ def is_recent_enough(entry) -> bool:
     return published_dt >= cutoff
 
 
-def format_date(entry) -> str:
-    """Formatta la data della notizia in modo leggibile, se disponibile."""
-    published_struct = entry.get("published_parsed")
-    if not published_struct:
-        return ""
-    dt = datetime.fromtimestamp(time.mktime(published_struct), tz=timezone.utc)
-    return dt.strftime("%d/%m %H:%M UTC")
-
-
-def format_source(entry) -> str:
-    """Estrae il nome della testata, se disponibile."""
-    source = entry.get("source")
-    if isinstance(source, dict):
-        return source.get("title", "")
-    return ""
-
-
-def clean_summary(entry, title: str, max_chars: int = 220) -> str:
+def resolve_real_url(google_link: str) -> str:
     """
-    Estrae un breve estratto leggibile dal campo 'summary' del feed,
-    ripulito da tag HTML. Se non aggiunge informazioni rispetto al
-    titolo (Google News a volte ripete solo il nome della fonte),
-    restituisce stringa vuota.
+    Risolve il link 'mascherato' di Google News nell'URL reale dell'articolo.
+    Se la decodifica fallisce (sito irraggiungibile, formato cambiato ecc.)
+    restituisce il link originale come fallback.
     """
-    raw = entry.get("summary", "")
-    if not raw:
-        return ""
-    text = TAG_RE.sub(" ", raw)
-    text = html.unescape(text)
-    text = re.sub(r"\s+", " ", text).strip()
-
-    if not text or text.lower() == title.strip().lower():
-        return ""
-    if len(text) < 25:
-        return ""
-
-    if len(text) > max_chars:
-        text = text[:max_chars].rsplit(" ", 1)[0] + "…"
-    return text
+    if not google_link:
+        return google_link
+    try:
+        result = gnewsdecoder(google_link, interval=0)
+        if result.get("status") and result.get("decoded_url"):
+            return result["decoded_url"]
+    except Exception as e:
+        print(f"[WARN] decodifica link fallita: {e}")
+    return google_link
 
 
-def build_message(entry, league_name: str, emoji: str, category_label: str) -> str:
-    """Costruisce un messaggio Telegram ben formattato, con titolo cliccabile,
-    breve estratto (se disponibile) e anteprima automatica con immagine."""
-    title = entry.get("title", "Notizia")
-    link = entry.get("link", "")
-    source = format_source(entry)
-    date_str = format_date(entry)
-    summary = clean_summary(entry, title)
+def build_message(real_link: str, fallback_title: str, league_name: str, flag: str, category_label: str) -> str:
+    """
+    Messaggio volutamente minimale: etichetta campionato + tipo di notizia,
+    poi il link reale. Il resto (immagine, titolo, descrizione) lo genera
+    Telegram in automatico dall'anteprima del link.
+    """
+    header = f"{flag} <b>{league_name}</b> · {category_label}"
 
-    lines = [f"{emoji} <b>{category_label}</b> — {league_name}"]
-    lines.append("")
-    lines.append(f'<a href="{link}">{title}</a>')
+    # Se non siamo riusciti a risolvere il link reale, Telegram non potra'
+    # generare l'anteprima: aggiungiamo il titolo come testo di riserva.
+    if "news.google.com" in real_link:
+        return f"{header}\n{fallback_title}\n{real_link}"
 
-    if summary:
-        lines.append(f"<i>{summary}</i>")
-
-    meta_parts = [p for p in [source, date_str] if p]
-    if meta_parts:
-        lines.append("· ".join(meta_parts))
-
-    return "\n".join(lines)
+    return f"{header}\n{real_link}"
 
 
 def run():
@@ -125,25 +97,28 @@ def run():
     any_new = False
 
     categories = [
-        (COACH_CHANGE_KEYWORDS, "coach", "👔", "Possibile cambio allenatore"),
-        (LINEUP_RUMOR_KEYWORDS, "lineup", "🔄", "Turnover / formazione"),
+        (COACH_CHANGE_KEYWORDS, "coach", "Cambio allenatore"),
+        (LINEUP_RUMOR_KEYWORDS, "lineup", "Turnover / formazioni"),
     ]
 
     for league in LEAGUES:
         league_name = league["name"]
+        flag = league["flag"]
         league_query_base = league["news_query_it"]
 
-        for keywords, tag, emoji, label in categories:
+        for keywords, tag, label in categories:
             query = f'{league_query_base} (' + " OR ".join(keywords) + ")"
             for item in search_news(query):
-                link = item.get("link", item.get("title"))
-                uid = f"{tag}|{link}"
+                google_link = item.get("link", "")
+                real_link = resolve_real_url(google_link)
+
+                uid = f"{tag}|{real_link}"
                 if uid in seen:
                     continue
                 if not is_recent_enough(item):
                     continue
 
-                testo = build_message(item, league_name, emoji, label)
+                testo = build_message(real_link, item.get("title", "Notizia"), league_name, flag, label)
                 send_telegram_message(testo, disable_preview=False)
                 new_seen.append(uid)
                 seen.add(uid)
