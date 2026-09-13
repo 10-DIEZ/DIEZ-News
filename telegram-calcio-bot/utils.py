@@ -10,6 +10,34 @@ import requests
 from config import TELEGRAM_BOT_TOKEN, TELEGRAM_CHAT_ID, STATE_FILE
 
 
+def send_telegram_photo(photo_url: str, caption: str) -> bool:
+    """
+    Invia una foto con didascalia al bot Telegram configurato.
+    Restituisce True se l'invio ha avuto successo, False altrimenti
+    (cosi' chi chiama puo' fare un fallback al messaggio di solo testo).
+    """
+    if not TELEGRAM_BOT_TOKEN or not TELEGRAM_CHAT_ID:
+        print("[ATTENZIONE] Token o chat id Telegram mancanti, foto non inviata.")
+        return False
+
+    url = f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendPhoto"
+    payload = {
+        "chat_id": TELEGRAM_CHAT_ID,
+        "photo": photo_url,
+        "caption": caption,
+        "parse_mode": "HTML",
+    }
+    try:
+        resp = requests.post(url, data=payload, timeout=20)
+        if resp.status_code != 200:
+            print(f"[ERRORE Telegram sendPhoto] status={resp.status_code} body={resp.text}")
+            return False
+        return True
+    except requests.RequestException as e:
+        print(f"[ERRORE Telegram sendPhoto] {e}")
+        return False
+
+
 def send_telegram_message(text: str, disable_preview: bool = False) -> None:
     """Invia un messaggio al bot Telegram configurato.
 
