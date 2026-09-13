@@ -17,11 +17,16 @@ API_FOOTBALL_HOST = "https://v3.football.api-sports.io"
 SEASON = 2026
 
 LEAGUES = [
-    {"id": 135, "name": "Serie A", "flag": "🇮🇹", "news_query_it": 'Serie A calcio -"Serie B"'},
-    {"id": 39, "name": "Premier League", "flag": "🏴", "news_query_it": "Premier League calcio"},
-    {"id": 140, "name": "La Liga", "flag": "🇪🇸", "news_query_it": "Liga spagnola calcio"},
-    {"id": 78, "name": "Bundesliga", "flag": "🇩🇪", "news_query_it": "Bundesliga calcio"},
-    {"id": 61, "name": "Ligue 1", "flag": "🇫🇷", "news_query_it": "Ligue 1 calcio"},
+    {"id": 135, "name": "Serie A", "flag": "🇮🇹",
+     "news_query_it": 'Serie A calcio -"Serie B" -"Premier League" -"Bundesliga" -"Ligue 1" -"Liga spagnola"'},
+    {"id": 39, "name": "Premier League", "flag": "🏴",
+     "news_query_it": 'Premier League calcio -"Serie A" -"Serie B" -"Bundesliga" -"Ligue 1" -"Liga spagnola"'},
+    {"id": 140, "name": "La Liga", "flag": "🇪🇸",
+     "news_query_it": 'Liga spagnola calcio -"Serie A" -"Serie B" -"Premier League" -"Bundesliga" -"Ligue 1"'},
+    {"id": 78, "name": "Bundesliga", "flag": "🇩🇪",
+     "news_query_it": 'Bundesliga calcio -"Serie A" -"Serie B" -"Premier League" -"Ligue 1" -"Liga spagnola"'},
+    {"id": 61, "name": "Ligue 1", "flag": "🇫🇷",
+     "news_query_it": 'Ligue 1 calcio -"Serie A" -"Serie B" -"Premier League" -"Bundesliga" -"Liga spagnola"'},
 ]
 
 # --- Parole chiave per la ricerca notizie (cambio allenatore / turnover) ---
