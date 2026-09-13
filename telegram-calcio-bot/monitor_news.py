@@ -76,11 +76,15 @@ def resolve_real_url(google_link: str) -> str:
 
 def build_message(real_link: str, fallback_title: str, league_name: str, flag: str, category_label: str) -> str:
     """
-    Messaggio volutamente minimale: etichetta campionato + tipo di notizia,
-    poi il link reale. Il resto (immagine, titolo, descrizione) lo genera
-    Telegram in automatico dall'anteprima del link.
+    Etichetta campionato + tipo di notizia, poi il titolo dell'articolo,
+    poi il link reale. Il titolo viene sempre incluso: alcuni siti
+    (es. certe pagine di Gazzetta) bloccano la generazione dell'anteprima
+    di Telegram, quindi senza titolo resterebbe solo un link nudo.
+    Quando il sito la permette, sotto comparira' comunque la card grande
+    con l'immagine generata da Telegram.
     """
     header = f"{flag} <b>{league_name}</b> · {category_label}"
+    return f"{header}\n{fallback_title}\n{real_link}"
 
     # Se non siamo riusciti a risolvere il link reale, Telegram non potra'
     # generare l'anteprima: aggiungiamo il titolo come testo di riserva.
