@@ -40,7 +40,52 @@ LINEUP_RUMOR_KEYWORDS = [
 NEWS_MAX_AGE_DAYS = 2
 
 # Quante notizie al massimo recuperare per ogni ricerca (campionato x categoria)
-NEWS_MAX_ITEMS_PER_QUERY = 5
+# Alzato perche' ora filtriamo anche per fonte, quindi molte verranno scartate
+NEWS_MAX_ITEMS_PER_QUERY = 10
+
+# --- Fonti considerate affidabili (top + semi-top) ---
+# Solo le notizie che arrivano da uno di questi siti vengono inviate.
+# Aggiungi o rimuovi domini qui in qualsiasi momento (senza "www.").
+ALLOWED_NEWS_DOMAINS = [
+    # --- Italia: top ---
+    "gazzetta.it",
+    "sport.sky.it",
+    "skysport.it",
+    "corrieredellosport.it",
+    "tuttosport.com",
+    "sportmediaset.mediaset.it",
+    "ansa.it",
+    "eurosport.it",
+    "goal.com",
+    # --- Italia: semi-top / specializzati ---
+    "calciomercato.com",
+    "tuttomercatoweb.com",
+    "fcinternews.it",
+    "milannews.it",
+    "juventusnews24.com",
+    "footballitalia.net",
+    "11contro11.it",
+    "calcioefinanza.it",
+    "legaseriea.it",
+    # --- Inghilterra (Premier League) ---
+    "bbc.com",
+    "skysports.com",
+    "theguardian.com",
+    "premierleague.com",
+    # --- Spagna (La Liga) ---
+    "marca.com",
+    "as.com",
+    "mundodeportivo.com",
+    "laliga.com",
+    # --- Germania (Bundesliga) ---
+    "kicker.de",
+    "bundesliga.com",
+    "bild.de",
+    # --- Francia (Ligue 1) ---
+    "lequipe.fr",
+    "rmcsport.bfmtv.com",
+    "ligue1.com",
+]
 
 # File dove viene salvato lo stato (cosa e' gia' stato notificato)
 STATE_FILE = os.path.join(os.path.dirname(__file__), "state", "state.json")
