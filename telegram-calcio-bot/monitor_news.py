@@ -15,11 +15,13 @@ esattamente come un post di un canale news.
 import time
 import urllib.parse
 from datetime import datetime, timedelta, timezone
+from urllib.parse import urlparse
 
 import feedparser
 from googlenewsdecoder import gnewsdecoder
 
 from config import (
+    ALLOWED_NEWS_DOMAINS,
     COACH_CHANGE_KEYWORDS,
     LEAGUES,
     LINEUP_RUMOR_KEYWORDS,
@@ -74,6 +76,16 @@ def resolve_real_url(google_link: str) -> str:
     return google_link
 
 
+def is_allowed_domain(url: str) -> bool:
+    """Controlla se il link risolto appartiene a una delle fonti affidabili configurate."""
+    if not url:
+        return False
+    domain = urlparse(url).netloc.lower()
+    if domain.startswith("www."):
+        domain = domain[4:]
+    return any(domain == allowed or domain.endswith("." + allowed) for allowed in ALLOWED_NEWS_DOMAINS)
+
+
 def build_message(real_link: str, fallback_title: str, league_name: str, flag: str, category_label: str) -> str:
     """
     Etichetta campionato + tipo di notizia, poi il titolo dell'articolo,
@@ -85,13 +97,6 @@ def build_message(real_link: str, fallback_title: str, league_name: str, flag: s
     """
     header = f"{flag} <b>{league_name}</b> · {category_label}"
     return f"{header}\n{fallback_title}\n{real_link}"
-
-    # Se non siamo riusciti a risolvere il link reale, Telegram non potra'
-    # generare l'anteprima: aggiungiamo il titolo come testo di riserva.
-    if "news.google.com" in real_link:
-        return f"{header}\n{fallback_title}\n{real_link}"
-
-    return f"{header}\n{real_link}"
 
 
 def run():
@@ -115,6 +120,9 @@ def run():
             for item in search_news(query):
                 google_link = item.get("link", "")
                 real_link = resolve_real_url(google_link)
+
+                if not is_allowed_domain(real_link):
+                    continue
 
                 uid = f"{tag}|{real_link}"
                 if uid in seen:
