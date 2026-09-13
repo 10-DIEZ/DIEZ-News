@@ -10,8 +10,13 @@ import requests
 from config import TELEGRAM_BOT_TOKEN, TELEGRAM_CHAT_ID, STATE_FILE
 
 
-def send_telegram_message(text: str) -> None:
-    """Invia un messaggio al bot Telegram configurato."""
+def send_telegram_message(text: str, disable_preview: bool = False) -> None:
+    """Invia un messaggio al bot Telegram configurato.
+
+    disable_preview=False (default) fa mostrare a Telegram l'anteprima
+    automatica del link (immagine + descrizione presa dal sito), quando
+    il messaggio contiene un link.
+    """
     if not TELEGRAM_BOT_TOKEN or not TELEGRAM_CHAT_ID:
         print("[ATTENZIONE] Token o chat id Telegram mancanti, messaggio non inviato:")
         print(text)
@@ -22,7 +27,7 @@ def send_telegram_message(text: str) -> None:
         "chat_id": TELEGRAM_CHAT_ID,
         "text": text,
         "parse_mode": "HTML",
-        "disable_web_page_preview": True,
+        "disable_web_page_preview": disable_preview,
     }
     try:
         resp = requests.post(url, data=payload, timeout=15)
@@ -33,7 +38,7 @@ def send_telegram_message(text: str) -> None:
 
 
 def load_state() -> dict:
-    """Carica lo stato salvato (id/link già notificati)."""
+    """Carica lo stato salvato (id/link gia' notificati)."""
     if not os.path.exists(STATE_FILE):
         return {"injuries_seen": [], "news_seen": []}
     try:
