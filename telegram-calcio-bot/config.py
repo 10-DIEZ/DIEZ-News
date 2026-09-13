@@ -12,16 +12,16 @@ API_FOOTBALL_KEY = os.environ.get("API_FOOTBALL_KEY", "")
 
 API_FOOTBALL_HOST = "https://v3.football.api-sports.io"
 
-# --- Campionati seguiti (ID API-Football + nome per le ricerche Google News) ---
+# --- Campionati seguiti (ID API-Football + query per la ricerca notizie) ---
 # Se la stagione cambia (es. da 2026 a 2027), aggiorna SEASON qui sotto.
 SEASON = 2026
 
 LEAGUES = [
-    {"id": 135, "name": "Serie A", "news_query_it": "Serie A"},
-    {"id": 39, "name": "Premier League", "news_query_it": "Premier League"},
-    {"id": 140, "name": "La Liga", "news_query_it": "Liga spagnola"},
-    {"id": 78, "name": "Bundesliga", "news_query_it": "Bundesliga"},
-    {"id": 61, "name": "Ligue 1", "news_query_it": "Ligue 1"},
+    {"id": 135, "name": "Serie A", "news_query_it": 'Serie A calcio -"Serie B"'},
+    {"id": 39, "name": "Premier League", "news_query_it": "Premier League calcio"},
+    {"id": 140, "name": "La Liga", "news_query_it": "Liga spagnola calcio"},
+    {"id": 78, "name": "Bundesliga", "news_query_it": "Bundesliga calcio"},
+    {"id": 61, "name": "Ligue 1", "news_query_it": "Ligue 1 calcio"},
 ]
 
 # --- Parole chiave per la ricerca notizie (cambio allenatore / turnover) ---
@@ -35,5 +35,9 @@ LINEUP_RUMOR_KEYWORDS = [
     "diffidato", "squalificato", "infortunio", "ballottaggio",
 ]
 
-# File dove viene salvato lo stato (cosa è già stato notificato)
+# Solo notizie pubblicate negli ultimi N giorni (filtro applicato dal codice,
+# non solo dalla ricerca Google) - scarta articoli vecchi/di stagioni passate
+NEWS_MAX_AGE_DAYS = 2
+
+# File dove viene salvato lo stato (cosa e' gia' stato notificato)
 STATE_FILE = os.path.join(os.path.dirname(__file__), "state", "state.json")
