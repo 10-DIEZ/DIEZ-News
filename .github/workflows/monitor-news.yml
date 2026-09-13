@@ -2,7 +2,7 @@ name: Monitor notizie (allenatori e turnover)
 
 on:
   schedule:
-    - cron: "0 */3 * * *"  # ogni 3 ore
+    - cron: "*/5 * * * *"  # ogni 5 minuti
   workflow_dispatch: {}     # permette di lanciarlo a mano da GitHub
 
 permissions:
