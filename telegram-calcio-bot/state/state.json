@@ -108,5 +108,36 @@
     "news|https://www.bbc.co.uk/sport/football/live/cxr50qe7gqynt",
     "news|https://www.gazzetta.it/Calcio/Champions-League/14-09-2026/mezian-mesloub-chi-e-la-stellina-del-lens.shtml"
   ],
-  "today_fixtures": []
+  "today_fixtures": [
+    {
+      "league": "Serie A",
+      "flag": "🇮🇹",
+      "home": "Como 1907",
+      "away": "Parma Calcio 1913"
+    },
+    {
+      "league": "Serie A",
+      "flag": "🇮🇹",
+      "home": "Torino FC",
+      "away": "AS Roma"
+    },
+    {
+      "league": "Serie A",
+      "flag": "🇮🇹",
+      "home": "FC Internazionale Milano",
+      "away": "Udinese Calcio"
+    },
+    {
+      "league": "Premier League",
+      "flag": "🏴",
+      "home": "Leeds United FC",
+      "away": "Newcastle United FC"
+    },
+    {
+      "league": "La Liga",
+      "flag": "🇪🇸",
+      "home": "Villarreal CF",
+      "away": "Real Betis Balompié"
+    }
+  ]
 }
