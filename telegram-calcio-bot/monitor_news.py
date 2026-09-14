@@ -77,8 +77,52 @@ def summarize_with_ai(title: str, description: str, source_lang: str) -> dict | 
     servizio non e' configurato o la richiesta fallisce, cosi' il chiamante
     puo' ricadere sul metodo di riserva (meta-dati + traduzione diretta).
     """
-        if not GROQ_API_KEY:
+    if not GROQ_API_KEY:
         print("[INFO] GROQ_API_KEY non configurata: uso il metodo di riserva (traduzione diretta).")
+        return None
+
+    prompt = (
+        f"Lingua originale del testo: {source_lang}\n"
+        f"Titolo originale: {title}\n"
+        f"Descrizione originale: {description or '(non disponibile)'}\n\n"
+        "Rispondi SOLO in questo formato, in italiano fluente e naturale:\n"
+        "TITOLO: <titolo tradotto e ben scritto, una riga>\n"
+        "RIASSUNTO: <2-3 frasi che raccontano la notizia in modo naturale, "
+        "come farebbe un canale sportivo, senza inventare fatti non presenti nel testo originale>"
+    )
+
+    try:
+        resp = requests.post(
+            GROQ_ENDPOINT,
+            headers={"Authorization": f"Bearer {GROQ_API_KEY}", "Content-Type": "application/json"},
+            json={
+                "model": GROQ_MODEL,
+                "messages": [
+                    {"role": "system", "content": "Sei un redattore sportivo che traduce e riassume notizie di calcio in italiano, in modo chiaro e naturale."},
+                    {"role": "user", "content": prompt},
+                ],
+                "temperature": 0.4,
+                "max_tokens": 220,
+            },
+            timeout=20,
+        )
+        if resp.status_code != 200:
+            print(f"[WARN] Groq ha risposto {resp.status_code}: {resp.text[:200]}")
+            return None
+
+        content = resp.json()["choices"][0]["message"]["content"]
+        title_match = _TITLE_RE.search(content)
+        summary_match = _SUMMARY_RE.search(content)
+
+        if not title_match:
+            return None
+
+        return {
+            "title": title_match.group(1).strip(),
+            "summary": summary_match.group(1).strip() if summary_match else "",
+        }
+    except Exception as e:
+        print(f"[WARN] chiamata Groq fallita: {e}")
         return None
 
     prompt = (
