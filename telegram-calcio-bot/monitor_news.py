@@ -191,7 +191,6 @@ def fetch_article_meta(url: str) -> dict:
 
 
 def build_google_news_url(query: str, lang: str = "it", country: str = "IT") -> str:
-    query = f"{query} when:{NEWS_MAX_AGE_DAYS}d"
     encoded = urllib.parse.quote(query)
     return f"https://news.google.com/rss/search?q={encoded}&hl={lang}&gl={country}&ceid={country}:{lang}"
 
