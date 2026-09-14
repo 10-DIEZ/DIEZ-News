@@ -22,7 +22,7 @@ from urllib.parse import urlparse
 
 import feedparser
 import requests
-from deep_translator import GoogleTranslator
+from deep_translator import GoogleTranslator, MyMemoryTranslator
 from googlenewsdecoder import gnewsdecoder
 
 from config import (
@@ -124,15 +124,30 @@ def is_allowed_domain(url: str) -> bool:
 
 
 def translate_to_italian(text: str, source_lang: str) -> str:
-    """Traduce un testo in italiano. Se la traduzione fallisce, restituisce il testo originale."""
+    """
+    Traduce un testo in italiano, con un servizio di riserva se il primo fallisce
+    (capita che Google Translate blocchi le richieste dagli IP di GitHub Actions,
+    condivisi tra moltissimi utenti).
+    """
     if not text or source_lang == "it":
         return text
-    try:
-        return GoogleTranslator(source=source_lang, target="it").translate(text)
-    except Exception as e:
-        print(f"[WARN] traduzione fallita ({source_lang}): {e}")
-        return text
 
+    try:
+        translated = GoogleTranslator(source=source_lang, target="it").translate(text)
+        if translated and translated.strip().lower() != text.strip().lower():
+            return translated
+    except Exception as e:
+        print(f"[WARN] Google Translate fallito ({source_lang}): {e}")
+
+    try:
+        translated = MyMemoryTranslator(source=source_lang, target="it").translate(text)
+        if translated:
+            return translated
+    except Exception as e:
+        print(f"[WARN] MyMemory Translate fallito ({source_lang}): {e}")
+
+    print(f"[WARN] Traduzione non riuscita per: {text[:60]}...")
+    return text
 
 def classify_label(text: str) -> str:
     """Etichetta informativa in base a parole chiave nel titolo (non filtra nulla)."""
