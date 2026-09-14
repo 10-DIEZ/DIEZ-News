@@ -12,37 +12,32 @@ GROQ_API_KEY = os.environ.get("GROQ_API_KEY", "")
 FOOTBALL_DATA_API_KEY = os.environ.get("FOOTBALL_DATA_API_KEY", "")
 
 FOOTBALL_DATA_HOST = "https://api.football-data.org/v4"
-# --- Campionati seguiti ---
-# Se la stagione cambia (es. da 2026 a 2027), aggiorna SEASON qui sotto.
-SEASON = 2026
 
-# Per ogni campionato: query di ricerca ampia (tutte le notizie principali,
-# non solo categorie specifiche), sia in italiano sia (per i campionati
-# esteri) nella lingua originale, cosi' troviamo anche le notizie delle
-# testate locali - poi tradotte automaticamente in italiano.
+# # --- Campionati seguiti ---
+# "fd_code" e' il codice usato da football-data.org per il calendario partite.
 LEAGUES = [
     {
-        "id": 135, "name": "Serie A", "flag": "🇮🇹",
+        "name": "Serie A", "flag": "🇮🇹", "fd_code": "SA",
         "news_query_it": 'Serie A calcio -"Serie B"',
         "native_lang": None, "native_country": None, "news_query_native": None,
     },
     {
-        "id": 39, "name": "Premier League", "flag": "🏴",
+        "name": "Premier League", "flag": "🏴", "fd_code": "PL",
         "news_query_it": "Premier League calcio",
         "native_lang": None, "native_country": None, "news_query_native": None,
     },
     {
-        "id": 140, "name": "La Liga", "flag": "🇪🇸",
+        "name": "La Liga", "flag": "🇪🇸", "fd_code": "PD",
         "news_query_it": "Liga spagnola calcio",
         "native_lang": None, "native_country": None, "news_query_native": None,
     },
     {
-        "id": 78, "name": "Bundesliga", "flag": "🇩🇪",
+        "name": "Bundesliga", "flag": "🇩🇪", "fd_code": "BL1",
         "news_query_it": "Bundesliga calcio",
         "native_lang": None, "native_country": None, "news_query_native": None,
     },
     {
-        "id": 61, "name": "Ligue 1", "flag": "🇫🇷",
+        "name": "Ligue 1", "flag": "🇫🇷", "fd_code": "FL1",
         "news_query_it": "Ligue 1 calcio",
         "native_lang": None, "native_country": None, "news_query_native": None,
     },
