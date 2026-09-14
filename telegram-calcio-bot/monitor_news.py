@@ -231,6 +231,10 @@ def is_allowed_domain(url: str) -> bool:
         domain = domain[4:]
     return any(domain == allowed or domain.endswith("." + allowed) for allowed in ALLOWED_NEWS_DOMAINS)
 
+def is_excluded_url(url: str) -> bool:
+    """Scarta pagine automatiche (video/risultati/live-blog), anche da domini affidabili."""
+    lowered = url.lower()
+    return any(pattern in lowered for pattern in EXCLUDED_URL_PATTERNS)
 
 def translate_to_italian(text: str, source_lang: str) -> str:
     """
