@@ -28,6 +28,7 @@ from googlenewsdecoder import gnewsdecoder
 from config import (
     ALLOWED_NEWS_DOMAINS,
     DEFAULT_LABEL,
+    EXCLUDED_URL_PATTERNS,
     GROQ_API_KEY,
     LABEL_KEYWORDS,
     LEAGUES,
