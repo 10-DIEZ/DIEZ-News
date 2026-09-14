@@ -24,32 +24,32 @@ SEASON = 2026
 LEAGUES = [
     {
         "id": 135, "name": "Serie A", "flag": "🇮🇹",
-        "news_query_it": 'Serie A calcio -"Serie B" -"Premier League" -"Bundesliga" -"Ligue 1" -"Liga spagnola"',
+        "news_query_it": 'Serie A calcio -"Serie B"',
         "native_lang": None, "native_country": None, "news_query_native": None,
     },
     {
         "id": 39, "name": "Premier League", "flag": "🏴",
-        "news_query_it": 'Premier League calcio -"Serie A" -"Serie B" -"Bundesliga" -"Ligue 1" -"Liga spagnola"',
+        "news_query_it": "Premier League",
         "native_lang": "en", "native_country": "GB",
-        "news_query_native": 'Premier League football -"Serie A" -"La Liga" -"Bundesliga" -"Ligue 1"',
+        "news_query_native": "Premier League football",
     },
     {
         "id": 140, "name": "La Liga", "flag": "🇪🇸",
-        "news_query_it": 'Liga spagnola calcio -"Serie A" -"Serie B" -"Premier League" -"Bundesliga" -"Ligue 1"',
+        "news_query_it": "Liga spagnola calcio",
         "native_lang": "es", "native_country": "ES",
-        "news_query_native": 'La Liga fútbol -"Serie A" -"Premier League" -"Bundesliga" -"Ligue 1"',
+        "news_query_native": "LaLiga fútbol",
     },
     {
         "id": 78, "name": "Bundesliga", "flag": "🇩🇪",
-        "news_query_it": 'Bundesliga calcio -"Serie A" -"Serie B" -"Premier League" -"Ligue 1" -"Liga spagnola"',
+        "news_query_it": "Bundesliga calcio",
         "native_lang": "de", "native_country": "DE",
-        "news_query_native": 'Bundesliga Fußball -"Serie A" -"Premier League" -"La Liga" -"Ligue 1"',
+        "news_query_native": "Bundesliga Fußball",
     },
     {
         "id": 61, "name": "Ligue 1", "flag": "🇫🇷",
-        "news_query_it": 'Ligue 1 calcio -"Serie A" -"Serie B" -"Premier League" -"Bundesliga" -"Liga spagnola"',
+        "news_query_it": "Ligue 1 calcio",
         "native_lang": "fr", "native_country": "FR",
-        "news_query_native": 'Ligue 1 football -"Serie A" -"Premier League" -"La Liga" -"Bundesliga"',
+        "news_query_native": "Ligue 1 football",
     },
 ]
 
