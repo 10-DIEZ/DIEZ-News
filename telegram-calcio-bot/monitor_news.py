@@ -349,7 +349,8 @@ def run():
 
             if not is_allowed_domain(real_link):
                 continue
-
+            if is_excluded_url(real_link):
+                continue
             uid = f"news|{real_link}"
             if uid in seen:
                 continue
