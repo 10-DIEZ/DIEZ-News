@@ -28,13 +28,14 @@ jobs:
         working-directory: telegram-calcio-bot
         run: pip install -r requirements.txt
 
-            - name: Esegui controllo notizie
+      - name: Esegui controllo notizie
         working-directory: telegram-calcio-bot
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
           GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
         run: python monitor_news.py
+     
       - name: Salva lo stato aggiornato
         run: |
           git config user.name "calcio-bot"
