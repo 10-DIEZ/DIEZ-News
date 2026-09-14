@@ -10,9 +10,11 @@ import requests
 from config import TELEGRAM_BOT_TOKEN, TELEGRAM_CHAT_ID, STATE_FILE
 
 
-def send_telegram_photo(photo_url: str, caption: str) -> bool:
+def send_telegram_photo(photo_url: str, caption: str, button_text: str = "", button_url: str = "") -> bool:
     """
     Invia una foto con didascalia al bot Telegram configurato.
+    Se button_text/button_url sono forniti, aggiunge un pulsante cliccabile
+    sotto il post (es. "Leggi l'articolo") invece di scrivere il link nel testo.
     Restituisce True se l'invio ha avuto successo, False altrimenti
     (cosi' chi chiama puo' fare un fallback al messaggio di solo testo).
     """
@@ -27,6 +29,10 @@ def send_telegram_photo(photo_url: str, caption: str) -> bool:
         "caption": caption,
         "parse_mode": "HTML",
     }
+    if button_text and button_url:
+        payload["reply_markup"] = json.dumps({
+            "inline_keyboard": [[{"text": button_text, "url": button_url}]]
+        })
     try:
         resp = requests.post(url, data=payload, timeout=20)
         if resp.status_code != 200:
