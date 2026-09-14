@@ -9,7 +9,7 @@ import os
 TELEGRAM_BOT_TOKEN = os.environ.get("TELEGRAM_BOT_TOKEN", "")
 TELEGRAM_CHAT_ID = os.environ.get("TELEGRAM_CHAT_ID", "")
 API_FOOTBALL_KEY = os.environ.get("API_FOOTBALL_KEY", "")
-
+GROQ_API_KEY = os.environ.get("GROQ_API_KEY", "")
 API_FOOTBALL_HOST = "https://v3.football.api-sports.io"
 
 # --- Campionati seguiti ---
