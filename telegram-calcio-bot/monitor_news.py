@@ -1,7 +1,8 @@
 """
-Controlla le notizie via Google News RSS (gratis, nessuna API key) per:
-- cambio allenatore (esoneri, dimissioni, nuovi allenatori)
-- turnover / probabili formazioni / titolari in dubbio
+Controlla tutte le notizie principali di calcio via Google News RSS
+(gratis, nessuna API key) per i 5 campionati seguiti - ricerca sia in
+italiano sia, per i campionati esteri, nella lingua originale (con
+traduzione automatica del titolo in italiano).
 
 Da eseguire ogni 5 minuti (vedi workflow GitHub Actions).
 Nessun limite di chiamate: Google News RSS e' pubblico e gratuito.
@@ -21,20 +22,21 @@ from urllib.parse import urlparse
 
 import feedparser
 import requests
+from deep_translator import GoogleTranslator
 from googlenewsdecoder import gnewsdecoder
 
 from config import (
     ALLOWED_NEWS_DOMAINS,
-    COACH_CHANGE_KEYWORDS,
+    DEFAULT_LABEL,
+    LABEL_KEYWORDS,
     LEAGUES,
-    LINEUP_RUMOR_KEYWORDS,
     NEWS_MAX_AGE_DAYS,
     NEWS_MAX_ITEMS_PER_QUERY,
 )
 from utils import load_state, save_state, send_telegram_message, send_telegram_photo, trim_list
 
 SEND_DELAY_SECONDS = 1.5
-MAX_MESSAGES_PER_RUN = 20
+MAX_MESSAGES_PER_RUN = 25
 
 HTTP_HEADERS = {
     "User-Agent": (
@@ -79,14 +81,14 @@ def fetch_article_meta(url: str) -> dict:
     return result
 
 
-def build_google_news_url(query: str) -> str:
+def build_google_news_url(query: str, lang: str = "it", country: str = "IT") -> str:
     query = f"{query} when:{NEWS_MAX_AGE_DAYS}d"
     encoded = urllib.parse.quote(query)
-    return f"https://news.google.com/rss/search?q={encoded}&hl=it&gl=IT&ceid=IT:it"
+    return f"https://news.google.com/rss/search?q={encoded}&hl={lang}&gl={country}&ceid={country}:{lang}"
 
 
-def search_news(query: str, max_items: int = NEWS_MAX_ITEMS_PER_QUERY) -> list:
-    url = build_google_news_url(query)
+def search_news(query: str, lang: str = "it", country: str = "IT", max_items: int = NEWS_MAX_ITEMS_PER_QUERY) -> list:
+    url = build_google_news_url(query, lang, country)
     feed = feedparser.parse(url)
     return feed.entries[:max_items]
 
@@ -121,6 +123,26 @@ def is_allowed_domain(url: str) -> bool:
     return any(domain == allowed or domain.endswith("." + allowed) for allowed in ALLOWED_NEWS_DOMAINS)
 
 
+def translate_to_italian(text: str, source_lang: str) -> str:
+    """Traduce un testo in italiano. Se la traduzione fallisce, restituisce il testo originale."""
+    if not text or source_lang == "it":
+        return text
+    try:
+        return GoogleTranslator(source=source_lang, target="it").translate(text)
+    except Exception as e:
+        print(f"[WARN] traduzione fallita ({source_lang}): {e}")
+        return text
+
+
+def classify_label(text: str) -> str:
+    """Etichetta informativa in base a parole chiave nel titolo (non filtra nulla)."""
+    lowered = text.lower()
+    for label, keywords in LABEL_KEYWORDS:
+        if any(kw in lowered for kw in keywords):
+            return label
+    return DEFAULT_LABEL
+
+
 def clean_description(text: str, max_chars: int = 280) -> str:
     if not text:
         return ""
@@ -139,13 +161,13 @@ def site_display_name(meta_site_name: str, url: str) -> str:
     return domain
 
 
-def build_caption(meta: dict, fallback_title: str, real_link: str, league_name: str, flag: str, category_label: str) -> str:
+def build_caption(meta: dict, title: str, real_link: str, league_name: str, flag: str, category_label: str) -> str:
     description = clean_description(meta.get("description", ""))
     source = site_display_name(meta.get("site_name", ""), real_link)
 
     lines = [f"{flag} <b>{league_name}</b> · {category_label}", ""]
-    lines.append(f"<b>{fallback_title}</b>")
-    if description and description.lower() != fallback_title.strip().lower():
+    lines.append(f"<b>{title}</b>")
+    if description and description.lower() != title.strip().lower():
         lines.append(description)
     lines.append("")
     lines.append(f"<i>Fonte: {source}</i>")
@@ -153,9 +175,25 @@ def build_caption(meta: dict, fallback_title: str, real_link: str, league_name: 
     return "\n".join(lines)
 
 
-def build_message(real_link: str, fallback_title: str, league_name: str, flag: str, category_label: str) -> str:
+def build_message(real_link: str, title: str, league_name: str, flag: str, category_label: str) -> str:
     header = f"{flag} <b>{league_name}</b> · {category_label}"
-    return f"{header}\n{fallback_title}\n{real_link}"
+    return f"{header}\n{title}\n{real_link}"
+
+
+def gather_league_items(league: dict) -> list:
+    """Raccoglie le notizie di un campionato: ricerca in italiano + (se previsto) nella lingua originale."""
+    items = []
+    items.extend((entry, "it") for entry in search_news(league["news_query_it"], lang="it", country="IT"))
+
+    if league.get("native_lang") and league.get("news_query_native"):
+        native_entries = search_news(
+            league["news_query_native"],
+            lang=league["native_lang"],
+            country=league["native_country"],
+        )
+        items.extend((entry, league["native_lang"]) for entry in native_entries)
+
+    return items
 
 
 def run():
@@ -165,58 +203,55 @@ def run():
     any_new = False
     sent_this_run = 0
 
-    categories = [
-        (COACH_CHANGE_KEYWORDS, "coach", "Cambio allenatore"),
-        (LINEUP_RUMOR_KEYWORDS, "lineup", "Turnover / formazioni"),
-    ]
-
     for league in LEAGUES:
         if sent_this_run >= MAX_MESSAGES_PER_RUN:
             break
         league_name = league["name"]
         flag = league["flag"]
-        league_query_base = league["news_query_it"]
 
-        for keywords, tag, label in categories:
+        for item, item_lang in gather_league_items(league):
             if sent_this_run >= MAX_MESSAGES_PER_RUN:
                 break
-            query = f'{league_query_base} (' + " OR ".join(keywords) + ")"
-            for item in search_news(query):
-                if sent_this_run >= MAX_MESSAGES_PER_RUN:
-                    break
-                google_link = item.get("link", "")
-                real_link = resolve_real_url(google_link)
 
-                if not is_allowed_domain(real_link):
-                    continue
+            google_link = item.get("link", "")
+            real_link = resolve_real_url(google_link)
 
-                uid = f"{tag}|{real_link}"
-                if uid in seen:
-                    continue
-                if not is_recent_enough(item):
-                    continue
+            if not is_allowed_domain(real_link):
+                continue
 
-                testo_fallback = build_message(real_link, item.get("title", "Notizia"), league_name, flag, label)
-                meta = fetch_article_meta(real_link)
+            uid = f"news|{real_link}"
+            if uid in seen:
+                continue
+            if not is_recent_enough(item):
+                continue
 
-                inviato_con_foto = False
-                if meta.get("image"):
-                    caption = build_caption(meta, item.get("title", "Notizia"), real_link, league_name, flag, label)
-                    inviato_con_foto = send_telegram_photo(meta["image"], caption)
+            original_title = item.get("title", "Notizia")
+            title = translate_to_italian(original_title, item_lang)
+            category_label = classify_label(title)
 
-                if not inviato_con_foto:
-                    send_telegram_message(testo_fallback, disable_preview=False)
+            meta = fetch_article_meta(real_link)
+            if meta.get("description"):
+                meta["description"] = translate_to_italian(meta["description"], item_lang)
 
-                new_seen.append(uid)
-                seen.add(uid)
-                any_new = True
-                sent_this_run += 1
-                time.sleep(SEND_DELAY_SECONDS)
+            inviato_con_foto = False
+            if meta.get("image"):
+                caption = build_caption(meta, title, real_link, league_name, flag, category_label)
+                inviato_con_foto = send_telegram_photo(meta["image"], caption)
+
+            if not inviato_con_foto:
+                testo_fallback = build_message(real_link, title, league_name, flag, category_label)
+                send_telegram_message(testo_fallback, disable_preview=False)
+
+            new_seen.append(uid)
+            seen.add(uid)
+            any_new = True
+            sent_this_run += 1
+            time.sleep(SEND_DELAY_SECONDS)
 
     if any_new:
         state["news_seen"] = trim_list(new_seen)
         save_state(state)
-        print("Stato aggiornato con nuove notizie.")
+        print(f"Stato aggiornato: {sent_this_run} notizie inviate.")
     else:
         print("Nessuna novita nelle notizie.")
 
