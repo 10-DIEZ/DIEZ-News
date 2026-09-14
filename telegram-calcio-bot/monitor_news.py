@@ -1,16 +1,14 @@
 """
 Controlla tutte le notizie principali di calcio via Google News RSS
-(gratis, nessuna API key per la ricerca) per i 5 campionati seguiti -
-ricerca sia in italiano sia, per i campionati esteri, nella lingua
-originale. Titolo tradotto e riassunto naturale generati da un modello
-AI gratuito (Groq), con fallback automatico se non disponibile.
+per i 5 campionati seguiti, piu' una ricerca mirata sulle partite di
+oggi (formazioni/anteprime). Titolo tradotto e riassunto naturale
+generati da un modello AI gratuito (Groq), con fallback automatico.
 
 Da eseguire ogni 5 minuti (vedi workflow GitHub Actions).
 
-I link di Google News sono "mascherati" (news.google.com/rss/articles/...):
-vengono risolti nel link reale dell'articolo, da cui si estraggono
-immagine/descrizione/nome sito (meta-dati pubblici della pagina) per
-mandare un post foto+didascalia in stile canale news.
+I link di Google News sono "mascherati": vengono risolti nel link
+reale dell'articolo, da cui si estraggono immagine/descrizione/nome
+sito per mandare un post foto+didascalia con pulsante "Leggi l'articolo".
 """
 
 import html
@@ -37,14 +35,14 @@ from config import (
 )
 from utils import load_state, save_state, send_telegram_message, send_telegram_photo, trim_list
 
-SEND_DELAY_SECONDS = 1.5
-MAX_MESSAGES_PER_RUN = 25
-
 GROQ_MODEL = "llama-3.3-70b-versatile"
 GROQ_ENDPOINT = "https://api.groq.com/openai/v1/chat/completions"
 
 _TITLE_RE = re.compile(r"TITOLO:\s*(.+)")
 _SUMMARY_RE = re.compile(r"RIASSUNTO:\s*(.+)", re.DOTALL)
+
+SEND_DELAY_SECONDS = 1.5
+MAX_MESSAGES_PER_RUN = 40
 
 HTTP_HEADERS = {
     "User-Agent": (
@@ -75,55 +73,10 @@ def summarize_with_ai(title: str, description: str, source_lang: str) -> dict | 
     Chiede a un modello Groq (gratuito) di tradurre il titolo in italiano e
     scrivere un breve riassunto naturale in italiano (2-3 frasi), nello stile
     di un post da canale di notizie sportive. Restituisce None se il
-    servizio non e' configurato o la richiesta fallisce, cosi' il chiamante
-    puo' ricadere sul metodo di riserva (meta-dati + traduzione diretta).
+    servizio non e' configurato o la richiesta fallisce.
     """
     if not GROQ_API_KEY:
         print("[INFO] GROQ_API_KEY non configurata: uso il metodo di riserva (traduzione diretta).")
-        return None
-
-    prompt = (
-        f"Lingua originale del testo: {source_lang}\n"
-        f"Titolo originale: {title}\n"
-        f"Descrizione originale: {description or '(non disponibile)'}\n\n"
-        "Rispondi SOLO in questo formato, in italiano fluente e naturale:\n"
-        "TITOLO: <titolo tradotto e ben scritto, una riga>\n"
-        "RIASSUNTO: <2-3 frasi che raccontano la notizia in modo naturale, "
-        "come farebbe un canale sportivo, senza inventare fatti non presenti nel testo originale>"
-    )
-
-    try:
-        resp = requests.post(
-            GROQ_ENDPOINT,
-            headers={"Authorization": f"Bearer {GROQ_API_KEY}", "Content-Type": "application/json"},
-            json={
-                "model": GROQ_MODEL,
-                "messages": [
-                    {"role": "system", "content": "Sei un redattore sportivo che traduce e riassume notizie di calcio in italiano, in modo chiaro e naturale."},
-                    {"role": "user", "content": prompt},
-                ],
-                "temperature": 0.4,
-                "max_tokens": 220,
-            },
-            timeout=20,
-        )
-        if resp.status_code != 200:
-            print(f"[WARN] Groq ha risposto {resp.status_code}: {resp.text[:200]}")
-            return None
-
-        content = resp.json()["choices"][0]["message"]["content"]
-        title_match = _TITLE_RE.search(content)
-        summary_match = _SUMMARY_RE.search(content)
-
-        if not title_match:
-            return None
-
-        return {
-            "title": title_match.group(1).strip(),
-            "summary": summary_match.group(1).strip() if summary_match else "",
-        }
-    except Exception as e:
-        print(f"[WARN] chiamata Groq fallita: {e}")
         return None
 
     prompt = (
@@ -230,17 +183,15 @@ def is_allowed_domain(url: str) -> bool:
         domain = domain[4:]
     return any(domain == allowed or domain.endswith("." + allowed) for allowed in ALLOWED_NEWS_DOMAINS)
 
+
 def is_excluded_url(url: str) -> bool:
     """Scarta pagine automatiche (video/risultati/live-blog), anche da domini affidabili."""
     lowered = url.lower()
     return any(pattern in lowered for pattern in EXCLUDED_URL_PATTERNS)
 
+
 def translate_to_italian(text: str, source_lang: str) -> str:
-    """
-    Traduce un testo in italiano, con un servizio di riserva se il primo fallisce
-    (capita che Google Translate blocchi le richieste dagli IP di GitHub Actions,
-    condivisi tra moltissimi utenti).
-    """
+    """Traduce un testo in italiano, con un servizio di riserva se il primo fallisce."""
     if not text or source_lang == "it":
         return text
 
@@ -301,7 +252,6 @@ def build_caption(meta: dict, title: str, ai_summary: str, real_link: str, leagu
 
     lines.append("")
     lines.append(f"<i>Fonte: {source}</i>")
-    lines.append(real_link)
     return "\n".join(lines)
 
 
@@ -326,6 +276,19 @@ def gather_league_items(league: dict) -> list:
     return items
 
 
+def gather_fixture_items(fixture: dict) -> list:
+    """
+    Ricerca mirata su una singola partita di oggi: formazioni ufficiali,
+    probabili formazioni, anteprima pre-partita. Molto piu' precisa della
+    ricerca generica per campionato, perche' include i nomi esatti delle
+    due squadre.
+    """
+    home, away = fixture["home"], fixture["away"]
+    query = f'"{home}" "{away}" (formazioni ufficiali OR probabili formazioni OR anteprima OR formazione)'
+    entries = search_news(query, lang="it", country="IT", max_items=6)
+    return [(entry, "it") for entry in entries]
+
+
 def run():
     state = load_state()
     seen = set(state.get("news_seen", []))
@@ -333,13 +296,21 @@ def run():
     any_new = False
     sent_this_run = 0
 
+    sources_to_check = []
     for league in LEAGUES:
+        sources_to_check.append((league["name"], league["flag"], gather_league_items(league)))
+
+    today_fixtures = state.get("today_fixtures", [])
+    for fixture in today_fixtures:
+        sources_to_check.append((fixture["league"], fixture["flag"], gather_fixture_items(fixture)))
+
+    print(f"Partite di oggi trovate: {len(today_fixtures)}")
+
+    for league_name, flag, entries in sources_to_check:
         if sent_this_run >= MAX_MESSAGES_PER_RUN:
             break
-        league_name = league["name"]
-        flag = league["flag"]
 
-        for item, item_lang in gather_league_items(league):
+        for item, item_lang in entries:
             if sent_this_run >= MAX_MESSAGES_PER_RUN:
                 break
 
@@ -350,6 +321,7 @@ def run():
                 continue
             if is_excluded_url(real_link):
                 continue
+
             uid = f"news|{real_link}"
             if uid in seen:
                 continue
@@ -376,7 +348,7 @@ def run():
             inviato_con_foto = False
             if meta.get("image"):
                 caption = build_caption(meta, title, ai_summary, real_link, league_name, flag, category_label)
-                inviato_con_foto = send_telegram_photo(meta["image"], caption)
+                inviato_con_foto = send_telegram_photo(meta["image"], caption, "🔗 Leggi l'articolo", real_link)
 
             if not inviato_con_foto:
                 testo_fallback = build_message(real_link, title, league_name, flag, category_label)
