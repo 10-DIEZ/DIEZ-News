@@ -29,27 +29,23 @@ LEAGUES = [
     },
     {
         "id": 39, "name": "Premier League", "flag": "🏴",
-        "news_query_it": "Premier League",
-        "native_lang": "en", "native_country": "GB",
-        "news_query_native": "Premier League football",
+        "news_query_it": "Premier League calcio",
+        "native_lang": None, "native_country": None, "news_query_native": None,
     },
     {
         "id": 140, "name": "La Liga", "flag": "🇪🇸",
         "news_query_it": "Liga spagnola calcio",
-        "native_lang": "es", "native_country": "ES",
-        "news_query_native": "LaLiga fútbol",
+        "native_lang": None, "native_country": None, "news_query_native": None,
     },
     {
         "id": 78, "name": "Bundesliga", "flag": "🇩🇪",
         "news_query_it": "Bundesliga calcio",
-        "native_lang": "de", "native_country": "DE",
-        "news_query_native": "Bundesliga Fußball",
+        "native_lang": None, "native_country": None, "news_query_native": None,
     },
     {
         "id": 61, "name": "Ligue 1", "flag": "🇫🇷",
         "news_query_it": "Ligue 1 calcio",
-        "native_lang": "fr", "native_country": "FR",
-        "news_query_native": "Ligue 1 football",
+        "native_lang": None, "native_country": None, "news_query_native": None,
     },
 ]
 
@@ -57,14 +53,16 @@ LEAGUES = [
 # non solo dalla ricerca Google) - scarta articoli vecchi/di stagioni passate
 NEWS_MAX_AGE_DAYS = 2
 
-# Quante notizie al massimo recuperare per ogni ricerca (per lingua, per campionato)
-NEWS_MAX_ITEMS_PER_QUERY = 15
+# Quante notizie al massimo recuperare per ogni ricerca (per campionato)
+NEWS_MAX_ITEMS_PER_QUERY = 25
 
-# --- Fonti considerate affidabili (top + semi-top) ---
+# --- Fonti considerate affidabili (solo testate italiane, top + semi-top) ---
+# Le testate italiane coprono gia' tutti e 5 i campionati (anche l'estero),
+# quindi niente piu' ricerche in altre lingue: piu' semplice e affidabile.
 # Solo le notizie che arrivano da uno di questi siti vengono inviate.
 # Aggiungi o rimuovi domini qui in qualsiasi momento (senza "www.").
 ALLOWED_NEWS_DOMAINS = [
-    # --- Italia: top ---
+    # --- Top ---
     "gazzetta.it",
     "sport.sky.it",
     "skysport.it",
@@ -74,7 +72,9 @@ ALLOWED_NEWS_DOMAINS = [
     "ansa.it",
     "eurosport.it",
     "goal.com",
-    # --- Italia: semi-top / specializzati ---
+    "repubblica.it",
+    "corriere.it",
+    # --- Semi-top / specializzati ---
     "calciomercato.com",
     "tuttomercatoweb.com",
     "fcinternews.it",
@@ -84,30 +84,11 @@ ALLOWED_NEWS_DOMAINS = [
     "11contro11.it",
     "calcioefinanza.it",
     "legaseriea.it",
-    # --- Inghilterra (Premier League) ---
-    "bbc.com",
-    "bbc.co.uk",
-    "skysports.com",
-    "theguardian.com",
-    "espn.com",
-    "eurosport.co.uk",
-    "90min.com",
-    # --- Spagna (La Liga) ---
-    "marca.com",
-    "as.com",
-    "mundodeportivo.com",
-    "sport.es",
-    "eurosport.es",
-    # --- Germania (Bundesliga) ---
-    "kicker.de",
-    "bild.de",
-    "sport1.de",
-    "eurosport.de",
-    # --- Francia (Ligue 1) ---
-    "lequipe.fr",
-    "rmcsport.bfmtv.com",
-    "footmercato.net",
-    "eurosport.fr",
+    "fanpage.it",
+    "calcionews24.com",
+    "ilnapolista.it",
+    "sportitalia.com",
+    "dazn.com",
 ]
 
 # Pattern nell'URL che indicano pagine automatiche (video, risultati, live-blog)
