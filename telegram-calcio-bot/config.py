@@ -8,11 +8,10 @@ import os
 # --- Credenziali (lette da variabili d'ambiente / GitHub Secrets, MAI scritte qui) ---
 TELEGRAM_BOT_TOKEN = os.environ.get("TELEGRAM_BOT_TOKEN", "")
 TELEGRAM_CHAT_ID = os.environ.get("TELEGRAM_CHAT_ID", "")
-API_FOOTBALL_KEY = os.environ.get("API_FOOTBALL_KEY", "")
 GROQ_API_KEY = os.environ.get("GROQ_API_KEY", "")
+FOOTBALL_DATA_API_KEY = os.environ.get("FOOTBALL_DATA_API_KEY", "")
 
-API_FOOTBALL_HOST = "https://v3.football.api-sports.io"
-
+FOOTBALL_DATA_HOST = "https://api.football-data.org/v4"
 # --- Campionati seguiti ---
 # Se la stagione cambia (es. da 2026 a 2027), aggiorna SEASON qui sotto.
 SEASON = 2026
