@@ -1,16 +1,16 @@
 """
 Controlla tutte le notizie principali di calcio via Google News RSS
-(gratis, nessuna API key) per i 5 campionati seguiti - ricerca sia in
-italiano sia, per i campionati esteri, nella lingua originale (con
-traduzione automatica del titolo in italiano).
+(gratis, nessuna API key per la ricerca) per i 5 campionati seguiti -
+ricerca sia in italiano sia, per i campionati esteri, nella lingua
+originale. Titolo tradotto e riassunto naturale generati da un modello
+AI gratuito (Groq), con fallback automatico se non disponibile.
 
 Da eseguire ogni 5 minuti (vedi workflow GitHub Actions).
-Nessun limite di chiamate: Google News RSS e' pubblico e gratuito.
 
 I link di Google News sono "mascherati" (news.google.com/rss/articles/...):
 vengono risolti nel link reale dell'articolo, da cui si estraggono
 immagine/descrizione/nome sito (meta-dati pubblici della pagina) per
-mandare un post foto+didascalia in stile canale news, gratis.
+mandare un post foto+didascalia in stile canale news.
 """
 
 import html
@@ -28,6 +28,7 @@ from googlenewsdecoder import gnewsdecoder
 from config import (
     ALLOWED_NEWS_DOMAINS,
     DEFAULT_LABEL,
+    GROQ_API_KEY,
     LABEL_KEYWORDS,
     LEAGUES,
     NEWS_MAX_AGE_DAYS,
@@ -37,6 +38,12 @@ from utils import load_state, save_state, send_telegram_message, send_telegram_p
 
 SEND_DELAY_SECONDS = 1.5
 MAX_MESSAGES_PER_RUN = 25
+
+GROQ_MODEL = "llama-3.3-70b-versatile"
+GROQ_ENDPOINT = "https://api.groq.com/openai/v1/chat/completions"
+
+_TITLE_RE = re.compile(r"TITOLO:\s*(.+)")
+_SUMMARY_RE = re.compile(r"RIASSUNTO:\s*(.+)", re.DOTALL)
 
 HTTP_HEADERS = {
     "User-Agent": (
@@ -60,6 +67,62 @@ _META_PATTERNS = {
         re.compile(r'<meta[^>]+content=["\']([^"\']+)["\'][^>]*property=["\']og:site_name["\']', re.IGNORECASE),
     ],
 }
+
+
+def summarize_with_ai(title: str, description: str, source_lang: str) -> dict | None:
+    """
+    Chiede a un modello Groq (gratuito) di tradurre il titolo in italiano e
+    scrivere un breve riassunto naturale in italiano (2-3 frasi), nello stile
+    di un post da canale di notizie sportive. Restituisce None se il
+    servizio non e' configurato o la richiesta fallisce, cosi' il chiamante
+    puo' ricadere sul metodo di riserva (meta-dati + traduzione diretta).
+    """
+    if not GROQ_API_KEY:
+        return None
+
+    prompt = (
+        f"Lingua originale del testo: {source_lang}\n"
+        f"Titolo originale: {title}\n"
+        f"Descrizione originale: {description or '(non disponibile)'}\n\n"
+        "Rispondi SOLO in questo formato, in italiano fluente e naturale:\n"
+        "TITOLO: <titolo tradotto e ben scritto, una riga>\n"
+        "RIASSUNTO: <2-3 frasi che raccontano la notizia in modo naturale, "
+        "come farebbe un canale sportivo, senza inventare fatti non presenti nel testo originale>"
+    )
+
+    try:
+        resp = requests.post(
+            GROQ_ENDPOINT,
+            headers={"Authorization": f"Bearer {GROQ_API_KEY}", "Content-Type": "application/json"},
+            json={
+                "model": GROQ_MODEL,
+                "messages": [
+                    {"role": "system", "content": "Sei un redattore sportivo che traduce e riassume notizie di calcio in italiano, in modo chiaro e naturale."},
+                    {"role": "user", "content": prompt},
+                ],
+                "temperature": 0.4,
+                "max_tokens": 220,
+            },
+            timeout=20,
+        )
+        if resp.status_code != 200:
+            print(f"[WARN] Groq ha risposto {resp.status_code}: {resp.text[:200]}")
+            return None
+
+        content = resp.json()["choices"][0]["message"]["content"]
+        title_match = _TITLE_RE.search(content)
+        summary_match = _SUMMARY_RE.search(content)
+
+        if not title_match:
+            return None
+
+        return {
+            "title": title_match.group(1).strip(),
+            "summary": summary_match.group(1).strip() if summary_match else "",
+        }
+    except Exception as e:
+        print(f"[WARN] chiamata Groq fallita: {e}")
+        return None
 
 
 def fetch_article_meta(url: str) -> dict:
@@ -149,6 +212,7 @@ def translate_to_italian(text: str, source_lang: str) -> str:
     print(f"[WARN] Traduzione non riuscita per: {text[:60]}...")
     return text
 
+
 def classify_label(text: str) -> str:
     """Etichetta informativa in base a parole chiave nel titolo (non filtra nulla)."""
     lowered = text.lower()
@@ -176,14 +240,16 @@ def site_display_name(meta_site_name: str, url: str) -> str:
     return domain
 
 
-def build_caption(meta: dict, title: str, real_link: str, league_name: str, flag: str, category_label: str) -> str:
-    description = clean_description(meta.get("description", ""))
+def build_caption(meta: dict, title: str, ai_summary: str, real_link: str, league_name: str, flag: str, category_label: str) -> str:
     source = site_display_name(meta.get("site_name", ""), real_link)
 
     lines = [f"{flag} <b>{league_name}</b> · {category_label}", ""]
     lines.append(f"<b>{title}</b>")
-    if description and description.lower() != title.strip().lower():
-        lines.append(description)
+
+    body = ai_summary or clean_description(meta.get("description", ""))
+    if body and body.lower() != title.strip().lower():
+        lines.append(body)
+
     lines.append("")
     lines.append(f"<i>Fonte: {source}</i>")
     lines.append(real_link)
@@ -241,16 +307,25 @@ def run():
                 continue
 
             original_title = item.get("title", "Notizia")
-            title = translate_to_italian(original_title, item_lang)
-            category_label = classify_label(title)
 
             meta = fetch_article_meta(real_link)
-            if meta.get("description"):
-                meta["description"] = translate_to_italian(meta["description"], item_lang)
+
+            ai_result = summarize_with_ai(original_title, meta.get("description", ""), item_lang)
+
+            if ai_result:
+                title = ai_result["title"]
+                ai_summary = ai_result["summary"]
+            else:
+                title = translate_to_italian(original_title, item_lang)
+                ai_summary = ""
+                if meta.get("description"):
+                    meta["description"] = translate_to_italian(meta["description"], item_lang)
+
+            category_label = classify_label(title)
 
             inviato_con_foto = False
             if meta.get("image"):
-                caption = build_caption(meta, title, real_link, league_name, flag, category_label)
+                caption = build_caption(meta, title, ai_summary, real_link, league_name, flag, category_label)
                 inviato_con_foto = send_telegram_photo(meta["image"], caption)
 
             if not inviato_con_foto:
