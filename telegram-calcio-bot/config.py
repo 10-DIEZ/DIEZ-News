@@ -10,6 +10,7 @@ TELEGRAM_BOT_TOKEN = os.environ.get("TELEGRAM_BOT_TOKEN", "")
 TELEGRAM_CHAT_ID = os.environ.get("TELEGRAM_CHAT_ID", "")
 API_FOOTBALL_KEY = os.environ.get("API_FOOTBALL_KEY", "")
 GROQ_API_KEY = os.environ.get("GROQ_API_KEY", "")
+
 API_FOOTBALL_HOST = "https://v3.football.api-sports.io"
 
 # --- Campionati seguiti ---
@@ -88,7 +89,6 @@ ALLOWED_NEWS_DOMAINS = [
     "bbc.co.uk",
     "skysports.com",
     "theguardian.com",
-    "premierleague.com",
     "espn.com",
     "eurosport.co.uk",
     "90min.com",
@@ -96,21 +96,25 @@ ALLOWED_NEWS_DOMAINS = [
     "marca.com",
     "as.com",
     "mundodeportivo.com",
-    "laliga.com",
     "sport.es",
     "eurosport.es",
     # --- Germania (Bundesliga) ---
     "kicker.de",
-    "bundesliga.com",
     "bild.de",
     "sport1.de",
     "eurosport.de",
     # --- Francia (Ligue 1) ---
     "lequipe.fr",
     "rmcsport.bfmtv.com",
-    "ligue1.com",
     "footmercato.net",
     "eurosport.fr",
+]
+
+# Pattern nell'URL che indicano pagine automatiche (video, risultati, live-blog)
+# e non vere notizie scritte - vengono scartate anche se il dominio e' affidabile
+EXCLUDED_URL_PATTERNS = [
+    "/video/", "/videos/", "/highlights/", "/resume/", "/résumé/",
+    "/live-blog/", "/match-centre/", "/matchcentre/", "/box-score/",
 ]
 
 # --- Classificazione automatica (solo informativa, NON filtra le notizie) ---
