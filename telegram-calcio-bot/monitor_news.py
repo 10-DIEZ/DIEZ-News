@@ -77,7 +77,8 @@ def summarize_with_ai(title: str, description: str, source_lang: str) -> dict | 
     servizio non e' configurato o la richiesta fallisce, cosi' il chiamante
     puo' ricadere sul metodo di riserva (meta-dati + traduzione diretta).
     """
-    if not GROQ_API_KEY:
+        if not GROQ_API_KEY:
+        print("[INFO] GROQ_API_KEY non configurata: uso il metodo di riserva (traduzione diretta).")
         return None
 
     prompt = (
