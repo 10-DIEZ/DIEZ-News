@@ -1,4 +1,4 @@
-name: Monitor infortuni e squalifiche
+name: Aggiorna calendario partite di oggi
 
 on:
   schedule:
@@ -25,12 +25,10 @@ jobs:
         working-directory: telegram-calcio-bot
         run: pip install -r requirements.txt
 
-      - name: Esegui controllo infortuni/squalifiche
+      - name: Aggiorna calendario partite
         working-directory: telegram-calcio-bot
         env:
-          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
-          API_FOOTBALL_KEY: ${{ secrets.API_FOOTBALL_KEY }}
+          FOOTBALL_DATA_API_KEY: ${{ secrets.FOOTBALL_DATA_API_KEY }}
         run: python monitor_structured.py
 
       - name: Salva lo stato aggiornato
@@ -38,5 +36,5 @@ jobs:
           git config user.name "calcio-bot"
           git config user.email "calcio-bot@users.noreply.github.com"
           git add telegram-calcio-bot/state/state.json
-          git diff --staged --quiet || git commit -m "Aggiorna stato infortuni/squalifiche"
+          git diff --staged --quiet || git commit -m "Aggiorna calendario partite"
           git push
