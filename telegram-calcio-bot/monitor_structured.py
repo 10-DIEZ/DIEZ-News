@@ -23,7 +23,11 @@ def fetch_injuries(league_id: int) -> list:
     try:
         resp = requests.get(url, headers=headers, params=params, timeout=20)
         resp.raise_for_status()
-        return resp.json().get("response", [])
+        data = resp.json()
+        errors = data.get("errors")
+        if errors:
+            print(f"[ERRORE API-Football injuries] league={league_id} season={SEASON}: {errors}")
+        return data.get("response", [])
     except requests.RequestException as e:
         print(f"[ERRORE API-Football] league={league_id}: {e}")
         return []
@@ -38,8 +42,14 @@ def fetch_today_fixtures(league_id: int) -> list:
     try:
         resp = requests.get(url, headers=headers, params=params, timeout=20)
         resp.raise_for_status()
+        data = resp.json()
+
+        errors = data.get("errors")
+        if errors:
+            print(f"[ERRORE API-Football fixtures] league={league_id} season={SEASON}: {errors}")
+
         matches = []
-        for item in resp.json().get("response", []):
+        for item in data.get("response", []):
             teams = item.get("teams", {})
             home = teams.get("home", {}).get("name")
             away = teams.get("away", {}).get("name")
