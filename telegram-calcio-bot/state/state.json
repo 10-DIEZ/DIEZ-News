@@ -122,34 +122,22 @@
   ],
   "today_fixtures": [
     {
-      "league": "Serie A",
-      "flag": "🇮🇹",
-      "home": "Como 1907",
-      "away": "Parma Calcio 1913"
-    },
-    {
-      "league": "Serie A",
-      "flag": "🇮🇹",
-      "home": "Torino FC",
-      "away": "AS Roma"
-    },
-    {
-      "league": "Serie A",
-      "flag": "🇮🇹",
-      "home": "FC Internazionale Milano",
-      "away": "Udinese Calcio"
-    },
-    {
-      "league": "Premier League",
-      "flag": "🏴",
-      "home": "Leeds United FC",
-      "away": "Newcastle United FC"
+      "league": "La Liga",
+      "flag": "🇪🇸",
+      "home": "Rayo Vallecano de Madrid",
+      "away": "RCD Espanyol de Barcelona"
     },
     {
       "league": "La Liga",
       "flag": "🇪🇸",
-      "home": "Villarreal CF",
-      "away": "Real Betis Balompié"
+      "home": "Deportivo Alavés",
+      "away": "Valencia CF"
+    },
+    {
+      "league": "La Liga",
+      "flag": "🇪🇸",
+      "home": "Elche CF",
+      "away": "Real Madrid CF"
     }
   ]
 }
