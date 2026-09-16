@@ -379,7 +379,7 @@ def run():
 
             if not inviato_con_foto:
                 testo_fallback = build_message(real_link, title, league_name, flag, category_label)
-                send_telegram_message(testo_fallback, disable_preview=False)
+                send_telegram_message(testo_fallback, disable_preview=True)
 
             new_seen.append(uid)
             seen.add(uid)
