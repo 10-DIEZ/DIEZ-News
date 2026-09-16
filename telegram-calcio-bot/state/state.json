@@ -152,20 +152,26 @@
     {
       "league": "La Liga",
       "flag": "🇪🇸",
-      "home": "Rayo Vallecano de Madrid",
-      "away": "RCD Espanyol de Barcelona"
+      "home": "RC Deportivo La Coruña",
+      "away": "Sevilla FC"
     },
     {
       "league": "La Liga",
       "flag": "🇪🇸",
-      "home": "Deportivo Alavés",
-      "away": "Valencia CF"
+      "home": "Club Atlético de Madrid",
+      "away": "CA Osasuna"
     },
     {
       "league": "La Liga",
       "flag": "🇪🇸",
-      "home": "Elche CF",
-      "away": "Real Madrid CF"
+      "home": "Levante UD",
+      "away": "Athletic Club"
+    },
+    {
+      "league": "La Liga",
+      "flag": "🇪🇸",
+      "home": "FC Barcelona",
+      "away": "Real Racing Club de Santander"
     }
   ]
 }
