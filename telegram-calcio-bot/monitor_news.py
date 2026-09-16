@@ -38,7 +38,7 @@ from config import (
 )
 from utils import load_state, save_state, send_telegram_message, send_telegram_photo, trim_list
 
-GROQ_MODEL = "llama-3.3-70b-versatile"
+GROQ_MODEL = "openai/gpt-oss-120b"
 GROQ_ENDPOINT = "https://api.groq.com/openai/v1/chat/completions"
 
 _TITLE_RE = re.compile(r"TITOLO:\s*(.+)")
