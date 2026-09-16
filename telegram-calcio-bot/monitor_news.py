@@ -304,7 +304,7 @@ def gather_generic_competition_items(competition_name: str) -> list:
     partita. Solo formazioni ufficiali e assenze/turnover, in italiano.
     """
     kw_it = " OR ".join(FORMATION_KEYWORDS["it"] + ABSENCE_KEYWORDS["it"])
-    query_it = f'{competition_name} ({kw_it})'
+    query_it = f'"{competition_name}" ({kw_it})'
     entries = search_news(query_it, lang="it", country="IT")
     return [(e, "it") for e in entries]
 
