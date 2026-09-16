@@ -1,14 +1,11 @@
 """
-Recupera il calendario delle partite di OGGI per i 5 campionati seguiti,
-usando football-data.org (gratis per sempre per questi campionati,
-a differenza di API-Football il cui piano free non copre la stagione
-in corso). Il calendario viene salvato nello stato condiviso e usato
-da monitor_news.py per cercare in modo mirato formazioni/anteprime.
+Recupera il calendario delle partite di OGGI per i campionati e la
+Champions League, usando football-data.org (gratis per sempre per
+queste competizioni). Il calendario viene salvato nello stato
+condiviso e usato da monitor_news.py per cercare in modo mirato
+formazioni ufficiali e assenze/turnover.
 
 Da eseguire ~2 volte al giorno (vedi workflow GitHub Actions).
-Nota: gli infortuni/squalifiche "ufficiali" non hanno un buon equivalente
-gratuito, quindi vengono intercettati dalle notizie generiche (che hanno
-gia' l'etichetta "Infortuni / squalifiche") invece che da un'API dedicata.
 """
 
 import requests
@@ -55,6 +52,8 @@ def run():
                 "flag": league["flag"],
                 "home": m["home"],
                 "away": m["away"],
+                "native_lang": league["native_lang"],
+                "native_country": league["native_country"],
             })
 
     state["today_fixtures"] = today_fixtures
