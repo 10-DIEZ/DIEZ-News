@@ -262,12 +262,12 @@ def gather_coach_items(league: dict) -> list:
     """Ricerca cambio allenatore per un campionato: italiano + lingua nativa."""
     items = []
     kw_it = " OR ".join(COACH_KEYWORDS["it"])
-    query_it = f'{league["name"]} calcio ({kw_it})'
+    query_it = f'"{league["name"]}" calcio ({kw_it})'
     items.extend((e, "it") for e in search_news(query_it, lang="it", country="IT"))
 
     if league.get("native_lang"):
         kw_native = " OR ".join(COACH_KEYWORDS[league["native_lang"]])
-        query_native = f'{league["native_name"]} ({kw_native})'
+        query_native = f'"{league["native_name"]}" ({kw_native})'
         native_entries = search_news(query_native, lang=league["native_lang"], country=league["native_country"])
         items.extend((e, league["native_lang"]) for e in native_entries)
 
