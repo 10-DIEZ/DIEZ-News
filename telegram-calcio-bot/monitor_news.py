@@ -1,14 +1,13 @@
 """
-Controlla tutte le notizie principali di calcio via Google News RSS
-per i 5 campionati seguiti, piu' una ricerca mirata sulle partite di
-oggi (formazioni/anteprime). Titolo tradotto e riassunto naturale
-generati da un modello AI gratuito (Groq), con fallback automatico.
+Monitoraggio mirato per i 5 campionati + Champions League - SOLO 3 categorie:
+formazioni ufficiali, assenze/turnover (infortuni, squalifiche, dubbi),
+cambio allenatore. Niente calciomercato, niente notizie generiche.
+Include anche Europa League e Conference League con ricerca generica.
+
+Titolo tradotto e riassunto naturale generati da Groq (AI gratuita),
+con fallback a traduzione diretta se Groq non e' disponibile.
 
 Da eseguire ogni 5 minuti (vedi workflow GitHub Actions).
-
-I link di Google News sono "mascherati": vengono risolti nel link
-reale dell'articolo, da cui si estraggono immagine/descrizione/nome
-sito per mandare un post foto+didascalia con pulsante "Leggi l'articolo".
 """
 
 import html
@@ -24,9 +23,13 @@ from deep_translator import GoogleTranslator, MyMemoryTranslator
 from googlenewsdecoder import gnewsdecoder
 
 from config import (
+    ABSENCE_KEYWORDS,
     ALLOWED_NEWS_DOMAINS,
+    COACH_KEYWORDS,
     DEFAULT_LABEL,
     EXCLUDED_URL_PATTERNS,
+    EXTRA_COMPETITIONS_NO_FIXTURES,
+    FORMATION_KEYWORDS,
     GROQ_API_KEY,
     LABEL_KEYWORDS,
     LEAGUES,
@@ -69,12 +72,7 @@ _META_PATTERNS = {
 
 
 def summarize_with_ai(title: str, description: str, source_lang: str) -> dict | None:
-    """
-    Chiede a un modello Groq (gratuito) di tradurre il titolo in italiano e
-    scrivere un breve riassunto naturale in italiano (2-3 frasi), nello stile
-    di un post da canale di notizie sportive. Restituisce None se il
-    servizio non e' configurato o la richiesta fallisce.
-    """
+    """Traduce il titolo in italiano e scrive un breve riassunto naturale, via Groq (gratuito)."""
     if not GROQ_API_KEY:
         print("[INFO] GROQ_API_KEY non configurata: uso il metodo di riserva (traduzione diretta).")
         return None
@@ -214,7 +212,7 @@ def translate_to_italian(text: str, source_lang: str) -> str:
 
 
 def classify_label(text: str) -> str:
-    """Etichetta informativa in base a parole chiave nel titolo (non filtra nulla)."""
+    """Etichetta in base a parole chiave nel titolo (testo gia' tradotto in italiano)."""
     lowered = text.lower()
     for label, keywords in LABEL_KEYWORDS:
         if any(kw in lowered for kw in keywords):
@@ -260,33 +258,55 @@ def build_message(real_link: str, title: str, league_name: str, flag: str, categ
     return f"{header}\n{title}\n{real_link}"
 
 
-def gather_league_items(league: dict) -> list:
-    """Raccoglie le notizie di un campionato: ricerca in italiano + (se previsto) nella lingua originale."""
+def gather_coach_items(league: dict) -> list:
+    """Ricerca cambio allenatore per un campionato: italiano + lingua nativa."""
     items = []
-    items.extend((entry, "it") for entry in search_news(league["news_query_it"], lang="it", country="IT"))
+    kw_it = " OR ".join(COACH_KEYWORDS["it"])
+    query_it = f'{league["name"]} calcio ({kw_it})'
+    items.extend((e, "it") for e in search_news(query_it, lang="it", country="IT"))
 
-    if league.get("native_lang") and league.get("news_query_native"):
-        native_entries = search_news(
-            league["news_query_native"],
-            lang=league["native_lang"],
-            country=league["native_country"],
-        )
-        items.extend((entry, league["native_lang"]) for entry in native_entries)
+    if league.get("native_lang"):
+        kw_native = " OR ".join(COACH_KEYWORDS[league["native_lang"]])
+        query_native = f'{league["native_name"]} ({kw_native})'
+        native_entries = search_news(query_native, lang=league["native_lang"], country=league["native_country"])
+        items.extend((e, league["native_lang"]) for e in native_entries)
 
     return items
 
 
 def gather_fixture_items(fixture: dict) -> list:
     """
-    Ricerca mirata su una singola partita di oggi: formazioni ufficiali,
-    probabili formazioni, anteprima pre-partita. Molto piu' precisa della
-    ricerca generica per campionato, perche' include i nomi esatti delle
-    due squadre.
+    Ricerca mirata su una singola partita di oggi: formazioni ufficiali +
+    assenze/turnover, con i nomi esatti delle due squadre. Cerca sia in
+    italiano sia nella lingua/stampa locale del campionato.
     """
     home, away = fixture["home"], fixture["away"]
-    query = f'"{home}" "{away}" (formazioni ufficiali OR probabili formazioni OR anteprima OR formazione)'
-    entries = search_news(query, lang="it", country="IT", max_items=6)
-    return [(entry, "it") for entry in entries]
+    items = []
+
+    kw_it = " OR ".join(FORMATION_KEYWORDS["it"] + ABSENCE_KEYWORDS["it"])
+    query_it = f'"{home}" "{away}" ({kw_it})'
+    items.extend((e, "it") for e in search_news(query_it, lang="it", country="IT", max_items=8))
+
+    native_lang = fixture.get("native_lang")
+    if native_lang:
+        kw_native = " OR ".join(FORMATION_KEYWORDS[native_lang] + ABSENCE_KEYWORDS[native_lang])
+        query_native = f'"{home}" "{away}" ({kw_native})'
+        native_entries = search_news(query_native, lang=native_lang, country=fixture["native_country"], max_items=8)
+        items.extend((e, native_lang) for e in native_entries)
+
+    return items
+
+
+def gather_generic_competition_items(competition_name: str) -> list:
+    """
+    Per le coppe europee senza calendario preciso gratuito (Europa League,
+    Conference League): ricerca generica sulla competizione, non per singola
+    partita. Solo formazioni ufficiali e assenze/turnover, in italiano.
+    """
+    kw_it = " OR ".join(FORMATION_KEYWORDS["it"] + ABSENCE_KEYWORDS["it"])
+    query_it = f'{competition_name} ({kw_it})'
+    entries = search_news(query_it, lang="it", country="IT")
+    return [(e, "it") for e in entries]
 
 
 def run():
@@ -297,14 +317,21 @@ def run():
     sent_this_run = 0
 
     sources_to_check = []
-    for league in LEAGUES:
-        sources_to_check.append((league["name"], league["flag"], gather_league_items(league)))
 
+    # Cambio allenatore: ricerca per campionato (non legata a una partita specifica)
+    for league in LEAGUES:
+        sources_to_check.append((league["name"], league["flag"], gather_coach_items(league)))
+
+    # Formazioni ufficiali + assenze/turnover: ricerca mirata per partita di oggi
     today_fixtures = state.get("today_fixtures", [])
     for fixture in today_fixtures:
         sources_to_check.append((fixture["league"], fixture["flag"], gather_fixture_items(fixture)))
 
-    print(f"Partite di oggi trovate: {len(today_fixtures)}")
+    # Europa League / Conference League: ricerca generica (niente calendario preciso gratis)
+    for comp in EXTRA_COMPETITIONS_NO_FIXTURES:
+        sources_to_check.append((comp["name"], comp["flag"], gather_generic_competition_items(comp["name"])))
+
+    print(f"Partite di oggi: {len(today_fixtures)}")
 
     for league_name, flag, entries in sources_to_check:
         if sent_this_run >= MAX_MESSAGES_PER_RUN:
