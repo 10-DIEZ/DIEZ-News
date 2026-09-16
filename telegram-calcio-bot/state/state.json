@@ -33,5 +33,11 @@
       "native_country": "ES"
     }
   ],
-  "news_seen": []
+  "news_seen": [
+    "news|https://www.gazzetta.it/Calcio/Serie-A/Bologna/15-09-2026/bologna-esonerato-tedesco-palladino.shtml",
+    "news|https://www.fanpage.it/sport/calcio/raffaele-palladino-torna-subito-in-panchina-in-serie-a-manca-solo-lannuncio-del-bologna/",
+    "news|https://www.corrieredellosport.it/news/calcio/serie-a/bologna/2026/09/16-151273902/come_giocher_il_nuovo_bologna_di_palladino_uno_specialista_nel_rilanciare_gli_attaccanti",
+    "news|https://www.lequipe.fr/Football/Actualites/Arrive-cet-ete-a-lens-dino-toppmoller-va-deja-etre-demis-de-ses-fonctions/1718867",
+    "news|https://www.goal.com/it/notizie/barcellona-racing-santander-anteprima-della-liga-tutto-quello-che-c-e-da-sapere/blte6f988bebddc2e7d"
+  ]
 }
