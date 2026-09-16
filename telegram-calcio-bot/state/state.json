@@ -163,25 +163,33 @@
       "league": "La Liga",
       "flag": "🇪🇸",
       "home": "RC Deportivo La Coruña",
-      "away": "Sevilla FC"
+      "away": "Sevilla FC",
+      "native_lang": "es",
+      "native_country": "ES"
     },
     {
       "league": "La Liga",
       "flag": "🇪🇸",
       "home": "Club Atlético de Madrid",
-      "away": "CA Osasuna"
+      "away": "CA Osasuna",
+      "native_lang": "es",
+      "native_country": "ES"
     },
     {
       "league": "La Liga",
       "flag": "🇪🇸",
       "home": "Levante UD",
-      "away": "Athletic Club"
+      "away": "Athletic Club",
+      "native_lang": "es",
+      "native_country": "ES"
     },
     {
       "league": "La Liga",
       "flag": "🇪🇸",
       "home": "FC Barcelona",
-      "away": "Real Racing Club de Santander"
+      "away": "Real Racing Club de Santander",
+      "native_lang": "es",
+      "native_country": "ES"
     }
   ]
 }
