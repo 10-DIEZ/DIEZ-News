@@ -3,32 +3,16 @@
     {
       "league": "La Liga",
       "flag": "🇪🇸",
-      "home": "RC Deportivo La Coruña",
-      "away": "Sevilla FC",
+      "home": "Real Betis Balompié",
+      "away": "Getafe CF",
       "native_lang": "es",
       "native_country": "ES"
     },
     {
       "league": "La Liga",
       "flag": "🇪🇸",
-      "home": "Club Atlético de Madrid",
-      "away": "CA Osasuna",
-      "native_lang": "es",
-      "native_country": "ES"
-    },
-    {
-      "league": "La Liga",
-      "flag": "🇪🇸",
-      "home": "Levante UD",
-      "away": "Athletic Club",
-      "native_lang": "es",
-      "native_country": "ES"
-    },
-    {
-      "league": "La Liga",
-      "flag": "🇪🇸",
-      "home": "FC Barcelona",
-      "away": "Real Racing Club de Santander",
+      "home": "Málaga CF",
+      "away": "Villarreal CF",
       "native_lang": "es",
       "native_country": "ES"
     }
