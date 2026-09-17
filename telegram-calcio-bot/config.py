@@ -43,10 +43,8 @@ LEAGUES = [
     },
 ]
 
-# Coppe europee SENZA calendario preciso gratuito (football-data.org non le
-# copre nel piano free): ricerca generica sulla competizione, non per singola
-# partita. Solo formazioni ufficiali e assenze/turnover (niente allenatori,
-# gia' coperto dalla ricerca per club nei campionati sopra).
+# Coppe europee: ricerca generica di riserva sulla competizione (sempre attiva
+# in aggiunta al calendario preciso di TheSportsDB, come rete di sicurezza).
 EXTRA_COMPETITIONS_NO_FIXTURES = [
     {"name": "Europa League", "flag": "🟠"},
     {"name": "Conference League", "flag": "🔵"},
@@ -87,7 +85,42 @@ COACH_KEYWORDS = {
     "fr": ["limogé", "démission", "nouvel entraîneur"],
 }
 
+# --- Parole chiave per lingua: anteprima/probabili formazioni (escono PRIMA
+# delle ufficiali, danno un primo segnale su chi potrebbe mancare) ---
+PREVIEW_KEYWORDS = {
+    "it": ["probabili formazioni", "anteprima", "vigilia", "verso"],
+    "en": ["preview", "predicted lineup", "team news", "ahead of"],
+    "es": ["previa", "alineación probable", "posible once"],
+    "de": ["voraussichtliche aufstellung", "vorschau"],
+    "fr": ["compo probable", "avant-match", "avant match"],
+}
+
+# --- Feed RSS diretti (bypassano Google News, che mostra solo i primi 10
+# risultati per ricerca - con RSS diretti prendiamo TUTTI gli articoli
+# recenti di ogni testata, cosi' non si perdono le squadre meno cliccate).
+# ATTENZIONE: alcuni indirizzi (specialmente esteri) sono un primo tentativo,
+# non tutti verificabili in anticipo - il codice logga quelli che non
+# funzionano, li sistemiamo guardando i risultati reali del primo test.
+DIRECT_RSS_FEEDS = {
+    "https://www.gazzetta.it/rss/home.xml": "it",
+    "https://www.ansa.it/sito/notizie/sport/calcio/calcio_rss.xml": "it",
+    "https://www.corrieredellosport.it/rss/rss.shtml": "it",
+    "http://feeds.bbci.co.uk/sport/football/rss.xml": "en",
+    "https://www.theguardian.com/football/rss": "en",
+    "https://www.marca.com/rss/futbol.xml": "es",
+    "https://newsfeed.kicker.de/news/fussball": "de",
+}
+
+# ID delle competizioni su TheSportsDB (API gratuita alternativa), usata
+# solo per il calendario di Europa League/Conference League - football-data.org
+# non le copre nel piano gratuito.
+THESPORTSDB_LEAGUE_IDS = {
+    "Europa League": "4480",
+    "Conference League": "5071",
+}
+
 # --- Fonti considerate affidabili (top + semi-top, italiane ed estere) ---
+# Solo le notizie che arrivano da uno di questi siti vengono inviate.
 ALLOWED_NEWS_DOMAINS = [
     # --- Italia: top ---
     "gazzetta.it", "sport.sky.it", "skysport.it", "corrieredellosport.it",
@@ -126,6 +159,11 @@ LABEL_KEYWORDS = [
     ("Cambio allenatore", ["esonerato", "esonero", "dimissioni", "nuovo allenatore", "nuovo tecnico"]),
 ]
 DEFAULT_LABEL = "Assenze e turnover"
+
+# Se piu' testate scrivono della stessa notizia (stessa partita/campionato +
+# stessa categoria) entro questa finestra di ore, mandiamo solo la prima e
+# scartiamo i quasi-doppioni successivi.
+DUPLICATE_SUPPRESS_HOURS = 3
 
 # File dove viene salvato lo stato (cosa e' gia' stato notificato)
 STATE_FILE = os.path.join(os.path.dirname(__file__), "state", "state.json")
