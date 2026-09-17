@@ -31,5 +31,10 @@
     "news|https://sport.sky.it/calcio/europa-league/2026/09/16/juventus-nec-probabili-formazioni-1-giornata",
     "news|https://as.com/futbol/juanfran-funes-inigo-perez-y-sus-reconstrucciones-f202609-n/"
   ],
-  "today_cup_fixtures": []
+  "today_cup_fixtures": [],
+  "topics_sent": {},
+  "stats": {
+    "week_sent": 0,
+    "week_groq_failures": 0
+  }
 }
