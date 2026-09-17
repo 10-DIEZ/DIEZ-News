@@ -18,30 +18,32 @@
     }
   ],
   "news_seen": [
-    "news|https://www.espn.com/soccer/story/_/id/49945295/all-20-premier-league-teams-ranked-which-managers-fired-first",
-    "news|https://www.tuttosport.com/news/calcio/serie-a/juventus/2026/09/16-151274940/juventus-nec_probabili_formazioni_europa_league_orario_e_dove_vederla_in_tv_e_streaming",
-    "news|https://www.fanpage.it/sport/calcio/raffaele-palladino-torna-subito-in-panchina-in-serie-a-manca-solo-lannuncio-del-bologna/",
-    "news|https://www.goal.com/it/notizie/formazioni-milan-benfica-le-ultime-sulla-partita-e-dove-vederla-in-tv-e-streaming/blt8ab64d89fe682164",
-    "news|https://www.gazzetta.it/Calcio/Serie-A/Bologna/15-09-2026/bologna-esonerato-tedesco-palladino.shtml",
-    "news|https://www.lequipe.fr/Football/Actualites/Arrive-cet-ete-a-lens-dino-toppmoller-va-deja-etre-demis-de-ses-fonctions/1718867",
-    "news|https://www.lequipe.fr/Football/Actualites/Un-nouvel-entraineur-argentin-pour-lionel-messi-kily-gonzalez-nomme-sur-le-banc-de-l-inter-miami/1718937",
-    "news|https://biwenger.as.com/blog/alineaciones-fantasy-posibles-jornada-6-2/",
-    "news|https://www.tuttosport.com/news/calcio/europa-league/2026/09/16-151273901/milan-benfica_probabili_formazioni_e_diretta_dove_si_vede_in_tv_e_streaming",
     "news|https://www.lequipe.fr/Football/Actualites/Le-rc-lens-va-bien-payer-les-amendes-pour-yannick-cahuzac-qui-n-a-pas-encore-le-diplome-requis-pour-entrainer-en-ligue-1/1719283",
-    "news|https://www.corrieredellosport.it/news/calcio/serie-a/bologna/2026/09/16-151273902/come_giocher_il_nuovo_bologna_di_palladino_uno_specialista_nel_rilanciare_gli_attaccanti",
+    "news|https://www.goal.com/it/notizie/formazioni-juventus-nec-le-ultime-sulla-partita-e-dove-vederla-in-tv-e-streaming/blt780dfa171cc0a3ba",
+    "news|https://www.gazzetta.it/Calcio/Serie-A/Bologna/15-09-2026/bologna-esonerato-tedesco-palladino.shtml",
+    "news|https://www.goal.com/it/notizie/formazioni-milan-benfica-le-ultime-sulla-partita-e-dove-vederla-in-tv-e-streaming/blt8ab64d89fe682164",
+    "news|https://www.fanpage.it/sport/calcio/raffaele-palladino-torna-subito-in-panchina-in-serie-a-manca-solo-lannuncio-del-bologna/",
+    "news|https://sport.sky.it/calcio/europa-league/2026/09/16/juventus-nec-probabili-formazioni-1-giornata",
     "news|https://www.mundodeportivo.com/guias-de-juego/pronosticos/levante-vs-athletic-club-pronostico-cuotas-y-alineaciones-posibles-laliga/",
     "news|https://www.goal.com/it/notizie/barcellona-racing-santander-anteprima-della-liga-tutto-quello-che-c-e-da-sapere/blte6f988bebddc2e7d",
+    "news|https://www.lequipe.fr/Football/Actualites/Arrive-cet-ete-a-lens-dino-toppmoller-va-deja-etre-demis-de-ses-fonctions/1718867",
+    "news|https://www.tuttosport.com/news/calcio/europa-league/2026/09/16-151273901/milan-benfica_probabili_formazioni_e_diretta_dove_si_vede_in_tv_e_streaming",
+    "news|https://www.lequipe.fr/Football/Actualites/Un-nouvel-entraineur-argentin-pour-lionel-messi-kily-gonzalez-nomme-sur-le-banc-de-l-inter-miami/1718937",
+    "news|https://www.tuttosport.com/news/calcio/serie-a/juventus/2026/09/16-151274940/juventus-nec_probabili_formazioni_europa_league_orario_e_dove_vederla_in_tv_e_streaming",
+    "news|https://www.corrieredellosport.it/news/calcio/serie-a/bologna/2026/09/16-151273902/come_giocher_il_nuovo_bologna_di_palladino_uno_specialista_nel_rilanciare_gli_attaccanti",
+    "news|https://www.espn.com/soccer/story/_/id/49945295/all-20-premier-league-teams-ranked-which-managers-fired-first",
     "news|https://as.com/futbol/juanfran-funes-inigo-perez-y-sus-reconstrucciones-f202609-n/",
-    "news|https://sport.sky.it/calcio/europa-league/2026/09/16/juventus-nec-probabili-formazioni-1-giornata",
-    "news|https://www.goal.com/it/notizie/formazioni-juventus-nec-le-ultime-sulla-partita-e-dove-vederla-in-tv-e-streaming/blt780dfa171cc0a3ba"
+    "news|https://biwenger.as.com/blog/alineaciones-fantasy-posibles-jornada-6-2/",
+    "news|https://www.gazzetta.it/calcio/fantanews/17-09-2026/palladino-bologna-ecco-come-giocheranno-rossoblu-col-nuovo-allenatore.shtml"
   ],
   "today_cup_fixtures": [],
   "topics_sent": {
     "Ligue 1::Assenze e turnover": "2026-09-17T13:22:04.477272+00:00",
-    "Europa League::Assenze e turnover": "2026-09-17T16:00:07.415886+00:00"
+    "Europa League::Assenze e turnover": "2026-09-17T16:00:07.415886+00:00",
+    "Serie A::Assenze e turnover": "2026-09-17T16:39:07.040920+00:00"
   },
   "stats": {
-    "week_sent": 2,
+    "week_sent": 3,
     "week_groq_failures": 1
   }
 }
