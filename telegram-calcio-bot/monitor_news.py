@@ -51,7 +51,7 @@ from config import (
 )
 from utils import load_state, save_state, send_telegram_message, send_telegram_photo, trim_list
 
-GROQ_MODELS = ["openai/gpt-oss-120b", "qwen/qwen3.6-27b"]
+GROQ_MODELS = ["openai/gpt-oss-120b", "openai/gpt-oss-20b"]
 GROQ_ENDPOINT = "https://api.groq.com/openai/v1/chat/completions"
 
 _TITLE_RE = re.compile(r"TITOLO:\s*(.+)")
@@ -85,6 +85,10 @@ _META_PATTERNS = {
     ],
 }
 
+# Prefissi/suffissi comuni che la stampa spesso omette rispetto al nome
+# ufficiale (es. "Bayer 04 Leverkusen" -> stampa scrive spesso "Leverkusen").
+# Uso per generare una seconda variante di ricerca, non sostituisce il nome
+# completo (cerchiamo entrambi).
 _NAME_STRIP_PATTERNS = [
     r"^FC ", r"^AFC ", r"^AC ", r"^SS ", r"^US ", r"^UD ", r"^SC ", r"^CF ",
     r"^Real ", r"^Real$", r"^VfL ", r"^VfB ", r"^SV ", r"^1\. FC ", r"^TSG ",
@@ -94,7 +98,11 @@ _NAME_STRIP_PATTERNS = [
 
 
 def name_variants(name: str) -> list:
-    """Genera fino a 2 varianti del nome squadra: completo e versione 'corta'."""
+    """
+    Genera fino a 2 varianti del nome squadra: quello completo e una versione
+    'corta' togliendo prefissi/suffissi societari comuni - la stampa spesso
+    usa la versione corta (es. 'Leverkusen' invece di 'Bayer 04 Leverkusen').
+    """
     variants = {name}
     stripped = name
     for pattern in _NAME_STRIP_PATTERNS:
@@ -152,7 +160,12 @@ def filter_direct_items_for_text(direct_items: list, required_text: str, keyword
 
 
 def classify_topic(original_title: str) -> str:
-    """Classificazione VELOCE (prima di tradurre/chiamare Groq), su testo originale in qualsiasi lingua."""
+    """
+    Classificazione VELOCE (prima di tradurre/chiamare Groq): controlla il
+    titolo originale, in qualsiasi lingua, contro tutte le parole chiave.
+    Serve solo per raggruppare i doppioni, non per la grafica (non piu'
+    mostrata all'utente).
+    """
     lowered = original_title.lower()
     coach_kw = [kw for kws in COACH_KEYWORDS.values() for kw in kws]
     formation_kw = [kw for kws in FORMATION_KEYWORDS.values() for kw in kws]
@@ -196,7 +209,8 @@ def summarize_with_ai(title: str, description: str, source_lang: str) -> dict | 
                         {"role": "user", "content": prompt},
                     ],
                     "temperature": 0.4,
-                    "max_tokens": 220,
+                    "max_tokens": 300,
+                    "reasoning_format": "hidden",
                 },
                 timeout=20,
             )
@@ -291,24 +305,38 @@ def is_excluded_url(url: str) -> bool:
     return any(pattern in lowered for pattern in EXCLUDED_URL_PATTERNS)
 
 
+# MyMemory vuole codici lingua-paese estesi, non quelli corti (ISO 639-1)
+_MYMEMORY_LANG_MAP = {
+    "en": "en-GB",
+    "es": "es-ES",
+    "de": "de-DE",
+    "fr": "fr-FR",
+    "it": "it-IT",
+}
+
+
 def translate_to_italian(text: str, source_lang: str) -> str:
-    """Traduce un testo in italiano, con un servizio di riserva se il primo fallisce."""
+    """
+    Traduce un testo in italiano. MyMemory provato per primo (Google Translate
+    viene sistematicamente bloccato dagli IP condivisi di GitHub Actions).
+    """
     if not text or source_lang == "it":
         return text
 
+    mymemory_lang = _MYMEMORY_LANG_MAP.get(source_lang, source_lang)
     try:
-        translated = GoogleTranslator(source=source_lang, target="it").translate(text)
+        translated = MyMemoryTranslator(source=mymemory_lang, target="it-IT").translate(text)
         if translated and translated.strip().lower() != text.strip().lower():
             return translated
     except Exception as e:
-        print(f"[WARN] Google Translate fallito ({source_lang}): {e}")
+        print(f"[WARN] MyMemory Translate fallito ({source_lang}): {e}")
 
     try:
-        translated = MyMemoryTranslator(source=source_lang, target="it").translate(text)
+        translated = GoogleTranslator(source=source_lang, target="it").translate(text)
         if translated:
             return translated
     except Exception as e:
-        print(f"[WARN] MyMemory Translate fallito ({source_lang}): {e}")
+        print(f"[WARN] Google Translate fallito ({source_lang}): {e}")
 
     print(f"[WARN] Traduzione non riuscita per: {text[:60]}...")
     return text
@@ -372,14 +400,19 @@ def gather_coach_items(league: dict, direct_items: list) -> list:
 
 
 def gather_fixture_items(fixture: dict, direct_items: list) -> list:
-    """Ricerca mirata su una singola partita di oggi: formazioni + assenze/turnover + anteprima."""
+    """
+    Ricerca mirata su una singola partita di oggi: formazioni ufficiali +
+    assenze/turnover + anteprima, con i nomi delle due squadre (e varianti
+    comuni). Cerca in italiano, nella lingua/stampa locale del campionato,
+    e negli RSS diretti gia' scaricati.
+    """
     home, away = fixture["home"], fixture["away"]
     home_variants = name_variants(home)
     away_variants = name_variants(away)
     items = []
 
     kw_it = " OR ".join(FORMATION_KEYWORDS["it"] + ABSENCE_KEYWORDS["it"] + PREVIEW_KEYWORDS["it"])
-    for h in home_variants[:1]:
+    for h in home_variants[:1]:  # variante principale per Google (query gia' ampia con l'OR delle parole chiave)
         for a in away_variants[:1]:
             query_it = f'"{h}" "{a}" ({kw_it})'
             items.extend((e, "it") for e in search_news(query_it, lang="it", country="IT", max_items=8))
@@ -463,6 +496,8 @@ def run():
 
             original_title = item.get("title", "Notizia")
 
+            # Anti-doppioni CONTROLLATO SUBITO (prima di Groq/immagine):
+            # classificazione veloce sul titolo originale, senza tradurre.
             category_label = classify_topic(original_title)
             topic_key = f"{topic_base}::{category_label}"
             last_sent_iso = topics_sent.get(topic_key)
@@ -481,6 +516,8 @@ def run():
                 any_new = True
                 continue
 
+            # Da qui in poi solo notizie DAVVERO nuove: ora vale la pena
+            # spendere una chiamata Groq e scaricare l'immagine.
             meta = fetch_article_meta(real_link)
 
             ai_result = summarize_with_ai(original_title, meta.get("description", ""), item_lang)
