@@ -1,18 +1,24 @@
 """
 Monitoraggio mirato per i 5 campionati seguiti - SOLO 3 categorie:
-formazioni ufficiali, assenze/turnover (infortuni, squalifiche, dubbi),
-cambio allenatore. Niente calciomercato, niente notizie generiche.
+formazioni ufficiali, assenze/turnover (infortuni, squalifiche, dubbi,
+giocatori chiave mancanti), cambio allenatore. Niente calciomercato,
+niente coppe europee (tolte: senza calendario preciso gratuito non si
+poteva garantire la copertura completa richiesta).
+
+Obiettivo: non deve scappare nessuna notizia rilevante sui 5 campionati.
 
 Fonti:
-- Google News (italiano + lingua nativa del campionato)
+- Google News (italiano + lingua nativa del campionato), fino a 20
+  risultati per ricerca
 - RSS diretti delle testate (scaricati una volta, poi filtrati in locale -
   cosi' non si perdono le squadre meno cliccate sepolte nei risultati Google)
-- Calendario preciso per campionati + Champions League + (quando disponibile)
-  Europa League/Conference League, per ricerca mirata per singola partita
+- Ricerca per singola partita di oggi con i nomi esatti delle due squadre
+  (e piccole varianti del nome, per gestire abbreviazioni comuni)
 
 Titolo tradotto e riassunto naturale generati da Groq (AI gratuita),
 con fallback a traduzione diretta se Groq non e' disponibile.
-Anti-doppioni: se piu' testate coprono la stessa notizia, manda solo la prima.
+Anti-doppioni: controllato PRIMA di chiamare Groq/scaricare l'immagine,
+per non sprecare risorse su notizie che verrebbero comunque scartate.
 
 Da eseguire ogni 5 minuti (vedi workflow GitHub Actions).
 """
@@ -31,16 +37,13 @@ from googlenewsdecoder import gnewsdecoder
 
 from config import (
     ABSENCE_KEYWORDS,
-    ALLOWED_NEWS_DOMAINS,
+    BLOCKED_NEWS_DOMAINS,
     COACH_KEYWORDS,
-    DEFAULT_LABEL,
     DIRECT_RSS_FEEDS,
     DUPLICATE_SUPPRESS_HOURS,
     EXCLUDED_URL_PATTERNS,
-    EXTRA_COMPETITIONS_NO_FIXTURES,
     FORMATION_KEYWORDS,
     GROQ_API_KEY,
-    LABEL_KEYWORDS,
     LEAGUES,
     NEWS_MAX_AGE_DAYS,
     NEWS_MAX_ITEMS_PER_QUERY,
@@ -68,6 +71,8 @@ _META_PATTERNS = {
     "image": [
         re.compile(r'<meta[^>]+property=["\']og:image["\'][^>]*content=["\']([^"\']+)["\']', re.IGNORECASE),
         re.compile(r'<meta[^>]+content=["\']([^"\']+)["\'][^>]*property=["\']og:image["\']', re.IGNORECASE),
+        re.compile(r'<meta[^>]+name=["\']twitter:image["\'][^>]*content=["\']([^"\']+)["\']', re.IGNORECASE),
+        re.compile(r'<meta[^>]+content=["\']([^"\']+)["\'][^>]*name=["\']twitter:image["\']', re.IGNORECASE),
     ],
     "description": [
         re.compile(r'<meta[^>]+property=["\']og:description["\'][^>]*content=["\']([^"\']+)["\']', re.IGNORECASE),
@@ -79,6 +84,26 @@ _META_PATTERNS = {
         re.compile(r'<meta[^>]+content=["\']([^"\']+)["\'][^>]*property=["\']og:site_name["\']', re.IGNORECASE),
     ],
 }
+
+_NAME_STRIP_PATTERNS = [
+    r"^FC ", r"^AFC ", r"^AC ", r"^SS ", r"^US ", r"^UD ", r"^SC ", r"^CF ",
+    r"^Real ", r"^Real$", r"^VfL ", r"^VfB ", r"^SV ", r"^1\. FC ", r"^TSG ",
+    r" FC$", r" CF$", r" AFC$", r" AC$",
+    r"^Bayer \d+ ", r"^Borussia ", r"^1\. FSV ", r"^SpVgg ",
+]
+
+
+def name_variants(name: str) -> list:
+    """Genera fino a 2 varianti del nome squadra: completo e versione 'corta'."""
+    variants = {name}
+    stripped = name
+    for pattern in _NAME_STRIP_PATTERNS:
+        new_stripped = re.sub(pattern, "", stripped).strip()
+        if new_stripped and new_stripped != stripped:
+            stripped = new_stripped
+    if stripped and stripped != name and len(stripped) > 2:
+        variants.add(stripped)
+    return list(variants)
 
 
 def fetch_direct_rss_items() -> list:
@@ -98,14 +123,15 @@ def fetch_direct_rss_items() -> list:
 
 
 def filter_direct_items_for_fixture(direct_items: list, home: str, away: str) -> list:
-    """Tra gli articoli RSS gia' scaricati, tiene solo quelli che nominano entrambe le squadre."""
-    home_l, away_l = home.lower(), away.lower()
+    """Tra gli articoli RSS gia' scaricati, tiene quelli che nominano entrambe le squadre (con varianti)."""
+    home_variants = [v.lower() for v in name_variants(home)]
+    away_variants = [v.lower() for v in name_variants(away)]
     matches = []
     for entry, lang in direct_items:
         title = entry.get("title", "").lower()
         summary = entry.get("summary", "").lower()
         text = f"{title} {summary}"
-        if home_l in text and away_l in text:
+        if any(h in text for h in home_variants) and any(a in text for a in away_variants):
             matches.append((entry, lang))
     return matches
 
@@ -120,10 +146,26 @@ def filter_direct_items_for_text(direct_items: list, required_text: str, keyword
         text = f"{title} {summary}"
         if required_l not in text:
             continue
-        keywords = keyword_sets if isinstance(keyword_sets, list) else []
-        if any(kw.lower() in text for kw in keywords):
+        if any(kw.lower() in text for kw in keyword_sets):
             matches.append((entry, lang))
     return matches
+
+
+def classify_topic(original_title: str) -> str:
+    """Classificazione VELOCE (prima di tradurre/chiamare Groq), su testo originale in qualsiasi lingua."""
+    lowered = original_title.lower()
+    coach_kw = [kw for kws in COACH_KEYWORDS.values() for kw in kws]
+    formation_kw = [kw for kws in FORMATION_KEYWORDS.values() for kw in kws]
+    absence_kw = [kw for kws in ABSENCE_KEYWORDS.values() for kw in kws]
+    preview_kw = [kw for kws in PREVIEW_KEYWORDS.values() for kw in kws]
+
+    if any(kw.lower() in lowered for kw in coach_kw):
+        return "Cambio allenatore"
+    if any(kw.lower() in lowered for kw in formation_kw):
+        return "Formazioni ufficiali"
+    if any(kw.lower() in lowered for kw in absence_kw + preview_kw):
+        return "Assenze e turnover"
+    return "Assenze e turnover"
 
 
 def summarize_with_ai(title: str, description: str, source_lang: str) -> dict | None:
@@ -219,9 +261,7 @@ def is_recent_enough(entry) -> bool:
     published_dt = datetime.fromtimestamp(time.mktime(published_struct), tz=timezone.utc)
     cutoff = datetime.now(timezone.utc) - timedelta(days=NEWS_MAX_AGE_DAYS)
     return published_dt >= cutoff
-
-
-def resolve_real_url(google_link: str) -> str:
+  def resolve_real_url(google_link: str) -> str:
     if not google_link:
         return google_link
     try:
@@ -233,17 +273,18 @@ def resolve_real_url(google_link: str) -> str:
     return google_link
 
 
-def is_allowed_domain(url: str) -> bool:
+def is_blocked_domain(url: str) -> bool:
+    """Blacklist invece di whitelist: blocca solo spam/scommesse/social noti, lascia passare il resto."""
     if not url:
-        return False
+        return True
     domain = urlparse(url).netloc.lower()
     if domain.startswith("www."):
         domain = domain[4:]
-    return any(domain == allowed or domain.endswith("." + allowed) for allowed in ALLOWED_NEWS_DOMAINS)
+    return any(domain == blocked or domain.endswith("." + blocked) for blocked in BLOCKED_NEWS_DOMAINS)
 
 
 def is_excluded_url(url: str) -> bool:
-    """Scarta pagine automatiche (video/risultati/live-blog), anche da domini affidabili."""
+    """Scarta pagine automatiche (video/risultati/live-blog)."""
     lowered = url.lower()
     return any(pattern in lowered for pattern in EXCLUDED_URL_PATTERNS)
 
@@ -271,15 +312,6 @@ def translate_to_italian(text: str, source_lang: str) -> str:
     return text
 
 
-def classify_label(text: str) -> str:
-    """Etichetta in base a parole chiave nel titolo (testo gia' tradotto in italiano)."""
-    lowered = text.lower()
-    for label, keywords in LABEL_KEYWORDS:
-        if any(kw in lowered for kw in keywords):
-            return label
-    return DEFAULT_LABEL
-
-
 def clean_description(text: str, max_chars: int = 280) -> str:
     if not text:
         return ""
@@ -298,7 +330,7 @@ def site_display_name(meta_site_name: str, url: str) -> str:
     return domain
 
 
-def build_caption(meta: dict, title: str, ai_summary: str, real_link: str, league_name: str, flag: str, category_label: str) -> str:
+def build_caption(meta: dict, title: str, ai_summary: str, real_link: str, league_name: str, flag: str) -> str:
     source = site_display_name(meta.get("site_name", ""), real_link)
 
     lines = [f"{flag} <b>{league_name}</b>", ""]
@@ -313,7 +345,7 @@ def build_caption(meta: dict, title: str, ai_summary: str, real_link: str, leagu
     return "\n".join(lines)
 
 
-def build_message(real_link: str, title: str, league_name: str, flag: str, category_label: str) -> str:
+def build_message(real_link: str, title: str, league_name: str, flag: str) -> str:
     header = f"{flag} <b>{league_name}</b>"
     return f"{header}\n{title}\n{real_link}"
 
@@ -338,46 +370,30 @@ def gather_coach_items(league: dict, direct_items: list) -> list:
 
 
 def gather_fixture_items(fixture: dict, direct_items: list) -> list:
-    """
-    Ricerca mirata su una singola partita di oggi: formazioni ufficiali +
-    assenze/turnover + anteprima/probabili formazioni, con i nomi esatti
-    delle due squadre. Cerca in italiano, nella lingua/stampa locale del
-    campionato, e negli RSS diretti gia' scaricati.
-    """
+    """Ricerca mirata su una singola partita di oggi: formazioni + assenze/turnover + anteprima."""
     home, away = fixture["home"], fixture["away"]
+    home_variants = name_variants(home)
+    away_variants = name_variants(away)
     items = []
 
     kw_it = " OR ".join(FORMATION_KEYWORDS["it"] + ABSENCE_KEYWORDS["it"] + PREVIEW_KEYWORDS["it"])
-    query_it = f'"{home}" "{away}" ({kw_it})'
-    items.extend((e, "it") for e in search_news(query_it, lang="it", country="IT", max_items=8))
+    for h in home_variants[:1]:
+        for a in away_variants[:1]:
+            query_it = f'"{h}" "{a}" ({kw_it})'
+            items.extend((e, "it") for e in search_news(query_it, lang="it", country="IT", max_items=8))
 
     native_lang = fixture.get("native_lang")
     if native_lang:
         kw_native = " OR ".join(
             FORMATION_KEYWORDS[native_lang] + ABSENCE_KEYWORDS[native_lang] + PREVIEW_KEYWORDS[native_lang]
         )
-        query_native = f'"{home}" "{away}" ({kw_native})'
-        native_entries = search_news(query_native, lang=native_lang, country=fixture["native_country"], max_items=8)
-        items.extend((e, native_lang) for e in native_entries)
+        for h in home_variants[:1]:
+            for a in away_variants[:1]:
+                query_native = f'"{h}" "{a}" ({kw_native})'
+                native_entries = search_news(query_native, lang=native_lang, country=fixture["native_country"], max_items=8)
+                items.extend((e, native_lang) for e in native_entries)
 
     items.extend(filter_direct_items_for_fixture(direct_items, home, away))
-
-    return items
-
-
-def gather_generic_competition_items(competition_name: str, direct_items: list) -> list:
-    """
-    Per le coppe europee (quando non abbiamo trovato le partite esatte di
-    oggi): ricerca generica sulla competizione, non per singola partita.
-    Formazioni ufficiali, assenze/turnover e anteprima, in italiano + RSS diretti.
-    """
-    kw_it = " OR ".join(FORMATION_KEYWORDS["it"] + ABSENCE_KEYWORDS["it"] + PREVIEW_KEYWORDS["it"])
-    query_it = f'"{competition_name}" ({kw_it})'
-    entries = search_news(query_it, lang="it", country="IT")
-    items = [(e, "it") for e in entries]
-
-    all_kw = FORMATION_KEYWORDS["it"] + ABSENCE_KEYWORDS["it"] + PREVIEW_KEYWORDS["it"]
-    items.extend(filter_direct_items_for_text(direct_items, competition_name, all_kw))
 
     return items
 
@@ -413,16 +429,13 @@ def run():
         sources_to_check.append((league["name"], league["flag"], gather_coach_items(league, direct_items), league["name"]))
 
     today_fixtures = state.get("today_fixtures", [])
-    today_cup_fixtures = state.get("today_cup_fixtures", [])
-    all_today_fixtures = today_fixtures + today_cup_fixtures
-    for fixture in all_today_fixtures:
+    for fixture in today_fixtures:
         topic_base = f'{fixture["home"]}|{fixture["away"]}'
         sources_to_check.append((fixture["league"], fixture["flag"], gather_fixture_items(fixture, direct_items), topic_base))
 
-    for comp in EXTRA_COMPETITIONS_NO_FIXTURES:
-        sources_to_check.append((comp["name"], comp["flag"], gather_generic_competition_items(comp["name"], direct_items), comp["name"]))
+    print(f"Partite di oggi: {len(today_fixtures)}")
 
-    print(f"Partite di oggi: {len(today_fixtures)} campionati + {len(today_cup_fixtures)} coppe minori")
+    topics_sent = state.setdefault("topics_sent", {})
 
     for league_name, flag, entries, topic_base in sources_to_check:
         if sent_this_run >= MAX_MESSAGES_PER_RUN:
@@ -435,7 +448,7 @@ def run():
             google_link = item.get("link", "")
             real_link = resolve_real_url(google_link)
 
-            if not is_allowed_domain(real_link):
+            if is_blocked_domain(real_link):
                 continue
             if is_excluded_url(real_link):
                 continue
@@ -448,25 +461,8 @@ def run():
 
             original_title = item.get("title", "Notizia")
 
-            meta = fetch_article_meta(real_link)
-
-            ai_result = summarize_with_ai(original_title, meta.get("description", ""), item_lang)
-
-            if ai_result:
-                title = ai_result["title"]
-                ai_summary = ai_result["summary"]
-            else:
-                if GROQ_API_KEY:
-                    groq_failures_this_run += 1
-                title = translate_to_italian(original_title, item_lang)
-                ai_summary = ""
-                if meta.get("description"):
-                    meta["description"] = translate_to_italian(meta["description"], item_lang)
-
-            category_label = classify_label(title)
-
+            category_label = classify_topic(original_title)
             topic_key = f"{topic_base}::{category_label}"
-            topics_sent = state.setdefault("topics_sent", {})
             last_sent_iso = topics_sent.get(topic_key)
             is_duplicate = False
             if last_sent_iso:
@@ -483,13 +479,28 @@ def run():
                 any_new = True
                 continue
 
+            meta = fetch_article_meta(real_link)
+
+            ai_result = summarize_with_ai(original_title, meta.get("description", ""), item_lang)
+
+            if ai_result:
+                title = ai_result["title"]
+                ai_summary = ai_result["summary"]
+            else:
+                if GROQ_API_KEY:
+                    groq_failures_this_run += 1
+                title = translate_to_italian(original_title, item_lang)
+                ai_summary = ""
+                if meta.get("description"):
+                    meta["description"] = translate_to_italian(meta["description"], item_lang)
+
             inviato_con_foto = False
             if meta.get("image"):
-                caption = build_caption(meta, title, ai_summary, real_link, league_name, flag, category_label)
+                caption = build_caption(meta, title, ai_summary, real_link, league_name, flag)
                 inviato_con_foto = send_telegram_photo(meta["image"], caption, "🔗 Leggi l'articolo", real_link)
 
             if not inviato_con_foto:
-                testo_fallback = build_message(real_link, title, league_name, flag, category_label)
+                testo_fallback = build_message(real_link, title, league_name, flag)
                 send_telegram_message(testo_fallback, disable_preview=True)
 
             new_seen.append(uid)
@@ -507,11 +518,8 @@ def run():
 
     if any_new:
         state["news_seen"] = trim_list(new_seen)
-        save_state(state)
-        print(f"Stato aggiornato: {sent_this_run} notizie inviate.")
-    else:
-        save_state(state)
-        print("Nessuna novita nelle notizie.")
+    save_state(state)
+    print(f"Stato aggiornato: {sent_this_run} notizie inviate.")
 
 
 if __name__ == "__main__":
