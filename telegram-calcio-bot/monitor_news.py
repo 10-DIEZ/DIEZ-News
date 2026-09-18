@@ -54,6 +54,12 @@ from utils import load_state, save_state, send_telegram_message, send_telegram_p
 GROQ_MODELS = ["openai/gpt-oss-120b", "openai/gpt-oss-20b"]
 GROQ_ENDPOINT = "https://api.groq.com/openai/v1/chat/completions"
 
+# In alcune lingue il nome del campionato e' ambiguo (es. "Bundesliga" in
+# tedesco esiste anche per basket/pallamano) e "allenatore/Trainer" e'
+# generico in tutti gli sport - escludiamo esplicitamente gli altri sport.
+OTHER_SPORTS_EXCLUDE = ["basketball", "handball", "eishockey", "pallacanestro",
+                        "pallamano", "volleyball", "rugby", "hockey"]
+
 _TITLE_RE = re.compile(r"TITOLO:\s*(.+)")
 _SUMMARY_RE = re.compile(r"RIASSUNTO:\s*(.+)", re.DOTALL)
 
@@ -131,7 +137,7 @@ def fetch_direct_rss_items() -> list:
 
 
 def filter_direct_items_for_fixture(direct_items: list, home: str, away: str) -> list:
-    """Tra gli articoli RSS gia' scaricati, tiene quelli che nominano entrambe le squadre (con varianti)."""
+    """Tra gli articoli RSS gia' scaricati, tiene quelli che nominano entrambe le squadre (con varianti, esclusi altri sport)."""
     home_variants = [v.lower() for v in name_variants(home)]
     away_variants = [v.lower() for v in name_variants(away)]
     matches = []
@@ -139,13 +145,15 @@ def filter_direct_items_for_fixture(direct_items: list, home: str, away: str) ->
         title = entry.get("title", "").lower()
         summary = entry.get("summary", "").lower()
         text = f"{title} {summary}"
+        if any(sport in text for sport in OTHER_SPORTS_EXCLUDE):
+            continue
         if any(h in text for h in home_variants) and any(a in text for a in away_variants):
             matches.append((entry, lang))
     return matches
 
 
 def filter_direct_items_for_text(direct_items: list, required_text: str, keyword_sets: list) -> list:
-    """Tra gli articoli RSS gia' scaricati, tiene quelli che nominano required_text + una parola chiave."""
+    """Tra gli articoli RSS gia' scaricati, tiene quelli che nominano required_text + una parola chiave (esclusi altri sport)."""
     required_l = required_text.lower()
     matches = []
     for entry, lang in direct_items:
@@ -153,6 +161,8 @@ def filter_direct_items_for_text(direct_items: list, required_text: str, keyword
         summary = entry.get("summary", "").lower()
         text = f"{title} {summary}"
         if required_l not in text:
+            continue
+        if any(sport in text for sport in OTHER_SPORTS_EXCLUDE):
             continue
         if any(kw.lower() in text for kw in keyword_sets):
             matches.append((entry, lang))
@@ -383,13 +393,15 @@ def build_message(real_link: str, title: str, league_name: str, flag: str) -> st
 def gather_coach_items(league: dict, direct_items: list) -> list:
     """Ricerca cambio allenatore per un campionato: Google News (italiano + lingua nativa) + RSS diretti."""
     items = []
+    sports_excl_it = " ".join(f'-{s}' for s in ["basket", "pallacanestro", "pallamano", "rugby"])
     kw_it = " OR ".join(COACH_KEYWORDS["it"])
-    query_it = f'"{league["name"]}" calcio ({kw_it})'
+    query_it = f'"{league["name"]}" calcio ({kw_it}) {sports_excl_it}'
     items.extend((e, "it") for e in search_news(query_it, lang="it", country="IT"))
 
     if league.get("native_lang"):
+        sports_excl_native = " ".join(f'-{s}' for s in OTHER_SPORTS_EXCLUDE)
         kw_native = " OR ".join(COACH_KEYWORDS[league["native_lang"]])
-        query_native = f'"{league["native_name"]}" ({kw_native})'
+        query_native = f'"{league["native_name"]}" ({kw_native}) {sports_excl_native}'
         native_entries = search_news(query_native, lang=league["native_lang"], country=league["native_country"])
         items.extend((e, league["native_lang"]) for e in native_entries)
 
