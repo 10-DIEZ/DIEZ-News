@@ -261,7 +261,9 @@ def is_recent_enough(entry) -> bool:
     published_dt = datetime.fromtimestamp(time.mktime(published_struct), tz=timezone.utc)
     cutoff = datetime.now(timezone.utc) - timedelta(days=NEWS_MAX_AGE_DAYS)
     return published_dt >= cutoff
-  def resolve_real_url(google_link: str) -> str:
+
+
+def resolve_real_url(google_link: str) -> str:
     if not google_link:
         return google_link
     try:
@@ -510,17 +512,17 @@ def run():
             topics_sent[topic_key] = datetime.now(timezone.utc).isoformat()
             time.sleep(SEND_DELAY_SECONDS)
 
-           prune_topics(state)
+    prune_topics(state)
 
-           stats = state.setdefault("stats", {"week_sent": 0, "week_groq_failures": 0})
-           stats["week_sent"] = stats.get("week_sent", 0) + sent_this_run
-           stats["week_groq_failures"] = stats.get("week_groq_failures", 0) + groq_failures_this_run
+    stats = state.setdefault("stats", {"week_sent": 0, "week_groq_failures": 0})
+    stats["week_sent"] = stats.get("week_sent", 0) + sent_this_run
+    stats["week_groq_failures"] = stats.get("week_groq_failures", 0) + groq_failures_this_run
 
-          if any_new:
-             state["news_seen"] = trim_list(new_seen)
-             save_state(state)
-             print(f"Stato aggiornato: {sent_this_run} notizie inviate.")
+    if any_new:
+        state["news_seen"] = trim_list(new_seen)
+    save_state(state)
+    print(f"Stato aggiornato: {sent_this_run} notizie inviate.")
 
 
-         if __name__ == "__main__":
-         run()
+if __name__ == "__main__":
+    run()
