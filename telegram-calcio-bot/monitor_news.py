@@ -522,5 +522,5 @@ def run():
     print(f"Stato aggiornato: {sent_this_run} notizie inviate.")
 
 
-if __name__ == "__main__":
+    if __name__ == "__main__":
     run()
