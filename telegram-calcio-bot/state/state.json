@@ -1,20 +1,44 @@
 {
   "today_fixtures": [
     {
-      "league": "La Liga",
-      "flag": "🇪🇸",
-      "home": "Real Betis Balompié",
-      "away": "Getafe CF",
-      "native_lang": "es",
-      "native_country": "ES"
+      "league": "Serie A",
+      "flag": "🇮🇹",
+      "home": "AC Monza",
+      "away": "US Sassuolo Calcio",
+      "native_lang": null,
+      "native_country": null
+    },
+    {
+      "league": "Premier League",
+      "flag": "🏴",
+      "home": "Brentford FC",
+      "away": "Chelsea FC",
+      "native_lang": "en",
+      "native_country": "GB"
     },
     {
       "league": "La Liga",
       "flag": "🇪🇸",
-      "home": "Málaga CF",
-      "away": "Villarreal CF",
+      "home": "RCD Espanyol de Barcelona",
+      "away": "Elche CF",
       "native_lang": "es",
       "native_country": "ES"
+    },
+    {
+      "league": "Bundesliga",
+      "flag": "🇩🇪",
+      "home": "FC Bayern München",
+      "away": "1. FC Union Berlin",
+      "native_lang": "de",
+      "native_country": "DE"
+    },
+    {
+      "league": "Ligue 1",
+      "flag": "🇫🇷",
+      "home": "AS Monaco FC",
+      "away": "Racing Club de Lens",
+      "native_lang": "fr",
+      "native_country": "FR"
     }
   ],
   "news_seen": [
@@ -39,7 +63,6 @@
     "news|https://www.lequipe.fr/Football/Actualites/Le-rc-lens-va-bien-payer-les-amendes-pour-yannick-cahuzac-qui-n-a-pas-encore-le-diplome-requis-pour-entrainer-en-ligue-1/1719283",
     "news|https://www.theguardian.com/football/2026/sep/17/crystal-palace-lech-poznan-europa-league-match-report"
   ],
-  "today_cup_fixtures": [],
   "topics_sent": {
     "Ligue 1::Assenze e turnover": "2026-09-17T20:50:45.721721+00:00",
     "Europa League::Assenze e turnover": "2026-09-17T16:00:07.415886+00:00",
