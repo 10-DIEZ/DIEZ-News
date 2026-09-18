@@ -1,1 +1,50 @@
-{"today_fixtures": [], "news_seen": [], "topics_sent": {}, "stats": {"week_sent": 0, "week_groq_failures": 0}}
+{
+  "today_fixtures": [
+    {
+      "league": "Serie A",
+      "flag": "🇮🇹",
+      "home": "AC Monza",
+      "away": "US Sassuolo Calcio",
+      "native_lang": null,
+      "native_country": null
+    },
+    {
+      "league": "Premier League",
+      "flag": "🏴",
+      "home": "Brentford FC",
+      "away": "Chelsea FC",
+      "native_lang": "en",
+      "native_country": "GB"
+    },
+    {
+      "league": "La Liga",
+      "flag": "🇪🇸",
+      "home": "RCD Espanyol de Barcelona",
+      "away": "Elche CF",
+      "native_lang": "es",
+      "native_country": "ES"
+    },
+    {
+      "league": "Bundesliga",
+      "flag": "🇩🇪",
+      "home": "FC Bayern München",
+      "away": "1. FC Union Berlin",
+      "native_lang": "de",
+      "native_country": "DE"
+    },
+    {
+      "league": "Ligue 1",
+      "flag": "🇫🇷",
+      "home": "AS Monaco FC",
+      "away": "Racing Club de Lens",
+      "native_lang": "fr",
+      "native_country": "FR"
+    }
+  ],
+  "news_seen": [],
+  "topics_sent": {},
+  "stats": {
+    "week_sent": 0,
+    "week_groq_failures": 0
+  }
+}
