@@ -289,15 +289,29 @@ def is_recent_enough(entry) -> bool:
     return published_dt >= cutoff
 
 
+_decode_cache: dict = {}
+
+
 def resolve_real_url(google_link: str) -> str:
+    """
+    Decodifica un link 'mascherato' di Google News nell'URL reale.
+    Con una cache per non rifare la stessa decodifica piu' volte nello
+    stesso giro - capita spesso che lo stesso articolo esca da piu'
+    combinazioni di ricerca (es. "Rennes"+"Lens" e "Stade Rennais"+"Racing Lens").
+    """
     if not google_link:
         return google_link
+    if google_link in _decode_cache:
+        return _decode_cache[google_link]
     try:
+        time.sleep(0.3)  # piccola pausa per non sovraccaricare il servizio di decodifica
         result = gnewsdecoder(google_link, interval=0)
         if result.get("status") and result.get("decoded_url"):
+            _decode_cache[google_link] = result["decoded_url"]
             return result["decoded_url"]
     except Exception as e:
         print(f"[WARN] decodifica link fallita: {e}")
+    _decode_cache[google_link] = google_link
     return google_link
 
 
@@ -496,6 +510,11 @@ def run():
 
             google_link = item.get("link", "")
             real_link = resolve_real_url(google_link)
+
+            if "news.google.com" in real_link:
+                # decodifica fallita: non mandiamo il link grezzo illeggibile,
+                # ci riproveremo al prossimo giro (la cache e' solo per questo run)
+                continue
 
             if is_blocked_domain(real_link):
                 continue
