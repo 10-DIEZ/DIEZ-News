@@ -98,6 +98,7 @@ _META_PATTERNS = {
 _NAME_STRIP_PATTERNS = [
     r"^FC ", r"^AFC ", r"^AC ", r"^SS ", r"^US ", r"^UD ", r"^SC ", r"^CF ",
     r"^Real ", r"^Real$", r"^VfL ", r"^VfB ", r"^SV ", r"^1\. FC ", r"^TSG ",
+    r"^RC ", r"^RCD ", r"^CA ", r"^CD ", r"^Stade ", r"^Olympique ", r"^AS ",
     r" FC$", r" CF$", r" AFC$", r" AC$",
     r"^Bayer \d+ ", r"^Borussia ", r"^1\. FSV ", r"^SpVgg ",
 ]
@@ -105,19 +106,20 @@ _NAME_STRIP_PATTERNS = [
 
 def name_variants(name: str) -> list:
     """
-    Genera fino a 2 varianti del nome squadra: quello completo e una versione
-    'corta' togliendo prefissi/suffissi societari comuni - la stampa spesso
-    usa la versione corta (es. 'Leverkusen' invece di 'Bayer 04 Leverkusen').
+    Genera fino a 2 varianti del nome squadra: quella completa (sempre per
+    prima, ordine garantito) e una versione 'corta' togliendo prefissi/
+    suffissi societari comuni - la stampa spesso usa la versione corta
+    (es. 'Leverkusen' invece di 'Bayer 04 Leverkusen').
     """
-    variants = {name}
+    variants = [name]
     stripped = name
     for pattern in _NAME_STRIP_PATTERNS:
         new_stripped = re.sub(pattern, "", stripped).strip()
         if new_stripped and new_stripped != stripped:
             stripped = new_stripped
     if stripped and stripped != name and len(stripped) > 2:
-        variants.add(stripped)
-    return list(variants)
+        variants.append(stripped)
+    return variants
 
 
 def fetch_direct_rss_items() -> list:
@@ -424,8 +426,8 @@ def gather_fixture_items(fixture: dict, direct_items: list) -> list:
     items = []
 
     kw_it = " OR ".join(FORMATION_KEYWORDS["it"] + ABSENCE_KEYWORDS["it"] + PREVIEW_KEYWORDS["it"])
-    for h in home_variants[:1]:  # variante principale per Google (query gia' ampia con l'OR delle parole chiave)
-        for a in away_variants[:1]:
+    for h in home_variants:
+        for a in away_variants:
             query_it = f'"{h}" "{a}" ({kw_it})'
             items.extend((e, "it") for e in search_news(query_it, lang="it", country="IT", max_items=8))
 
@@ -434,8 +436,8 @@ def gather_fixture_items(fixture: dict, direct_items: list) -> list:
         kw_native = " OR ".join(
             FORMATION_KEYWORDS[native_lang] + ABSENCE_KEYWORDS[native_lang] + PREVIEW_KEYWORDS[native_lang]
         )
-        for h in home_variants[:1]:
-            for a in away_variants[:1]:
+        for h in home_variants:
+            for a in away_variants:
                 query_native = f'"{h}" "{a}" ({kw_native})'
                 native_entries = search_news(query_native, lang=native_lang, country=fixture["native_country"], max_items=8)
                 items.extend((e, native_lang) for e in native_entries)
