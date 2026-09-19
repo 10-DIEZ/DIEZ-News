@@ -3,40 +3,184 @@
     {
       "league": "Serie A",
       "flag": "🇮🇹",
-      "home": "AC Monza",
-      "away": "US Sassuolo Calcio",
+      "home": "Bologna FC 1909",
+      "away": "Torino FC",
+      "native_lang": null,
+      "native_country": null
+    },
+    {
+      "league": "Serie A",
+      "flag": "🇮🇹",
+      "home": "Udinese Calcio",
+      "away": "Cagliari Calcio",
+      "native_lang": null,
+      "native_country": null
+    },
+    {
+      "league": "Serie A",
+      "flag": "🇮🇹",
+      "home": "AS Roma",
+      "away": "FC Internazionale Milano",
+      "native_lang": null,
+      "native_country": null
+    },
+    {
+      "league": "Serie A",
+      "flag": "🇮🇹",
+      "home": "Venezia FC",
+      "away": "SS Lazio",
       "native_lang": null,
       "native_country": null
     },
     {
       "league": "Premier League",
       "flag": "🏴",
-      "home": "Brentford FC",
-      "away": "Chelsea FC",
+      "home": "Tottenham Hotspur FC",
+      "away": "Aston Villa FC",
+      "native_lang": "en",
+      "native_country": "GB"
+    },
+    {
+      "league": "Premier League",
+      "flag": "🏴",
+      "home": "Everton FC",
+      "away": "Ipswich Town FC",
+      "native_lang": "en",
+      "native_country": "GB"
+    },
+    {
+      "league": "Premier League",
+      "flag": "🏴",
+      "home": "Brighton & Hove Albion FC",
+      "away": "Arsenal FC",
+      "native_lang": "en",
+      "native_country": "GB"
+    },
+    {
+      "league": "Premier League",
+      "flag": "🏴",
+      "home": "Newcastle United FC",
+      "away": "Hull City AFC",
+      "native_lang": "en",
+      "native_country": "GB"
+    },
+    {
+      "league": "Premier League",
+      "flag": "🏴",
+      "home": "Nottingham Forest FC",
+      "away": "Coventry City FC",
       "native_lang": "en",
       "native_country": "GB"
     },
     {
       "league": "La Liga",
       "flag": "🇪🇸",
-      "home": "RCD Espanyol de Barcelona",
-      "away": "Elche CF",
+      "home": "CA Osasuna",
+      "away": "Rayo Vallecano de Madrid",
+      "native_lang": "es",
+      "native_country": "ES"
+    },
+    {
+      "league": "La Liga",
+      "flag": "🇪🇸",
+      "home": "Athletic Club",
+      "away": "Deportivo Alavés",
+      "native_lang": "es",
+      "native_country": "ES"
+    },
+    {
+      "league": "La Liga",
+      "flag": "🇪🇸",
+      "home": "RC Celta de Vigo",
+      "away": "Real Racing Club de Santander",
+      "native_lang": "es",
+      "native_country": "ES"
+    },
+    {
+      "league": "La Liga",
+      "flag": "🇪🇸",
+      "home": "Sevilla FC",
+      "away": "FC Barcelona",
       "native_lang": "es",
       "native_country": "ES"
     },
     {
       "league": "Bundesliga",
       "flag": "🇩🇪",
-      "home": "FC Bayern München",
-      "away": "1. FC Union Berlin",
+      "home": "Hamburger SV",
+      "away": "1. FC Köln",
+      "native_lang": "de",
+      "native_country": "DE"
+    },
+    {
+      "league": "Bundesliga",
+      "flag": "🇩🇪",
+      "home": "Borussia Mönchengladbach",
+      "away": "1. FSV Mainz 05",
+      "native_lang": "de",
+      "native_country": "DE"
+    },
+    {
+      "league": "Bundesliga",
+      "flag": "🇩🇪",
+      "home": "SV Werder Bremen",
+      "away": "FC Augsburg",
+      "native_lang": "de",
+      "native_country": "DE"
+    },
+    {
+      "league": "Bundesliga",
+      "flag": "🇩🇪",
+      "home": "Eintracht Frankfurt",
+      "away": "SC Freiburg",
+      "native_lang": "de",
+      "native_country": "DE"
+    },
+    {
+      "league": "Bundesliga",
+      "flag": "🇩🇪",
+      "home": "VfB Stuttgart",
+      "away": "Borussia Dortmund",
       "native_lang": "de",
       "native_country": "DE"
     },
     {
       "league": "Ligue 1",
       "flag": "🇫🇷",
-      "home": "AS Monaco FC",
-      "away": "Racing Club de Lens",
+      "home": "Paris FC",
+      "away": "RC Strasbourg Alsace",
+      "native_lang": "fr",
+      "native_country": "FR"
+    },
+    {
+      "league": "Ligue 1",
+      "flag": "🇫🇷",
+      "home": "Le Mans FC",
+      "away": "FC Lorient",
+      "native_lang": "fr",
+      "native_country": "FR"
+    },
+    {
+      "league": "Ligue 1",
+      "flag": "🇫🇷",
+      "home": "Toulouse FC",
+      "away": "Le Havre AC",
+      "native_lang": "fr",
+      "native_country": "FR"
+    },
+    {
+      "league": "Ligue 1",
+      "flag": "🇫🇷",
+      "home": "Angers SCO",
+      "away": "ES Troyes AC",
+      "native_lang": "fr",
+      "native_country": "FR"
+    },
+    {
+      "league": "Ligue 1",
+      "flag": "🇫🇷",
+      "home": "Olympique Lyonnais",
+      "away": "Stade Rennais FC 1901",
       "native_lang": "fr",
       "native_country": "FR"
     }
