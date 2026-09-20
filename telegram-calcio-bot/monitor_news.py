@@ -533,6 +533,11 @@ def run():
         sources_to_check.append((fixture["league"], fixture["flag"], gather_fixture_items(fixture, direct_items), topic_base))
 
     print(f"Partite totali in calendario: {len(all_fixtures)} — attive ora (finestra {ACTIVE_WINDOW_DAYS}gg/{STOP_BEFORE_KICKOFF_HOURS}h): {len(today_fixtures)}")
+    for f in today_fixtures:
+        print(f"  ATTIVA: {f['league']} - {f['home']} vs {f['away']} (calcio d'inizio: {f.get('kickoff', '?')})")
+    inactive_or_missing = [f for f in all_fixtures if f not in today_fixtures]
+    for f in inactive_or_missing:
+        print(f"  non attiva/fuori finestra: {f['league']} - {f['home']} vs {f['away']} (calcio d'inizio: {f.get('kickoff', '?')})")
 
     topics_sent = state.setdefault("topics_sent", {})
 
