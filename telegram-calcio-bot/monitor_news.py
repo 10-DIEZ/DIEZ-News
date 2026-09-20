@@ -37,17 +37,19 @@ from googlenewsdecoder import gnewsdecoder
 
 from config import (
     ABSENCE_KEYWORDS,
+    ACTIVE_WINDOW_DAYS,
     BLOCKED_NEWS_DOMAINS,
     COACH_KEYWORDS,
     DIRECT_RSS_FEEDS,
     DUPLICATE_SUPPRESS_HOURS,
     EXCLUDED_URL_PATTERNS,
-    FORMATION_KEYWORDS,
     GROQ_API_KEY,
     LEAGUES,
     NEWS_MAX_AGE_DAYS,
     NEWS_MAX_ITEMS_PER_QUERY,
+    PRESS_CONFERENCE_KEYWORDS,
     PREVIEW_KEYWORDS,
+    STOP_BEFORE_KICKOFF_HOURS,
 )
 from utils import load_state, save_state, send_telegram_message, send_telegram_photo, trim_list
 
@@ -65,6 +67,7 @@ _SUMMARY_RE = re.compile(r"RIASSUNTO:\s*(.+)", re.DOTALL)
 
 SEND_DELAY_SECONDS = 1.5
 MAX_MESSAGES_PER_RUN = 40
+MAX_RUN_SECONDS = 480  # 8 minuti: si ferma da solo qualunque cosa succeda, non aspetta un'ora
 
 HTTP_HEADERS = {
     "User-Agent": (
@@ -171,6 +174,25 @@ def filter_direct_items_for_text(direct_items: list, required_text: str, keyword
     return matches
 
 
+def is_fixture_active(fixture: dict) -> bool:
+    """
+    Una partita e' 'attiva' per la ricerca mirata solo tra ACTIVE_WINDOW_DAYS
+    giorni prima e STOP_BEFORE_KICKOFF_HOURS ore prima del calcio d'inizio.
+    Prima non serve cercare (non esce ancora nulla), dopo non serve piu'
+    (arriverebbero solo notizie ormai inutili, a ridosso o dopo la partita).
+    """
+    kickoff_str = fixture.get("kickoff")
+    if not kickoff_str:
+        return True  # nessun orario noto: meglio cercare che perdere la partita
+    try:
+        kickoff = datetime.fromisoformat(kickoff_str.replace("Z", "+00:00"))
+    except ValueError:
+        return True
+    now = datetime.now(timezone.utc)
+    hours_to_kickoff = (kickoff - now).total_seconds() / 3600
+    return STOP_BEFORE_KICKOFF_HOURS <= hours_to_kickoff <= ACTIVE_WINDOW_DAYS * 24
+
+
 def classify_topic(original_title: str) -> str:
     """
     Classificazione VELOCE (prima di tradurre/chiamare Groq): controlla il
@@ -180,14 +202,14 @@ def classify_topic(original_title: str) -> str:
     """
     lowered = original_title.lower()
     coach_kw = [kw for kws in COACH_KEYWORDS.values() for kw in kws]
-    formation_kw = [kw for kws in FORMATION_KEYWORDS.values() for kw in kws]
     absence_kw = [kw for kws in ABSENCE_KEYWORDS.values() for kw in kws]
     preview_kw = [kw for kws in PREVIEW_KEYWORDS.values() for kw in kws]
+    press_kw = [kw for kws in PRESS_CONFERENCE_KEYWORDS.values() for kw in kws]
 
     if any(kw.lower() in lowered for kw in coach_kw):
         return "Cambio allenatore"
-    if any(kw.lower() in lowered for kw in formation_kw):
-        return "Formazioni ufficiali"
+    if any(kw.lower() in lowered for kw in press_kw):
+        return "Conferenza stampa"
     if any(kw.lower() in lowered for kw in absence_kw + preview_kw):
         return "Assenze e turnover"
     return "Assenze e turnover"
@@ -429,17 +451,19 @@ def gather_coach_items(league: dict, direct_items: list) -> list:
 
 def gather_fixture_items(fixture: dict, direct_items: list) -> list:
     """
-    Ricerca mirata su una singola partita di oggi: formazioni ufficiali +
-    assenze/turnover + anteprima, con i nomi delle due squadre (e varianti
-    comuni). Cerca in italiano, nella lingua/stampa locale del campionato,
-    e negli RSS diretti gia' scaricati.
+    Ricerca mirata su una singola partita di oggi: conferenza stampa +
+    assenze/turnover + anteprima/probabili formazioni (NIENTE formazioni
+    ufficiali, tolte di proposito: l'utente le recupera altrove, meglio
+    concentrare la ricerca su cio' che serve davvero al suo progetto).
+    Cerca in italiano, nella lingua/stampa locale del campionato, e negli
+    RSS diretti gia' scaricati.
     """
     home, away = fixture["home"], fixture["away"]
     home_variants = name_variants(home)
     away_variants = name_variants(away)
     items = []
 
-    kw_it = " OR ".join(FORMATION_KEYWORDS["it"] + ABSENCE_KEYWORDS["it"] + PREVIEW_KEYWORDS["it"])
+    kw_it = " OR ".join(PRESS_CONFERENCE_KEYWORDS["it"] + ABSENCE_KEYWORDS["it"] + PREVIEW_KEYWORDS["it"])
     for h in home_variants:
         for a in away_variants:
             query_it = f'"{h}" "{a}" ({kw_it})'
@@ -448,7 +472,7 @@ def gather_fixture_items(fixture: dict, direct_items: list) -> list:
     native_lang = fixture.get("native_lang")
     if native_lang:
         kw_native = " OR ".join(
-            FORMATION_KEYWORDS[native_lang] + ABSENCE_KEYWORDS[native_lang] + PREVIEW_KEYWORDS[native_lang]
+            PRESS_CONFERENCE_KEYWORDS[native_lang] + ABSENCE_KEYWORDS[native_lang] + PREVIEW_KEYWORDS[native_lang]
         )
         for h in home_variants:
             for a in away_variants:
@@ -477,6 +501,11 @@ def prune_topics(state: dict) -> None:
 
 
 def run():
+    start_time = time.time()
+
+    def time_budget_ok() -> bool:
+        return (time.time() - start_time) < MAX_RUN_SECONDS
+
     state = load_state()
     seen = set(state.get("news_seen", []))
     new_seen = list(seen)
@@ -489,19 +518,29 @@ def run():
     direct_items = fetch_direct_rss_items()
 
     for league in LEAGUES:
+        if not time_budget_ok():
+            print("[INFO] Tempo massimo raggiunto durante la raccolta (cambio allenatore), continuo al prossimo giro.")
+            break
         sources_to_check.append((league["name"], league["flag"], gather_coach_items(league, direct_items), league["name"]))
 
-    today_fixtures = state.get("today_fixtures", [])
+    all_fixtures = state.get("today_fixtures", [])
+    today_fixtures = [f for f in all_fixtures if is_fixture_active(f)]
     for fixture in today_fixtures:
+        if not time_budget_ok():
+            print(f"[INFO] Tempo massimo raggiunto durante la raccolta partite ({len(sources_to_check)} fonti raccolte finora), continuo al prossimo giro.")
+            break
         topic_base = f'{fixture["home"]}|{fixture["away"]}'
         sources_to_check.append((fixture["league"], fixture["flag"], gather_fixture_items(fixture, direct_items), topic_base))
 
-    print(f"Partite di oggi: {len(today_fixtures)}")
+    print(f"Partite totali in calendario: {len(all_fixtures)} — attive ora (finestra {ACTIVE_WINDOW_DAYS}gg/{STOP_BEFORE_KICKOFF_HOURS}h): {len(today_fixtures)}")
 
     topics_sent = state.setdefault("topics_sent", {})
 
     for league_name, flag, entries, topic_base in sources_to_check:
         if sent_this_run >= MAX_MESSAGES_PER_RUN:
+            break
+        if not time_budget_ok():
+            print("[INFO] Tempo massimo raggiunto durante l'invio, mi fermo qui per questo giro.")
             break
 
         for item, item_lang in entries:

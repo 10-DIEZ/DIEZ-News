@@ -41,19 +41,31 @@ LEAGUES = [
 ]
 
 # Solo notizie pubblicate negli ultimi N giorni (filtro applicato dal codice)
+# --- Finestra attiva di ricerca per singola partita ---
+# Una partita entra nella ricerca mirata N giorni prima del calcio d'inizio,
+# e ne esce M ore prima (da li' in poi arrivano solo notizie ormai inutili,
+# a ridosso o durante/dopo la partita). Il calendario viene scaricato con
+# un margine piu' ampio (FIXTURE_LOOKAHEAD_DAYS) cosi' le partite "entrano"
+# nella finestra attiva una alla volta, spalmando il carico sulla settimana.
+ACTIVE_WINDOW_DAYS = 3
+STOP_BEFORE_KICKOFF_HOURS = 3
+FIXTURE_LOOKAHEAD_DAYS = 6
+
 NEWS_MAX_AGE_DAYS = 2
 
 # Quante notizie al massimo recuperare per ogni singola ricerca (alzato da
 # 8/10 a 20 ora che il budget non si spalma piu' sulle coppe europee)
 NEWS_MAX_ITEMS_PER_QUERY = 20
 
-# --- Parole chiave per lingua: formazioni ufficiali ---
-FORMATION_KEYWORDS = {
-    "it": ["formazioni ufficiali", "formazione ufficiale", "formazioni confermate"],
-    "en": ["line-ups", "lineups", "starting XI", "confirmed team news", "confirmed lineup", "starting lineup"],
-    "es": ["alineación oficial", "alineaciones oficiales", "once inicial", "once titular"],
-    "de": ["aufstellung", "startelf", "startaufstellung"],
-    "fr": ["composition officielle", "compositions officielles", "onze de départ"],
+# --- Parole chiave per lingua: conferenza stampa pre-partita (spesso e'
+# li' che un allenatore rivela chi ha ancora qualche problema fisico o
+# chi lascera' fuori) ---
+PRESS_CONFERENCE_KEYWORDS = {
+    "it": ["conferenza stampa", "in conferenza", "parla in conferenza", "alla vigilia"],
+    "en": ["press conference", "pre-match press conference", "media day", "spoke to the media"],
+    "es": ["rueda de prensa", "en conferencia", "comparecencia"],
+    "de": ["pressekonferenz", "auf der pressekonferenz"],
+    "fr": ["conférence de presse", "en conférence"],
 }
 
 # --- Parole chiave per lingua: assenze / turnover / giocatori chiave mancanti ---
