@@ -584,9 +584,7 @@
     "news|https://www.spox.com/fussball/news/sky-dazn-oder-auch-free-tv-fuer-fussball-heute-live-fc-bayern-muenchen-vs-union-berlin-im-tv-und-livestream-sehen/bltf7ed83c556b2fb9a",
     "news|https://www.bbc.co.uk/sport/football/articles/cq70d74g4d8go?at_medium=RSS&at_campaign=rss"
   ],
-  "topics_sent": {
-    "Premier League::Assenze e turnover": "2026-09-21T07:01:28.265584+00:00"
-  },
+  "topics_sent": {},
   "stats": {
     "week_sent": 148,
     "week_groq_failures": 9
