@@ -585,9 +585,7 @@
     "news|https://www.kicker.de/lamine-yamal-auf-raphinha-barca-dreht-das-spiel-gegen-sevilla-1254353/video#omrss",
     "news|https://www.theguardian.com/football/2026/sep/23/summer-football-transfer-window-best-value-deals"
   ],
-  "topics_sent": {
-    "Serie A::Assenze e turnover": "2026-09-23T11:46:36.955155+00:00"
-  },
+  "topics_sent": {},
   "stats": {
     "week_sent": 149,
     "week_groq_failures": 9
