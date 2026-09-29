@@ -586,9 +586,7 @@
     "news|https://www.theguardian.com/football/2026/sep/17/crystal-palace-lech-poznan-europa-league-match-report",
     "news|https://www.theguardian.com/football/2026/sep/28/arsene-wenger-arsenal-30-years-on-from-transformation-english-football"
   ],
-  "topics_sent": {
-    "Premier League::Assenze e turnover": "2026-09-28T07:10:48.379701+00:00"
-  },
+  "topics_sent": {},
   "stats": {
     "week_sent": 150,
     "week_groq_failures": 9
