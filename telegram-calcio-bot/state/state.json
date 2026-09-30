@@ -587,9 +587,7 @@
     "news|https://news.google.com/rss/articles/CBMisgFBVV95cUxOSndYVEZNSFdIbDlQdDFzVzIzUk84SFJQUV9EUnNJZDYySzlmYnlucDBPX2NDbndCOGlnY1pTQXNCM0dEM1hGS3V3WkU4bjNnQU1Dd19iWVRUVmdtY3o0MW1IaUZCRFNUeEtSVW80dmFrNzFaQk00YWp5eGlDb0poOENlWW5yM1RCYTk3V3BzOUxkNERTdWJTMmowLXlEY0lGRXg4TEVqa1lFR2lSdWFxby1R?oc=5",
     "news|https://www.ansa.it/sito/notizie/sport/calcio/2026/09/29/e-ufficiale-gilardino-nuovo-allenatore-del-parma_7721de8a-46ec-49d0-b848-59dd47d4450c.html"
   ],
-  "topics_sent": {
-    "Serie A::Cambio allenatore": "2026-09-29T14:41:38.552704+00:00"
-  },
+  "topics_sent": {},
   "stats": {
     "week_sent": 151,
     "week_groq_failures": 9
