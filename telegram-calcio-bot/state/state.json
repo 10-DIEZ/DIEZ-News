@@ -589,9 +589,7 @@
     "news|https://www.milannews.it/scommesse/pronostici/milan-lecce-quote-marcatore-630143",
     "news|https://www.theguardian.com/football/2026/oct/01/manchester-city-premier-league-financial-rule-breaches-fans-anger-owners"
   ],
-  "topics_sent": {
-    "Premier League::Assenze e turnover": "2026-10-01T14:31:23.316842+00:00"
-  },
+  "topics_sent": {},
   "stats": {
     "week_sent": 153,
     "week_groq_failures": 9
