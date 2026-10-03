@@ -1,5 +1,33 @@
 {
-  "today_fixtures": [],
+  "today_fixtures": [
+    {
+      "league": "La Liga",
+      "flag": "🇪🇸",
+      "home": "Málaga CF",
+      "away": "RCD Espanyol de Barcelona",
+      "kickoff": "2026-10-09T19:00:00Z",
+      "native_lang": "es",
+      "native_country": "ES"
+    },
+    {
+      "league": "Bundesliga",
+      "flag": "🇩🇪",
+      "home": "Borussia Dortmund",
+      "away": "SV Werder Bremen",
+      "kickoff": "2026-10-09T18:30:00Z",
+      "native_lang": "de",
+      "native_country": "DE"
+    },
+    {
+      "league": "Ligue 1",
+      "flag": "🇫🇷",
+      "home": "Racing Club de Lens",
+      "away": "Olympique Lyonnais",
+      "kickoff": "2026-10-09T18:45:00Z",
+      "native_lang": "fr",
+      "native_country": "FR"
+    }
+  ],
   "news_seen": [
     "news|https://www.dazn.com/de-DE/news/fussball/sky-oder-dazn-wo-laeuft-fc-bayern-gegen-union-berlin/y7gwwbgtbzy21bt5fl1lv86dp",
     "news|https://www.spox.com/fussball/news/wo-laeuft-vfb-stuttgart-vs-bvb-heute-live-auf-diesem-sender-wird-das-topspiel-der-bundesliga-mit-borussia-dortmund-im-tv-und-livestream-gezeigt-uebertragen/bltc9a740e47da4f254",
