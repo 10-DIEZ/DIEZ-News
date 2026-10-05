@@ -28,6 +28,51 @@
       "native_country": null
     },
     {
+      "league": "Serie A",
+      "flag": "🇮🇹",
+      "home": "Como 1907",
+      "away": "AS Roma",
+      "kickoff": "2026-10-11T10:30:00Z",
+      "native_lang": null,
+      "native_country": null
+    },
+    {
+      "league": "Serie A",
+      "flag": "🇮🇹",
+      "home": "US Lecce",
+      "away": "Bologna FC 1909",
+      "kickoff": "2026-10-11T13:00:00Z",
+      "native_lang": null,
+      "native_country": null
+    },
+    {
+      "league": "Serie A",
+      "flag": "🇮🇹",
+      "home": "SS Lazio",
+      "away": "AC Monza",
+      "kickoff": "2026-10-11T13:00:00Z",
+      "native_lang": null,
+      "native_country": null
+    },
+    {
+      "league": "Serie A",
+      "flag": "🇮🇹",
+      "home": "US Sassuolo Calcio",
+      "away": "AC Milan",
+      "kickoff": "2026-10-11T16:00:00Z",
+      "native_lang": null,
+      "native_country": null
+    },
+    {
+      "league": "Serie A",
+      "flag": "🇮🇹",
+      "home": "Cagliari Calcio",
+      "away": "Juventus FC",
+      "kickoff": "2026-10-11T18:45:00Z",
+      "native_lang": null,
+      "native_country": null
+    },
+    {
       "league": "Premier League",
       "flag": "🏴",
       "home": "Arsenal FC",
@@ -82,6 +127,33 @@
       "native_country": "GB"
     },
     {
+      "league": "Premier League",
+      "flag": "🏴",
+      "home": "Hull City AFC",
+      "away": "Everton FC",
+      "kickoff": "2026-10-11T13:00:00Z",
+      "native_lang": "en",
+      "native_country": "GB"
+    },
+    {
+      "league": "Premier League",
+      "flag": "🏴",
+      "home": "Crystal Palace FC",
+      "away": "Nottingham Forest FC",
+      "kickoff": "2026-10-11T13:00:00Z",
+      "native_lang": "en",
+      "native_country": "GB"
+    },
+    {
+      "league": "Premier League",
+      "flag": "🏴",
+      "home": "Liverpool FC",
+      "away": "Manchester City FC",
+      "kickoff": "2026-10-11T15:30:00Z",
+      "native_lang": "en",
+      "native_country": "GB"
+    },
+    {
       "league": "La Liga",
       "flag": "🇪🇸",
       "home": "Málaga CF",
@@ -123,6 +195,42 @@
       "home": "Real Madrid CF",
       "away": "Villarreal CF",
       "kickoff": "2026-10-10T19:00:00Z",
+      "native_lang": "es",
+      "native_country": "ES"
+    },
+    {
+      "league": "La Liga",
+      "flag": "🇪🇸",
+      "home": "Elche CF",
+      "away": "RC Celta de Vigo",
+      "kickoff": "2026-10-11T12:00:00Z",
+      "native_lang": "es",
+      "native_country": "ES"
+    },
+    {
+      "league": "La Liga",
+      "flag": "🇪🇸",
+      "home": "Real Sociedad de Fútbol",
+      "away": "RC Deportivo La Coruña",
+      "kickoff": "2026-10-11T14:15:00Z",
+      "native_lang": "es",
+      "native_country": "ES"
+    },
+    {
+      "league": "La Liga",
+      "flag": "🇪🇸",
+      "home": "Real Betis Balompié",
+      "away": "CA Osasuna",
+      "kickoff": "2026-10-11T16:30:00Z",
+      "native_lang": "es",
+      "native_country": "ES"
+    },
+    {
+      "league": "La Liga",
+      "flag": "🇪🇸",
+      "home": "Real Racing Club de Santander",
+      "away": "Valencia CF",
+      "kickoff": "2026-10-11T19:00:00Z",
       "native_lang": "es",
       "native_country": "ES"
     },
@@ -190,6 +298,24 @@
       "native_country": "DE"
     },
     {
+      "league": "Bundesliga",
+      "flag": "🇩🇪",
+      "home": "1. FC Köln",
+      "away": "Borussia Mönchengladbach",
+      "kickoff": "2026-10-11T13:30:00Z",
+      "native_lang": "de",
+      "native_country": "DE"
+    },
+    {
+      "league": "Bundesliga",
+      "flag": "🇩🇪",
+      "home": "SC Freiburg",
+      "away": "FC Schalke 04",
+      "kickoff": "2026-10-11T15:30:00Z",
+      "native_lang": "de",
+      "native_country": "DE"
+    },
+    {
       "league": "Ligue 1",
       "flag": "🇫🇷",
       "home": "Racing Club de Lens",
@@ -240,6 +366,33 @@
       "home": "AS Monaco FC",
       "away": "Toulouse FC",
       "kickoff": "2026-10-10T18:45:00Z",
+      "native_lang": "fr",
+      "native_country": "FR"
+    },
+    {
+      "league": "Ligue 1",
+      "flag": "🇫🇷",
+      "home": "OGC Nice",
+      "away": "RC Strasbourg Alsace",
+      "kickoff": "2026-10-11T13:00:00Z",
+      "native_lang": "fr",
+      "native_country": "FR"
+    },
+    {
+      "league": "Ligue 1",
+      "flag": "🇫🇷",
+      "home": "Stade Rennais FC 1901",
+      "away": "AJ Auxerre",
+      "kickoff": "2026-10-11T15:15:00Z",
+      "native_lang": "fr",
+      "native_country": "FR"
+    },
+    {
+      "league": "Ligue 1",
+      "flag": "🇫🇷",
+      "home": "ES Troyes AC",
+      "away": "Olympique de Marseille",
+      "kickoff": "2026-10-11T18:45:00Z",
       "native_lang": "fr",
       "native_country": "FR"
     }
