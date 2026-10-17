@@ -35,11 +35,18 @@ jobs:
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
           GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
         run: python monitor_news.py
-     
+
       - name: Salva lo stato aggiornato
         run: |
           git config user.name "calcio-bot"
           git config user.email "calcio-bot@users.noreply.github.com"
           git add telegram-calcio-bot/state/state.json
-          git diff --staged --quiet || git commit -m "Aggiorna stato notizie"
-          git push
+          git diff --staged --quiet && exit 0
+          git commit -m "Aggiorna stato notizie"
+          # Se nel frattempo il calendario ha salvato il suo file, prima
+          # recuperiamo la sua modifica e poi salviamo (fino a 3 tentativi)
+          for i in 1 2 3; do
+            git pull --rebase && git push && exit 0
+            sleep 5
+          done
+          exit 1
