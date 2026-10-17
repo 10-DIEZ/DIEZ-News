@@ -77,7 +77,7 @@ MAX_PER_SOURCE_PER_RUN = 4
 # i giri si accodano uno dietro l'altro.
 MAX_RUN_SECONDS = 240
 # Ricerche Google News fatte in parallelo (invece che una alla volta)
-PARALLEL_SEARCHES = 6
+PARALLEL_SEARCHES = 3
 HTTP_TIMEOUT = 15
 
 HTTP_HEADERS = {
@@ -382,7 +382,7 @@ def resolve_real_url(google_link: str) -> str:
             return result["decoded_url"]
         global _decode_error_logged
         if not _decode_error_logged:
-            print(f"[WARN] decodifica link Google News non riuscita (riprovo al prossimo giro): {str(result.get('message'))[:150]}")
+            print(f"[WARN] decodifica link Google News non riuscita (riprovo al prossimo giro): {str(result)[:300]}")
             _decode_error_logged = True
     except Exception as e:
         print(f"[WARN] decodifica link fallita: {e}")
@@ -593,6 +593,9 @@ def run():
     counts = {"candidati": 0, "gia_visti": 0, "vecchi": 0, "decodifica_fallita": 0,
               "fonte_bloccata": 0, "doppioni": 0, "in_coda": 0}
 
+    old_by_origin = {}
+    old_samples = []
+
     def mark_seen(*uids):
         for u in uids:
             if u and u not in seen:
@@ -651,6 +654,12 @@ def run():
                 continue
             if not is_recent_enough(item):
                 counts["vecchi"] += 1
+                origin = "Google News" if "news.google.com" in google_link else "RSS diretto"
+                old_by_origin[origin] = old_by_origin.get(origin, 0) + 1
+                if len(old_samples) < 6:
+                    pp = item.get("published_parsed")
+                    pub = time.strftime("%Y-%m-%d %H:%M", pp) if pp else "?"
+                    old_samples.append(f"[{origin}] {pub} | {item.get('title', '')[:70]}")
                 continue
 
             real_link = resolve_real_url(google_link)
@@ -726,6 +735,10 @@ def run():
 
     state["news_seen"] = trim_list(new_seen)
     save_state(state)
+    if old_samples:
+        print(f"Diagnostica 'troppo vecchi' per provenienza: {old_by_origin} — esempi:")
+        for x in old_samples:
+            print(f"   {x}")
     print(
         f"Riepilogo: {counts['candidati']} articoli trovati → "
         f"{counts['gia_visti']} gia' visti, {counts['vecchi']} troppo vecchi, "
