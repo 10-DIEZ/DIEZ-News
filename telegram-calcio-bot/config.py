@@ -114,9 +114,7 @@ DIRECT_RSS_FEEDS = {
     # Italia - generaliste (coprono tutta la Serie A)
     "https://www.gazzetta.it/rss/home.xml": "it",
     "https://www.ansa.it/sito/notizie/sport/calcio/calcio_rss.xml": "it",
-    "https://www.corrieredellosport.it/rss/rss.shtml": "it",
-    "https://www.tuttomercatoweb.com/rss": "it",
-    "https://www.calciomercato.com/rss": "it",
+    "https://www.corrieredellosport.it/rss/calcio": "it",
     # Italia - focus club (approfondimento extra sulle big)
     "https://www.fcinternews.it/rss/": "it",
     "https://www.milannews.it/rss": "it",
@@ -159,5 +157,11 @@ EXCLUDED_URL_PATTERNS = [
 # chiamare Groq/scaricare l'immagine, per non sprecare risorse su doppioni.
 DUPLICATE_SUPPRESS_HOURS = 3
 
-# File dove viene salvato lo stato (cosa e' gia' stato notificato)
+# File dove viene salvato lo stato (cosa e' gia' stato notificato).
+# Scritto SOLO dal workflow notizie.
 STATE_FILE = os.path.join(os.path.dirname(__file__), "state", "state.json")
+
+# File separato per il calendario partite, scritto SOLO dal workflow
+# calendario: cosi' i due workflow non si contendono mai lo stesso file
+# quando salvano su GitHub.
+FIXTURES_FILE = os.path.join(os.path.dirname(__file__), "state", "fixtures.json")

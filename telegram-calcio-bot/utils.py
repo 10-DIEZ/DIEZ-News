@@ -7,7 +7,7 @@ import json
 import os
 import requests
 
-from config import TELEGRAM_BOT_TOKEN, TELEGRAM_CHAT_ID, STATE_FILE
+from config import TELEGRAM_BOT_TOKEN, TELEGRAM_CHAT_ID, STATE_FILE, FIXTURES_FILE
 
 
 def send_telegram_photo(photo_url: str, caption: str, button_text: str = "", button_url: str = "") -> bool:
@@ -89,7 +89,29 @@ def save_state(state: dict) -> None:
         json.dump(state, f, ensure_ascii=False, indent=2)
 
 
-def trim_list(items: list, max_len: int = 3000) -> list:
+def load_fixtures():
+    """
+    Carica il calendario dal file dedicato (scritto solo dal workflow
+    calendario). Restituisce None se il file non esiste ancora, cosi' chi
+    chiama puo' ripiegare sul vecchio calendario dentro state.json.
+    """
+    if not os.path.exists(FIXTURES_FILE):
+        return None
+    try:
+        with open(FIXTURES_FILE, "r", encoding="utf-8") as f:
+            return json.load(f).get("fixtures", [])
+    except (json.JSONDecodeError, OSError):
+        return None
+
+
+def save_fixtures(fixtures: list) -> None:
+    """Salva il calendario nel file dedicato."""
+    os.makedirs(os.path.dirname(FIXTURES_FILE), exist_ok=True)
+    with open(FIXTURES_FILE, "w", encoding="utf-8") as f:
+        json.dump({"fixtures": fixtures}, f, ensure_ascii=False, indent=2)
+
+
+def trim_list(items: list, max_len: int = 8000) -> list:
     """Tiene la lista degli 'id visti' entro una dimensione ragionevole."""
     if len(items) > max_len:
         return items[-max_len:]

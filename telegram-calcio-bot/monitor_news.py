@@ -27,6 +27,7 @@ import html
 import re
 import time
 import urllib.parse
+from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, timedelta, timezone
 from urllib.parse import urlparse
 
@@ -51,7 +52,7 @@ from config import (
     PREVIEW_KEYWORDS,
     STOP_BEFORE_KICKOFF_HOURS,
 )
-from utils import load_state, save_state, send_telegram_message, send_telegram_photo, trim_list
+from utils import load_fixtures, load_state, save_state, send_telegram_message, send_telegram_photo, trim_list
 
 GROQ_MODELS = ["openai/gpt-oss-120b", "openai/gpt-oss-20b"]
 GROQ_ENDPOINT = "https://api.groq.com/openai/v1/chat/completions"
@@ -62,12 +63,22 @@ GROQ_ENDPOINT = "https://api.groq.com/openai/v1/chat/completions"
 OTHER_SPORTS_EXCLUDE = ["basketball", "handball", "eishockey", "pallacanestro",
                         "pallamano", "volleyball", "rugby", "hockey"]
 
-_TITLE_RE = re.compile(r"TITOLO:\s*(.+)")
-_SUMMARY_RE = re.compile(r"RIASSUNTO:\s*(.+)", re.DOTALL)
+# Tollerante a varianti tipo "**TITOLO:**" o "Titolo :" che i modelli a volte usano
+_TITLE_RE = re.compile(r"\**\s*TITOLO\s*\**\s*:\s*\**\s*(.+)", re.IGNORECASE)
+_SUMMARY_RE = re.compile(r"\**\s*RIASSUNTO\s*\**\s*:\s*\**\s*(.+)", re.IGNORECASE | re.DOTALL)
 
 SEND_DELAY_SECONDS = 1.5
 MAX_MESSAGES_PER_RUN = 40
-MAX_RUN_SECONDS = 480  # 8 minuti: si ferma da solo qualunque cosa succeda, non aspetta un'ora
+# Massimo di notizie inviate per singola partita/campionato in un giro: le
+# altre NON vengono scartate, restano in coda e partono al giro successivo
+# (evita raffiche di 10 messaggi sulla stessa partita in un colpo solo).
+MAX_PER_SOURCE_PER_RUN = 4
+# Il workflow parte ogni 5 minuti: lo script deve finire prima, altrimenti
+# i giri si accodano uno dietro l'altro.
+MAX_RUN_SECONDS = 240
+# Ricerche Google News fatte in parallelo (invece che una alla volta)
+PARALLEL_SEARCHES = 6
+HTTP_TIMEOUT = 15
 
 HTTP_HEADERS = {
     "User-Agent": (
@@ -128,15 +139,21 @@ def name_variants(name: str) -> list:
 def fetch_direct_rss_items() -> list:
     """Scarica tutti i feed RSS diretti configurati (una volta sola per esecuzione)."""
     items = []
-    for url, lang in DIRECT_RSS_FEEDS.items():
+
+    def _fetch(url_lang):
+        url, lang = url_lang
         try:
-            feed = feedparser.parse(url)
-            entries = feed.entries or []
+            entries = parse_feed_url(url)
             if not entries:
                 print(f"[WARN] RSS diretto vuoto o non raggiungibile: {url}")
-            items.extend((e, lang) for e in entries)
+            return [(e, lang) for e in entries]
         except Exception as e:
             print(f"[WARN] errore leggendo RSS diretto {url}: {e}")
+            return []
+
+    with ThreadPoolExecutor(max_workers=PARALLEL_SEARCHES) as pool:
+        for result in pool.map(_fetch, DIRECT_RSS_FEEDS.items()):
+            items.extend(result)
     print(f"RSS diretti: {len(items)} articoli raccolti da {len(DIRECT_RSS_FEEDS)} fonti")
     return items
 
@@ -193,26 +210,36 @@ def is_fixture_active(fixture: dict) -> bool:
     return STOP_BEFORE_KICKOFF_HOURS <= hours_to_kickoff <= ACTIVE_WINDOW_DAYS * 24
 
 
-def classify_topic(original_title: str) -> str:
+def title_tokens(title: str, ignore: set) -> set:
     """
-    Classificazione VELOCE (prima di tradurre/chiamare Groq): controlla il
-    titolo originale, in qualsiasi lingua, contro tutte le parole chiave.
-    Serve solo per raggruppare i doppioni, non per la grafica (non piu'
-    mostrata all'utente).
+    Parole 'significative' di un titolo (minuscole, >3 lettere), senza i nomi
+    delle squadre/campionato: quelli compaiono in TUTTI i titoli della stessa
+    partita e farebbero sembrare simili notizie diverse.
     """
-    lowered = original_title.lower()
-    coach_kw = [kw for kws in COACH_KEYWORDS.values() for kw in kws]
-    absence_kw = [kw for kws in ABSENCE_KEYWORDS.values() for kw in kws]
-    preview_kw = [kw for kws in PREVIEW_KEYWORDS.values() for kw in kws]
-    press_kw = [kw for kws in PRESS_CONFERENCE_KEYWORDS.values() for kw in kws]
+    words = re.findall(r"\w+", title.lower())
+    return {w for w in words if len(w) > 3 and w not in ignore}
 
-    if any(kw.lower() in lowered for kw in coach_kw):
-        return "Cambio allenatore"
-    if any(kw.lower() in lowered for kw in press_kw):
-        return "Conferenza stampa"
-    if any(kw.lower() in lowered for kw in absence_kw + preview_kw):
-        return "Assenze e turnover"
-    return "Assenze e turnover"
+
+def is_similar(tokens_a: set, tokens_b: set) -> bool:
+    """Due titoli raccontano la stessa notizia se condividono la maggior parte delle parole significative."""
+    if len(tokens_a) < 3 or len(tokens_b) < 3:
+        return False
+    overlap = len(tokens_a & tokens_b) / min(len(tokens_a), len(tokens_b))
+    return overlap >= 0.6
+
+
+def is_duplicate_news(recent: list, topic_base: str, tokens: set) -> bool:
+    """Controlla se una notizia simile sulla stessa partita/campionato e' gia' stata inviata di recente."""
+    return any(r["topic"] == topic_base and is_similar(tokens, set(r["tokens"])) for r in recent)
+
+
+def ignore_words_for(*names: str) -> set:
+    """Parole da ignorare nel confronto titoli (nomi squadre/campionato e loro varianti)."""
+    ignore = set()
+    for name in names:
+        for variant in name_variants(name):
+            ignore.update(w for w in re.findall(r"\w+", variant.lower()))
+    return ignore
 
 
 def summarize_with_ai(title: str, description: str, source_lang: str) -> dict | None:
@@ -243,26 +270,33 @@ def summarize_with_ai(title: str, description: str, source_lang: str) -> dict | 
                         {"role": "user", "content": prompt},
                     ],
                     "temperature": 0.4,
-                    "max_tokens": 300,
-                    "reasoning_format": "hidden",
+                    # I modelli gpt-oss "ragionano" prima di rispondere e il
+                    # ragionamento consuma lo stesso budget: con 300 token
+                    # finivano lo spazio prima di scrivere TITOLO/RIASSUNTO.
+                    "max_completion_tokens": 1500,
+                    "reasoning_effort": "low",
+                    "include_reasoning": False,
                 },
-                timeout=20,
+                timeout=30,
             )
             if resp.status_code != 200:
                 print(f"[WARN] Groq ({model}) ha risposto {resp.status_code}: {resp.text[:200]}")
                 continue
 
-            content = resp.json()["choices"][0]["message"]["content"]
+            choice = resp.json()["choices"][0]
+            content = choice.get("message", {}).get("content") or ""
             title_match = _TITLE_RE.search(content)
             summary_match = _SUMMARY_RE.search(content)
 
             if not title_match:
-                print(f"[WARN] Groq ({model}): risposta senza il formato atteso, provo il modello successivo.")
+                snippet = content[:150].replace("\n", " ") or "(vuota)"
+                print(f"[WARN] Groq ({model}): risposta senza il formato atteso "
+                      f"(finish_reason={choice.get('finish_reason')}, testo: {snippet}), provo il modello successivo.")
                 continue
 
             return {
-                "title": title_match.group(1).strip(),
-                "summary": summary_match.group(1).strip() if summary_match else "",
+                "title": title_match.group(1).strip().strip("*").strip(),
+                "summary": summary_match.group(1).strip().strip("*").strip() if summary_match else "",
             }
         except Exception as e:
             print(f"[WARN] chiamata Groq ({model}) fallita: {e}")
@@ -296,10 +330,20 @@ def build_google_news_url(query: str, lang: str = "it", country: str = "IT") -> 
     return f"https://news.google.com/rss/search?q={encoded}&hl={lang}&gl={country}&ceid={country}:{lang}"
 
 
+def parse_feed_url(url: str) -> list:
+    """Scarica un feed con timeout (feedparser da solo puo' restare appeso all'infinito) e lo analizza."""
+    try:
+        resp = requests.get(url, headers=HTTP_HEADERS, timeout=HTTP_TIMEOUT)
+        if resp.status_code != 200:
+            return []
+        return feedparser.parse(resp.content).entries or []
+    except requests.RequestException:
+        return []
+
+
 def search_news(query: str, lang: str = "it", country: str = "IT", max_items: int = NEWS_MAX_ITEMS_PER_QUERY) -> list:
     url = build_google_news_url(query, lang, country)
-    feed = feedparser.parse(url)
-    return feed.entries[:max_items]
+    return parse_feed_url(url)[:max_items]
 
 
 def is_recent_enough(entry) -> bool:
@@ -321,8 +365,8 @@ def resolve_real_url(google_link: str) -> str:
     stesso giro - capita spesso che lo stesso articolo esca da piu'
     combinazioni di ricerca (es. "Rennes"+"Lens" e "Stade Rennais"+"Racing Lens").
     """
-    if not google_link:
-        return google_link
+    if not google_link or "news.google.com" not in google_link:
+        return google_link  # link gia' reale (es. RSS diretti): niente da decodificare
     if google_link in _decode_cache:
         return _decode_cache[google_link]
     try:
@@ -485,19 +529,40 @@ def gather_fixture_items(fixture: dict, direct_items: list) -> list:
     return items
 
 
-def prune_topics(state: dict) -> None:
-    """Toglie dallo stato le voci 'argomento gia' segnalato' piu' vecchie di un giorno."""
-    topics = state.get("topics_sent", {})
-    cutoff = datetime.now(timezone.utc) - timedelta(hours=24)
-    kept = {}
-    for key, iso_ts in topics.items():
+def prune_recent_titles(state: dict) -> None:
+    """Tiene in memoria solo i titoli inviati nelle ultime DUPLICATE_SUPPRESS_HOURS ore (servono per l'anti-doppioni)."""
+    cutoff = datetime.now(timezone.utc) - timedelta(hours=DUPLICATE_SUPPRESS_HOURS)
+    kept = []
+    for r in state.get("recent_titles", []):
         try:
-            ts = datetime.fromisoformat(iso_ts)
-            if ts >= cutoff:
-                kept[key] = iso_ts
-        except ValueError:
+            if datetime.fromisoformat(r["ts"]) >= cutoff:
+                kept.append(r)
+        except (KeyError, ValueError):
             continue
-    state["topics_sent"] = kept
+    state["recent_titles"] = kept
+
+
+def load_upcoming_fixtures(state: dict) -> list:
+    """
+    Calendario dal file dedicato (fixtures.json), con ripiego sul vecchio
+    calendario dentro state.json finche' il nuovo file non esiste.
+    Le partite gia' iniziate vengono scartate.
+    """
+    fixtures = load_fixtures()
+    if fixtures is None:
+        fixtures = state.get("today_fixtures", [])
+    else:
+        state.pop("today_fixtures", None)  # vecchia posizione, non piu' usata
+    now = datetime.now(timezone.utc)
+    upcoming = []
+    for f in fixtures:
+        try:
+            if datetime.fromisoformat(f["kickoff"].replace("Z", "+00:00")) <= now:
+                continue
+        except (KeyError, ValueError, AttributeError):
+            pass
+        upcoming.append(f)
+    return upcoming
 
 
 def run():
@@ -509,95 +574,105 @@ def run():
     state = load_state()
     seen = set(state.get("news_seen", []))
     new_seen = list(seen)
-    any_new = False
     sent_this_run = 0
     groq_failures_this_run = 0
+    state.pop("topics_sent", None)  # vecchio anti-doppioni per categoria, sostituito
+    prune_recent_titles(state)
+    recent_titles = state["recent_titles"]
 
-    sources_to_check = []
+    # Contatori per il riepilogo a fine giro (dove si "perdono" le notizie)
+    counts = {"candidati": 0, "gia_visti": 0, "vecchi": 0, "decodifica_fallita": 0,
+              "fonte_bloccata": 0, "doppioni": 0, "in_coda": 0}
+
+    def mark_seen(*uids):
+        for u in uids:
+            if u and u not in seen:
+                seen.add(u)
+                new_seen.append(u)
 
     direct_items = fetch_direct_rss_items()
 
-    for league in LEAGUES:
-        if not time_budget_ok():
-            print("[INFO] Tempo massimo raggiunto durante la raccolta (cambio allenatore), continuo al prossimo giro.")
-            break
-        sources_to_check.append((league["name"], league["flag"], gather_coach_items(league, direct_items), league["name"]))
-
-    all_fixtures = state.get("today_fixtures", [])
-    today_fixtures = [f for f in all_fixtures if is_fixture_active(f)]
-    for fixture in today_fixtures:
-        if not time_budget_ok():
-            print(f"[INFO] Tempo massimo raggiunto durante la raccolta partite ({len(sources_to_check)} fonti raccolte finora), continuo al prossimo giro.")
-            break
-        topic_base = f'{fixture["home"]}|{fixture["away"]}'
-        sources_to_check.append((fixture["league"], fixture["flag"], gather_fixture_items(fixture, direct_items), topic_base))
-
-    print(f"Partite totali in calendario: {len(all_fixtures)} — attive ora (finestra {ACTIVE_WINDOW_DAYS}gg/{STOP_BEFORE_KICKOFF_HOURS}h): {len(today_fixtures)}")
-    for f in today_fixtures:
+    all_fixtures = load_upcoming_fixtures(state)
+    active_fixtures = [f for f in all_fixtures if is_fixture_active(f)]
+    print(f"Partite in calendario (non ancora giocate): {len(all_fixtures)} — attive ora "
+          f"(finestra {ACTIVE_WINDOW_DAYS}gg/{STOP_BEFORE_KICKOFF_HOURS}h): {len(active_fixtures)}")
+    for f in active_fixtures:
         print(f"  ATTIVA: {f['league']} - {f['home']} vs {f['away']} (calcio d'inizio: {f.get('kickoff', '?')})")
-    inactive_or_missing = [f for f in all_fixtures if f not in today_fixtures]
-    for f in inactive_or_missing:
-        print(f"  non attiva/fuori finestra: {f['league']} - {f['home']} vs {f['away']} (calcio d'inizio: {f.get('kickoff', '?')})")
+    print(f"  ({len(all_fixtures) - len(active_fixtures)} partite piu' avanti, entreranno nella finestra nei prossimi giorni)")
 
-    topics_sent = state.setdefault("topics_sent", {})
+    # Raccolta IN PARALLELO: prima era una ricerca alla volta (~6 minuti)
+    with ThreadPoolExecutor(max_workers=PARALLEL_SEARCHES) as pool:
+        coach_futures = [(lg, pool.submit(gather_coach_items, lg, direct_items)) for lg in LEAGUES]
+        fixture_futures = [(fx, pool.submit(gather_fixture_items, fx, direct_items)) for fx in active_fixtures]
+        sources_to_check = []
+        for lg, fut in coach_futures:
+            sources_to_check.append((lg["name"], lg["flag"], fut.result(), lg["name"], ignore_words_for(lg["name"])))
+        for fx, fut in fixture_futures:
+            topic_base = f'{fx["home"]}|{fx["away"]}'
+            sources_to_check.append((fx["league"], fx["flag"], fut.result(), topic_base,
+                                     ignore_words_for(fx["home"], fx["away"], fx["league"])))
+    print(f"Raccolta completata in {time.time() - start_time:.0f}s")
 
-    for league_name, flag, entries, topic_base in sources_to_check:
+    for league_name, flag, entries, topic_base, ignore in sources_to_check:
         if sent_this_run >= MAX_MESSAGES_PER_RUN:
             break
         if not time_budget_ok():
-            print("[INFO] Tempo massimo raggiunto durante l'invio, mi fermo qui per questo giro.")
+            print("[INFO] Tempo massimo raggiunto durante l'invio, il resto parte al prossimo giro.")
             break
 
+        sent_for_source = 0
+        links_this_source = set()
         for item, item_lang in entries:
-            if sent_this_run >= MAX_MESSAGES_PER_RUN:
-                break
-
             google_link = item.get("link", "")
+            if not google_link or google_link in links_this_source:
+                continue  # stesso articolo uscito da due ricerche diverse
+            links_this_source.add(google_link)
+            counts["candidati"] += 1
+
+            if sent_this_run >= MAX_MESSAGES_PER_RUN or sent_for_source >= MAX_PER_SOURCE_PER_RUN or not time_budget_ok():
+                counts["in_coda"] += 1
+                continue  # NON segnato come visto: riparte al prossimo giro
+
+            # Controlli veloci PRIMA di decodificare il link (la decodifica
+            # e' l'operazione piu' lenta: prima veniva rifatta ogni 5 minuti
+            # su centinaia di articoli gia' visti)
+            gn_uid = f"gn|{google_link}"
+            if gn_uid in seen or f"news|{google_link}" in seen:
+                counts["gia_visti"] += 1
+                continue
+            if not is_recent_enough(item):
+                counts["vecchi"] += 1
+                continue
+
             real_link = resolve_real_url(google_link)
-
             if "news.google.com" in real_link:
-                # decodifica fallita: non mandiamo il link grezzo illeggibile,
-                # ci riproveremo al prossimo giro (la cache e' solo per questo run)
-                continue
-
-            if is_blocked_domain(real_link):
-                continue
-            if is_excluded_url(real_link):
-                continue
+                counts["decodifica_fallita"] += 1
+                continue  # riprova al prossimo giro
 
             uid = f"news|{real_link}"
             if uid in seen:
+                mark_seen(gn_uid)
+                counts["gia_visti"] += 1
                 continue
-            if not is_recent_enough(item):
+            if is_blocked_domain(real_link) or is_excluded_url(real_link):
+                mark_seen(gn_uid, uid)
+                counts["fonte_bloccata"] += 1
                 continue
 
             original_title = item.get("title", "Notizia")
+            # Google News aggiunge " - Nome testata" in fondo al titolo
+            original_title_clean = re.sub(r"\s+-\s+[^-]+$", "", original_title)
 
-            # Anti-doppioni CONTROLLATO SUBITO (prima di Groq/immagine):
-            # classificazione veloce sul titolo originale, senza tradurre.
-            category_label = classify_topic(original_title)
-            topic_key = f"{topic_base}::{category_label}"
-            last_sent_iso = topics_sent.get(topic_key)
-            is_duplicate = False
-            if last_sent_iso:
-                try:
-                    last_sent_dt = datetime.fromisoformat(last_sent_iso)
-                    if datetime.now(timezone.utc) - last_sent_dt < timedelta(hours=DUPLICATE_SUPPRESS_HOURS):
-                        is_duplicate = True
-                except ValueError:
-                    pass
-
-            if is_duplicate:
-                new_seen.append(uid)
-                seen.add(uid)
-                any_new = True
+            # Anti-doppioni: stessa notizia (titolo simile) sulla stessa
+            # partita gia' inviata nelle ultime ore, anche da un'altra testata
+            tokens_orig = title_tokens(original_title_clean, ignore)
+            if is_duplicate_news(recent_titles, topic_base, tokens_orig):
+                mark_seen(gn_uid, uid)
+                counts["doppioni"] += 1
                 continue
 
-            # Da qui in poi solo notizie DAVVERO nuove: ora vale la pena
-            # spendere una chiamata Groq e scaricare l'immagine.
             meta = fetch_article_meta(real_link)
-
-            ai_result = summarize_with_ai(original_title, meta.get("description", ""), item_lang)
+            ai_result = summarize_with_ai(original_title_clean, meta.get("description", ""), item_lang)
 
             if ai_result:
                 title = ai_result["title"]
@@ -605,10 +680,18 @@ def run():
             else:
                 if GROQ_API_KEY:
                     groq_failures_this_run += 1
-                title = translate_to_italian(original_title, item_lang)
+                title = translate_to_italian(original_title_clean, item_lang)
                 ai_summary = ""
                 if meta.get("description"):
                     meta["description"] = translate_to_italian(meta["description"], item_lang)
+
+            # Secondo controllo sul titolo tradotto: intercetta la stessa
+            # notizia uscita in due lingue diverse (es. Marca e Gazzetta)
+            tokens_it = title_tokens(title, ignore)
+            if item_lang != "it" and is_duplicate_news(recent_titles, topic_base, tokens_it):
+                mark_seen(gn_uid, uid)
+                counts["doppioni"] += 1
+                continue
 
             inviato_con_foto = False
             if meta.get("image"):
@@ -619,23 +702,28 @@ def run():
                 testo_fallback = build_message(real_link, title, league_name, flag)
                 send_telegram_message(testo_fallback, disable_preview=True)
 
-            new_seen.append(uid)
-            seen.add(uid)
-            any_new = True
+            mark_seen(gn_uid, uid)
+            now_iso = datetime.now(timezone.utc).isoformat()
+            recent_titles.append({"topic": topic_base, "tokens": sorted(tokens_orig), "ts": now_iso})
+            if tokens_it != tokens_orig:
+                recent_titles.append({"topic": topic_base, "tokens": sorted(tokens_it), "ts": now_iso})
             sent_this_run += 1
-            topics_sent[topic_key] = datetime.now(timezone.utc).isoformat()
+            sent_for_source += 1
             time.sleep(SEND_DELAY_SECONDS)
-
-    prune_topics(state)
 
     stats = state.setdefault("stats", {"week_sent": 0, "week_groq_failures": 0})
     stats["week_sent"] = stats.get("week_sent", 0) + sent_this_run
     stats["week_groq_failures"] = stats.get("week_groq_failures", 0) + groq_failures_this_run
 
-    if any_new:
-        state["news_seen"] = trim_list(new_seen)
+    state["news_seen"] = trim_list(new_seen)
     save_state(state)
-    print(f"Stato aggiornato: {sent_this_run} notizie inviate.")
+    print(
+        f"Riepilogo: {counts['candidati']} articoli trovati → "
+        f"{counts['gia_visti']} gia' visti, {counts['vecchi']} troppo vecchi, "
+        f"{counts['decodifica_fallita']} link non decodificati, {counts['fonte_bloccata']} fonte bloccata, "
+        f"{counts['doppioni']} doppioni, {counts['in_coda']} rimandati al prossimo giro → "
+        f"{sent_this_run} inviati (errori Groq: {groq_failures_this_run}) in {time.time() - start_time:.0f}s"
+    )
 
 
 if __name__ == "__main__":
