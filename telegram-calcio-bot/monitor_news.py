@@ -342,7 +342,11 @@ def parse_feed_url(url: str) -> list:
 
 
 def search_news(query: str, lang: str = "it", country: str = "IT", max_items: int = NEWS_MAX_ITEMS_PER_QUERY) -> list:
-    url = build_google_news_url(query, lang, country)
+    # "when:2d" chiede a Google News SOLO articoli degli ultimi giorni: senza,
+    # Google ordina per pertinenza e i primi 20 risultati erano quasi tutti
+    # articoli vecchi (partite delle stagioni passate), poi scartati dal
+    # filtro data - e le notizie fresche restavano fuori dai 20.
+    url = build_google_news_url(f"{query} when:{NEWS_MAX_AGE_DAYS}d", lang, country)
     return parse_feed_url(url)[:max_items]
 
 
@@ -356,6 +360,7 @@ def is_recent_enough(entry) -> bool:
 
 
 _decode_cache: dict = {}
+_decode_error_logged = False
 
 
 def resolve_real_url(google_link: str) -> str:
@@ -375,6 +380,10 @@ def resolve_real_url(google_link: str) -> str:
         if result.get("status") and result.get("decoded_url"):
             _decode_cache[google_link] = result["decoded_url"]
             return result["decoded_url"]
+        global _decode_error_logged
+        if not _decode_error_logged:
+            print(f"[WARN] decodifica link Google News non riuscita (riprovo al prossimo giro): {str(result.get('message'))[:150]}")
+            _decode_error_logged = True
     except Exception as e:
         print(f"[WARN] decodifica link fallita: {e}")
     _decode_cache[google_link] = google_link
