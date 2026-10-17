@@ -79,6 +79,11 @@ MAX_RUN_SECONDS = 240
 # Ricerche Google News fatte in parallelo (invece che una alla volta)
 PARALLEL_SEARCHES = 3
 HTTP_TIMEOUT = 15
+# Google News spesso ignora il filtro "when:" e ordina per pertinenza: i primi
+# 20 risultati erano quasi tutti vecchi di mesi. Prendiamo TUTTI quelli che
+# restituisce (fino a ~100) e filtriamo noi per data: gli articoli vecchi
+# vengono scartati subito, prima della decodifica, quindi non costano tempo.
+GOOGLE_MAX_ITEMS = 100
 
 HTTP_HEADERS = {
     "User-Agent": (
@@ -341,7 +346,7 @@ def parse_feed_url(url: str) -> list:
         return []
 
 
-def search_news(query: str, lang: str = "it", country: str = "IT", max_items: int = NEWS_MAX_ITEMS_PER_QUERY) -> list:
+def search_news(query: str, lang: str = "it", country: str = "IT", max_items: int = GOOGLE_MAX_ITEMS) -> list:
     # "when:2d" chiede a Google News SOLO articoli degli ultimi giorni: senza,
     # Google ordina per pertinenza e i primi 20 risultati erano quasi tutti
     # articoli vecchi (partite delle stagioni passate), poi scartati dal
@@ -377,7 +382,8 @@ def resolve_real_url(google_link: str) -> str:
     try:
         time.sleep(0.3)  # piccola pausa per non sovraccaricare il servizio di decodifica
         result = gnewsdecoder(google_link, interval=0)
-        if result.get("status") and result.get("decoded_url"):
+        # Le versioni recenti della libreria rispondono "success" invece di "status"
+        if (result.get("status") or result.get("success")) and result.get("decoded_url"):
             _decode_cache[google_link] = result["decoded_url"]
             return result["decoded_url"]
         global _decode_error_logged
@@ -520,7 +526,7 @@ def gather_fixture_items(fixture: dict, direct_items: list) -> list:
     for h in home_variants:
         for a in away_variants:
             query_it = f'"{h}" "{a}" ({kw_it})'
-            items.extend((e, "it") for e in search_news(query_it, lang="it", country="IT", max_items=8))
+            items.extend((e, "it") for e in search_news(query_it, lang="it", country="IT", max_items=GOOGLE_MAX_ITEMS))
 
     native_lang = fixture.get("native_lang")
     if native_lang:
@@ -530,7 +536,7 @@ def gather_fixture_items(fixture: dict, direct_items: list) -> list:
         for h in home_variants:
             for a in away_variants:
                 query_native = f'"{h}" "{a}" ({kw_native})'
-                native_entries = search_news(query_native, lang=native_lang, country=fixture["native_country"], max_items=8)
+                native_entries = search_news(query_native, lang=native_lang, country=fixture["native_country"], max_items=GOOGLE_MAX_ITEMS)
                 items.extend((e, native_lang) for e in native_entries)
 
     items.extend(filter_direct_items_for_fixture(direct_items, home, away))
@@ -656,7 +662,7 @@ def run():
                 counts["vecchi"] += 1
                 origin = "Google News" if "news.google.com" in google_link else "RSS diretto"
                 old_by_origin[origin] = old_by_origin.get(origin, 0) + 1
-                if len(old_samples) < 6:
+                if len(old_samples) < 3:
                     pp = item.get("published_parsed")
                     pub = time.strftime("%Y-%m-%d %H:%M", pp) if pp else "?"
                     old_samples.append(f"[{origin}] {pub} | {item.get('title', '')[:70]}")
