@@ -269,6 +269,204 @@
       "kickoff": "2026-10-24T19:00:00Z",
       "native_lang": "es",
       "native_country": "ES"
+    },
+    {
+      "league": "Serie A",
+      "flag": "🇮🇹",
+      "home": "FC Internazionale Milano",
+      "away": "ACF Fiorentina",
+      "kickoff": "2026-10-25T11:30:00Z",
+      "native_lang": null,
+      "native_country": null
+    },
+    {
+      "league": "La Liga",
+      "flag": "🇪🇸",
+      "home": "Athletic Club",
+      "away": "Getafe CF",
+      "kickoff": "2026-10-25T13:00:00Z",
+      "native_lang": "es",
+      "native_country": "ES"
+    },
+    {
+      "league": "Serie A",
+      "flag": "🇮🇹",
+      "home": "Atalanta BC",
+      "away": "Frosinone Calcio",
+      "kickoff": "2026-10-25T14:00:00Z",
+      "native_lang": null,
+      "native_country": null
+    },
+    {
+      "league": "Serie A",
+      "flag": "🇮🇹",
+      "home": "Genoa CFC",
+      "away": "Venezia FC",
+      "kickoff": "2026-10-25T14:00:00Z",
+      "native_lang": null,
+      "native_country": null
+    },
+    {
+      "league": "Premier League",
+      "flag": "🏴",
+      "home": "Liverpool FC",
+      "away": "Brighton & Hove Albion FC",
+      "kickoff": "2026-10-25T14:00:00Z",
+      "native_lang": "en",
+      "native_country": "GB"
+    },
+    {
+      "league": "Premier League",
+      "flag": "🏴",
+      "home": "Crystal Palace FC",
+      "away": "Newcastle United FC",
+      "kickoff": "2026-10-25T14:00:00Z",
+      "native_lang": "en",
+      "native_country": "GB"
+    },
+    {
+      "league": "Premier League",
+      "flag": "🏴",
+      "home": "Manchester United FC",
+      "away": "AFC Bournemouth",
+      "kickoff": "2026-10-25T14:00:00Z",
+      "native_lang": "en",
+      "native_country": "GB"
+    },
+    {
+      "league": "Premier League",
+      "flag": "🏴",
+      "home": "Hull City AFC",
+      "away": "Brentford FC",
+      "kickoff": "2026-10-25T14:00:00Z",
+      "native_lang": "en",
+      "native_country": "GB"
+    },
+    {
+      "league": "Ligue 1",
+      "flag": "🇫🇷",
+      "home": "AS Monaco FC",
+      "away": "Lille OSC",
+      "kickoff": "2026-10-25T14:00:00Z",
+      "native_lang": "fr",
+      "native_country": "FR"
+    },
+    {
+      "league": "Bundesliga",
+      "flag": "🇩🇪",
+      "home": "TSG 1899 Hoffenheim",
+      "away": "Bayer 04 Leverkusen",
+      "kickoff": "2026-10-25T14:30:00Z",
+      "native_lang": "de",
+      "native_country": "DE"
+    },
+    {
+      "league": "La Liga",
+      "flag": "🇪🇸",
+      "home": "RC Celta de Vigo",
+      "away": "Real Betis Balompié",
+      "kickoff": "2026-10-25T15:15:00Z",
+      "native_lang": "es",
+      "native_country": "ES"
+    },
+    {
+      "league": "Ligue 1",
+      "flag": "🇫🇷",
+      "home": "Olympique de Marseille",
+      "away": "Le Havre AC",
+      "kickoff": "2026-10-25T16:15:00Z",
+      "native_lang": "fr",
+      "native_country": "FR"
+    },
+    {
+      "league": "Ligue 1",
+      "flag": "🇫🇷",
+      "home": "Stade Rennais FC 1901",
+      "away": "RC Strasbourg Alsace",
+      "kickoff": "2026-10-25T16:15:00Z",
+      "native_lang": "fr",
+      "native_country": "FR"
+    },
+    {
+      "league": "Ligue 1",
+      "flag": "🇫🇷",
+      "home": "Angers SCO",
+      "away": "FC Lorient",
+      "kickoff": "2026-10-25T16:15:00Z",
+      "native_lang": "fr",
+      "native_country": "FR"
+    },
+    {
+      "league": "Ligue 1",
+      "flag": "🇫🇷",
+      "home": "AJ Auxerre",
+      "away": "Le Mans FC",
+      "kickoff": "2026-10-25T16:15:00Z",
+      "native_lang": "fr",
+      "native_country": "FR"
+    },
+    {
+      "league": "Premier League",
+      "flag": "🏴",
+      "home": "Sunderland AFC",
+      "away": "Leeds United FC",
+      "kickoff": "2026-10-25T16:30:00Z",
+      "native_lang": "en",
+      "native_country": "GB"
+    },
+    {
+      "league": "Bundesliga",
+      "flag": "🇩🇪",
+      "home": "SC Freiburg",
+      "away": "FC Bayern München",
+      "kickoff": "2026-10-25T16:30:00Z",
+      "native_lang": "de",
+      "native_country": "DE"
+    },
+    {
+      "league": "Serie A",
+      "flag": "🇮🇹",
+      "home": "US Lecce",
+      "away": "Juventus FC",
+      "kickoff": "2026-10-25T17:00:00Z",
+      "native_lang": null,
+      "native_country": null
+    },
+    {
+      "league": "La Liga",
+      "flag": "🇪🇸",
+      "home": "Real Sociedad de Fútbol",
+      "away": "Levante UD",
+      "kickoff": "2026-10-25T17:30:00Z",
+      "native_lang": "es",
+      "native_country": "ES"
+    },
+    {
+      "league": "Serie A",
+      "flag": "🇮🇹",
+      "home": "Udinese Calcio",
+      "away": "AC Milan",
+      "kickoff": "2026-10-25T19:45:00Z",
+      "native_lang": null,
+      "native_country": null
+    },
+    {
+      "league": "Ligue 1",
+      "flag": "🇫🇷",
+      "home": "Paris Saint-Germain FC",
+      "away": "Olympique Lyonnais",
+      "kickoff": "2026-10-25T19:45:00Z",
+      "native_lang": "fr",
+      "native_country": "FR"
+    },
+    {
+      "league": "La Liga",
+      "flag": "🇪🇸",
+      "home": "FC Barcelona",
+      "away": "Real Madrid CF",
+      "kickoff": "2026-10-25T20:00:00Z",
+      "native_lang": "es",
+      "native_country": "ES"
     }
   ]
 }
