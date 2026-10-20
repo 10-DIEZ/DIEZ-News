@@ -431,6 +431,15 @@
       "kickoff": "2026-10-25T20:00:00Z",
       "native_lang": "es",
       "native_country": "ES"
+    },
+    {
+      "league": "La Liga",
+      "flag": "🇪🇸",
+      "home": "Sevilla FC",
+      "away": "CA Osasuna",
+      "kickoff": "2026-10-26T20:00:00Z",
+      "native_lang": "es",
+      "native_country": "ES"
     }
   ]
 }
