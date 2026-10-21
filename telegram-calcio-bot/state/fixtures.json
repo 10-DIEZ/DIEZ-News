@@ -1,15 +1,6 @@
 {
   "fixtures": [
     {
-      "league": "La Liga",
-      "flag": "🇪🇸",
-      "home": "Levante UD",
-      "away": "Athletic Club",
-      "kickoff": "2026-10-21T18:00:00Z",
-      "native_lang": "es",
-      "native_country": "ES"
-    },
-    {
       "league": "Bundesliga",
       "flag": "🇩🇪",
       "home": "VfB Stuttgart",
@@ -161,15 +152,6 @@
       "kickoff": "2026-10-24T14:15:00Z",
       "native_lang": "es",
       "native_country": "ES"
-    },
-    {
-      "league": "Ligue 1",
-      "flag": "🇫🇷",
-      "home": "Toulouse FC",
-      "away": "ES Troyes AC",
-      "kickoff": "2026-10-24T15:15:00Z",
-      "native_lang": "fr",
-      "native_country": "FR"
     },
     {
       "league": "Serie A",
@@ -356,6 +338,15 @@
       "flag": "🇫🇷",
       "home": "Angers SCO",
       "away": "FC Lorient",
+      "kickoff": "2026-10-25T16:15:00Z",
+      "native_lang": "fr",
+      "native_country": "FR"
+    },
+    {
+      "league": "Ligue 1",
+      "flag": "🇫🇷",
+      "home": "Toulouse FC",
+      "away": "ES Troyes AC",
       "kickoff": "2026-10-25T16:15:00Z",
       "native_lang": "fr",
       "native_country": "FR"
