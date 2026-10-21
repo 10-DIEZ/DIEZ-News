@@ -440,6 +440,33 @@
       "kickoff": "2026-10-26T20:00:00Z",
       "native_lang": "es",
       "native_country": "ES"
+    },
+    {
+      "league": "Serie A",
+      "flag": "🇮🇹",
+      "home": "US Sassuolo Calcio",
+      "away": "SS Lazio",
+      "kickoff": "2026-10-27T17:30:00Z",
+      "native_lang": null,
+      "native_country": null
+    },
+    {
+      "league": "Serie A",
+      "flag": "🇮🇹",
+      "home": "AS Roma",
+      "away": "Cagliari Calcio",
+      "kickoff": "2026-10-27T19:45:00Z",
+      "native_lang": null,
+      "native_country": null
+    },
+    {
+      "league": "Serie A",
+      "flag": "🇮🇹",
+      "home": "Torino FC",
+      "away": "Como 1907",
+      "kickoff": "2026-10-27T19:45:00Z",
+      "native_lang": null,
+      "native_country": null
     }
   ]
 }
