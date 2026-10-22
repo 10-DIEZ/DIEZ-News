@@ -458,6 +458,51 @@
       "kickoff": "2026-10-27T19:45:00Z",
       "native_lang": null,
       "native_country": null
+    },
+    {
+      "league": "Serie A",
+      "flag": "🇮🇹",
+      "home": "AC Milan",
+      "away": "Bologna FC 1909",
+      "kickoff": "2026-10-28T17:30:00Z",
+      "native_lang": null,
+      "native_country": null
+    },
+    {
+      "league": "Serie A",
+      "flag": "🇮🇹",
+      "home": "Venezia FC",
+      "away": "FC Internazionale Milano",
+      "kickoff": "2026-10-28T17:30:00Z",
+      "native_lang": null,
+      "native_country": null
+    },
+    {
+      "league": "Serie A",
+      "flag": "🇮🇹",
+      "home": "Parma Calcio 1913",
+      "away": "Udinese Calcio",
+      "kickoff": "2026-10-28T17:30:00Z",
+      "native_lang": null,
+      "native_country": null
+    },
+    {
+      "league": "Serie A",
+      "flag": "🇮🇹",
+      "home": "Genoa CFC",
+      "away": "Juventus FC",
+      "kickoff": "2026-10-28T19:45:00Z",
+      "native_lang": null,
+      "native_country": null
+    },
+    {
+      "league": "Serie A",
+      "flag": "🇮🇹",
+      "home": "AC Monza",
+      "away": "SSC Napoli",
+      "kickoff": "2026-10-28T19:45:00Z",
+      "native_lang": null,
+      "native_country": null
     }
   ]
 }
