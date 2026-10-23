@@ -1087,6 +1087,12 @@ def run():
         if not budget_ok():
             stats["rimandati"] += 1
             continue
+        # il titolo in italiano scritto da Groq a volte rivela cio' che l'originale
+        # non diceva (es. "mercato" in un articolo spagnolo): stessi filtri del titolo
+        if EXCLUDE_RE.search(c["it_title"]) or (not INCLUDE_TRANSFER_NEWS and TRANSFER_RE.search(c["it_title"])):
+            mark_seen(c["link"], c["url"])
+            stats["esclusi"] += 1
+            continue
         # stessa notizia gia' inviata in questo giro o uscita in un'altra lingua
         # (confronto anche sul titolo tradotto in italiano)
         tokens_it = title_tokens(c["it_title"], c["ignore"])
