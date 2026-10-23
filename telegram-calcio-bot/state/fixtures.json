@@ -1,526 +1,1468 @@
 {
   "fixtures": [
     {
+      "competition": "CL",
+      "league": "CL",
+      "flag": "",
+      "home": "Sabah FK",
+      "away": "Borussia Dortmund",
+      "kickoff": "2026-10-20T16:45:00Z",
+      "status": "FINISHED"
+    },
+    {
+      "competition": "CL",
+      "league": "CL",
+      "flag": "",
+      "home": "Fenerbahçe SK",
+      "away": "SK Slavia Praha",
+      "kickoff": "2026-10-20T16:45:00Z",
+      "status": "FINISHED"
+    },
+    {
+      "competition": "CL",
+      "league": "CL",
+      "flag": "",
+      "home": "Manchester City FC",
+      "away": "PAE AEK",
+      "kickoff": "2026-10-20T19:00:00Z",
+      "status": "FINISHED"
+    },
+    {
+      "competition": "CL",
+      "league": "CL",
+      "flag": "",
+      "home": "VfB Stuttgart",
+      "away": "Club Atlético de Madrid",
+      "kickoff": "2026-10-20T19:00:00Z",
+      "status": "FINISHED"
+    },
+    {
+      "competition": "CL",
+      "league": "CL",
+      "flag": "",
+      "home": "Liverpool FC",
+      "away": "Villarreal CF",
+      "kickoff": "2026-10-20T19:00:00Z",
+      "status": "FINISHED"
+    },
+    {
+      "competition": "CL",
+      "league": "CL",
+      "flag": "",
+      "home": "AS Roma",
+      "away": "ŠK Slovan Bratislava",
+      "kickoff": "2026-10-20T19:00:00Z",
+      "status": "FINISHED"
+    },
+    {
+      "competition": "CL",
+      "league": "CL",
+      "flag": "",
+      "home": "FC Porto",
+      "away": "PSV",
+      "kickoff": "2026-10-20T19:00:00Z",
+      "status": "FINISHED"
+    },
+    {
+      "competition": "CL",
+      "league": "CL",
+      "flag": "",
+      "home": "SSC Napoli",
+      "away": "FK Bodø/Glimt",
+      "kickoff": "2026-10-20T19:00:00Z",
+      "status": "FINISHED"
+    },
+    {
+      "competition": "CL",
+      "league": "CL",
+      "flag": "",
+      "home": "Paris Saint-Germain FC",
+      "away": "FC Barcelona",
+      "kickoff": "2026-10-20T19:00:00Z",
+      "status": "FINISHED"
+    },
+    {
+      "competition": "CL",
+      "league": "CL",
+      "flag": "",
+      "home": "Como 1907",
+      "away": "Manchester United FC",
+      "kickoff": "2026-10-21T16:45:00Z",
+      "status": "FINISHED"
+    },
+    {
+      "competition": "CL",
+      "league": "CL",
+      "flag": "",
+      "home": "Lille OSC",
+      "away": "Galatasaray SK",
+      "kickoff": "2026-10-21T16:45:00Z",
+      "status": "FINISHED"
+    },
+    {
+      "competition": "PD",
+      "league": "La Liga",
+      "flag": "🇪🇸",
+      "home": "Levante UD",
+      "away": "Athletic Club",
+      "kickoff": "2026-10-21T18:00:00Z",
+      "status": "FINISHED"
+    },
+    {
+      "competition": "CL",
+      "league": "CL",
+      "flag": "",
+      "home": "Real Madrid CF",
+      "away": "RB Leipzig",
+      "kickoff": "2026-10-21T19:00:00Z",
+      "status": "FINISHED"
+    },
+    {
+      "competition": "CL",
+      "league": "CL",
+      "flag": "",
+      "home": "FC Internazionale Milano",
+      "away": "FK Shakhtar Donetsk",
+      "kickoff": "2026-10-21T19:00:00Z",
+      "status": "FINISHED"
+    },
+    {
+      "competition": "CL",
+      "league": "CL",
+      "flag": "",
+      "home": "FC Bayern München",
+      "away": "Arsenal FC",
+      "kickoff": "2026-10-21T19:00:00Z",
+      "status": "FINISHED"
+    },
+    {
+      "competition": "CL",
+      "league": "CL",
+      "flag": "",
+      "home": "Club Brugge KV",
+      "away": "Racing Club de Lens",
+      "kickoff": "2026-10-21T19:00:00Z",
+      "status": "FINISHED"
+    },
+    {
+      "competition": "CL",
+      "league": "CL",
+      "flag": "",
+      "home": "Aston Villa FC",
+      "away": "Viking FK",
+      "kickoff": "2026-10-21T19:00:00Z",
+      "status": "FINISHED"
+    },
+    {
+      "competition": "CL",
+      "league": "CL",
+      "flag": "",
+      "home": "Sporting Clube de Portugal",
+      "away": "LASK Linz",
+      "kickoff": "2026-10-21T19:00:00Z",
+      "status": "FINISHED"
+    },
+    {
+      "competition": "CL",
+      "league": "CL",
+      "flag": "",
+      "home": "Real Betis Balompié",
+      "away": "Feyenoord Rotterdam",
+      "kickoff": "2026-10-21T19:00:00Z",
+      "status": "FINISHED"
+    },
+    {
+      "competition": "BL1",
       "league": "Bundesliga",
       "flag": "🇩🇪",
       "home": "VfB Stuttgart",
       "away": "Borussia Mönchengladbach",
       "kickoff": "2026-10-23T18:30:00Z",
-      "native_lang": "de",
-      "native_country": "DE"
+      "status": "TIMED"
     },
     {
+      "competition": "SA",
       "league": "Serie A",
       "flag": "🇮🇹",
       "home": "Torino FC",
       "away": "AC Monza",
       "kickoff": "2026-10-23T18:45:00Z",
-      "native_lang": null,
-      "native_country": null
+      "status": "TIMED"
     },
     {
+      "competition": "FL1",
       "league": "Ligue 1",
       "flag": "🇫🇷",
       "home": "Stade Brestois 29",
       "away": "OGC Nice",
       "kickoff": "2026-10-23T18:45:00Z",
-      "native_lang": "fr",
-      "native_country": "FR"
+      "status": "TIMED"
     },
     {
+      "competition": "PL",
       "league": "Premier League",
       "flag": "🏴",
       "home": "Ipswich Town FC",
       "away": "Nottingham Forest FC",
       "kickoff": "2026-10-23T19:00:00Z",
-      "native_lang": "en",
-      "native_country": "GB"
+      "status": "TIMED"
     },
     {
+      "competition": "PD",
       "league": "La Liga",
       "flag": "🇪🇸",
       "home": "Deportivo Alavés",
       "away": "Málaga CF",
       "kickoff": "2026-10-23T19:00:00Z",
-      "native_lang": "es",
-      "native_country": "ES"
+      "status": "TIMED"
     },
     {
+      "competition": "PL",
       "league": "Premier League",
       "flag": "🏴",
       "home": "Aston Villa FC",
       "away": "Manchester City FC",
       "kickoff": "2026-10-24T11:30:00Z",
-      "native_lang": "en",
-      "native_country": "GB"
+      "status": "TIMED"
     },
     {
+      "competition": "PD",
       "league": "La Liga",
       "flag": "🇪🇸",
       "home": "Rayo Vallecano de Madrid",
       "away": "Elche CF",
       "kickoff": "2026-10-24T12:00:00Z",
-      "native_lang": "es",
-      "native_country": "ES"
+      "status": "TIMED"
     },
     {
+      "competition": "SA",
       "league": "Serie A",
       "flag": "🇮🇹",
       "home": "Cagliari Calcio",
       "away": "Bologna FC 1909",
       "kickoff": "2026-10-24T13:00:00Z",
-      "native_lang": null,
-      "native_country": null
+      "status": "TIMED"
     },
     {
+      "competition": "SA",
       "league": "Serie A",
       "flag": "🇮🇹",
       "home": "Como 1907",
       "away": "US Sassuolo Calcio",
       "kickoff": "2026-10-24T13:00:00Z",
-      "native_lang": null,
-      "native_country": null
+      "status": "TIMED"
     },
     {
+      "competition": "BL1",
       "league": "Bundesliga",
       "flag": "🇩🇪",
       "home": "1. FSV Mainz 05",
       "away": "SV Werder Bremen",
       "kickoff": "2026-10-24T13:30:00Z",
-      "native_lang": "de",
-      "native_country": "DE"
+      "status": "TIMED"
     },
     {
+      "competition": "BL1",
       "league": "Bundesliga",
       "flag": "🇩🇪",
       "home": "1. FC Köln",
       "away": "FC Schalke 04",
       "kickoff": "2026-10-24T13:30:00Z",
-      "native_lang": "de",
-      "native_country": "DE"
+      "status": "TIMED"
     },
     {
+      "competition": "BL1",
       "league": "Bundesliga",
       "flag": "🇩🇪",
       "home": "RB Leipzig",
       "away": "SV 07 Elversberg",
       "kickoff": "2026-10-24T13:30:00Z",
-      "native_lang": "de",
-      "native_country": "DE"
+      "status": "TIMED"
     },
     {
+      "competition": "BL1",
       "league": "Bundesliga",
       "flag": "🇩🇪",
       "home": "SC Paderborn 07",
       "away": "Hamburger SV",
       "kickoff": "2026-10-24T13:30:00Z",
-      "native_lang": "de",
-      "native_country": "DE"
+      "status": "TIMED"
     },
     {
+      "competition": "BL1",
       "league": "Bundesliga",
       "flag": "🇩🇪",
       "home": "FC Augsburg",
       "away": "1. FC Union Berlin",
       "kickoff": "2026-10-24T13:30:00Z",
-      "native_lang": "de",
-      "native_country": "DE"
+      "status": "TIMED"
     },
     {
+      "competition": "PL",
       "league": "Premier League",
       "flag": "🏴",
       "home": "Arsenal FC",
       "away": "Everton FC",
       "kickoff": "2026-10-24T14:00:00Z",
-      "native_lang": "en",
-      "native_country": "GB"
+      "status": "TIMED"
     },
     {
+      "competition": "PL",
       "league": "Premier League",
       "flag": "🏴",
       "home": "Coventry City FC",
       "away": "Fulham FC",
       "kickoff": "2026-10-24T14:00:00Z",
-      "native_lang": "en",
-      "native_country": "GB"
+      "status": "TIMED"
     },
     {
+      "competition": "PD",
       "league": "La Liga",
       "flag": "🇪🇸",
       "home": "Real Racing Club de Santander",
       "away": "RCD Espanyol de Barcelona",
       "kickoff": "2026-10-24T14:15:00Z",
-      "native_lang": "es",
-      "native_country": "ES"
+      "status": "TIMED"
     },
     {
+      "competition": "SA",
       "league": "Serie A",
       "flag": "🇮🇹",
       "home": "SSC Napoli",
       "away": "AS Roma",
       "kickoff": "2026-10-24T16:00:00Z",
-      "native_lang": null,
-      "native_country": null
+      "status": "TIMED"
     },
     {
+      "competition": "PL",
       "league": "Premier League",
       "flag": "🏴",
       "home": "Chelsea FC",
       "away": "Tottenham Hotspur FC",
       "kickoff": "2026-10-24T16:30:00Z",
-      "native_lang": "en",
-      "native_country": "GB"
+      "status": "TIMED"
     },
     {
+      "competition": "PD",
       "league": "La Liga",
       "flag": "🇪🇸",
       "home": "Valencia CF",
       "away": "Villarreal CF",
       "kickoff": "2026-10-24T16:30:00Z",
-      "native_lang": "es",
-      "native_country": "ES"
+      "status": "TIMED"
     },
     {
+      "competition": "BL1",
       "league": "Bundesliga",
       "flag": "🇩🇪",
       "home": "Borussia Dortmund",
       "away": "Eintracht Frankfurt",
       "kickoff": "2026-10-24T16:30:00Z",
-      "native_lang": "de",
-      "native_country": "DE"
+      "status": "TIMED"
     },
     {
+      "competition": "SA",
       "league": "Serie A",
       "flag": "🇮🇹",
       "home": "SS Lazio",
       "away": "Parma Calcio 1913",
       "kickoff": "2026-10-24T18:45:00Z",
-      "native_lang": null,
-      "native_country": null
+      "status": "TIMED"
     },
     {
+      "competition": "FL1",
       "league": "Ligue 1",
       "flag": "🇫🇷",
       "home": "Racing Club de Lens",
       "away": "Paris FC",
       "kickoff": "2026-10-24T18:45:00Z",
-      "native_lang": "fr",
-      "native_country": "FR"
+      "status": "TIMED"
     },
     {
+      "competition": "PD",
       "league": "La Liga",
       "flag": "🇪🇸",
       "home": "Club Atlético de Madrid",
       "away": "RC Deportivo La Coruña",
       "kickoff": "2026-10-24T19:00:00Z",
-      "native_lang": "es",
-      "native_country": "ES"
+      "status": "TIMED"
     },
     {
+      "competition": "SA",
       "league": "Serie A",
       "flag": "🇮🇹",
       "home": "FC Internazionale Milano",
       "away": "ACF Fiorentina",
       "kickoff": "2026-10-25T11:30:00Z",
-      "native_lang": null,
-      "native_country": null
+      "status": "TIMED"
     },
     {
+      "competition": "PD",
       "league": "La Liga",
       "flag": "🇪🇸",
       "home": "Athletic Club",
       "away": "Getafe CF",
       "kickoff": "2026-10-25T13:00:00Z",
-      "native_lang": "es",
-      "native_country": "ES"
+      "status": "TIMED"
     },
     {
+      "competition": "SA",
       "league": "Serie A",
       "flag": "🇮🇹",
       "home": "Atalanta BC",
       "away": "Frosinone Calcio",
       "kickoff": "2026-10-25T14:00:00Z",
-      "native_lang": null,
-      "native_country": null
+      "status": "TIMED"
     },
     {
+      "competition": "SA",
       "league": "Serie A",
       "flag": "🇮🇹",
       "home": "Genoa CFC",
       "away": "Venezia FC",
       "kickoff": "2026-10-25T14:00:00Z",
-      "native_lang": null,
-      "native_country": null
+      "status": "TIMED"
     },
     {
+      "competition": "PL",
       "league": "Premier League",
       "flag": "🏴",
       "home": "Liverpool FC",
       "away": "Brighton & Hove Albion FC",
       "kickoff": "2026-10-25T14:00:00Z",
-      "native_lang": "en",
-      "native_country": "GB"
+      "status": "TIMED"
     },
     {
+      "competition": "PL",
       "league": "Premier League",
       "flag": "🏴",
       "home": "Crystal Palace FC",
       "away": "Newcastle United FC",
       "kickoff": "2026-10-25T14:00:00Z",
-      "native_lang": "en",
-      "native_country": "GB"
+      "status": "TIMED"
     },
     {
+      "competition": "PL",
       "league": "Premier League",
       "flag": "🏴",
       "home": "Manchester United FC",
       "away": "AFC Bournemouth",
       "kickoff": "2026-10-25T14:00:00Z",
-      "native_lang": "en",
-      "native_country": "GB"
+      "status": "TIMED"
     },
     {
+      "competition": "PL",
       "league": "Premier League",
       "flag": "🏴",
       "home": "Hull City AFC",
       "away": "Brentford FC",
       "kickoff": "2026-10-25T14:00:00Z",
-      "native_lang": "en",
-      "native_country": "GB"
+      "status": "TIMED"
     },
     {
+      "competition": "FL1",
       "league": "Ligue 1",
       "flag": "🇫🇷",
       "home": "AS Monaco FC",
       "away": "Lille OSC",
       "kickoff": "2026-10-25T14:00:00Z",
-      "native_lang": "fr",
-      "native_country": "FR"
+      "status": "TIMED"
     },
     {
+      "competition": "BL1",
       "league": "Bundesliga",
       "flag": "🇩🇪",
       "home": "TSG 1899 Hoffenheim",
       "away": "Bayer 04 Leverkusen",
       "kickoff": "2026-10-25T14:30:00Z",
-      "native_lang": "de",
-      "native_country": "DE"
+      "status": "TIMED"
     },
     {
+      "competition": "PD",
       "league": "La Liga",
       "flag": "🇪🇸",
       "home": "RC Celta de Vigo",
       "away": "Real Betis Balompié",
       "kickoff": "2026-10-25T15:15:00Z",
-      "native_lang": "es",
-      "native_country": "ES"
+      "status": "TIMED"
     },
     {
+      "competition": "FL1",
       "league": "Ligue 1",
       "flag": "🇫🇷",
       "home": "Olympique de Marseille",
       "away": "Le Havre AC",
       "kickoff": "2026-10-25T16:15:00Z",
-      "native_lang": "fr",
-      "native_country": "FR"
+      "status": "TIMED"
     },
     {
+      "competition": "FL1",
       "league": "Ligue 1",
       "flag": "🇫🇷",
       "home": "Stade Rennais FC 1901",
       "away": "RC Strasbourg Alsace",
       "kickoff": "2026-10-25T16:15:00Z",
-      "native_lang": "fr",
-      "native_country": "FR"
+      "status": "TIMED"
     },
     {
+      "competition": "FL1",
       "league": "Ligue 1",
       "flag": "🇫🇷",
       "home": "Angers SCO",
       "away": "FC Lorient",
       "kickoff": "2026-10-25T16:15:00Z",
-      "native_lang": "fr",
-      "native_country": "FR"
+      "status": "TIMED"
     },
     {
+      "competition": "FL1",
       "league": "Ligue 1",
       "flag": "🇫🇷",
       "home": "Toulouse FC",
       "away": "ES Troyes AC",
       "kickoff": "2026-10-25T16:15:00Z",
-      "native_lang": "fr",
-      "native_country": "FR"
+      "status": "TIMED"
     },
     {
+      "competition": "FL1",
       "league": "Ligue 1",
       "flag": "🇫🇷",
       "home": "AJ Auxerre",
       "away": "Le Mans FC",
       "kickoff": "2026-10-25T16:15:00Z",
-      "native_lang": "fr",
-      "native_country": "FR"
+      "status": "TIMED"
     },
     {
+      "competition": "PL",
       "league": "Premier League",
       "flag": "🏴",
       "home": "Sunderland AFC",
       "away": "Leeds United FC",
       "kickoff": "2026-10-25T16:30:00Z",
-      "native_lang": "en",
-      "native_country": "GB"
+      "status": "TIMED"
     },
     {
+      "competition": "BL1",
       "league": "Bundesliga",
       "flag": "🇩🇪",
       "home": "SC Freiburg",
       "away": "FC Bayern München",
       "kickoff": "2026-10-25T16:30:00Z",
-      "native_lang": "de",
-      "native_country": "DE"
+      "status": "TIMED"
     },
     {
+      "competition": "SA",
       "league": "Serie A",
       "flag": "🇮🇹",
       "home": "US Lecce",
       "away": "Juventus FC",
       "kickoff": "2026-10-25T17:00:00Z",
-      "native_lang": null,
-      "native_country": null
+      "status": "TIMED"
     },
     {
+      "competition": "PD",
       "league": "La Liga",
       "flag": "🇪🇸",
       "home": "Real Sociedad de Fútbol",
       "away": "Levante UD",
       "kickoff": "2026-10-25T17:30:00Z",
-      "native_lang": "es",
-      "native_country": "ES"
+      "status": "TIMED"
     },
     {
+      "competition": "SA",
       "league": "Serie A",
       "flag": "🇮🇹",
       "home": "Udinese Calcio",
       "away": "AC Milan",
       "kickoff": "2026-10-25T19:45:00Z",
-      "native_lang": null,
-      "native_country": null
+      "status": "TIMED"
     },
     {
+      "competition": "FL1",
       "league": "Ligue 1",
       "flag": "🇫🇷",
       "home": "Paris Saint-Germain FC",
       "away": "Olympique Lyonnais",
       "kickoff": "2026-10-25T19:45:00Z",
-      "native_lang": "fr",
-      "native_country": "FR"
+      "status": "TIMED"
     },
     {
+      "competition": "PD",
       "league": "La Liga",
       "flag": "🇪🇸",
       "home": "FC Barcelona",
       "away": "Real Madrid CF",
       "kickoff": "2026-10-25T20:00:00Z",
-      "native_lang": "es",
-      "native_country": "ES"
+      "status": "TIMED"
     },
     {
+      "competition": "PD",
       "league": "La Liga",
       "flag": "🇪🇸",
       "home": "Sevilla FC",
       "away": "CA Osasuna",
       "kickoff": "2026-10-26T20:00:00Z",
-      "native_lang": "es",
-      "native_country": "ES"
+      "status": "TIMED"
     },
     {
+      "competition": "SA",
       "league": "Serie A",
       "flag": "🇮🇹",
       "home": "US Sassuolo Calcio",
       "away": "SS Lazio",
       "kickoff": "2026-10-27T17:30:00Z",
-      "native_lang": null,
-      "native_country": null
+      "status": "TIMED"
     },
     {
+      "competition": "SA",
       "league": "Serie A",
       "flag": "🇮🇹",
       "home": "AS Roma",
       "away": "Cagliari Calcio",
       "kickoff": "2026-10-27T19:45:00Z",
-      "native_lang": null,
-      "native_country": null
+      "status": "TIMED"
     },
     {
+      "competition": "SA",
       "league": "Serie A",
       "flag": "🇮🇹",
       "home": "Torino FC",
       "away": "Como 1907",
       "kickoff": "2026-10-27T19:45:00Z",
-      "native_lang": null,
-      "native_country": null
+      "status": "TIMED"
     },
     {
+      "competition": "SA",
       "league": "Serie A",
       "flag": "🇮🇹",
       "home": "AC Milan",
       "away": "Bologna FC 1909",
       "kickoff": "2026-10-28T17:30:00Z",
-      "native_lang": null,
-      "native_country": null
+      "status": "TIMED"
     },
     {
+      "competition": "SA",
       "league": "Serie A",
       "flag": "🇮🇹",
       "home": "Venezia FC",
       "away": "FC Internazionale Milano",
       "kickoff": "2026-10-28T17:30:00Z",
-      "native_lang": null,
-      "native_country": null
+      "status": "TIMED"
     },
     {
+      "competition": "SA",
       "league": "Serie A",
       "flag": "🇮🇹",
       "home": "Parma Calcio 1913",
       "away": "Udinese Calcio",
       "kickoff": "2026-10-28T17:30:00Z",
-      "native_lang": null,
-      "native_country": null
+      "status": "TIMED"
     },
     {
+      "competition": "SA",
       "league": "Serie A",
       "flag": "🇮🇹",
       "home": "Genoa CFC",
       "away": "Juventus FC",
       "kickoff": "2026-10-28T19:45:00Z",
-      "native_lang": null,
-      "native_country": null
+      "status": "TIMED"
     },
     {
+      "competition": "SA",
       "league": "Serie A",
       "flag": "🇮🇹",
       "home": "AC Monza",
       "away": "SSC Napoli",
       "kickoff": "2026-10-28T19:45:00Z",
-      "native_lang": null,
-      "native_country": null
+      "status": "TIMED"
     },
     {
+      "competition": "SA",
       "league": "Serie A",
       "flag": "🇮🇹",
       "home": "Frosinone Calcio",
       "away": "US Lecce",
       "kickoff": "2026-10-29T17:30:00Z",
-      "native_lang": null,
-      "native_country": null
+      "status": "TIMED"
     },
     {
+      "competition": "SA",
       "league": "Serie A",
       "flag": "🇮🇹",
       "home": "ACF Fiorentina",
       "away": "Atalanta BC",
       "kickoff": "2026-10-29T19:45:00Z",
-      "native_lang": null,
-      "native_country": null
+      "status": "TIMED"
     }
-  ]
+  ],
+  "teams": [
+    {
+      "name": "AC Milan",
+      "shortName": "Milan",
+      "tla": "MIL",
+      "coach": "Ruben Amorim",
+      "coach_last": "Rúben Amorim",
+      "league": "Serie A"
+    },
+    {
+      "name": "ACF Fiorentina",
+      "shortName": "Fiorentina",
+      "tla": "FIO",
+      "coach": "Fabio Grosso",
+      "coach_last": "Grosso",
+      "league": "Serie A"
+    },
+    {
+      "name": "AS Roma",
+      "shortName": "Roma",
+      "tla": "ROM",
+      "coach": "Gian Piero Gasperini",
+      "coach_last": "Gasperini",
+      "league": "Serie A"
+    },
+    {
+      "name": "Atalanta BC",
+      "shortName": "Atalanta",
+      "tla": "ATA",
+      "coach": "Maurizio Sarri",
+      "coach_last": "Sarri",
+      "league": "Serie A"
+    },
+    {
+      "name": "Bologna FC 1909",
+      "shortName": "Bologna",
+      "tla": "BOL",
+      "coach": "Domenico Tedesco",
+      "coach_last": "Tedesco",
+      "league": "Serie A"
+    },
+    {
+      "name": "Cagliari Calcio",
+      "shortName": "Cagliari",
+      "tla": "CAG",
+      "coach": "Fabio Pisacane",
+      "coach_last": "Pisacane",
+      "league": "Serie A"
+    },
+    {
+      "name": "Genoa CFC",
+      "shortName": "Genoa",
+      "tla": "GEN",
+      "coach": "Daniele De Rossi",
+      "coach_last": "De Rossi",
+      "league": "Serie A"
+    },
+    {
+      "name": "FC Internazionale Milano",
+      "shortName": "Inter",
+      "tla": "INT",
+      "coach": "Cristian Chivu",
+      "coach_last": "Chivu",
+      "league": "Serie A"
+    },
+    {
+      "name": "Juventus FC",
+      "shortName": "Juventus",
+      "tla": "JUV",
+      "coach": "Luciano Spalletti",
+      "coach_last": "Spalletti",
+      "league": "Serie A"
+    },
+    {
+      "name": "SS Lazio",
+      "shortName": "Lazio",
+      "tla": "LAZ",
+      "coach": "Gennaro Gattuso",
+      "coach_last": "Gattuso",
+      "league": "Serie A"
+    },
+    {
+      "name": "Parma Calcio 1913",
+      "shortName": "Parma",
+      "tla": "PAR",
+      "coach": "Carlos Cuesta",
+      "coach_last": "Carlos Cuesta",
+      "league": "Serie A"
+    },
+    {
+      "name": "SSC Napoli",
+      "shortName": "Napoli",
+      "tla": "NAP",
+      "coach": "Massimiliano Allegri",
+      "coach_last": "Allegri",
+      "league": "Serie A"
+    },
+    {
+      "name": "Udinese Calcio",
+      "shortName": "Udinese",
+      "tla": "UDI",
+      "coach": "Kosta Runjaić",
+      "coach_last": "Runjaic",
+      "league": "Serie A"
+    },
+    {
+      "name": "Venezia FC",
+      "shortName": "Venezia FC",
+      "tla": "VEN",
+      "coach": "Giovanni Stroppa",
+      "coach_last": "Stroppa",
+      "league": "Serie A"
+    },
+    {
+      "name": "Frosinone Calcio",
+      "shortName": "Frosinone",
+      "tla": "FRO",
+      "coach": "Massimiliano Alvini",
+      "coach_last": "Alvini",
+      "league": "Serie A"
+    },
+    {
+      "name": "US Sassuolo Calcio",
+      "shortName": "Sassuolo",
+      "tla": "SAS",
+      "coach": "Alberto Aquilani",
+      "coach_last": "Aquilani",
+      "league": "Serie A"
+    },
+    {
+      "name": "Torino FC",
+      "shortName": "Torino",
+      "tla": "TOR",
+      "coach": "Ignazio Abate",
+      "coach_last": "Abate",
+      "league": "Serie A"
+    },
+    {
+      "name": "US Lecce",
+      "shortName": "Lecce",
+      "tla": "USL",
+      "coach": "Eusebio Di Francesco",
+      "coach_last": "Di Francesco",
+      "league": "Serie A"
+    },
+    {
+      "name": "AC Monza",
+      "shortName": "Monza",
+      "tla": "MON",
+      "coach": "Ivan Juric",
+      "coach_last": "Jurić",
+      "league": "Serie A"
+    },
+    {
+      "name": "Como 1907",
+      "shortName": "Como 1907",
+      "tla": "COM",
+      "coach": "Fàbregas",
+      "coach_last": "Cesc Fàbregas",
+      "league": "Serie A"
+    },
+    {
+      "name": "Arsenal FC",
+      "shortName": "Arsenal",
+      "tla": "ARS",
+      "coach": "Mikel Arteta",
+      "coach_last": "Mikel Arteta",
+      "league": "Premier League"
+    },
+    {
+      "name": "Aston Villa FC",
+      "shortName": "Aston Villa",
+      "tla": "AVL",
+      "coach": "Unai Emery",
+      "coach_last": "Unai Emery",
+      "league": "Premier League"
+    },
+    {
+      "name": "Chelsea FC",
+      "shortName": "Chelsea",
+      "tla": "CHE",
+      "coach": "Xabi Alonso",
+      "coach_last": "Xabi Alonso",
+      "league": "Premier League"
+    },
+    {
+      "name": "Everton FC",
+      "shortName": "Everton",
+      "tla": "EVE",
+      "coach": "David Moyes",
+      "coach_last": "Moyes",
+      "league": "Premier League"
+    },
+    {
+      "name": "Fulham FC",
+      "shortName": "Fulham",
+      "tla": "FUL",
+      "coach": "Arbeloa",
+      "coach_last": "Arbeloa",
+      "league": "Premier League"
+    },
+    {
+      "name": "Liverpool FC",
+      "shortName": "Liverpool",
+      "tla": "LIV",
+      "coach": "Andoni Iraola",
+      "coach_last": "",
+      "league": "Premier League"
+    },
+    {
+      "name": "Manchester City FC",
+      "shortName": "Man City",
+      "tla": "MCI",
+      "coach": "Enzo Maresca",
+      "coach_last": "Maresca",
+      "league": "Premier League"
+    },
+    {
+      "name": "Manchester United FC",
+      "shortName": "Man United",
+      "tla": "MUN",
+      "coach": "Michael Carrick",
+      "coach_last": "Carrick",
+      "league": "Premier League"
+    },
+    {
+      "name": "Newcastle United FC",
+      "shortName": "Newcastle",
+      "tla": "NEW",
+      "coach": "Matthias Jaissle",
+      "coach_last": "Jaissle",
+      "league": "Premier League"
+    },
+    {
+      "name": "Sunderland AFC",
+      "shortName": "Sunderland",
+      "tla": "SUN",
+      "coach": "Regis Le Bris",
+      "coach_last": "Le Bris",
+      "league": "Premier League"
+    },
+    {
+      "name": "Tottenham Hotspur FC",
+      "shortName": "Tottenham",
+      "tla": "TOT",
+      "coach": "Roberto De Zerbi",
+      "coach_last": "De Zerbi",
+      "league": "Premier League"
+    },
+    {
+      "name": "Hull City AFC",
+      "shortName": "Hull City",
+      "tla": "HUL",
+      "coach": "Sergej Jakirović",
+      "coach_last": "Jakirović",
+      "league": "Premier League"
+    },
+    {
+      "name": "Leeds United FC",
+      "shortName": "Leeds United",
+      "tla": "LEE",
+      "coach": "Daniel Farke",
+      "coach_last": "Farke",
+      "league": "Premier League"
+    },
+    {
+      "name": "Ipswich Town FC",
+      "shortName": "Ipswich Town",
+      "tla": "IPS",
+      "coach": "Gary O'Neil",
+      "coach_last": "O'Neil",
+      "league": "Premier League"
+    },
+    {
+      "name": "Nottingham Forest FC",
+      "shortName": "Nottingham",
+      "tla": "NOT",
+      "coach": "Oliver Glasner",
+      "coach_last": "Glasner",
+      "league": "Premier League"
+    },
+    {
+      "name": "Crystal Palace FC",
+      "shortName": "Crystal Palace",
+      "tla": "CRY",
+      "coach": "Pierre Sage",
+      "coach_last": "Sage",
+      "league": "Premier League"
+    },
+    {
+      "name": "Brighton & Hove Albion FC",
+      "shortName": "Brighton Hove",
+      "tla": "BHA",
+      "coach": "Fabian Hürzeler",
+      "coach_last": "Hürzeler",
+      "league": "Premier League"
+    },
+    {
+      "name": "Brentford FC",
+      "shortName": "Brentford",
+      "tla": "BRE",
+      "coach": "Keith Andrews",
+      "coach_last": "Andrews",
+      "league": "Premier League"
+    },
+    {
+      "name": "AFC Bournemouth",
+      "shortName": "Bournemouth",
+      "tla": "BOU",
+      "coach": "Marco Rose",
+      "coach_last": "Rose",
+      "league": "Premier League"
+    },
+    {
+      "name": "Coventry City FC",
+      "shortName": "Coventry City",
+      "tla": "COV",
+      "coach": "Frank Lampard",
+      "coach_last": "Lampard",
+      "league": "Premier League"
+    },
+    {
+      "name": "Athletic Club",
+      "shortName": "Athletic",
+      "tla": "ATH",
+      "coach": "Edin Terzić",
+      "coach_last": "Terzić",
+      "league": "La Liga"
+    },
+    {
+      "name": "Club Atlético de Madrid",
+      "shortName": "Atleti",
+      "tla": "ATL",
+      "coach": "Diego Simeone",
+      "coach_last": "Simeone",
+      "league": "La Liga"
+    },
+    {
+      "name": "CA Osasuna",
+      "shortName": "Osasuna",
+      "tla": "OSA",
+      "coach": "Luis Ramis",
+      "coach_last": "Ramis",
+      "league": "La Liga"
+    },
+    {
+      "name": "RCD Espanyol de Barcelona",
+      "shortName": "Espanyol",
+      "tla": "ESP",
+      "coach": "Manolo González",
+      "coach_last": "Manolo González",
+      "league": "La Liga"
+    },
+    {
+      "name": "FC Barcelona",
+      "shortName": "Barça",
+      "tla": "FCB",
+      "coach": "Hansi Flick",
+      "coach_last": "Flick",
+      "league": "La Liga"
+    },
+    {
+      "name": "Getafe CF",
+      "shortName": "Getafe",
+      "tla": "GET",
+      "coach": "Pepe Bordalás",
+      "coach_last": "José Bordalás",
+      "league": "La Liga"
+    },
+    {
+      "name": "Málaga CF",
+      "shortName": "Málaga",
+      "tla": "MAL",
+      "coach": "Juan Funes",
+      "coach_last": "Juan Funes",
+      "league": "La Liga"
+    },
+    {
+      "name": "Real Madrid CF",
+      "shortName": "Real Madrid",
+      "tla": "RMA",
+      "coach": "José Mourinho",
+      "coach_last": "José Mourinho",
+      "league": "La Liga"
+    },
+    {
+      "name": "Rayo Vallecano de Madrid",
+      "shortName": "Rayo Vallecano",
+      "tla": "RAY",
+      "coach": "Beñat San José",
+      "coach_last": "Beñat San José",
+      "league": "La Liga"
+    },
+    {
+      "name": "Levante UD",
+      "shortName": "Levante",
+      "tla": "LEV",
+      "coach": "Luís Castro",
+      "coach_last": "Luís Castro",
+      "league": "La Liga"
+    },
+    {
+      "name": "Real Betis Balompié",
+      "shortName": "Real Betis",
+      "tla": "BET",
+      "coach": "Manuel Pellegrini",
+      "coach_last": "Pellegrini",
+      "league": "La Liga"
+    },
+    {
+      "name": "Real Sociedad de Fútbol",
+      "shortName": "Real Sociedad",
+      "tla": "RSO",
+      "coach": "Pellegrino Matarazzo",
+      "coach_last": "Matarazzo",
+      "league": "La Liga"
+    },
+    {
+      "name": "Villarreal CF",
+      "shortName": "Villarreal",
+      "tla": "VIL",
+      "coach": "Inigo Perez",
+      "coach_last": "",
+      "league": "La Liga"
+    },
+    {
+      "name": "Valencia CF",
+      "shortName": "Valencia",
+      "tla": "VAL",
+      "coach": "Carlos Corberán",
+      "coach_last": "Corberán",
+      "league": "La Liga"
+    },
+    {
+      "name": "Deportivo Alavés",
+      "shortName": "Alavés",
+      "tla": "ALA",
+      "coach": "Quique Sanchez Flores",
+      "coach_last": "Sanchez Flores",
+      "league": "La Liga"
+    },
+    {
+      "name": "Elche CF",
+      "shortName": "Elche",
+      "tla": "ELC",
+      "coach": "Martin Anselmi",
+      "coach_last": "Anselmi",
+      "league": "La Liga"
+    },
+    {
+      "name": "RC Celta de Vigo",
+      "shortName": "Celta",
+      "tla": "CEL",
+      "coach": "Claudio",
+      "coach_last": "Claudio Giráldez",
+      "league": "La Liga"
+    },
+    {
+      "name": "Sevilla FC",
+      "shortName": "Sevilla FC",
+      "tla": "SEV",
+      "coach": "Luís García",
+      "coach_last": "Luis García",
+      "league": "La Liga"
+    },
+    {
+      "name": "RC Deportivo La Coruña",
+      "shortName": "Deportivo",
+      "tla": "DEP",
+      "coach": "Antonio Hidalgo",
+      "coach_last": "Antonio Hidalgo",
+      "league": "La Liga"
+    },
+    {
+      "name": "Real Racing Club de Santander",
+      "shortName": "Santander",
+      "tla": "SAN",
+      "coach": "José Alberto López",
+      "coach_last": "José Alberto López",
+      "league": "La Liga"
+    },
+    {
+      "name": "1. FC Köln",
+      "shortName": "1. FC Köln",
+      "tla": "KOE",
+      "coach": "René Wagner",
+      "coach_last": "Wagner",
+      "league": "Bundesliga"
+    },
+    {
+      "name": "TSG 1899 Hoffenheim",
+      "shortName": "Hoffenheim",
+      "tla": "TSG",
+      "coach": "Christian Ilzer",
+      "coach_last": "Ilzer",
+      "league": "Bundesliga"
+    },
+    {
+      "name": "Bayer 04 Leverkusen",
+      "shortName": "Leverkusen",
+      "tla": "B04",
+      "coach": "Carles Martínez",
+      "coach_last": "Carles Martínez",
+      "league": "Bundesliga"
+    },
+    {
+      "name": "Borussia Dortmund",
+      "shortName": "Dortmund",
+      "tla": "BVB",
+      "coach": "Niko Kovać",
+      "coach_last": "Kovač",
+      "league": "Bundesliga"
+    },
+    {
+      "name": "FC Bayern München",
+      "shortName": "Bayern",
+      "tla": "FCB",
+      "coach": "Vincent Kompany",
+      "coach_last": "Kompany",
+      "league": "Bundesliga"
+    },
+    {
+      "name": "FC Schalke 04",
+      "shortName": "Schalke",
+      "tla": "S04",
+      "coach": "Miron Muslic",
+      "coach_last": "",
+      "league": "Bundesliga"
+    },
+    {
+      "name": "Hamburger SV",
+      "shortName": "HSV",
+      "tla": "HSV",
+      "coach": "Merlin Polzin",
+      "coach_last": "Polzin",
+      "league": "Bundesliga"
+    },
+    {
+      "name": "VfB Stuttgart",
+      "shortName": "Stuttgart",
+      "tla": "VFB",
+      "coach": "Sebastian Hoeneß",
+      "coach_last": "Hoeneß",
+      "league": "Bundesliga"
+    },
+    {
+      "name": "SV Werder Bremen",
+      "shortName": "Bremen",
+      "tla": "SVW",
+      "coach": "Daniel Thioune",
+      "coach_last": "Thioune",
+      "league": "Bundesliga"
+    },
+    {
+      "name": "1. FSV Mainz 05",
+      "shortName": "Mainz",
+      "tla": "M05",
+      "coach": "Urs Fischer",
+      "coach_last": "Fischer",
+      "league": "Bundesliga"
+    },
+    {
+      "name": "FC Augsburg",
+      "shortName": "Augsburg",
+      "tla": "FCA",
+      "coach": "Manuel Baum",
+      "coach_last": "Baum",
+      "league": "Bundesliga"
+    },
+    {
+      "name": "SC Freiburg",
+      "shortName": "Freiburg",
+      "tla": "SCF",
+      "coach": "Julian Schuster",
+      "coach_last": "Schuster",
+      "league": "Bundesliga"
+    },
+    {
+      "name": "Borussia Mönchengladbach",
+      "shortName": "M'gladbach",
+      "tla": "BMG",
+      "coach": "Eugen Polański",
+      "coach_last": "Polański",
+      "league": "Bundesliga"
+    },
+    {
+      "name": "Eintracht Frankfurt",
+      "shortName": "Frankfurt",
+      "tla": "SGE",
+      "coach": "Adi Hütter",
+      "coach_last": "Hütter",
+      "league": "Bundesliga"
+    },
+    {
+      "name": "1. FC Union Berlin",
+      "shortName": "Union Berlin",
+      "tla": "UNB",
+      "coach": "Mauro Lustrinelli",
+      "coach_last": "Lustrinelli",
+      "league": "Bundesliga"
+    },
+    {
+      "name": "SC Paderborn 07",
+      "shortName": "SC Paderborn",
+      "tla": "SCP",
+      "coach": "Ralf Kettemann",
+      "coach_last": "Kettemann",
+      "league": "Bundesliga"
+    },
+    {
+      "name": "SV 07 Elversberg",
+      "shortName": "Elversberg",
+      "tla": "ELV",
+      "coach": "Vincent Wagner",
+      "coach_last": "Wagner",
+      "league": "Bundesliga"
+    },
+    {
+      "name": "RB Leipzig",
+      "shortName": "RB Leipzig",
+      "tla": "RBL",
+      "coach": "Martín Demichelis",
+      "coach_last": "Demichelis",
+      "league": "Bundesliga"
+    },
+    {
+      "name": "Toulouse FC",
+      "shortName": "Toulouse",
+      "tla": "TOU",
+      "coach": "Jens Berthel Askou",
+      "coach_last": "Askou",
+      "league": "Ligue 1"
+    },
+    {
+      "name": "Stade Brestois 29",
+      "shortName": "Brest",
+      "tla": "BRE",
+      "coach": "",
+      "coach_last": "",
+      "league": "Ligue 1"
+    },
+    {
+      "name": "Olympique de Marseille",
+      "shortName": "Marseille",
+      "tla": "MAR",
+      "coach": "Bruno Génésio",
+      "coach_last": "Génésio",
+      "league": "Ligue 1"
+    },
+    {
+      "name": "AJ Auxerre",
+      "shortName": "Auxerre",
+      "tla": "AJA",
+      "coach": "William Still",
+      "coach_last": "",
+      "league": "Ligue 1"
+    },
+    {
+      "name": "Lille OSC",
+      "shortName": "Lille",
+      "tla": "LIL",
+      "coach": "Davide Ancelotti",
+      "coach_last": "Ancelotti",
+      "league": "Ligue 1"
+    },
+    {
+      "name": "OGC Nice",
+      "shortName": "Nice",
+      "tla": "NIC",
+      "coach": "Olivier Pantaloni",
+      "coach_last": "Pantaloni",
+      "league": "Ligue 1"
+    },
+    {
+      "name": "Olympique Lyonnais",
+      "shortName": "Olympique Lyon",
+      "tla": "LYO",
+      "coach": "Paulo Fonseca",
+      "coach_last": "Paulo Fonseca",
+      "league": "Ligue 1"
+    },
+    {
+      "name": "Paris Saint-Germain FC",
+      "shortName": "PSG",
+      "tla": "PSG",
+      "coach": "Luis Enrique",
+      "coach_last": "Luis Enrique",
+      "league": "Ligue 1"
+    },
+    {
+      "name": "FC Lorient",
+      "shortName": "Lorient",
+      "tla": "FCL",
+      "coach": "Alexandre Dujeux",
+      "coach_last": "Dujeux",
+      "league": "Ligue 1"
+    },
+    {
+      "name": "Stade Rennais FC 1901",
+      "shortName": "Stade Rennais",
+      "tla": "REN",
+      "coach": "Franck Haise",
+      "coach_last": "Haise",
+      "league": "Ligue 1"
+    },
+    {
+      "name": "ES Troyes AC",
+      "shortName": "Troyes",
+      "tla": "ETR",
+      "coach": "Stéphane Dumont",
+      "coach_last": "Dumont",
+      "league": "Ligue 1"
+    },
+    {
+      "name": "Angers SCO",
+      "shortName": "Angers SCO",
+      "tla": "ANG",
+      "coach": "Stéphane Gilli",
+      "coach_last": "Gilli",
+      "league": "Ligue 1"
+    },
+    {
+      "name": "Le Havre AC",
+      "shortName": "Le Havre",
+      "tla": "HAC",
+      "coach": "Didier Digard",
+      "coach_last": "Digard",
+      "league": "Ligue 1"
+    },
+    {
+      "name": "Le Mans FC",
+      "shortName": "Le Mans",
+      "tla": "LMF",
+      "coach": "Patrick Videira",
+      "coach_last": "Videira",
+      "league": "Ligue 1"
+    },
+    {
+      "name": "Racing Club de Lens",
+      "shortName": "RC Lens",
+      "tla": "RCL",
+      "coach": "Yannick Cahuzac",
+      "coach_last": "Cahuzac",
+      "league": "Ligue 1"
+    },
+    {
+      "name": "AS Monaco FC",
+      "shortName": "Monaco",
+      "tla": "ASM",
+      "coach": "Filipe Luis",
+      "coach_last": "Filipe Luís",
+      "league": "Ligue 1"
+    },
+    {
+      "name": "RC Strasbourg Alsace",
+      "shortName": "Strasbourg",
+      "tla": "RC ",
+      "coach": "Hugo Oliveira",
+      "coach_last": "Hugo Oliveira",
+      "league": "Ligue 1"
+    },
+    {
+      "name": "Paris FC",
+      "shortName": "Paris FC",
+      "tla": "PFC",
+      "coach": "Liam Rosenior",
+      "coach_last": "Rosenior",
+      "league": "Ligue 1"
+    }
+  ],
+  "teams_updated": "2026-10-23T13:19:48.979582+00:00"
 }
