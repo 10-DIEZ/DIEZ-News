@@ -178,7 +178,7 @@
       "home": "VfB Stuttgart",
       "away": "Borussia Mönchengladbach",
       "kickoff": "2026-10-23T18:30:00Z",
-      "status": "TIMED"
+      "status": "IN_PLAY"
     },
     {
       "competition": "SA",
@@ -187,7 +187,7 @@
       "home": "Torino FC",
       "away": "AC Monza",
       "kickoff": "2026-10-23T18:45:00Z",
-      "status": "TIMED"
+      "status": "IN_PLAY"
     },
     {
       "competition": "FL1",
@@ -196,7 +196,7 @@
       "home": "Stade Brestois 29",
       "away": "OGC Nice",
       "kickoff": "2026-10-23T18:45:00Z",
-      "status": "TIMED"
+      "status": "IN_PLAY"
     },
     {
       "competition": "PL",
@@ -205,7 +205,7 @@
       "home": "Ipswich Town FC",
       "away": "Nottingham Forest FC",
       "kickoff": "2026-10-23T19:00:00Z",
-      "status": "TIMED"
+      "status": "IN_PLAY"
     },
     {
       "competition": "PD",
@@ -214,7 +214,7 @@
       "home": "Deportivo Alavés",
       "away": "Málaga CF",
       "kickoff": "2026-10-23T19:00:00Z",
-      "status": "TIMED"
+      "status": "IN_PLAY"
     },
     {
       "competition": "PL",
@@ -577,21 +577,21 @@
       "status": "TIMED"
     },
     {
-      "competition": "FL1",
-      "league": "Ligue 1",
-      "flag": "🇫🇷",
-      "home": "Paris Saint-Germain FC",
-      "away": "Olympique Lyonnais",
-      "kickoff": "2026-10-25T19:45:00Z",
-      "status": "TIMED"
-    },
-    {
       "competition": "PD",
       "league": "La Liga",
       "flag": "🇪🇸",
       "home": "FC Barcelona",
       "away": "Real Madrid CF",
       "kickoff": "2026-10-25T20:00:00Z",
+      "status": "TIMED"
+    },
+    {
+      "competition": "FL1",
+      "league": "Ligue 1",
+      "flag": "🇫🇷",
+      "home": "Paris Saint-Germain FC",
+      "away": "Olympique Lyonnais",
+      "kickoff": "2026-10-26T19:30:00Z",
       "status": "TIMED"
     },
     {
