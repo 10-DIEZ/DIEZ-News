@@ -303,9 +303,14 @@ TEAMS = {
     },
 }
 
-# Cognomi degli allenatori (presi da football-data.org) troppo comuni per
-# essere usati da soli: non vengono usati per riconoscere la squadra
+# Cognomi degli allenatori (presi da football-data.org) troppo comuni o
+# ambigui per essere usati da soli: la squadra si riconosce solo dal nome
+# completo (es. "Davide Ancelotti", non "Ancelotti" che di solito e' Carlo).
+# Contiene anche nomi di battesimo, come rete di sicurezza.
 COACH_SURNAME_STOPLIST = {
+    "Still", "Ancelotti", "Pellegrini", "Castro", "Oliveira", "Enrique", "Luis", "Luís", "José", "Jose",
+    "Juan", "Carlos", "Antonio", "Hugo", "Paulo", "Mikel", "Unai", "Xabi", "Carles", "Manolo", "Beñat",
+    "Cesc", "Claudio", "Filipe", "Rúben", "Ruben", "Pepe", "Marco", "Daniel", "David", "Michael",
     "Frank", "Slot", "Rose", "King", "Moore", "Silva", "Martínez", "Martinez", "Fernández", "Fernandez",
     "García", "Garcia", "González", "Gonzalez", "Rodríguez", "Rodriguez", "López", "Lopez", "Pérez",
     "Perez", "Sánchez", "Sanchez", "Gómez", "Gomez", "Díaz", "Diaz", "Müller", "Muller", "Schmidt",

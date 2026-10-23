@@ -31,6 +31,7 @@ import html
 import re
 import threading
 import time
+import unicodedata
 import urllib.parse
 from collections import Counter
 from concurrent.futures import ThreadPoolExecutor
@@ -304,19 +305,83 @@ def _compile_alias(alias: str) -> re.Pattern:
     return re.compile(r"(?<!\w)" + re.escape(alias) + r"(?!\w)")
 
 
-def _coach_aliases(full_name: str, last_name: str) -> list:
+def fold(text: str) -> str:
+    """Minuscolo e senza accenti (Génésio -> genesio, Hoeneß -> hoeness)."""
+    t = unicodedata.normalize("NFKD", (text or "").replace("ß", "ss"))
+    return "".join(ch for ch in t if not unicodedata.combining(ch)).lower()
+
+
+_SURNAME_PARTICLES = {"de", "di", "da", "del", "della", "dal", "dalla", "van", "von", "der", "den", "ten",
+                      "ter", "le", "la", "du", "dos", "das", "san", "santa", "st", "mac", "mc"}
+_STOPLIST_FOLDED = {fold(s) for s in COACH_SURNAME_STOPLIST}
+_ACCENT_CLASSES = {
+    "a": "aàáâäãåāą", "e": "eèéêëēėę", "i": "iìíîïī", "o": "oòóôöõøō", "u": "uùúûüūů", "c": "cçćč",
+    "n": "nñńň", "s": "sśšş", "z": "zźżž", "y": "yýÿ", "l": "lł", "r": "rř", "g": "gğ", "d": "dđď", "t": "tť",
+}
+
+
+def surname_from(full: str) -> str:
+    """Ultima parola del nome, con le particelle ('Daniele De Rossi' -> 'De Rossi', 'Beñat San José' -> 'San José')."""
+    words = full.split()
+    if not words:
+        return ""
+    i = len(words) - 1
+    while i > 0 and words[i - 1].lower().rstrip(".") in _SURNAME_PARTICLES:
+        i -= 1
+    return " ".join(words[i:])
+
+
+def _coach_aliases(display: str, last: str) -> list:
+    """
+    Nomi con cui riconoscere l'allenatore nei titoli. football-data.org a volte
+    mette nel campo 'cognome' il nome intero ("Mikel Arteta", "José Mourinho"):
+    il cognome va ricavato con attenzione, e un nome di battesimo da solo
+    ("José", "Luis", "Antonio"...) non deve mai diventare un alias.
+    """
+    display = " ".join((display or "").split())
+    last = " ".join((last or "").split())
+    d, l = display.split(), last.split()
     out = []
-    full_name = (full_name or "").strip()
-    if full_name and 2 <= len(full_name.split()) <= 3:
-        out.append(full_name)
-    parts = (last_name or "").split()
-    if not parts and full_name:
-        parts = full_name.split()[-1:]
-    if parts:
-        surname = " ".join(parts) if parts[0][:1].islower() else parts[0]
-        if len(surname) >= 4 and surname not in COACH_SURNAME_STOPLIST:
-            out.append(surname)
+    if 2 <= len(d) <= 4:
+        out.append(display)
+    if 2 <= len(l) <= 4 and fold(last) != fold(display):
+        out.append(last)
+    if len(l) == 1:
+        surname = l[0]                                  # "Grosso"
+    elif len(l) >= 2 and d and fold(l[0]) == fold(d[0]):
+        surname = surname_from(last)                    # "Rúben Amorim" -> "Amorim"
+    elif len(d) == 1:
+        surname = d[0]                                  # "Fàbregas"
+    elif len(l) >= 2 and fold(display).endswith(fold(last)):
+        surname = last                                  # "Sanchez Flores", "De Rossi"
+    elif len(d) >= 2:
+        surname = surname_from(display)                 # "Pepe Bordalás" -> "Bordalás"
+    else:
+        surname = ""
+    key = fold(surname)
+    if surname and len(key.replace(" ", "")) >= 4 and key not in _STOPLIST_FOLDED \
+            and all(fold(o) != key for o in out):
+        out.append(surname)
     return out
+
+
+def _compile_coach_alias(name: str) -> re.Pattern:
+    """Come _compile_alias, ma accetta il nome con o senza accenti (Kovač/Kovac, Génésio/Genesio)."""
+    parts = []
+    for ch in name:
+        base = fold(ch)
+        if ch == "ß":
+            parts.append("(?:ß|ss)")
+        elif ch.isspace():
+            parts.append(r"\s+")
+        elif ch in "'’`":
+            parts.append("['’`]")
+        elif len(base) == 1 and base in _ACCENT_CLASSES:
+            cls = _ACCENT_CLASSES[base]
+            parts.append("[" + (cls.upper() if ch.isupper() else cls) + "]")
+        else:
+            parts.append(re.escape(ch))
+    return re.compile(r"(?<!\w)" + "".join(parts) + r"(?!\w)")
 
 
 class TeamIndex:
@@ -370,7 +435,7 @@ class TeamIndex:
                 self.patterns.append((_compile_alias(text), name, lang, False))
                 words |= set(re.findall(r"[^\W\d_]{3,}", text.lower()))
             for c in _coach_aliases(t.get("coach", ""), t.get("coach_last", "")):
-                self.patterns.append((_compile_alias(c), name, None, True))
+                self.patterns.append((_compile_coach_alias(c), name, None, True))
                 words |= set(re.findall(r"[^\W\d_]{3,}", c.lower()))
             self.ignore_words[name] = words
 
