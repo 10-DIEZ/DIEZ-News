@@ -503,6 +503,24 @@
       "kickoff": "2026-10-28T19:45:00Z",
       "native_lang": null,
       "native_country": null
+    },
+    {
+      "league": "Serie A",
+      "flag": "🇮🇹",
+      "home": "Frosinone Calcio",
+      "away": "US Lecce",
+      "kickoff": "2026-10-29T17:30:00Z",
+      "native_lang": null,
+      "native_country": null
+    },
+    {
+      "league": "Serie A",
+      "flag": "🇮🇹",
+      "home": "ACF Fiorentina",
+      "away": "Atalanta BC",
+      "kickoff": "2026-10-29T19:45:00Z",
+      "native_lang": null,
+      "native_country": null
     }
   ]
 }
