@@ -1,9 +1,9 @@
-name: Aggiorna calendario partite di oggi
+name: Aggiorna calendario partite e squadre
 
 on:
   schedule:
-    - cron: "0 7 * * *"   # 07:00 UTC (~09:00 in Italia)
-    - cron: "0 18 * * *"  # 18:00 UTC (~20:00 in Italia)
+    # 4 volte al giorno (ore italiane ~7:17, 13:17, 19:17, 1:17), lontano dal minuto :00
+    - cron: "17 5,11,17,23 * * *"
   workflow_dispatch: {}    # permette di lanciarlo a mano da GitHub
 
 permissions:
@@ -16,6 +16,7 @@ concurrency:
 jobs:
   run:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
