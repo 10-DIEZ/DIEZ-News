@@ -20,7 +20,10 @@ Come funziona un giro:
    (TEAM_DAILY_CAPS) e scarto delle copie della stessa notizia.
 4. INVIO: link reale, immagine e data della pagina (se la pagina dice che
    l'articolo e' vecchio, si scarta), titolo e riassunto in italiano via
-   Groq (con riserva di traduzione diretta), invio su Telegram.
+   Groq (con riserva di traduzione diretta), invio su Telegram con in fondo
+   l'hashtag delle squadre (#Inter #Juventus). Se c'e' il gruppo con gli
+   Argomenti (vedi telegram_group.py) ogni notizia va nell'argomento del suo
+   campionato, altrimenti nella chat privata col bot.
 
 Il primo giro dopo l'aggiornamento non manda nulla: registra le notizie gia'
 uscite, cosi' da quel momento arrivano solo quelle nuove (niente raffica).
@@ -54,9 +57,11 @@ from config import (
     EXCLUDED_URL_SEGMENTS,
     GOOGLE_MAX_ITEMS,
     GROQ_API_KEY,
+    HASHTAGS,
     INCLUDE_TRANSFER_NEWS,
     KEY_KEYWORDS,
     LEAGUES,
+    MAX_HASHTAGS,
     MAX_MESSAGES_PER_RUN,
     NEWS_MAX_AGE_HOURS,
     POST_MATCH_HOURS,
@@ -65,12 +70,14 @@ from config import (
     QUERY_CONTEXT,
     SEEN_KEEP_DAYS,
     TEAM_DAILY_CAPS,
+    TEAM_HASHTAGS,
     TEAM_QUERY_INTERVAL_MINUTES,
     TEAMS,
     TRANSFER_URL_SEGMENTS,
     TRANSFER_WORDS,
 )
-from utils import load_calendar, load_state, save_state, send_telegram_message, send_telegram_photo
+from telegram_group import Destination
+from utils import load_calendar, load_state, save_state
 
 STATE_VERSION = 3
 ROME = ZoneInfo("Europe/Rome")
@@ -83,8 +90,8 @@ PARALLEL_FETCH = 3          # ricerche/feed scaricati in parallelo
 PARALLEL_RESOLVE = 4        # link decodificati / pagine lette in parallelo
 PARALLEL_AI = 3             # riassunti Groq preparati in parallelo (con limite di frequenza)
 HTTP_TIMEOUT = 15
-SEND_DELAY_SECONDS = 1.2
 PRESS_QUERY_CHUNK = 6       # squadre per ogni ricerca "conferenza stampa"
+# (la pausa tra un invio e l'altro e' in config: SEND_DELAY_GROUP/PRIVATE_SECONDS)
 
 # Groq: modelli provati in ordine. Piano gratuito: 30 richieste/minuto e
 # 8000 token/minuto PER MODELLO, quindi le chiamate vengono distanziate e,
@@ -299,6 +306,14 @@ def auto_aliases(name: str, short: str) -> list:
     return aliases
 
 
+def make_hashtag(text: str) -> str:
+    """'Aston Villa' -> 'AstonVilla', 'Atlético' -> 'Atletico': solo lettere e numeri, senza accenti."""
+    t = unicodedata.normalize("NFKD", (text or "").replace("ß", "ss"))
+    t = "".join(ch for ch in t if not unicodedata.combining(ch))
+    tag = "".join(p[:1].upper() + p[1:] for p in re.findall(r"[A-Za-z0-9]+", t))
+    return re.sub(r"^\d+", "", tag)   # un hashtag non puo' iniziare con un numero
+
+
 def _compile_alias(alias: str) -> re.Pattern:
     if alias.startswith("~"):
         return re.compile(alias[1:])
@@ -427,6 +442,9 @@ class TeamIndex:
                 "country": lg["country"],
                 "q": info.get("q") or (plain[0] if plain else name),
                 "q_it": info.get("q_it") if lg["lang"] != "it" else None,
+                # hashtag: quello scelto in config.HASHTAGS, altrimenti ricavato dal nome
+                "tag": make_hashtag(HASHTAGS.get(name, "")) or make_hashtag(t.get("shortName", ""))
+                       or make_hashtag(plain[0] if plain else "") or make_hashtag(name),
             }
             words = set(re.findall(r"[^\W\d_]{3,}", name.lower()))
             for a in aliases:
@@ -475,6 +493,17 @@ class TeamIndex:
         for t in teams:
             out |= self.ignore_words.get(t, set())
         return out
+
+    def hashtags(self, teams: list) -> str:
+        """'#Inter #Juventus' per le squadre nominate nel titolo (al massimo MAX_HASHTAGS)."""
+        if not TEAM_HASHTAGS:
+            return ""
+        tags = []
+        for t in teams:
+            tag = self.teams.get(t, {}).get("tag")
+            if tag and tag not in tags:
+                tags.append(tag)
+        return " ".join("#" + tag for tag in tags[:MAX_HASHTAGS])
 
 
 class FixtureIndex:
@@ -854,8 +883,9 @@ def clean_description(text: str, max_chars: int = 280) -> str:
     return text
 
 
-def build_caption(meta: dict, title: str, summary: str, url: str, league_name: str, flag: str) -> str:
-    """Didascalia: bandierina + campionato, titolo in grassetto, riassunto, fonte."""
+def build_caption(meta: dict, title: str, summary: str, url: str, league_name: str, flag: str,
+                  hashtags: str = "") -> str:
+    """Didascalia: bandierina + campionato, titolo in grassetto, riassunto, fonte, hashtag delle squadre."""
     source = meta.get("site_name") or domain_of(url)
     body = summary or clean_description(meta.get("description", ""))
     if body and body.strip().lower() == title.strip().lower():
@@ -863,6 +893,8 @@ def build_caption(meta: dict, title: str, summary: str, url: str, league_name: s
     esc = lambda text: html.escape(text, quote=False)
     head = f"{flag} <b>{esc(league_name)}</b>\n\n<b>{esc(title)}</b>"
     tail = f"\n\n<i>Fonte: {esc(source)}</i>"
+    if hashtags:
+        tail += f"\n{esc(hashtags)}"
     if body:
         room = 1000 - len(head) - len(tail) - 2
         if len(body) > room:
@@ -910,11 +942,18 @@ def run():
     state = load_state()
     first_run = state.get("version") != STATE_VERSION
     if first_run:
+        telegram_cfg = state.get("telegram")   # il collegamento al gruppo non va perso
         state = fresh_state()
+        if isinstance(telegram_cfg, dict):
+            state["telegram"] = telegram_cfg
     prune_state(state, now, today)
     seen = state["seen"]
     caps = state["caps"]["counts"]
     stats = Counter()
+
+    # Dove vanno le notizie: argomenti del gruppo, o chat privata (vedi telegram_group.py)
+    dest = Destination(state)
+    dest.prepare()
 
     def mark_seen(*links):
         for link in links:
@@ -1057,6 +1096,9 @@ def run():
                     stats["esclusi"] += 1
 
     # ---------------- 4b. Titolo e riassunto in italiano (Groq) ----------------
+    # I riassunti si preparano in parallelo e ogni notizia parte appena e'
+    # pronta (sempre in ordine cronologico): nel gruppo Telegram accetta un
+    # messaggio ogni ~3 secondi, cosi' quell'attesa non si somma a quella di Groq.
     def prepare(c):
         if not budget_ok(margin=60):
             return c, False
@@ -1073,26 +1115,17 @@ def run():
                 meta["description"] = translate_to_italian(meta["description"], c["lang"])
         return c, True
 
-    ready.sort(key=lambda c: (c["published"] or now))   # invio in ordine cronologico
-    prepared = []
-    with ThreadPoolExecutor(max_workers=PARALLEL_AI) as pool:
-        for c, ok in pool.map(prepare, ready):
-            if ok:
-                prepared.append(c)
-            else:
-                stats["rimandati"] += 1
-
     # ---------------- 5. Invio ----------------
-    for c in prepared:
+    def deliver(c):
         if not budget_ok():
             stats["rimandati"] += 1
-            continue
+            return
         # il titolo in italiano scritto da Groq a volte rivela cio' che l'originale
         # non diceva (es. "mercato" in un articolo spagnolo): stessi filtri del titolo
         if EXCLUDE_RE.search(c["it_title"]) or (not INCLUDE_TRANSFER_NEWS and TRANSFER_RE.search(c["it_title"])):
             mark_seen(c["link"], c["url"])
             stats["esclusi"] += 1
-            continue
+            return
         # stessa notizia gia' inviata in questo giro o uscita in un'altra lingua
         # (confronto anche sul titolo tradotto in italiano)
         tokens_it = title_tokens(c["it_title"], c["ignore"])
@@ -1101,19 +1134,15 @@ def run():
                for r in recent):
             mark_seen(c["link"], c["url"])
             stats["doppioni"] += 1
-            continue
+            return
         info = team_index.teams[c["teams"][0]]
         meta = c["meta"]
-        caption = build_caption(meta, c["it_title"], c["summary"], c["url"], info["league"], info["flag"])
-        sent_ok = False
-        if meta.get("image"):
-            sent_ok = send_telegram_photo(meta["image"], caption, "🔗 Leggi l'articolo", c["url"])
-        if not sent_ok:
-            sent_ok = send_telegram_message(caption, disable_preview=True,
-                                            button_text="🔗 Leggi l'articolo", button_url=c["url"])
-        if not sent_ok:
+        caption = build_caption(meta, c["it_title"], c["summary"], c["url"], info["league"], info["flag"],
+                                team_index.hashtags(c["teams"]))
+        if not dest.send(info["league"], caption, meta.get("image", ""), "🔗 Leggi l'articolo", c["url"]):
             stats["invio_fallito"] += 1
-            continue   # non segnato: riprova al prossimo giro
+            return   # non segnato: riprova al prossimo giro
+        where = "argomento del gruppo" if dest.in_group else "chat privata"
         mark_seen(c["link"], c["url"])
         ts = now.isoformat()
         recent.append({"teams": c["teams"], "tokens": sorted(c["tokens"]), "ts": ts})
@@ -1121,8 +1150,16 @@ def run():
             recent.append({"teams": c["teams"], "tokens": sorted(tokens_it), "ts": ts})
         caps[c["cap_key"]] = caps.get(c["cap_key"], 0) + 1
         stats["inviati"] += 1
-        print(f"  INVIATA [{info['league']} · {c['teams'][0]} · {c['category']}] {c['title'][:110]}")
-        time.sleep(SEND_DELAY_SECONDS)
+        print(f"  INVIATA [{info['league']} · {c['teams'][0]} · {c['category']} → {where}] {c['title'][:110]}")
+        time.sleep(dest.send_delay)
+
+    ready.sort(key=lambda c: (c["published"] or now))   # invio in ordine cronologico
+    with ThreadPoolExecutor(max_workers=PARALLEL_AI) as pool:
+        for c, ok in pool.map(prepare, ready):
+            if ok:
+                deliver(c)
+            else:
+                stats["rimandati"] += 1
 
     state["stats"]["sent"] = state["stats"].get("sent", 0) + stats["inviati"]
     state["stats"]["groq_failures"] = state["stats"].get("groq_failures", 0) + stats["groq_falliti"]
@@ -1133,7 +1170,8 @@ def run():
         f"scommesse/mercato), {stats['altre_squadre']} non riguardano le squadre seguite, "
         f"{stats['dopo_partita']} su partite gia' giocate, {stats['limite_squadra']} oltre il limite "
         f"giornaliero, {stats['doppioni']} doppioni, {stats['non_decodificati']} link non decodificati, "
-        f"{stats['rimandati']} rimandati → {stats['inviati']} inviati "
+        f"{stats['rimandati']} rimandati, {stats['invio_fallito']} invii non riusciti → "
+        f"{stats['inviati']} inviati in {dest.describe()} "
         f"(oggi in tutto: {state['stats']['sent']}; riassunti Groq falliti: {stats['groq_falliti']}, "
         f"limiti Groq raggiunti: {stats['groq_429']}) in {time.time() - start:.0f}s"
     )

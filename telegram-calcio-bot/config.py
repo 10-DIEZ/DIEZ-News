@@ -22,20 +22,113 @@ import os
 # --- Credenziali (lette da variabili d'ambiente / GitHub Secrets, MAI scritte qui) ---
 TELEGRAM_BOT_TOKEN = os.environ.get("TELEGRAM_BOT_TOKEN", "")
 TELEGRAM_CHAT_ID = os.environ.get("TELEGRAM_CHAT_ID", "")
+# Facoltativo: id del gruppo Telegram (inizia con -100). Di solito NON serve:
+# il bot trova il gruppo da solo (vedi "GRUPPO CON ARGOMENTI" qui sotto).
+TELEGRAM_GROUP_ID = os.environ.get("TELEGRAM_GROUP_ID", "")
 GROQ_API_KEY = os.environ.get("GROQ_API_KEY", "")
 FOOTBALL_DATA_API_KEY = os.environ.get("FOOTBALL_DATA_API_KEY", "")
 
 FOOTBALL_DATA_HOST = "https://api.football-data.org/v4"
+TELEGRAM_API_BASE = os.environ.get("TELEGRAM_API_BASE", "https://api.telegram.org")
+
+# Bandiera dell'Inghilterra (scritta in codice perche' copiando il simbolo si
+# perdeva un pezzo e restava solo la bandiera nera)
+_ENGLAND_FLAG = "\U0001F3F4\U000E0067\U000E0062\U000E0065\U000E006E\U000E0067\U000E007F"
 
 # --- I 5 campionati seguiti ---
 # lang/country: lingua e paese usati per le ricerche Google News locali
 LEAGUES = [
     {"name": "Serie A", "flag": "🇮🇹", "fd_code": "SA", "lang": "it", "country": "IT"},
-    {"name": "Premier League", "flag": "🏴", "fd_code": "PL", "lang": "en", "country": "GB"},
+    {"name": "Premier League", "flag": _ENGLAND_FLAG, "fd_code": "PL", "lang": "en", "country": "GB"},
     {"name": "La Liga", "flag": "🇪🇸", "fd_code": "PD", "lang": "es", "country": "ES"},
     {"name": "Bundesliga", "flag": "🇩🇪", "fd_code": "BL1", "lang": "de", "country": "DE"},
     {"name": "Ligue 1", "flag": "🇫🇷", "fd_code": "FL1", "lang": "fr", "country": "FR"},
 ]
+
+# =====================================================================
+# GRUPPO CON ARGOMENTI (un argomento per campionato)
+# =====================================================================
+# Come si attiva (tutto da Telegram, niente da cambiare su GitHub):
+#   1. crea un gruppo con dentro solo te e il bot
+#   2. nelle impostazioni del gruppo attiva gli "Argomenti"
+#   3. nomina il bot amministratore (con il permesso di gestire gli argomenti)
+# Al giro successivo (entro 5 minuti) il bot trova il gruppo, riconosce che
+# l'hai aggiunto tu, crea un argomento per campionato e da li' in poi manda
+# ogni notizia nell'argomento del suo campionato. Finche' il gruppo non e'
+# pronto, le notizie arrivano nella chat privata col bot, come prima.
+# Non creare gli argomenti a mano: li crea il bot (e ne ricorda gli indirizzi).
+#
+# Nome e colore di ogni argomento. Colori ammessi da Telegram:
+# 7322096 azzurro, 16766590 giallo, 13338331 viola, 9367192 verde,
+# 16749490 rosa, 16478047 rosso
+TOPICS = {
+    "Serie A": {"name": "🇮🇹 Serie A", "color": 7322096},
+    "Premier League": {"name": _ENGLAND_FLAG + " Premier League", "color": 13338331},
+    "La Liga": {"name": "🇪🇸 La Liga", "color": 16478047},
+    "Bundesliga": {"name": "🇩🇪 Bundesliga", "color": 16766590},
+    "Ligue 1": {"name": "🇫🇷 Ligue 1", "color": 9367192},
+}
+
+# Telegram accetta al massimo 20 messaggi al minuto in un gruppo:
+# pausa tra un invio e l'altro (secondi), nel gruppo e nella chat privata
+SEND_DELAY_GROUP_SECONDS = 3.2
+SEND_DELAY_PRIVATE_SECONDS = 1.2
+
+# =====================================================================
+# HASHTAG DELLE SQUADRE
+# =====================================================================
+# In fondo a ogni notizia: l'hashtag delle squadre nominate nel titolo
+# (es. #Inter #Juventus). Toccandolo, Telegram mostra tutte le notizie di
+# quella squadra. False per toglierli.
+TEAM_HASHTAGS = True
+MAX_HASHTAGS = 3
+
+# Hashtag di ogni squadra (chiave = nome ufficiale di football-data.org, come
+# in TEAMS qui sotto), con il nome che usa la stampa italiana (#Barcellona,
+# #Lipsia, #Marsiglia), lo stesso che leggi nei riassunti. Solo lettere senza
+# accenti, numeri e _ (niente spazi). Una squadra che non e' qui (es. una
+# neopromossa) riceve un hashtag ricavato in automatico dal suo nome.
+HASHTAGS = {
+    # Serie A
+    "Atalanta BC": "Atalanta", "Bologna FC 1909": "Bologna", "Cagliari Calcio": "Cagliari",
+    "Como 1907": "Como", "ACF Fiorentina": "Fiorentina", "Frosinone Calcio": "Frosinone",
+    "Genoa CFC": "Genoa", "FC Internazionale Milano": "Inter", "Juventus FC": "Juventus",
+    "SS Lazio": "Lazio", "US Lecce": "Lecce", "AC Milan": "Milan", "AC Monza": "Monza",
+    "SSC Napoli": "Napoli", "Parma Calcio 1913": "Parma", "AS Roma": "Roma",
+    "US Sassuolo Calcio": "Sassuolo", "Torino FC": "Torino", "Udinese Calcio": "Udinese",
+    "Venezia FC": "Venezia",
+    # Premier League
+    "Arsenal FC": "Arsenal", "Aston Villa FC": "AstonVilla", "AFC Bournemouth": "Bournemouth",
+    "Brentford FC": "Brentford", "Brighton & Hove Albion FC": "Brighton", "Chelsea FC": "Chelsea",
+    "Coventry City FC": "Coventry", "Crystal Palace FC": "CrystalPalace", "Everton FC": "Everton",
+    "Fulham FC": "Fulham", "Hull City AFC": "HullCity", "Ipswich Town FC": "Ipswich",
+    "Leeds United FC": "Leeds", "Liverpool FC": "Liverpool", "Manchester City FC": "ManCity",
+    "Manchester United FC": "ManUtd", "Newcastle United FC": "Newcastle",
+    "Nottingham Forest FC": "NottinghamForest", "Sunderland AFC": "Sunderland",
+    "Tottenham Hotspur FC": "Tottenham",
+    # La Liga
+    "Deportivo Alavés": "Alaves", "Athletic Club": "AthleticBilbao", "Club Atlético de Madrid": "AtleticoMadrid",
+    "FC Barcelona": "Barcellona", "RC Celta de Vigo": "Celta", "RC Deportivo La Coruña": "Deportivo",
+    "Elche CF": "Elche", "RCD Espanyol de Barcelona": "Espanyol", "Getafe CF": "Getafe",
+    "Levante UD": "Levante", "Málaga CF": "Malaga", "CA Osasuna": "Osasuna",
+    "Real Racing Club de Santander": "RacingSantander", "Rayo Vallecano de Madrid": "Rayo",
+    "Real Betis Balompié": "Betis", "Real Madrid CF": "RealMadrid", "Real Sociedad de Fútbol": "RealSociedad",
+    "Sevilla FC": "Siviglia", "Valencia CF": "Valencia", "Villarreal CF": "Villarreal",
+    # Bundesliga
+    "FC Augsburg": "Augsburg", "Bayer 04 Leverkusen": "Leverkusen", "FC Bayern München": "Bayern",
+    "Borussia Dortmund": "Dortmund", "SV 07 Elversberg": "Elversberg", "Eintracht Frankfurt": "Eintracht",
+    "SC Freiburg": "Friburgo", "Hamburger SV": "Amburgo", "TSG 1899 Hoffenheim": "Hoffenheim",
+    "1. FC Köln": "Colonia", "RB Leipzig": "Lipsia", "1. FSV Mainz 05": "Mainz",
+    "Borussia Mönchengladbach": "Gladbach", "SC Paderborn 07": "Paderborn", "FC Schalke 04": "Schalke",
+    "VfB Stuttgart": "Stoccarda", "1. FC Union Berlin": "UnionBerlino", "SV Werder Bremen": "Werder",
+    # Ligue 1
+    "Angers SCO": "Angers", "AJ Auxerre": "Auxerre", "Stade Brestois 29": "Brest", "Le Havre AC": "LeHavre",
+    "Racing Club de Lens": "Lens", "Le Mans FC": "LeMans", "Lille OSC": "Lille", "FC Lorient": "Lorient",
+    "Olympique Lyonnais": "Lione", "Olympique de Marseille": "Marsiglia", "AS Monaco FC": "Monaco",
+    "OGC Nice": "Nizza", "Paris FC": "ParisFC", "Paris Saint-Germain FC": "PSG",
+    "Stade Rennais FC 1901": "Rennes", "RC Strasbourg Alsace": "Strasburgo", "Toulouse FC": "Tolosa",
+    "ES Troyes AC": "Troyes",
+}
 
 # Competizioni scaricate SOLO per riconoscere le partite gia' giocate
 # (es. Bayern-Arsenal di Champions): le notizie su quelle partite arrivate

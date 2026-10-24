@@ -15,14 +15,16 @@ concurrency:
 
 jobs:
   run:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 10
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
+        with:
+          ref: main    # sempre l'ultima versione (vedi monitor-news.yml)
 
       - name: Setup Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: "3.11"
 
@@ -40,13 +42,27 @@ jobs:
         run: |
           git config user.name "calcio-bot"
           git config user.email "calcio-bot@users.noreply.github.com"
-          git add telegram-calcio-bot/state/fixtures.json
-          git diff --staged --quiet && exit 0
-          git commit -m "Aggiorna calendario partite"
-          # Se nel frattempo il bot notizie ha salvato il suo file, prima
-          # recuperiamo la sua modifica e poi salviamo (fino a 3 tentativi)
-          for i in 1 2 3; do
-            git pull --rebase && git push && exit 0
-            sleep 5
+          FILE=telegram-calcio-bot/state/fixtures.json
+          cp "$FILE" "$RUNNER_TEMP/fixtures.json"
+          # Si riparte dall'ultima versione di main e ci si rimette sopra il
+          # calendario appena scaricato: niente conflitti con il bot notizie,
+          # che nel frattempo salva il suo file (state.json) ogni 5 minuti.
+          for i in 1 2 3 4 5; do
+            git fetch --quiet origin +refs/heads/main:refs/remotes/origin/main
+            git reset --quiet --hard refs/remotes/origin/main
+            cp "$RUNNER_TEMP/fixtures.json" "$FILE"
+            git add "$FILE"
+            if git diff --staged --quiet; then
+              echo "Calendario invariato, niente da salvare."
+              exit 0
+            fi
+            git commit --quiet -m "Aggiorna calendario partite"
+            if git push --quiet origin HEAD:main; then
+              echo "Calendario salvato."
+              exit 0
+            fi
+            echo "Salvataggio non riuscito (tentativo $i di 5), riprovo..."
+            sleep $((i * 4))
           done
+          echo "::error::Calendario non salvato dopo 5 tentativi"
           exit 1

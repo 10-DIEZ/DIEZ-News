@@ -9,6 +9,25 @@ Copre: Serie A, Premier League, La Liga, Bundesliga, Ligue 1.
 
 Gira da solo nel cloud tramite GitHub Actions, non serve tenere niente acceso.
 
+## Notizie divise per campionato e hashtag delle squadre
+
+- **Hashtag**: in fondo a ogni notizia ci sono gli hashtag delle squadre nominate
+  nel titolo (es. `#Inter #Juventus`). Toccandone uno, Telegram mostra tutte le
+  notizie di quella squadra.
+- **Gruppo con Argomenti**: crea un gruppo Telegram con dentro solo te e il bot,
+  attiva gli *Argomenti* nelle impostazioni del gruppo e nomina il bot
+  amministratore. Al giro successivo (entro 5 minuti) il bot trova il gruppo da
+  solo, crea un argomento per campionato e da lì in poi manda ogni notizia
+  nell'argomento del suo campionato. Non serve cambiare nulla su GitHub e non
+  bisogna creare gli argomenti a mano.
+- Finché il gruppo non è pronto le notizie arrivano nella chat privata col bot;
+  se manca qualcosa (Argomenti non attivi, bot non amministratore) il bot te lo
+  scrive in privato, una volta sola. Se un argomento viene cancellato lo ricrea;
+  se il bot viene tolto dal gruppo, le notizie tornano nella chat privata.
+- Nomi e colori degli argomenti, hashtag delle squadre e pause tra un invio e
+  l'altro si cambiano in `config.py` (sezioni "GRUPPO CON ARGOMENTI" e
+  "HASHTAG DELLE SQUADRE"). La logica del gruppo è in `telegram_group.py`.
+
 ---
 
 ## Passo 1 — Crea il bot Telegram

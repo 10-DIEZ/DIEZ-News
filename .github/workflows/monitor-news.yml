@@ -2,9 +2,11 @@ name: Monitor notizie squadre (conferenze e notizie generali)
 
 on:
   schedule:
-    # ogni 5 minuti, ma non al minuto :00 (l'ora piu' intasata su GitHub)
+    # Il giro ogni 5 minuti lo fa partire cron-job.org (con "Run workflow").
+    # Questo orario di GitHub resta solo come riserva, se cron-job.org si ferma
+    # (GitHub lo esegue in modo irregolare). Non al minuto :00, il piu' intasato.
     - cron: "2-59/5 * * * *"
-  workflow_dispatch: {}     # permette di lanciarlo a mano da GitHub
+  workflow_dispatch: {}     # usato da cron-job.org, e per lanciarlo a mano da GitHub
 
 permissions:
   contents: write
@@ -15,14 +17,22 @@ concurrency:
 
 jobs:
   run:
-    runs-on: ubuntu-latest
+    # versione di Ubuntu fissa: ubuntu-latest sta passando a Ubuntu 26 e non
+    # vogliamo sorprese con Python
+    runs-on: ubuntu-24.04
     timeout-minutes: 15
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
+        with:
+          # SEMPRE l'ultima versione di main. Senza questa riga, un giro rimasto
+          # in coda dietro al precedente lavorava sui file del momento in cui era
+          # stato lanciato (stato vecchio): rischiava di rimandare notizie gia'
+          # inviate e poi falliva al salvataggio (le mail "Run failed").
+          ref: main
 
       - name: Setup Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: "3.11"
 
@@ -35,6 +45,8 @@ jobs:
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          # facoltativo: il bot trova il gruppo da solo (vedi telegram_group.py)
+          TELEGRAM_GROUP_ID: ${{ secrets.TELEGRAM_GROUP_ID }}
           GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
         run: python monitor_news.py
 
@@ -42,13 +54,28 @@ jobs:
         run: |
           git config user.name "calcio-bot"
           git config user.email "calcio-bot@users.noreply.github.com"
-          git add telegram-calcio-bot/state/state.json
-          git diff --staged --quiet && exit 0
-          git commit -m "Aggiorna stato notizie"
-          # Se nel frattempo il calendario ha salvato il suo file, prima
-          # recuperiamo la sua modifica e poi salviamo (fino a 3 tentativi)
-          for i in 1 2 3; do
-            git pull --rebase && git push && exit 0
-            sleep 5
+          STATE=telegram-calcio-bot/state/state.json
+          cp "$STATE" "$RUNNER_TEMP/state.json"
+          # I giri non si sovrappongono mai (vedi "concurrency"), quindi lo stato
+          # appena calcolato e' quello giusto: si riparte dall'ultima versione di
+          # main e ci si rimette sopra il nostro state.json. Niente conflitti,
+          # anche se nel frattempo il calendario (o tu) avete salvato altri file.
+          for i in 1 2 3 4 5; do
+            git fetch --quiet origin +refs/heads/main:refs/remotes/origin/main
+            git reset --quiet --hard refs/remotes/origin/main
+            cp "$RUNNER_TEMP/state.json" "$STATE"
+            git add "$STATE"
+            if git diff --staged --quiet; then
+              echo "Stato invariato, niente da salvare."
+              exit 0
+            fi
+            git commit --quiet -m "Aggiorna stato notizie"
+            if git push --quiet origin HEAD:main; then
+              echo "Stato salvato."
+              exit 0
+            fi
+            echo "Salvataggio non riuscito (tentativo $i di 5), riprovo..."
+            sleep $((i * 4))
           done
+          echo "::error::Stato non salvato dopo 5 tentativi"
           exit 1
