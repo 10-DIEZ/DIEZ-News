@@ -232,7 +232,7 @@
       "home": "Athletic Club",
       "away": "Getafe CF",
       "kickoff": "2026-10-25T13:00:00Z",
-      "status": "IN_PLAY"
+      "status": "FINISHED"
     },
     {
       "competition": "SA",
@@ -241,7 +241,7 @@
       "home": "Atalanta BC",
       "away": "Frosinone Calcio",
       "kickoff": "2026-10-25T14:00:00Z",
-      "status": "IN_PLAY"
+      "status": "FINISHED"
     },
     {
       "competition": "SA",
@@ -250,7 +250,7 @@
       "home": "Genoa CFC",
       "away": "Venezia FC",
       "kickoff": "2026-10-25T14:00:00Z",
-      "status": "IN_PLAY"
+      "status": "FINISHED"
     },
     {
       "competition": "PL",
@@ -259,7 +259,7 @@
       "home": "Liverpool FC",
       "away": "Brighton & Hove Albion FC",
       "kickoff": "2026-10-25T14:00:00Z",
-      "status": "IN_PLAY"
+      "status": "FINISHED"
     },
     {
       "competition": "PL",
@@ -268,7 +268,7 @@
       "home": "Crystal Palace FC",
       "away": "Newcastle United FC",
       "kickoff": "2026-10-25T14:00:00Z",
-      "status": "IN_PLAY"
+      "status": "FINISHED"
     },
     {
       "competition": "PL",
@@ -277,7 +277,7 @@
       "home": "Manchester United FC",
       "away": "AFC Bournemouth",
       "kickoff": "2026-10-25T14:00:00Z",
-      "status": "IN_PLAY"
+      "status": "FINISHED"
     },
     {
       "competition": "PL",
@@ -286,7 +286,7 @@
       "home": "Hull City AFC",
       "away": "Brentford FC",
       "kickoff": "2026-10-25T14:00:00Z",
-      "status": "IN_PLAY"
+      "status": "FINISHED"
     },
     {
       "competition": "FL1",
@@ -295,7 +295,7 @@
       "home": "AS Monaco FC",
       "away": "Lille OSC",
       "kickoff": "2026-10-25T14:00:00Z",
-      "status": "IN_PLAY"
+      "status": "FINISHED"
     },
     {
       "competition": "BL1",
@@ -304,7 +304,7 @@
       "home": "TSG 1899 Hoffenheim",
       "away": "Bayer 04 Leverkusen",
       "kickoff": "2026-10-25T14:30:00Z",
-      "status": "IN_PLAY"
+      "status": "FINISHED"
     },
     {
       "competition": "PD",
@@ -313,7 +313,7 @@
       "home": "RC Celta de Vigo",
       "away": "Real Betis Balompié",
       "kickoff": "2026-10-25T15:15:00Z",
-      "status": "TIMED"
+      "status": "FINISHED"
     },
     {
       "competition": "FL1",
@@ -322,7 +322,7 @@
       "home": "Olympique de Marseille",
       "away": "Le Havre AC",
       "kickoff": "2026-10-25T16:15:00Z",
-      "status": "TIMED"
+      "status": "FINISHED"
     },
     {
       "competition": "FL1",
@@ -331,7 +331,7 @@
       "home": "Stade Rennais FC 1901",
       "away": "RC Strasbourg Alsace",
       "kickoff": "2026-10-25T16:15:00Z",
-      "status": "TIMED"
+      "status": "FINISHED"
     },
     {
       "competition": "FL1",
@@ -340,7 +340,7 @@
       "home": "Angers SCO",
       "away": "FC Lorient",
       "kickoff": "2026-10-25T16:15:00Z",
-      "status": "TIMED"
+      "status": "FINISHED"
     },
     {
       "competition": "FL1",
@@ -349,7 +349,7 @@
       "home": "Toulouse FC",
       "away": "ES Troyes AC",
       "kickoff": "2026-10-25T16:15:00Z",
-      "status": "TIMED"
+      "status": "FINISHED"
     },
     {
       "competition": "FL1",
@@ -358,7 +358,7 @@
       "home": "AJ Auxerre",
       "away": "Le Mans FC",
       "kickoff": "2026-10-25T16:15:00Z",
-      "status": "TIMED"
+      "status": "FINISHED"
     },
     {
       "competition": "PL",
@@ -367,7 +367,7 @@
       "home": "Sunderland AFC",
       "away": "Leeds United FC",
       "kickoff": "2026-10-25T16:30:00Z",
-      "status": "TIMED"
+      "status": "FINISHED"
     },
     {
       "competition": "BL1",
@@ -376,7 +376,7 @@
       "home": "SC Freiburg",
       "away": "FC Bayern München",
       "kickoff": "2026-10-25T16:30:00Z",
-      "status": "TIMED"
+      "status": "FINISHED"
     },
     {
       "competition": "SA",
@@ -385,7 +385,7 @@
       "home": "US Lecce",
       "away": "Juventus FC",
       "kickoff": "2026-10-25T17:00:00Z",
-      "status": "TIMED"
+      "status": "FINISHED"
     },
     {
       "competition": "PD",
@@ -394,7 +394,7 @@
       "home": "Real Sociedad de Fútbol",
       "away": "Levante UD",
       "kickoff": "2026-10-25T17:30:00Z",
-      "status": "TIMED"
+      "status": "FINISHED"
     },
     {
       "competition": "SA",
