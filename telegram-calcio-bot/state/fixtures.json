@@ -1,51 +1,6 @@
 {
   "fixtures": [
     {
-      "competition": "BL1",
-      "league": "Bundesliga",
-      "flag": "🇩🇪",
-      "home": "VfB Stuttgart",
-      "away": "Borussia Mönchengladbach",
-      "kickoff": "2026-10-23T18:30:00Z",
-      "status": "FINISHED"
-    },
-    {
-      "competition": "SA",
-      "league": "Serie A",
-      "flag": "🇮🇹",
-      "home": "Torino FC",
-      "away": "AC Monza",
-      "kickoff": "2026-10-23T18:45:00Z",
-      "status": "FINISHED"
-    },
-    {
-      "competition": "FL1",
-      "league": "Ligue 1",
-      "flag": "🇫🇷",
-      "home": "Stade Brestois 29",
-      "away": "OGC Nice",
-      "kickoff": "2026-10-23T18:45:00Z",
-      "status": "FINISHED"
-    },
-    {
-      "competition": "PL",
-      "league": "Premier League",
-      "flag": "🏴󠁧󠁢󠁥󠁮󠁧󠁿",
-      "home": "Ipswich Town FC",
-      "away": "Nottingham Forest FC",
-      "kickoff": "2026-10-23T19:00:00Z",
-      "status": "FINISHED"
-    },
-    {
-      "competition": "PD",
-      "league": "La Liga",
-      "flag": "🇪🇸",
-      "home": "Deportivo Alavés",
-      "away": "Málaga CF",
-      "kickoff": "2026-10-23T19:00:00Z",
-      "status": "FINISHED"
-    },
-    {
       "competition": "PL",
       "league": "Premier League",
       "flag": "🏴󠁧󠁢󠁥󠁮󠁧󠁿",
@@ -421,7 +376,7 @@
       "home": "Paris Saint-Germain FC",
       "away": "Olympique Lyonnais",
       "kickoff": "2026-10-26T19:30:00Z",
-      "status": "TIMED"
+      "status": "FINISHED"
     },
     {
       "competition": "PD",
@@ -430,7 +385,7 @@
       "home": "Sevilla FC",
       "away": "CA Osasuna",
       "kickoff": "2026-10-26T20:00:00Z",
-      "status": "TIMED"
+      "status": "FINISHED"
     },
     {
       "competition": "SA",
@@ -916,6 +871,42 @@
       "home": "Athletic Club",
       "away": "Real Sociedad de Fútbol",
       "kickoff": "2026-11-01T20:00:00Z",
+      "status": "TIMED"
+    },
+    {
+      "competition": "SA",
+      "league": "Serie A",
+      "flag": "🇮🇹",
+      "home": "US Sassuolo Calcio",
+      "away": "ACF Fiorentina",
+      "kickoff": "2026-11-02T17:30:00Z",
+      "status": "TIMED"
+    },
+    {
+      "competition": "SA",
+      "league": "Serie A",
+      "flag": "🇮🇹",
+      "home": "Atalanta BC",
+      "away": "Parma Calcio 1913",
+      "kickoff": "2026-11-02T19:45:00Z",
+      "status": "TIMED"
+    },
+    {
+      "competition": "PL",
+      "league": "Premier League",
+      "flag": "🏴󠁧󠁢󠁥󠁮󠁧󠁿",
+      "home": "Newcastle United FC",
+      "away": "Everton FC",
+      "kickoff": "2026-11-02T20:00:00Z",
+      "status": "TIMED"
+    },
+    {
+      "competition": "PD",
+      "league": "La Liga",
+      "flag": "🇪🇸",
+      "home": "RC Deportivo La Coruña",
+      "away": "CA Osasuna",
+      "kickoff": "2026-11-02T20:00:00Z",
       "status": "TIMED"
     }
   ],
