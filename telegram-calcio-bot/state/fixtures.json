@@ -487,6 +487,15 @@
       "status": "TIMED"
     },
     {
+      "competition": "FL1",
+      "league": "Ligue 1",
+      "flag": "🇫🇷",
+      "home": "OGC Nice",
+      "away": "Stade Rennais FC 1901",
+      "kickoff": "2026-10-30T18:00:00Z",
+      "status": "TIMED"
+    },
+    {
       "competition": "BL1",
       "league": "Bundesliga",
       "flag": "🇩🇪",
@@ -640,15 +649,6 @@
       "status": "TIMED"
     },
     {
-      "competition": "FL1",
-      "league": "Ligue 1",
-      "flag": "🇫🇷",
-      "home": "OGC Nice",
-      "away": "Stade Rennais FC 1901",
-      "kickoff": "2026-10-31T16:15:00Z",
-      "status": "TIMED"
-    },
-    {
       "competition": "SA",
       "league": "Serie A",
       "flag": "🇮🇹",
@@ -690,24 +690,6 @@
       "flag": "🇮🇹",
       "home": "AC Milan",
       "away": "FC Internazionale Milano",
-      "kickoff": "2026-10-31T19:45:00Z",
-      "status": "TIMED"
-    },
-    {
-      "competition": "FL1",
-      "league": "Ligue 1",
-      "flag": "🇫🇷",
-      "home": "Olympique Lyonnais",
-      "away": "Angers SCO",
-      "kickoff": "2026-10-31T19:45:00Z",
-      "status": "TIMED"
-    },
-    {
-      "competition": "FL1",
-      "league": "Ligue 1",
-      "flag": "🇫🇷",
-      "home": "FC Lorient",
-      "away": "Stade Brestois 29",
       "kickoff": "2026-10-31T19:45:00Z",
       "status": "TIMED"
     },
@@ -805,6 +787,15 @@
       "competition": "FL1",
       "league": "Ligue 1",
       "flag": "🇫🇷",
+      "home": "Olympique Lyonnais",
+      "away": "Angers SCO",
+      "kickoff": "2026-11-01T16:15:00Z",
+      "status": "TIMED"
+    },
+    {
+      "competition": "FL1",
+      "league": "Ligue 1",
+      "flag": "🇫🇷",
       "home": "Paris FC",
       "away": "AS Monaco FC",
       "kickoff": "2026-11-01T16:15:00Z",
@@ -888,6 +879,15 @@
       "flag": "🇮🇹",
       "home": "Atalanta BC",
       "away": "Parma Calcio 1913",
+      "kickoff": "2026-11-02T19:45:00Z",
+      "status": "TIMED"
+    },
+    {
+      "competition": "FL1",
+      "league": "Ligue 1",
+      "flag": "🇫🇷",
+      "home": "FC Lorient",
+      "away": "Stade Brestois 29",
       "kickoff": "2026-11-02T19:45:00Z",
       "status": "TIMED"
     },
