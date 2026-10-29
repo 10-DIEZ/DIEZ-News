@@ -97,7 +97,7 @@
       "home": "Frosinone Calcio",
       "away": "US Lecce",
       "kickoff": "2026-10-29T17:30:00Z",
-      "status": "TIMED"
+      "status": "FINISHED"
     },
     {
       "competition": "SA",
@@ -106,7 +106,7 @@
       "home": "ACF Fiorentina",
       "away": "Atalanta BC",
       "kickoff": "2026-10-29T19:45:00Z",
-      "status": "TIMED"
+      "status": "IN_PLAY"
     },
     {
       "competition": "FL1",
@@ -1473,5 +1473,5 @@
       "league": "Ligue 1"
     }
   ],
-  "teams_updated": "2026-10-28T21:42:36.486209+00:00"
+  "teams_updated": "2026-10-29T21:51:42.965226+00:00"
 }
