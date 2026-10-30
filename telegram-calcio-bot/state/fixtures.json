@@ -1,24 +1,6 @@
 {
   "fixtures": [
     {
-      "competition": "FL1",
-      "league": "Ligue 1",
-      "flag": "🇫🇷",
-      "home": "Paris Saint-Germain FC",
-      "away": "Olympique Lyonnais",
-      "kickoff": "2026-10-26T19:30:00Z",
-      "status": "FINISHED"
-    },
-    {
-      "competition": "PD",
-      "league": "La Liga",
-      "flag": "🇪🇸",
-      "home": "Sevilla FC",
-      "away": "CA Osasuna",
-      "kickoff": "2026-10-26T20:00:00Z",
-      "status": "FINISHED"
-    },
-    {
       "competition": "SA",
       "league": "Serie A",
       "flag": "🇮🇹",
@@ -106,7 +88,7 @@
       "home": "ACF Fiorentina",
       "away": "Atalanta BC",
       "kickoff": "2026-10-29T19:45:00Z",
-      "status": "IN_PLAY"
+      "status": "FINISHED"
     },
     {
       "competition": "FL1",
