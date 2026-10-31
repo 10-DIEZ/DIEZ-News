@@ -4,33 +4,6 @@
       "competition": "SA",
       "league": "Serie A",
       "flag": "🇮🇹",
-      "home": "US Sassuolo Calcio",
-      "away": "SS Lazio",
-      "kickoff": "2026-10-27T17:30:00Z",
-      "status": "FINISHED"
-    },
-    {
-      "competition": "SA",
-      "league": "Serie A",
-      "flag": "🇮🇹",
-      "home": "AS Roma",
-      "away": "Cagliari Calcio",
-      "kickoff": "2026-10-27T19:45:00Z",
-      "status": "FINISHED"
-    },
-    {
-      "competition": "SA",
-      "league": "Serie A",
-      "flag": "🇮🇹",
-      "home": "Torino FC",
-      "away": "Como 1907",
-      "kickoff": "2026-10-27T19:45:00Z",
-      "status": "FINISHED"
-    },
-    {
-      "competition": "SA",
-      "league": "Serie A",
-      "flag": "🇮🇹",
       "home": "AC Milan",
       "away": "Bologna FC 1909",
       "kickoff": "2026-10-28T17:30:00Z",
@@ -124,7 +97,7 @@
       "home": "Villarreal CF",
       "away": "RCD Espanyol de Barcelona",
       "kickoff": "2026-10-30T20:00:00Z",
-      "status": "IN_PLAY"
+      "status": "FINISHED"
     },
     {
       "competition": "FL1",
@@ -133,7 +106,7 @@
       "home": "Lille OSC",
       "away": "Racing Club de Lens",
       "kickoff": "2026-10-30T20:05:00Z",
-      "status": "IN_PLAY"
+      "status": "FINISHED"
     },
     {
       "competition": "PL",
@@ -682,6 +655,51 @@
       "home": "Viking FK",
       "away": "Sabah FK",
       "kickoff": "2026-11-04T20:00:00Z",
+      "status": "TIMED"
+    },
+    {
+      "competition": "BL1",
+      "league": "Bundesliga",
+      "flag": "🇩🇪",
+      "home": "Hamburger SV",
+      "away": "Borussia Mönchengladbach",
+      "kickoff": "2026-11-06T19:30:00Z",
+      "status": "TIMED"
+    },
+    {
+      "competition": "SA",
+      "league": "Serie A",
+      "flag": "🇮🇹",
+      "home": "Venezia FC",
+      "away": "Udinese Calcio",
+      "kickoff": "2026-11-06T19:45:00Z",
+      "status": "TIMED"
+    },
+    {
+      "competition": "FL1",
+      "league": "Ligue 1",
+      "flag": "🇫🇷",
+      "home": "Toulouse FC",
+      "away": "RC Strasbourg Alsace",
+      "kickoff": "2026-11-06T19:45:00Z",
+      "status": "TIMED"
+    },
+    {
+      "competition": "PL",
+      "league": "Premier League",
+      "flag": "🏴󠁧󠁢󠁥󠁮󠁧󠁿",
+      "home": "Everton FC",
+      "away": "Coventry City FC",
+      "kickoff": "2026-11-06T20:00:00Z",
+      "status": "TIMED"
+    },
+    {
+      "competition": "PD",
+      "league": "La Liga",
+      "flag": "🇪🇸",
+      "home": "Sevilla FC",
+      "away": "Deportivo Alavés",
+      "kickoff": "2026-11-06T20:00:00Z",
       "status": "TIMED"
     }
   ],
@@ -1455,5 +1473,5 @@
       "league": "Ligue 1"
     }
   ],
-  "teams_updated": "2026-10-29T21:51:42.965226+00:00"
+  "teams_updated": "2026-10-31T02:28:01.549783+00:00"
 }
