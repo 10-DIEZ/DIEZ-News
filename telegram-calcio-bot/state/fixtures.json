@@ -115,7 +115,7 @@
       "home": "Chelsea FC",
       "away": "Manchester United FC",
       "kickoff": "2026-10-31T12:30:00Z",
-      "status": "TIMED"
+      "status": "FINISHED"
     },
     {
       "competition": "PD",
@@ -124,7 +124,7 @@
       "home": "Levante UD",
       "away": "Club Atlético de Madrid",
       "kickoff": "2026-10-31T13:00:00Z",
-      "status": "TIMED"
+      "status": "FINISHED"
     },
     {
       "competition": "SA",
@@ -133,7 +133,7 @@
       "home": "Bologna FC 1909",
       "away": "AC Monza",
       "kickoff": "2026-10-31T14:00:00Z",
-      "status": "TIMED"
+      "status": "FINISHED"
     },
     {
       "competition": "BL1",
@@ -142,7 +142,7 @@
       "home": "Borussia Mönchengladbach",
       "away": "SC Paderborn 07",
       "kickoff": "2026-10-31T14:30:00Z",
-      "status": "TIMED"
+      "status": "IN_PLAY"
     },
     {
       "competition": "BL1",
@@ -151,7 +151,7 @@
       "home": "FC Schalke 04",
       "away": "RB Leipzig",
       "kickoff": "2026-10-31T14:30:00Z",
-      "status": "TIMED"
+      "status": "IN_PLAY"
     },
     {
       "competition": "BL1",
@@ -160,7 +160,7 @@
       "home": "FC Augsburg",
       "away": "SC Freiburg",
       "kickoff": "2026-10-31T14:30:00Z",
-      "status": "TIMED"
+      "status": "IN_PLAY"
     },
     {
       "competition": "BL1",
@@ -169,7 +169,7 @@
       "home": "SV Werder Bremen",
       "away": "TSG 1899 Hoffenheim",
       "kickoff": "2026-10-31T14:30:00Z",
-      "status": "TIMED"
+      "status": "IN_PLAY"
     },
     {
       "competition": "BL1",
@@ -178,7 +178,7 @@
       "home": "Bayer 04 Leverkusen",
       "away": "VfB Stuttgart",
       "kickoff": "2026-10-31T14:30:00Z",
-      "status": "TIMED"
+      "status": "IN_PLAY"
     },
     {
       "competition": "PL",
@@ -187,7 +187,7 @@
       "home": "Manchester City FC",
       "away": "Brighton & Hove Albion FC",
       "kickoff": "2026-10-31T15:00:00Z",
-      "status": "TIMED"
+      "status": "IN_PLAY"
     },
     {
       "competition": "PL",
@@ -196,7 +196,7 @@
       "home": "AFC Bournemouth",
       "away": "Leeds United FC",
       "kickoff": "2026-10-31T15:00:00Z",
-      "status": "TIMED"
+      "status": "IN_PLAY"
     },
     {
       "competition": "PL",
@@ -205,7 +205,7 @@
       "home": "Coventry City FC",
       "away": "Sunderland AFC",
       "kickoff": "2026-10-31T15:00:00Z",
-      "status": "TIMED"
+      "status": "IN_PLAY"
     },
     {
       "competition": "PL",
@@ -214,7 +214,7 @@
       "home": "Hull City AFC",
       "away": "Ipswich Town FC",
       "kickoff": "2026-10-31T15:00:00Z",
-      "status": "TIMED"
+      "status": "IN_PLAY"
     },
     {
       "competition": "PL",
@@ -223,7 +223,7 @@
       "home": "Brentford FC",
       "away": "Nottingham Forest FC",
       "kickoff": "2026-10-31T15:00:00Z",
-      "status": "TIMED"
+      "status": "IN_PLAY"
     },
     {
       "competition": "PD",
@@ -232,7 +232,7 @@
       "home": "Rayo Vallecano de Madrid",
       "away": "RC Celta de Vigo",
       "kickoff": "2026-10-31T15:15:00Z",
-      "status": "TIMED"
+      "status": "IN_PLAY"
     },
     {
       "competition": "SA",
