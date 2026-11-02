@@ -1,51 +1,6 @@
 {
   "fixtures": [
     {
-      "competition": "FL1",
-      "league": "Ligue 1",
-      "flag": "🇫🇷",
-      "home": "Le Havre AC",
-      "away": "Paris Saint-Germain FC",
-      "kickoff": "2026-10-30T18:00:00Z",
-      "status": "FINISHED"
-    },
-    {
-      "competition": "FL1",
-      "league": "Ligue 1",
-      "flag": "🇫🇷",
-      "home": "OGC Nice",
-      "away": "Stade Rennais FC 1901",
-      "kickoff": "2026-10-30T18:00:00Z",
-      "status": "FINISHED"
-    },
-    {
-      "competition": "BL1",
-      "league": "Bundesliga",
-      "flag": "🇩🇪",
-      "home": "SV 07 Elversberg",
-      "away": "1. FSV Mainz 05",
-      "kickoff": "2026-10-30T19:30:00Z",
-      "status": "FINISHED"
-    },
-    {
-      "competition": "PD",
-      "league": "La Liga",
-      "flag": "🇪🇸",
-      "home": "Villarreal CF",
-      "away": "RCD Espanyol de Barcelona",
-      "kickoff": "2026-10-30T20:00:00Z",
-      "status": "FINISHED"
-    },
-    {
-      "competition": "FL1",
-      "league": "Ligue 1",
-      "flag": "🇫🇷",
-      "home": "Lille OSC",
-      "away": "Racing Club de Lens",
-      "kickoff": "2026-10-30T20:05:00Z",
-      "status": "FINISHED"
-    },
-    {
       "competition": "PL",
       "league": "Premier League",
       "flag": "🏴󠁧󠁢󠁥󠁮󠁧󠁿",
@@ -421,7 +376,7 @@
       "home": "Newcastle United FC",
       "away": "Everton FC",
       "kickoff": "2026-11-02T20:00:00Z",
-      "status": "TIMED"
+      "status": "FINISHED"
     },
     {
       "competition": "PD",
@@ -430,7 +385,7 @@
       "home": "RC Deportivo La Coruña",
       "away": "CA Osasuna",
       "kickoff": "2026-11-02T20:00:00Z",
-      "status": "TIMED"
+      "status": "FINISHED"
     },
     {
       "competition": "CL",
