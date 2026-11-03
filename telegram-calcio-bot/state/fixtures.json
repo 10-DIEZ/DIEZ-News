@@ -349,7 +349,7 @@
       "home": "US Sassuolo Calcio",
       "away": "ACF Fiorentina",
       "kickoff": "2026-11-02T17:30:00Z",
-      "status": "TIMED"
+      "status": "FINISHED"
     },
     {
       "competition": "SA",
@@ -358,7 +358,7 @@
       "home": "Atalanta BC",
       "away": "Parma Calcio 1913",
       "kickoff": "2026-11-02T19:45:00Z",
-      "status": "TIMED"
+      "status": "FINISHED"
     },
     {
       "competition": "FL1",
@@ -367,7 +367,7 @@
       "home": "FC Lorient",
       "away": "Stade Brestois 29",
       "kickoff": "2026-11-02T19:45:00Z",
-      "status": "TIMED"
+      "status": "FINISHED"
     },
     {
       "competition": "PL",
