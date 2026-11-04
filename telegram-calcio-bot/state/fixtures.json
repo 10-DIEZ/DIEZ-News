@@ -277,7 +277,7 @@
       "home": "PAE AEK",
       "away": "Real Madrid CF",
       "kickoff": "2026-11-04T17:45:00Z",
-      "status": "TIMED"
+      "status": "FINISHED"
     },
     {
       "competition": "CL",
@@ -286,7 +286,7 @@
       "home": "Fenerbahçe SK",
       "away": "Liverpool FC",
       "kickoff": "2026-11-04T17:45:00Z",
-      "status": "TIMED"
+      "status": "FINISHED"
     },
     {
       "competition": "CL",
@@ -295,7 +295,7 @@
       "home": "RB Leipzig",
       "away": "Manchester City FC",
       "kickoff": "2026-11-04T20:00:00Z",
-      "status": "TIMED"
+      "status": "FINISHED"
     },
     {
       "competition": "CL",
@@ -304,7 +304,7 @@
       "home": "SK Slavia Praha",
       "away": "Arsenal FC",
       "kickoff": "2026-11-04T20:00:00Z",
-      "status": "TIMED"
+      "status": "FINISHED"
     },
     {
       "competition": "CL",
@@ -313,7 +313,7 @@
       "home": "PSV",
       "away": "Club Brugge KV",
       "kickoff": "2026-11-04T20:00:00Z",
-      "status": "TIMED"
+      "status": "FINISHED"
     },
     {
       "competition": "CL",
@@ -322,7 +322,7 @@
       "home": "Borussia Dortmund",
       "away": "Real Betis Balompié",
       "kickoff": "2026-11-04T20:00:00Z",
-      "status": "TIMED"
+      "status": "FINISHED"
     },
     {
       "competition": "CL",
@@ -331,7 +331,7 @@
       "home": "FC Porto",
       "away": "SSC Napoli",
       "kickoff": "2026-11-04T20:00:00Z",
-      "status": "TIMED"
+      "status": "FINISHED"
     },
     {
       "competition": "CL",
@@ -340,7 +340,7 @@
       "home": "Racing Club de Lens",
       "away": "Como 1907",
       "kickoff": "2026-11-04T20:00:00Z",
-      "status": "TIMED"
+      "status": "FINISHED"
     },
     {
       "competition": "CL",
@@ -349,7 +349,7 @@
       "home": "Viking FK",
       "away": "Sabah FK",
       "kickoff": "2026-11-04T20:00:00Z",
-      "status": "TIMED"
+      "status": "FINISHED"
     },
     {
       "competition": "BL1",
@@ -496,15 +496,6 @@
       "status": "TIMED"
     },
     {
-      "competition": "FL1",
-      "league": "Ligue 1",
-      "flag": "🇫🇷",
-      "home": "AJ Auxerre",
-      "away": "Paris FC",
-      "kickoff": "2026-11-07T16:15:00Z",
-      "status": "TIMED"
-    },
-    {
       "competition": "SA",
       "league": "Serie A",
       "flag": "🇮🇹",
@@ -541,20 +532,20 @@
       "status": "TIMED"
     },
     {
+      "competition": "FL1",
+      "league": "Ligue 1",
+      "flag": "🇫🇷",
+      "home": "AJ Auxerre",
+      "away": "Paris FC",
+      "kickoff": "2026-11-07T18:00:00Z",
+      "status": "TIMED"
+    },
+    {
       "competition": "SA",
       "league": "Serie A",
       "flag": "🇮🇹",
       "home": "AS Roma",
       "away": "US Sassuolo Calcio",
-      "kickoff": "2026-11-07T19:45:00Z",
-      "status": "TIMED"
-    },
-    {
-      "competition": "FL1",
-      "league": "Ligue 1",
-      "flag": "🇫🇷",
-      "home": "Paris Saint-Germain FC",
-      "away": "ES Troyes AC",
       "kickoff": "2026-11-07T19:45:00Z",
       "status": "TIMED"
     },
@@ -565,6 +556,15 @@
       "home": "Valencia CF",
       "away": "Real Madrid CF",
       "kickoff": "2026-11-07T20:00:00Z",
+      "status": "TIMED"
+    },
+    {
+      "competition": "FL1",
+      "league": "Ligue 1",
+      "flag": "🇫🇷",
+      "home": "Paris Saint-Germain FC",
+      "away": "ES Troyes AC",
+      "kickoff": "2026-11-07T20:05:00Z",
       "status": "TIMED"
     },
     {
@@ -1554,5 +1554,5 @@
       "league": "Ligue 1"
     }
   ],
-  "teams_updated": "2026-11-03T22:20:57.939694+00:00"
+  "teams_updated": "2026-11-04T22:39:43.934031+00:00"
 }
