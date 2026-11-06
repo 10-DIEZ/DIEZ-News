@@ -31,22 +31,30 @@ Gira da solo nel cloud tramite GitHub Actions, non serve tenere niente acceso.
 ## Bot quote (argomento «📈 Quote» del gruppo)
 
 Segue le quote dei 5 campionati con OddsPapi (piano gratuito, 250 chiamate al
-mese, secret `ODDSPAPI_API_KEY`), sui book Pinnacle, Singbet e Bet365.
+mese, secret `ODDSPAPI_API_KEY`), sui book Pinnacle, Sbobet e Singbet.
 
-- **Apertura**: martedì e venerdì alle 15:00 una foto delle quote di tutte le
-  partite dei prossimi 4 giorni (stesso momento delle quote d'apertura usate
-  nello studio del foglio Mercato del Pace Index).
+- **Apertura**: le quote del venerdì alle 15:00 per le partite del weekend
+  (venerdì-lunedì), del martedì alle 15:00 per i turni infrasettimanali: lo
+  stesso momento delle quote d'apertura usate nello studio del foglio Mercato
+  del Pace Index. Il bot le legge dallo **storico** delle quote, quindi non
+  deve fotografarle: a quell'ora aggiorna solo l'elenco delle partite e lo dice
+  con un messaggio breve.
 - **A ridosso**: 40 minuti prima di ogni orario d'inizio (formazioni già
-  uscite) una nuova foto e il confronto con l'apertura. Arriva un messaggio
-  **solo** se il movimento è importante su almeno 2 book su 3: linea asiatica
-  spostata di un quarto, oppure stessa linea con la quota mossa di 2 punti di
-  probabilità, oppure linea gol spostata. Il messaggio dice anche il colore da
-  mettere nella riga «Mercato» della Direzione generale.
-- **Consumo**: ogni foto è una sola chiamata (3 book e 5 campionati insieme):
-  circa 100 chiamate al mese. Un contatore non fa mai superare il limite.
+  uscite) legge lo storico di ogni partita e confronta adesso con l'apertura.
+  Arriva un messaggio **solo** se il movimento è importante su almeno 2 book su
+  3: linea asiatica spostata di un quarto, oppure stessa linea con la quota
+  mossa di 2 punti di probabilità, oppure linea gol spostata. Il messaggio dice
+  anche il colore da mettere nella riga «Mercato» della Direzione generale.
+- **Consumo**: lo storico delle quote non conta nelle 250 chiamate (verificato
+  sul contatore dell'account); contano solo gli aggiornamenti dell'elenco
+  partite, circa 10-20 chiamate al mese. Il contatore si allinea a quello
+  dell'account e non fa mai superare il limite.
 - **Come parte**: lo lancia il giro ogni 5 minuti del bot notizie (passo «Bot
-  quote» in `monitor-news.yml`); quasi sempre esce subito. Prove a mano:
-  Actions → «Prova bot quote» → Run workflow (test / ora / apertura).
+  quote» in `monitor-news.yml`); quasi sempre esce subito. Ogni giro lavora al
+  massimo 3 minuti: se le partite sono tante, finisce al giro dopo, senza
+  doppioni. Prove a mano: Actions → «Prova bot quote» → Run workflow
+  (test = prova completa, ora = controllo subito delle prossime partite,
+  apertura = aggiorna subito l'elenco).
 - Codice in `monitor_quote.py` (orari, soglie e book in cima al file), stato in
   `state/quote_state.json`.
 
