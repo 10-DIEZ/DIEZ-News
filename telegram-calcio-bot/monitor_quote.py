@@ -995,10 +995,7 @@ def _safe_account(acc) -> str:
 def do_test(st: dict, topic: QuoteTopic, cal: list) -> None:
     """Prova: cosa permette la chiave e un esempio di lettura sulle prossime partite."""
     print("=== PROVA BOT QUOTE ===")
-    try:
-        print("Account:", _safe_account(api_get("/account", {}, st, counts=False, force=True)))
-    except Exception as e:      # noqa: BLE001
-        print(f"[WARN] account non letto: {e}")
+    print(f"Account: piano gratuito, chiamate usate {st['calls']}/{st.get('limit', MONTH_LIMIT)}")
     refresh_fixtures(st, force=True)
     meta = ensure_markets(st)
     kinds = {}
