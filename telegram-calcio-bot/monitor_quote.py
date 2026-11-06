@@ -587,8 +587,29 @@ def read_history(st: dict, fid: str, ap_at: datetime, force: bool = False):
         base = books_at(hist, meta, ap_at)
     if not base and opened:          # oppure partita pubblicata dopo l'apertura: si parte dalla prima quota
         first = opened + timedelta(minutes=1)
-        base = books_at(hist, meta, first)
+        base = {}
+        for slug, bk in ((hist or {}).get("bookmakers") or {}).items():
+            base.update(first_quotes(slug, bk, meta))   # di ogni book (non tutti pubblicano insieme)
     return base, now, (first or ap_at), bool(first)
+
+
+def first_quotes(slug: str, bk: dict, meta: dict) -> dict:
+    """Le prime quote di un book: appena pubblicato il 1X2 (o l'handicap asiatico, se arriva dopo)."""
+    one = {"bookmakers": {slug: bk}}
+    t = opening_time(one)
+    if not t:
+        return {}
+    res = books_at(one, meta, t + timedelta(minutes=1))
+    if slug in res and not res[slug].get("ah"):
+        ts = []
+        for mid, m in ((bk or {}).get("markets") or {}).items():
+            if (meta.get(str(mid)) or [""])[0] == "spreads":
+                for o in ((m or {}).get("outcomes") or {}).values():
+                    ts += [x for x in (_first_time(e) for e in ((o or {}).get("players") or {}).values()) if x]
+        t2 = min(ts) if ts else None
+        if t2 and t < t2 < t + timedelta(days=2):
+            res = books_at(one, meta, t2 + timedelta(minutes=1))
+    return res
 
 
 # =====================================================================
