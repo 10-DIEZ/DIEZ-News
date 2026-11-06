@@ -1,20 +1,21 @@
 name: Prova bot quote
 
 # Si lancia a mano da GitHub: Actions -> "Prova bot quote" -> Run workflow.
-#   test     = prova completa (cosa offre la chiave, campionati, una foto, messaggio di prova)
-#   ora      = controllo subito delle prossime partite (come quello di 40 minuti prima)
-#   apertura = foto d'apertura subito
-# Ogni prova consuma da 1 a 5 chiamate delle 250 del mese.
+#   test      = prova completa (legenda + esempio di riepilogo e di avviso nel gruppo)
+#   ora       = controllo subito delle prossime partite (come quello di 40 minuti prima)
+#   apertura  = aggiorna subito l'elenco delle partite
+#   riepilogo = riepilogo subito delle partite di domani
+# Ogni prova consuma da 0 a 3 chiamate delle 250 del mese (lo storico delle quote e' gratis).
 
 on:
   workflow_dispatch:
     inputs:
       modo:
-        description: "test = prova completa · ora = controllo subito · apertura = foto d'apertura subito"
+        description: "test = prova completa · ora = controllo subito · apertura = elenco partite · riepilogo = riepilogo di domani"
         required: true
         default: test
         type: choice
-        options: [test, ora, apertura]
+        options: [test, ora, apertura, riepilogo]
 
 permissions:
   contents: write
