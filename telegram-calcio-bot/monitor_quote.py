@@ -413,32 +413,106 @@ def parse_book(bk: dict, meta: dict) -> dict | None:
     return out if any(out.values()) else None
 
 
-def take_snapshot(st: dict, force: bool = False) -> dict:
-    """UNA chiamata: quote attuali di tutte le partite dei 5 campionati sui 3 book."""
+def _fixture_entry(fx: dict, books: dict, code_by_tid: dict, stamp: str) -> dict:
+    return {"code": code_by_tid.get(str(fx.get("tournamentId")), ""), "p1": fx.get("participant1Id"),
+            "p2": fx.get("participant2Id"), "start": (parse_time(fx.get("startTime")) or now_utc()).isoformat(),
+            "books": books, "t": stamp}
+
+
+def take_snapshot(st: dict, books=None, force: bool = False) -> dict:
+    """Quote attuali di tutte le partite dei 5 campionati: UNA chiamata per book
+    (il piano gratuito accetta un solo book per chiamata)."""
+    books = books or BOOKMAKERS
     tour = ensure_tournaments(st)
     meta = ensure_markets(st)
     code_by_tid = {str(v): k for k, v in tour.items()}
-    data = api_get("/odds-by-tournaments", {"tournamentIds": ",".join(str(tour[c]) for c in LEAGUES_Q),
-                                            "bookmakers": ",".join(BOOKMAKERS)}, st, force=force)
     snap, stamp = {}, now_utc().isoformat(timespec="seconds")
-    for fx in as_list(data):
+    for slug in books:
         try:
-            fid = str(fx["fixtureId"])
-        except (KeyError, TypeError):
+            data = api_get("/odds-by-tournaments", {"tournamentIds": ",".join(str(tour[c]) for c in LEAGUES_Q),
+                                                    "bookmaker": slug}, st, force=force)
+        except QuotaExhausted:
+            raise
+        except Exception as e:      # noqa: BLE001
+            print(f"[WARN] quote di {slug} non lette: {e}")
             continue
-        status = fx.get("statusId")
-        if status not in (None, 0, 1, "0", "1"):
-            continue                # gia' iniziata o finita
-        books = {}
-        for slug, bk in (fx.get("bookmakerOdds") or {}).items():
-            parsed = parse_book(bk, meta)
+        for fx in as_list(data):
+            try:
+                fid = str(fx["fixtureId"])
+            except (KeyError, TypeError):
+                continue
+            if fx.get("statusId") not in (None, 0, 1, "0", "1"):
+                continue                # gia' iniziata o finita
+            entry = snap.setdefault(fid, _fixture_entry(fx, {}, code_by_tid, stamp))
+            bk = (fx.get("bookmakerOdds") or {}).get(slug)
+            parsed = parse_book(bk, meta) if bk else None
             if parsed:
-                books[slug] = parsed
-        snap[fid] = {"code": code_by_tid.get(str(fx.get("tournamentId")), ""), "p1": fx.get("participant1Id"),
-                     "p2": fx.get("participant2Id"), "start": (parse_time(fx.get("startTime")) or now_utc()).isoformat(),
-                     "books": books, "t": stamp}
-    print(f"Foto delle quote: {len(snap)} partite, chiamate del mese {st['calls']}/{MONTH_LIMIT}")
+                entry["books"][slug] = parsed
+    print(f"Foto delle quote ({', '.join(books)}): {len(snap)} partite, chiamate del mese {st['calls']}/{MONTH_LIMIT}")
     return snap
+
+
+def fixture_books(st: dict, fid: str, force: bool = False) -> dict:
+    """Quote di adesso di UNA partita su tutti i book (una chiamata): servono a confermare un movimento."""
+    meta = ensure_markets(st)
+    data = api_get("/odds", {"fixtureId": fid}, st, force=force)
+    fx = data if isinstance(data, dict) and "bookmakerOdds" in data else next(iter(as_list(data)), {})
+    out = {}
+    for slug in BOOKMAKERS:
+        bk = (fx.get("bookmakerOdds") or {}).get(slug)
+        parsed = parse_book(bk, meta) if bk else None
+        if parsed:
+            out[slug] = parsed
+    return out
+
+
+def _hist_price(entries, at):
+    """Prezzo in vigore al momento 'at' (None = adesso) da una lista di cambi con createdAt."""
+    best = None
+    for e in entries or []:
+        t = parse_time(e.get("createdAt"))
+        if not t or (at and t > at):
+            continue
+        if best is None or t > best[0]:
+            best = (t, e)
+    if not best or best[1].get("active") is False:
+        return None
+    try:
+        p = float(best[1].get("price"))
+        return p if p > 1.0 else None
+    except (TypeError, ValueError):
+        return None
+
+
+def historical_books(st: dict, fid: str, at=None, force: bool = False) -> dict:
+    """Quote dei 3 book al momento 'at' (None = adesso) dallo storico della partita."""
+    meta = ensure_markets(st)
+    data = api_get("/historical-odds", {"fixtureId": fid, "bookmakers": ",".join(BOOKMAKERS)}, st, force=force)
+    books = (data or {}).get("bookmakers") if isinstance(data, dict) else None
+    out = {}
+    for slug, bk in (books or {}).items():
+        res = {"x": None, "ah": None, "ou": None}
+        ah, ou = [], []
+        for mid, m in ((bk or {}).get("markets") or {}).items():
+            outs = (m or {}).get("outcomes") or {}
+            keys = sorted(outs, key=lambda k: int(k))
+            prices = []
+            for k in keys:
+                pls = (outs[k] or {}).get("players") or {}
+                entries = next(iter(pls.values()), []) if isinstance(pls, dict) and pls else []
+                prices.append(_hist_price(entries, at))
+            info = meta.get(str(mid))
+            if str(mid) == "101" and len(prices) == 3 and all(prices):
+                res["x"] = prices
+            elif info and info[2] in ("fulltime", "result", "") and len(prices) == 2 and all(prices):
+                if info[0] == "spreads":
+                    ah.append((AH_HOME_SIGN * info[1], prices[0], prices[1], False))
+                elif info[0] == "totals" and info[1] > 0:
+                    ou.append((info[1], prices[0], prices[1], False))
+        res["ah"], res["ou"] = _pick_main(ah), _pick_main(ou)
+        if any(res.values()):
+            out[slug] = res
+    return out
 
 
 def merge_snapshot(st: dict, snap: dict, as_apertura: bool) -> None:
@@ -842,104 +916,180 @@ def do_apertura(st: dict, topic: QuoteTopic, key: str | None, force: bool = Fals
                f"Chiamate usate questo mese: {st['calls']}/{MONTH_LIMIT}.</i>")
 
 
+CONFIRM_WITH = "odds"            # conferma sugli altri book: "odds" (quote di adesso della partita) o "historical" (storico)
+
+
+def confirm_books(st: dict, fid: str, force: bool = False) -> dict:
+    if CONFIRM_WITH == "historical":
+        return historical_books(st, fid, None, force=force)
+    return fixture_books(st, fid, force=force)
+
+
+def pinnacle_flag(rec: dict, saving: bool) -> bool:
+    """Pinnacle si e' mosso abbastanza da valere una chiamata di conferma sugli altri book?"""
+    base = rec.get("ap") or rec.get("first")
+    now = rec.get("last")
+    if not base or not now or base.get("t") == now.get("t"):
+        return False
+    a, b = (base.get("books") or {}).get("pinnacle"), (now.get("books") or {}).get("pinnacle")
+    if not a or not b:
+        return False
+    m = book_move(a, b)
+    if saving:
+        return m["force"] >= 2 or bool(m["ou"] and abs(m["ou"][1]) >= TH_LINE and abs(m["ou"][1]) < 1.5)
+    return bool(m["dir"] or m["ou"])
+
+
 def do_ridosso(st: dict, topic: QuoteTopic, key: str | None, group: dict | None, cal: list, force: bool = False) -> int:
-    snap = take_snapshot(st, force=force)
+    """40 minuti prima: UNA chiamata su Pinnacle per tutte le partite; per quelle in cui Pinnacle si e' mosso,
+    UNA chiamata per partita per vedere gli altri book (regola dei 2 book su 3)."""
+    snap = take_snapshot(st, books=["pinnacle"], force=force)
     merge_snapshot(st, snap, as_apertura=False)
     if key:
         st["done"].append(key)
     if group:
         lo, hi = group["first"] - timedelta(minutes=5), group["last"] + timedelta(minutes=5)
     else:   # controllo a mano: le prossime partite
-        fut = sorted(parse_time(v.get("start")) for v in st["fixtures"].values() if parse_time(v.get("start")) and
-                     parse_time(v.get("start")) > now_utc())
+        fut = sorted(t for t in (parse_time(v.get("start")) for v in st["fixtures"].values()) if t and t > now_utc())
         if not fut:
             print("Nessuna partita in arrivo")
             return 0
         lo, hi = fut[0] - timedelta(minutes=5), fut[0] + timedelta(minutes=MERGE_MINUTES + 5)
     targets = {fid: rec for fid, rec in st["fixtures"].items()
-               if (parse_time(rec.get("start")) or now_utc()) >= lo and (parse_time(rec.get("start")) or now_utc()) <= hi}
+               if lo <= (parse_time(rec.get("start")) or now_utc()) <= hi}
     pnames = ensure_participants(st, {r.get("p1") for r in targets.values()} | {r.get("p2") for r in targets.values()})
-    sent = 0
+    saving = st["calls"] >= SAVING_FROM
+    sent = checked = 0
     for fid, rec in sorted(targets.items(), key=lambda kv: kv[1].get("start", "")):
-        mv = read_movement(rec)
-        cal_m = match_calendar(rec, pnames, cal)
-        names = team_names(rec, pnames, cal_m)
-        if not mv:
-            print(f"  {names['home']} - {names['away']}: niente di importante")
+        names = team_names(rec, pnames, match_calendar(rec, pnames, cal))
+        if not pinnacle_flag(rec, saving):
+            print(f"  {names['home']} - {names['away']}: Pinnacle fermo")
             continue
-        text = build_message(rec, mv, names)
-        if topic.send(text):
+        try:
+            books = confirm_books(st, fid, force=force)
+            checked += 1
+        except QuotaExhausted:
+            raise
+        except Exception as e:      # noqa: BLE001
+            print(f"  {names['home']} - {names['away']}: conferma non riuscita ({e})")
+            continue
+        if books:
+            rec["last"] = {"t": now_utc().isoformat(timespec="seconds"), "books": books}
+        mv = read_movement(rec)
+        if not mv:
+            print(f"  {names['home']} - {names['away']}: Pinnacle mosso, gli altri book no")
+            continue
+        if topic.send(build_message(rec, mv, names)):
             sent += 1
             rec["sent"] = now_utc().isoformat(timespec="seconds")
             time.sleep(SEND_DELAY_GROUP_SECONDS)
-        print(f"  {names['home']} - {names['away']}: MOVIMENTO -> inviato")
-    st["log"].append(f"{now_utc().isoformat(timespec='minutes')} ridosso {len(targets)} partite, {sent} messaggi")
+        print(f"  {names['home']} - {names['away']}: MOVIMENTO confermato -> inviato")
+    st["log"].append(f"{now_utc().isoformat(timespec='minutes')} ridosso {len(targets)} partite, {checked} conferme, "
+                     f"{sent} messaggi, chiamate {st['calls']}")
     return sent
 
 
+def _safe_account(acc) -> str:
+    """Dell'account solo numeri e nomi di piano/book (mai email o dati personali: il registro e' pubblico)."""
+    nums, books = [], []
+
+    def walk(x, path):
+        if isinstance(x, dict):
+            for k, v in x.items():
+                kl = str(k).lower()
+                if kl in ("email", "api_key", "apikey", "name", "first_name", "last_name", "phone", "customer_id"):
+                    continue
+                if kl == "bookmakers":
+                    if isinstance(v, dict):
+                        books.extend(list(v.keys()))
+                    elif isinstance(v, list):
+                        books.extend(str(b.get("slug") if isinstance(b, dict) else b) for b in v)
+                    continue
+                walk(v, f"{path}.{k}" if path else str(k))
+        elif isinstance(x, list):
+            for i, v in enumerate(x[:3]):
+                walk(v, f"{path}[{i}]")
+        elif isinstance(x, bool) or x is None:
+            return
+        elif isinstance(x, (int, float)):
+            nums.append(f"{path}={x}")
+        elif isinstance(x, str) and any(w in path.lower() for w in ("plan", "tier", "segment", "package", "limit")):
+            nums.append(f"{path}={x[:40]}")
+    walk(acc, "")
+    ours = [b for b in books if any(k in b for k in ("pinnacle", "singbet", "sbobet", "bet365"))]
+    return f"numeri: {nums[:25]} | book nell'abbonamento: {len(books)} (nostri: {ours[:12]})"
+
+
 def do_test(st: dict, topic: QuoteTopic, cal: list) -> None:
-    """Prova completa: cosa offre la chiave, id dei campionati, mercati, una foto, messaggio di prova."""
+    """Prova: cosa permette la chiave gratuita e quanto consuma ogni tipo di chiamata."""
     print("=== PROVA BOT QUOTE ===")
-    acc_before = None
-    try:
-        acc_before = api_get("/account", {}, st, counts=False, force=True)
-        print("Account:", json.dumps(acc_before)[:600])
-    except Exception as e:      # noqa: BLE001
-        print(f"[WARN] account non letto: {e}")
-    try:
-        items = as_list(api_get("/bookmakers", {}, st, force=True))
-        slugs = sorted({str(b.get("slug") or b.get("bookmakerSlug") or b.get("bookmaker") or "") for b in items})
-        print("Book disponibili:", len(slugs), "| quelli che ci servono:",
-              [s for s in slugs if any(k in s for k in ("pinnacle", "sbo", "singbet", "bet365"))])
-    except Exception as e:      # noqa: BLE001
-        print(f"[WARN] elenco book non letto: {e}")
-    ensure_tournaments(st, force=True)
-    meta = ensure_markets(st, force=True)
-    periods = {}
-    for v in meta.values():
-        periods.setdefault(v[0], set()).add(v[2])
-    print("Periodi per tipo di mercato:", {k: sorted(v) for k, v in periods.items()})
-    snap = take_snapshot(st, force=True)
+
+    def account(label):
+        try:
+            print(f"Account {label}: {_safe_account(api_get('/account', {}, st, counts=False, force=True))}")
+        except Exception as e:      # noqa: BLE001
+            print(f"[WARN] account non letto: {e}")
+
+    account("all'inizio")
+    ensure_tournaments(st)
+    ensure_markets(st)
+    snap = take_snapshot(st, books=["pinnacle"], force=True)
     merge_snapshot(st, snap, as_apertura=False)
-    by_code = {}
-    for s in snap.values():
-        by_code.setdefault(s["code"], []).append(s)
-    for code, lst in by_code.items():
-        books = {}
-        for s in lst:
-            for b, v in s["books"].items():
-                books.setdefault(b, [0, 0, 0])
-                books[b][0] += 1 if v.get("x") else 0
-                books[b][1] += 1 if v.get("ah") else 0
-                books[b][2] += 1 if v.get("ou") else 0
-        print(f"  {code}: {len(lst)} partite; per book [1X2, asiatico, gol]: {books}")
+    cnt = {}
+    for v in snap.values():
+        b = v["books"].get("pinnacle") or {}
+        c = cnt.setdefault(v["code"], [0, 0, 0, 0])
+        c[0] += 1
+        c[1] += 1 if b.get("x") else 0
+        c[2] += 1 if b.get("ah") else 0
+        c[3] += 1 if b.get("ou") else 0
+    print("Pinnacle per campionato [partite, 1X2, asiatico, gol]:", cnt)
     agree = disagree = 0
-    for s in snap.values():
-        b = s["books"].get("pinnacle") or next(iter(s["books"].values()), None)
+    for v in snap.values():
+        b = v["books"].get("pinnacle")
         if b and b.get("x") and b.get("ah") and abs(b["ah"][0]) >= 0.25:
-            home_fav = b["x"][0] < b["x"][2]
-            agree += 1 if (home_fav == (b["ah"][0] < 0)) else 0
-            disagree += 0 if (home_fav == (b["ah"][0] < 0)) else 1
-    print(f"Controllo segno linea asiatica: d'accordo con l'1X2 {agree}, al contrario {disagree}")
-    ids = {s["p1"] for s in snap.values()} | {s["p2"] for s in snap.values()}
+            ok = (b["x"][0] < b["x"][2]) == (b["ah"][0] < 0)
+            agree, disagree = agree + ok, disagree + (not ok)
+    print(f"Segno della linea asiatica: d'accordo con l'1X2 {agree}, al contrario {disagree}")
+    account("dopo 1 chiamata per campionati")
+    upcoming = sorted(((parse_time(v["start"]), fid) for fid, v in snap.items() if parse_time(v["start"]) and
+                       parse_time(v["start"]) > now_utc()), key=lambda x: x[0])
+    sample_fid = upcoming[0][1] if upcoming else None
+    odds_books = {}
+    if sample_fid:
+        try:
+            data = api_get("/odds", {"fixtureId": sample_fid}, st, force=True)
+            fx = data if isinstance(data, dict) and "bookmakerOdds" in data else next(iter(as_list(data)), {})
+            slugs = sorted((fx.get("bookmakerOdds") or {}).keys())
+            print(f"/odds di una partita: {len(slugs)} book, i nostri: {[x for x in slugs if x in BOOKMAKERS]}")
+            odds_books = {}
+            meta = ensure_markets(st)
+            for slug in BOOKMAKERS:
+                bk = (fx.get("bookmakerOdds") or {}).get(slug)
+                pb = parse_book(bk, meta) if bk else None
+                if pb:
+                    odds_books[slug] = pb
+            print("  quote lette:", {k: {kk: vv for kk, vv in v.items() if vv} for k, v in odds_books.items()})
+        except Exception as e:      # noqa: BLE001
+            print(f"[WARN] /odds non riuscito: {e}")
+        account("dopo /odds")
+        try:
+            hb = historical_books(st, sample_fid, None, force=True)
+            print("Storico: book con dati:", sorted(hb), {k: {kk: vv for kk, vv in v.items() if vv} for k, v in hb.items()})
+        except Exception as e:      # noqa: BLE001
+            print(f"[WARN] storico non riuscito: {e}")
+        account("dopo storico")
+    ids = {v["p1"] for v in snap.values()} | {v["p2"] for v in snap.values()}
     pnames = ensure_participants(st, ids)
-    try:
-        acc_after = api_get("/account", {}, st, counts=False, force=True)
-        print("Account dopo:", json.dumps(acc_after)[:600])
-    except Exception as e:      # noqa: BLE001
-        print(f"[WARN] account non letto: {e}")
-    # messaggio di prova: la prossima partita con le quote di adesso
-    nxt = sorted(((parse_time(r.get("start")), fid, r) for fid, r in st["fixtures"].items()
-                  if r.get("last") and parse_time(r.get("start")) and parse_time(r.get("start")) > now_utc()),
-                 key=lambda x: x[0])
     sample = ""
-    if nxt:
-        _, fid, rec = nxt[0]
+    if sample_fid:
+        rec = st["fixtures"][sample_fid]
         names = team_names(rec, pnames, match_calendar(rec, pnames, cal))
         lg = LEAGUES_Q.get(rec.get("code"), {"flag": "", "name": ""})
         rows = [f"{lg['flag']} <b>{esc(names['home'])} – {esc(names['away'])}</b> · {when_text(rec['start'])}"]
+        src = odds_books or {"pinnacle": rec["last"]["books"].get("pinnacle")}
         for slug in BOOKMAKERS:
-            b = (rec["last"]["books"] or {}).get(slug)
+            b = src.get(slug)
             if not b:
                 rows.append(f"<b>{BOOK_LABEL.get(slug, slug)}</b>: nessuna quota")
                 continue
@@ -952,10 +1102,8 @@ def do_test(st: dict, topic: QuoteTopic, cal: list) -> None:
                 bits.append(f"gol {fmt_num(b['ou'][0], 2).rstrip('0').rstrip(',')} (Over {fmt_num(b['ou'][1])})")
             rows.append(f"<b>{BOOK_LABEL.get(slug, slug)}</b>: " + " · ".join(bits))
         sample = "\n".join(rows)
-    found = sorted({b for s in snap.values() for b in s["books"]})
-    topic.send("🧪 <b>Prova del bot quote riuscita</b>\n"
-               f"Partite con quote: {len(snap)} · book trovati: {', '.join(BOOK_LABEL.get(b, b) for b in found) or 'nessuno'}\n"
-               f"Chiamate usate questo mese: {st['calls']}/{MONTH_LIMIT}\n\n"
+    topic.send("🧪 <b>Prova del bot quote</b>\n"
+               f"Partite con quote Pinnacle: {len(snap)} · chiamate usate questo mese: {st['calls']}/{MONTH_LIMIT}\n\n"
                + (f"Esempio, quote di adesso:\n{sample}" if sample else ""))
 
 
