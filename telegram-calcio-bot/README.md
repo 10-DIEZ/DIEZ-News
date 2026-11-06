@@ -28,6 +28,28 @@ Gira da solo nel cloud tramite GitHub Actions, non serve tenere niente acceso.
   l'altro si cambiano in `config.py` (sezioni "GRUPPO CON ARGOMENTI" e
   "HASHTAG DELLE SQUADRE"). La logica del gruppo è in `telegram_group.py`.
 
+## Bot quote (argomento «📈 Quote» del gruppo)
+
+Segue le quote dei 5 campionati con OddsPapi (piano gratuito, 250 chiamate al
+mese, secret `ODDSPAPI_API_KEY`), sui book Pinnacle, Singbet e Bet365.
+
+- **Apertura**: martedì e venerdì alle 15:00 una foto delle quote di tutte le
+  partite dei prossimi 4 giorni (stesso momento delle quote d'apertura usate
+  nello studio del foglio Mercato del Pace Index).
+- **A ridosso**: 40 minuti prima di ogni orario d'inizio (formazioni già
+  uscite) una nuova foto e il confronto con l'apertura. Arriva un messaggio
+  **solo** se il movimento è importante su almeno 2 book su 3: linea asiatica
+  spostata di un quarto, oppure stessa linea con la quota mossa di 2 punti di
+  probabilità, oppure linea gol spostata. Il messaggio dice anche il colore da
+  mettere nella riga «Mercato» della Direzione generale.
+- **Consumo**: ogni foto è una sola chiamata (3 book e 5 campionati insieme):
+  circa 100 chiamate al mese. Un contatore non fa mai superare il limite.
+- **Come parte**: lo lancia il giro ogni 5 minuti del bot notizie (passo «Bot
+  quote» in `monitor-news.yml`); quasi sempre esce subito. Prove a mano:
+  Actions → «Prova bot quote» → Run workflow (test / ora / apertura).
+- Codice in `monitor_quote.py` (orari, soglie e book in cima al file), stato in
+  `state/quote_state.json`.
+
 ---
 
 ## Passo 1 — Crea il bot Telegram

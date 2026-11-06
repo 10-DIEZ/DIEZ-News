@@ -40,6 +40,19 @@ jobs:
         working-directory: telegram-calcio-bot
         run: pip install -r requirements.txt
 
+      - name: Bot quote (apertura e controllo prima delle partite)
+        # Quasi sempre controlla l'ora ed esce subito. Se qualcosa va storto
+        # non ferma il bot notizie (continue-on-error).
+        working-directory: telegram-calcio-bot
+        continue-on-error: true
+        timeout-minutes: 4
+        env:
+          ODDSPAPI_API_KEY: ${{ secrets.ODDSPAPI_API_KEY }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          TELEGRAM_GROUP_ID: ${{ secrets.TELEGRAM_GROUP_ID }}
+        run: python monitor_quote.py
+
       - name: Esegui controllo notizie
         working-directory: telegram-calcio-bot
         env:
@@ -55,7 +68,15 @@ jobs:
           git config user.name "calcio-bot"
           git config user.email "calcio-bot@users.noreply.github.com"
           STATE=telegram-calcio-bot/state/state.json
+          QUOTE=telegram-calcio-bot/state/quote_state.json
           cp "$STATE" "$RUNNER_TEMP/state.json"
+          # stato del bot quote: si salva solo se in questo giro e' cambiato
+          # (cosi' non si cancella quello salvato nel frattempo dalla "Prova bot quote")
+          SAVE_QUOTE=0
+          if [ -f "$QUOTE" ] && { ! git ls-files --error-unmatch "$QUOTE" >/dev/null 2>&1 || ! git diff --quiet -- "$QUOTE"; }; then
+            cp "$QUOTE" "$RUNNER_TEMP/quote_state.json"
+            SAVE_QUOTE=1
+          fi
           # I giri non si sovrappongono mai (vedi "concurrency"), quindi lo stato
           # appena calcolato e' quello giusto: si riparte dall'ultima versione di
           # main e ci si rimette sopra il nostro state.json. Niente conflitti,
@@ -65,6 +86,10 @@ jobs:
             git reset --quiet --hard refs/remotes/origin/main
             cp "$RUNNER_TEMP/state.json" "$STATE"
             git add "$STATE"
+            if [ "$SAVE_QUOTE" = 1 ]; then
+              cp "$RUNNER_TEMP/quote_state.json" "$QUOTE"
+              git add "$QUOTE"
+            fi
             if git diff --staged --quiet; then
               echo "Stato invariato, niente da salvare."
               exit 0

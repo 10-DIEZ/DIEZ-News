@@ -1,0 +1,80 @@
+name: Prova bot quote
+
+# Si lancia a mano da GitHub: Actions -> "Prova bot quote" -> Run workflow.
+#   test     = prova completa (cosa offre la chiave, campionati, una foto, messaggio di prova)
+#   ora      = controllo subito delle prossime partite (come quello di 40 minuti prima)
+#   apertura = foto d'apertura subito
+# Ogni prova consuma da 1 a 5 chiamate delle 250 del mese.
+
+on:
+  workflow_dispatch:
+    inputs:
+      modo:
+        description: "test = prova completa · ora = controllo subito · apertura = foto d'apertura subito"
+        required: true
+        default: test
+        type: choice
+        options: [test, ora, apertura]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: monitor-news      # stesso gruppo del bot notizie: mai insieme (stato condiviso)
+  cancel-in-progress: false
+
+jobs:
+  run:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v5
+        with:
+          ref: main
+
+      - name: Setup Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+
+      - name: Installa dipendenze
+        working-directory: telegram-calcio-bot
+        run: pip install -r requirements.txt
+
+      - name: Prova bot quote
+        working-directory: telegram-calcio-bot
+        env:
+          ODDSPAPI_API_KEY: ${{ secrets.ODDSPAPI_API_KEY }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          TELEGRAM_GROUP_ID: ${{ secrets.TELEGRAM_GROUP_ID }}
+        run: python monitor_quote.py --mode "${{ inputs.modo }}"
+
+      - name: Salva lo stato delle quote
+        if: always()
+        run: |
+          git config user.name "calcio-bot"
+          git config user.email "calcio-bot@users.noreply.github.com"
+          FILE=telegram-calcio-bot/state/quote_state.json
+          [ -f "$FILE" ] || { echo "Niente da salvare."; exit 0; }
+          cp "$FILE" "$RUNNER_TEMP/quote_state.json"
+          for i in 1 2 3 4 5; do
+            git fetch --quiet origin +refs/heads/main:refs/remotes/origin/main
+            git reset --quiet --hard refs/remotes/origin/main
+            cp "$RUNNER_TEMP/quote_state.json" "$FILE"
+            git add "$FILE"
+            if git diff --staged --quiet; then
+              echo "Stato invariato, niente da salvare."
+              exit 0
+            fi
+            git commit --quiet -m "Aggiorna stato quote"
+            if git push --quiet origin HEAD:main; then
+              echo "Stato salvato."
+              exit 0
+            fi
+            echo "Salvataggio non riuscito (tentativo $i di 5), riprovo..."
+            sleep $((i * 4))
+          done
+          echo "::error::Stato quote non salvato dopo 5 tentativi"
+          exit 1
