@@ -4,87 +4,6 @@
       "competition": "CL",
       "league": "CL",
       "flag": "",
-      "home": "FK Shakhtar Donetsk",
-      "away": "Sporting Clube de Portugal",
-      "kickoff": "2026-11-03T17:45:00Z",
-      "status": "FINISHED"
-    },
-    {
-      "competition": "CL",
-      "league": "CL",
-      "flag": "",
-      "home": "Galatasaray SK",
-      "away": "VfB Stuttgart",
-      "kickoff": "2026-11-03T17:45:00Z",
-      "status": "FINISHED"
-    },
-    {
-      "competition": "CL",
-      "league": "CL",
-      "flag": "",
-      "home": "Feyenoord Rotterdam",
-      "away": "FC Internazionale Milano",
-      "kickoff": "2026-11-03T20:00:00Z",
-      "status": "FINISHED"
-    },
-    {
-      "competition": "CL",
-      "league": "CL",
-      "flag": "",
-      "home": "FC Barcelona",
-      "away": "Aston Villa FC",
-      "kickoff": "2026-11-03T20:00:00Z",
-      "status": "FINISHED"
-    },
-    {
-      "competition": "CL",
-      "league": "CL",
-      "flag": "",
-      "home": "Club Atlético de Madrid",
-      "away": "FC Bayern München",
-      "kickoff": "2026-11-03T20:00:00Z",
-      "status": "FINISHED"
-    },
-    {
-      "competition": "CL",
-      "league": "CL",
-      "flag": "",
-      "home": "Villarreal CF",
-      "away": "Paris Saint-Germain FC",
-      "kickoff": "2026-11-03T20:00:00Z",
-      "status": "FINISHED"
-    },
-    {
-      "competition": "CL",
-      "league": "CL",
-      "flag": "",
-      "home": "Manchester United FC",
-      "away": "AS Roma",
-      "kickoff": "2026-11-03T20:00:00Z",
-      "status": "FINISHED"
-    },
-    {
-      "competition": "CL",
-      "league": "CL",
-      "flag": "",
-      "home": "FK Bodø/Glimt",
-      "away": "Lille OSC",
-      "kickoff": "2026-11-03T20:00:00Z",
-      "status": "FINISHED"
-    },
-    {
-      "competition": "CL",
-      "league": "CL",
-      "flag": "",
-      "home": "LASK Linz",
-      "away": "ŠK Slovan Bratislava",
-      "kickoff": "2026-11-03T20:00:00Z",
-      "status": "FINISHED"
-    },
-    {
-      "competition": "CL",
-      "league": "CL",
-      "flag": "",
       "home": "PAE AEK",
       "away": "Real Madrid CF",
       "kickoff": "2026-11-04T17:45:00Z",
@@ -205,7 +124,7 @@
       "home": "Sevilla FC",
       "away": "Deportivo Alavés",
       "kickoff": "2026-11-06T20:00:00Z",
-      "status": "TIMED"
+      "status": "FINISHED"
     },
     {
       "competition": "PL",
@@ -1365,5 +1284,5 @@
       "league": "Ligue 1"
     }
   ],
-  "teams_updated": "2026-11-05T22:42:16.409040+00:00"
+  "teams_updated": "2026-11-07T02:52:42.966203+00:00"
 }
