@@ -718,7 +718,8 @@ def analyze(base: dict, now: dict) -> dict:
     mv = read_movement(base, now) or {"side": None, "ou": None, "fav": favourite(base), "moves": {}}
     ref = next((s for s in BOOKMAKERS if s in base and s in now), next((s for s in BOOKMAKERS if s in now), None))
     a, b = base.get(ref) or {}, now.get(ref) or {}
-    an = {"mv": mv, "ref": ref, "a": a, "b": b, "gg": gg_signal(base, now), "color": None, "team": None, "picks": []}
+    an = {"mv": mv, "ref": ref, "a": a, "b": b, "gg": gg_signal(base, now), "color": None, "team": None, "picks": [],
+          "base": base, "now": now}
     side, fav = mv["side"], mv["fav"]
     px = novig(b["x"]) if b.get("x") else None
     if side:
@@ -873,8 +874,40 @@ def match_title(names: dict) -> str:
     return f"{esc(names['home'])} – {esc(names['away'])}"
 
 
-def fmt_table(names: dict, a: dict, b: dict) -> str:
-    """Tabellina apertura/adesso del book di riferimento (caratteri a larghezza fissa, sta nello schermo del telefono)."""
+def signal_rows(an: dict) -> list:
+    """Righe in piu' per i book che hanno fatto scattare il giudizio e non sono quello della tabellina: linea asiatica
+    (o, se la linea e' rimasta quella, probabilita' della squadra di casa) e linea gol (o probabilita' dell'Over)."""
+    mv, ref = an.get("mv") or {}, an.get("ref")
+    base, now = an.get("base") or {}, an.get("now") or {}
+    rows = []
+    if an.get("color") and mv.get("side"):
+        for s in mv["side"]["books"]:
+            a, b = (base.get(s) or {}).get("ah"), (now.get(s) or {}).get("ah")
+            if s == ref or not (a and b):
+                continue
+            lab = f"AH {BOOK_LABEL.get(s, s)}"
+            if abs(a[0] - b[0]) > 0.01:
+                rows.append((lab, fmt_line(a[0], True), fmt_line(b[0], True), arrow_l(a[0], b[0])))
+            else:
+                pa, pb = novig(a[1:])[0], novig(b[1:])[0]
+                rows.append((f"AH% {BOOK_LABEL.get(s, s)}", f"{round(pa * 100)}%", f"{round(pb * 100)}%", arrow_p(1 - pa, 1 - pb)))
+    if mv.get("ou"):
+        for s in mv["ou"]["books"]:
+            a, b = (base.get(s) or {}).get("ou"), (now.get(s) or {}).get("ou")
+            if s == ref or not (a and b):
+                continue
+            lab = f"Gol {BOOK_LABEL.get(s, s)}"
+            if abs(a[0] - b[0]) > 0.01:
+                rows.append((lab, fmt_goal(a[0]), fmt_goal(b[0]), arrow_l(a[0], b[0])))
+            else:
+                pa, pb = novig(a[1:])[0], novig(b[1:])[0]
+                rows.append((f"O% {BOOK_LABEL.get(s, s)}", f"{round(pa * 100)}%", f"{round(pb * 100)}%", arrow_p(1 - pa, 1 - pb)))
+    return rows
+
+
+def fmt_table(names: dict, a: dict, b: dict, extra: list | None = None) -> str:
+    """Tabellina apertura/adesso del book di riferimento (caratteri a larghezza fissa, sta nello schermo del telefono);
+    in fondo, separate da una riga, le righe dei book che hanno fatto scattare il giudizio (signal_rows)."""
     rows = []
     if a.get("x") and b.get("x"):
         pa, pb = novig(a["x"]), novig(b["x"])
@@ -890,11 +923,13 @@ def fmt_table(names: dict, a: dict, b: dict) -> str:
         rows.append(("Over 2,5", fmt_num(oa[0]), fmt_num(ob[0]), arrow_p(novig(oa)[0], novig(ob)[0])))
     if a.get("gg") and b.get("gg"):
         rows.append(("GG", fmt_num(a["gg"][0]), fmt_num(b["gg"][0]), arrow_p(novig(a["gg"])[0], novig(b["gg"])[0])))
-    if not rows:
+    if not rows and not extra:
         return ""
-    w = max(len(r[0]) for r in rows)
-    lines = [f"{'':<{w}} {'apert.':>6} {'adesso':>6}"] + \
-        [f"{r[0]:<{w}} {r[1]:>6} {r[2]:>6} {r[3]}".rstrip() for r in rows]
+    w = max(len(r[0]) for r in rows + (extra or []))
+    fmt = lambda r: f"{r[0]:<{w}} {r[1]:>6} {r[2]:>6} {r[3]}".rstrip()  # noqa: E731
+    lines = [f"{'':<{w}} {'apert.':>6} {'adesso':>6}"] + [fmt(r) for r in rows]
+    if extra:
+        lines += ["-" * (w + 14)] + [fmt(r) for r in extra]
     return "<pre>" + esc("\n".join(lines)) + "</pre>"
 
 
@@ -926,10 +961,14 @@ def judgement(an: dict, names: dict, short: bool) -> str:
         }[col]
         if short:
             ch = _prob_change(an, an["team"], "→")
-            parts.append(f"{head} {ch} · {COLOR_TXT[col]}" if ch else f"{head} · {COLOR_TXT[col]}")
+            src = "" if an["ref"] in mv["side"]["books"] else \
+                " (" + ", ".join(BOOK_LABEL.get(x, x) for x in mv["side"]["books"]) + ")"
+            parts.append(f"{head} {ch} · {COLOR_TXT[col]}{src}" if ch else f"{head} · {COLOR_TXT[col]}{src}")
         else:
             ch = _prob_change(an, an["team"])
-            parts.append(f"{head}: {('vittoria ' + ch + ', ') if ch else ''}{why}, su {n} book su 3")
+            who = " e ".join(BOOK_LABEL.get(x, x) for x in mv["side"]["books"])
+            parts.append(f"{head}: {('vittoria ' + ch + ' su ' + BOOK_LABEL.get(an['ref'], '') + ', ') if ch else ''}{why}, "
+                         f"su {n} book su 3 ({who})")
     if mv["ou"]:
         d = "Over" if mv["ou"]["dir"] == "over" else "Under"
         if short:
@@ -938,7 +977,8 @@ def judgement(an: dict, names: dict, short: bool) -> str:
             a, b = an["a"].get("ou"), an["b"].get("ou")
             how = f"linea {fmt_goal(a[0])} → {fmt_goal(b[0])}" if a and b and abs(a[0] - b[0]) > 0.01 else \
                 f"{d} piu' giocato"
-            parts.append(f"⚽ <b>Gol verso l'{d}</b>: {how}, su {len(mv['ou']['books'])} book su 3")
+            who = " e ".join(BOOK_LABEL.get(x, x) for x in mv["ou"]["books"])
+            parts.append(f"⚽ <b>Gol verso l'{d}</b>: {how}, su {len(mv['ou']['books'])} book su 3 ({who})")
     if not parts:
         x = an["b"].get("x")
         if x:
@@ -964,7 +1004,7 @@ def build_message(m: dict, names: dict, an: dict, base_at: datetime, first: bool
     """Messaggio a ridosso (una partita): tabellina, giudizio, colore per la riga Mercato, pronostico."""
     lg = LEAGUES_Q.get(m["code"], {"flag": ""})
     rows = [f"{lg['flag']} <b>{match_title(names)}</b> · {m['ko'].astimezone(ROME):%H:%M}",
-            fmt_table(names, an["a"], an["b"]),
+            fmt_table(names, an["a"], an["b"], signal_rows(an)),
             judgement(an, names, short=False)]
     if an["color"]:
         rows.append(f"Mercato: <b>{COLOR_TXT[an['color']]}</b> a {esc(names[an['team']])}")
@@ -1010,7 +1050,9 @@ LEGEND = ("📖 <b>Come leggere i messaggi delle quote</b>\n\n"
           "<b>Le quote</b> (di Pinnacle; il giudizio guarda anche Sbobet e Singbet)\n"
           "▼ quota scesa = piu' probabile · ▲ quota salita = meno probabile · doppia freccia = movimento forte\n"
           "AH = handicap asiatico della squadra di casa (▼ = casa piu' favorita) · Gol = linea gol principale "
-          "(▲ = piu' gol attesi) · O2,5 = Over 2,5 · GG = Goal\n\n"
+          "(▲ = piu' gol attesi) · O2,5 = Over 2,5 · GG = Goal\n"
+          "Sotto la riga tratteggiata: i book che hanno fatto scattare il giudizio, se non e' Pinnacle (la loro linea, "
+          "o la % se la linea e' rimasta quella)\n\n"
           "<b>Giudizio</b> (regole del foglio Mercato, su almeno 2 book su 3)\n"
           "🟢🟢 calo forte: linea asiatica spostata verso la squadra → Verde forte\n"
           "🟢 calo leggero: stessa linea, quota scesa di almeno 2 punti → Verde\n"
