@@ -1,87 +1,6 @@
 {
   "fixtures": [
     {
-      "competition": "CL",
-      "league": "CL",
-      "flag": "",
-      "home": "PAE AEK",
-      "away": "Real Madrid CF",
-      "kickoff": "2026-11-04T17:45:00Z",
-      "status": "FINISHED"
-    },
-    {
-      "competition": "CL",
-      "league": "CL",
-      "flag": "",
-      "home": "Fenerbahçe SK",
-      "away": "Liverpool FC",
-      "kickoff": "2026-11-04T17:45:00Z",
-      "status": "FINISHED"
-    },
-    {
-      "competition": "CL",
-      "league": "CL",
-      "flag": "",
-      "home": "RB Leipzig",
-      "away": "Manchester City FC",
-      "kickoff": "2026-11-04T20:00:00Z",
-      "status": "FINISHED"
-    },
-    {
-      "competition": "CL",
-      "league": "CL",
-      "flag": "",
-      "home": "SK Slavia Praha",
-      "away": "Arsenal FC",
-      "kickoff": "2026-11-04T20:00:00Z",
-      "status": "FINISHED"
-    },
-    {
-      "competition": "CL",
-      "league": "CL",
-      "flag": "",
-      "home": "PSV",
-      "away": "Club Brugge KV",
-      "kickoff": "2026-11-04T20:00:00Z",
-      "status": "FINISHED"
-    },
-    {
-      "competition": "CL",
-      "league": "CL",
-      "flag": "",
-      "home": "Borussia Dortmund",
-      "away": "Real Betis Balompié",
-      "kickoff": "2026-11-04T20:00:00Z",
-      "status": "FINISHED"
-    },
-    {
-      "competition": "CL",
-      "league": "CL",
-      "flag": "",
-      "home": "FC Porto",
-      "away": "SSC Napoli",
-      "kickoff": "2026-11-04T20:00:00Z",
-      "status": "FINISHED"
-    },
-    {
-      "competition": "CL",
-      "league": "CL",
-      "flag": "",
-      "home": "Racing Club de Lens",
-      "away": "Como 1907",
-      "kickoff": "2026-11-04T20:00:00Z",
-      "status": "FINISHED"
-    },
-    {
-      "competition": "CL",
-      "league": "CL",
-      "flag": "",
-      "home": "Viking FK",
-      "away": "Sabah FK",
-      "kickoff": "2026-11-04T20:00:00Z",
-      "status": "FINISHED"
-    },
-    {
       "competition": "BL1",
       "league": "Bundesliga",
       "flag": "🇩🇪",
@@ -277,7 +196,7 @@
       "home": "AS Roma",
       "away": "US Sassuolo Calcio",
       "kickoff": "2026-11-07T19:45:00Z",
-      "status": "IN_PLAY"
+      "status": "FINISHED"
     },
     {
       "competition": "PD",
@@ -286,7 +205,7 @@
       "home": "Valencia CF",
       "away": "Real Madrid CF",
       "kickoff": "2026-11-07T20:00:00Z",
-      "status": "IN_PLAY"
+      "status": "FINISHED"
     },
     {
       "competition": "FL1",
@@ -295,7 +214,7 @@
       "home": "Paris Saint-Germain FC",
       "away": "ES Troyes AC",
       "kickoff": "2026-11-07T20:05:00Z",
-      "status": "IN_PLAY"
+      "status": "FINISHED"
     },
     {
       "competition": "SA",
