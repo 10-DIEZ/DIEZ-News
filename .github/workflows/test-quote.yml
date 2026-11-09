@@ -24,6 +24,11 @@ on:
         required: false
         default: ""
         type: string
+      muto:
+        description: "prova muta: i messaggi vanno solo nel registro di GitHub, non nel gruppo"
+        required: false
+        default: false
+        type: boolean
 
 permissions:
   contents: write
@@ -60,7 +65,11 @@ jobs:
           TELEGRAM_GROUP_ID: ${{ secrets.TELEGRAM_GROUP_ID }}
           MODO: ${{ inputs.modo }}
           PARTITA: ${{ inputs.partita }}
-        run: python monitor_quote.py --mode "$MODO" --partita "$PARTITA"
+          MUTO: ${{ inputs.muto }}
+        run: |
+          ARGS=""
+          if [ "$MUTO" = "true" ]; then ARGS="--muto"; fi
+          python monitor_quote.py --mode "$MODO" --partita "$PARTITA" $ARGS
 
       - name: Salva lo stato delle quote
         if: always()

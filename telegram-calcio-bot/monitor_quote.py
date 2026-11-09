@@ -119,14 +119,17 @@ ARROW_PTS = 1.5                 # freccia accanto a una quota: probabilita' moss
 ARROW_STRONG_PTS = 5.0          # ...doppia freccia da 5 punti in su
 STALE_HOURS = 6                 # linea non aggiornata da 6 ore piu' delle altre = tolta dal book
 
-# Forza del segnale (1-10) = ampiezza (1-5) + book d'accordo (0-2) + tenuta (0-2) + altro mercato (0-1)
+# Forza del segnale (1-10) = 2 x ampiezza (1-5) + book (3 su 3 +1, 2 su 3 0, uno solo -1)
+#                            + tenuta (ha tenuto 0, tornato un po' indietro -1, rientrato -2) + altro mercato (+1)
+# L'ampiezza si misura in punti di probabilita' (senza margine) SULLA LINEA DELL'APERTURA: se la linea principale
+# e' cambiata, si guarda come si e' mossa la quota della linea di partenza (cosi' un cambio di linea "di confine"
+# non conta come un movimento grande).
 FORZA_MIN_AVVISO = 4            # avviso a 40 minuti da 4/10 in su (sotto e' rumore)
 FORZA_FORTE = 7                 # da 7/10: segnale forte
-LEV_SIDE = (3.0, 4.0, 5.5, 7.0) # stessa linea asiatica (o solo 1X2): punti di probabilita' per l'ampiezza 1-4
-LEV_GOL = (3.5, 4.5, 6.0, 8.0)  # stessa linea gol: punti dell'Over per l'ampiezza 1-4
-LEV_GG = (3.5, 5.0, 6.5, 8.0)   # Goal/No Goal: punti del GG per l'ampiezza 1-4
-#                                 linea spostata di un quarto = ampiezza 3 (4 se la quota continua), mezzo gol = 5
-LINE_PTS = 5.0                  # un quarto di linea vale circa 5 punti di probabilita' (andamento e tenuta)
+LEV_SIDE = (3.0, 4.5, 6.0, 8.0, 10.0)   # handicap asiatico (o solo 1X2): punti per l'ampiezza 1-5
+LEV_GOL = (3.5, 5.0, 6.5, 8.5, 10.5)    # linea gol: punti dell'Over per l'ampiezza 1-5
+LEV_GG = (3.5, 5.0, 6.5, 8.0, 10.0)     # Goal/No Goal: punti del GG per l'ampiezza 1-5
+LINE_PTS = 6.0                  # se la linea dell'apertura non c'e' piu': un quarto di linea vale circa 6 punti
 MIN_BOOK_PTS = 1.5              # un book "si muove" (conferme, frecce, altro mercato) da 1,5 punti
 EVENT_PTS = 3.0                 # corner/gol/tiri di squadra con la linea ferma: freccia da 3 punti dell'Over
 FORMAZIONI_MINUTES = 60         # le formazioni ufficiali escono circa un'ora prima
@@ -137,11 +140,12 @@ TOPIC_NAME = "📈 Quote"
 TOPIC_COLOR = 9367192           # verde
 KEEP_DAYS = 8                   # partite finite tenute nello stato una settimana (per "rivedi")
 LEGEND_VERSION = 2              # se cambia, la legenda viene rimandata una volta (2 = forza, squadre, conferme)
-MARKETS_VERSION = 3             # se cambia, l'elenco dei mercati viene riletto subito (3 = corner, gol e tiri di squadra)
+MARKETS_VERSION = 4             # se cambia, l'elenco dei mercati viene riletto subito (3-4 = corner, gol e tiri di squadra)
 STATS_KEEP = 400                # numeri delle partite tenuti per tarare le soglie
 RIVEDI_DAYS = 8                 # "rivedi": partite giocate negli ultimi 8 giorni
 RIVEDI_BUDGET_SECONDS = 480     # "rivedi" di tutta la settimana: al massimo 8 minuti di letture
 RIVEDI_TOP = 3                  # ...e nel gruppo le 3 partite piu' forti
+MUTO = False                    # --muto (solo prove a mano): i messaggi vanno nel registro, non nel gruppo
 
 
 # =====================================================================
@@ -373,22 +377,22 @@ def classify_market(m: dict) -> list | None:
         return None
     mtype = str(m.get("marketType") or "").lower()
     words = norm(m.get("marketName")).split()
-    ws = set(words)
+    ws = set(words) | set(norm(mtype).split())          # anche il tipo (es. "corners-totals", "team-totals")
     if ws & _SKIP_WORDS:
         return None                     # tempi, cartellini, giocatori, pari/dispari...
     period = str(m.get("period") or "").lower()
     handicap = float(m.get("handicap") or 0)
     corner = bool(ws & {"corner", "corners"})
-    shots = bool(ws & {"shot", "shots", "sot"})
-    sot = shots and ("target" in ws or "sot" in ws)
+    shots = bool(ws & {"shot", "shots", "sot", "shotsontarget"})
+    sot = shots and bool(ws & {"target", "sot", "shotsontarget", "ontarget"})
     side = ""
-    if "team" in ws or ws & {"home", "away"}:
+    if ws & {"team", "home", "away"}:
         home, away = bool(ws & {"1", "home"}), bool(ws & {"2", "away"})
         if home == away:
             return None                 # non si capisce di quale squadra
         side = "home" if home else "away"
     if corner or shots or side:
-        if mtype != "totals" or (shots and not sot) or handicap <= 0:
+        if "total" not in mtype or (shots and not sot) or handicap <= 0:
             return None                 # handicap dei corner, tiri totali, sì/no di squadra...: non usati
         if corner:
             group = "tc" if side else "ct"
@@ -431,14 +435,21 @@ def ensure_markets(st: dict, force: bool = False) -> dict:
     except Exception as e:      # noqa: BLE001
         print(f"[WARN] elenco mercati non letto ({e})")
         return st["markets"]
-    meta, names = {}, {}
+    meta, names, types, skipped = {}, {}, {}, []
     for m in items:
         try:
+            if int(m.get("sportId") or 10) != 10:
+                continue
+            mt = str(m.get("marketType") or "")
+            types[mt] = types.get(mt, 0) + 1
             info = classify_market(m)
             if info:
                 meta[str(m["marketId"])] = info
                 if info[4] != "main":
                     names.setdefault(info[4], set()).add(str(m.get("marketName")))
+            elif re.search(r"corner|team|home|away|shot|target", f"{m.get('marketName')} {mt}", re.I) and \
+                    len(skipped) < 40:
+                skipped.append(f"{m.get('marketId')}:{m.get('marketName')}[{mt},{m.get('handicap')},{m.get('period')}]")
         except (KeyError, TypeError, ValueError):
             continue
     if meta:
@@ -448,8 +459,11 @@ def ensure_markets(st: dict, force: bool = False) -> dict:
         kinds[v[4]] = kinds.get(v[4], 0) + 1
     print(f"Mercati letti: {len(meta)} {kinds} (main = 1X2, asiatico, linea gol, GG · ct/tc = corner partita/squadra · "
           f"tg = gol di squadra · ts = tiri in porta di squadra)")
+    print(f"   tipi di mercato del calcio su OddsPapi: {dict(sorted(types.items(), key=lambda kv: -kv[1])[:25])}")
     for k, ns in sorted(names.items()):
         print(f"   {k}: {sorted(ns)[:8]}")
+    if skipped:
+        print(f"   non usati (corner/squadra/tiri): {skipped}")
     return st["markets"]
 
 
@@ -645,6 +659,7 @@ class BookHist:
                 elif group in ev and side in ("home", "away"):
                     ev[group][side].append((info[1], prices[0], prices[1], last))
         res["ah"], res["ou"], res["lines"] = _pick_main(ah), _pick_main(ou), _fresh_lines(ou)
+        res["ah_lines"] = _fresh_lines(ah)
         res["ct"] = _pick_main(ct)
         for g, sides in ev.items():
             for side, cands in sides.items():
@@ -706,6 +721,7 @@ def first_quotes(h: BookHist) -> dict:
 
 
 _HIST_INFO = {}         # per la prova: mercati trovati nello storico per ogni book (tutti, usati)
+_HIST_UNKNOWN = {}      # per la prova: id dei mercati dello storico che il bot non usa (per scoprire corner e simili)
 
 
 def fetch_history(st: dict, fid: str, books: list, force: bool = False) -> dict:
@@ -729,6 +745,7 @@ def read_history(st: dict, fid: str, ap_at: datetime, at: datetime | None = None
     for slug, bk in bks.items():
         mk = (bk or {}).get("markets") or {}
         _HIST_INFO[slug] = (len(mk), sum(1 for k in mk if k in meta))
+        _HIST_UNKNOWN[slug] = sorted((k for k in mk if k not in meta), key=lambda k: int(k) if str(k).isdigit() else 0)[:40]
     bh = {slug: BookHist(slug, bk, meta) for slug, bk in bks.items()}
     ref_at = at or now_utc()
     now = {s: h.snapshot(at) for s, h in bh.items()}
@@ -782,46 +799,37 @@ def _sign(x: float) -> int:
     return 1 if x > 1e-9 else -1 if x < -1e-9 else 0
 
 
-def _line_level(dline: float, pts: float, d: int) -> int:
-    """Linea spostata: un quarto = 3 (4 se anche la quota continua nella stessa direzione), mezzo gol o piu' = 5."""
-    if abs(dline) >= 0.5 - 1e-9:
-        return 5
-    return 3 + (1 if pts * d >= 2.0 else 0)
-
-
 def side_move(a: dict, b: dict) -> dict | None:
-    """Movimento verso la squadra di casa (dir +1) o l'ospite (-1). Con l'asiatico: linea spostata (un quarto vale
-    LINE_PTS punti) o stessa linea con la quota mossa (punti di probabilita' senza margine); se no il 1X2."""
+    """Movimento verso la squadra di casa (dir +1) o l'ospite (-1), in punti di probabilita' senza margine.
+    Con l'asiatico: la quota della linea dell'apertura adesso (se c'e' ancora), se no la linea di adesso con un
+    quarto = LINE_PTS punti; senza asiatico il 1X2."""
     if a.get("ah") and b.get("ah"):
         dline = round(b["ah"][0] - a["ah"][0], 2)
-        pts = (novig(b["ah"][1:])[0] - novig(a["ah"][1:])[0]) * 100
-        meas = pts - dline / 0.25 * LINE_PTS            # linea piu' negativa = casa piu' favorita
-        ld = -_sign(dline)
-        if ld and meas * ld > 0:
-            d, lvl = ld, _line_level(dline, pts, ld)
-        else:
-            d, lvl = _sign(meas), tier(abs(meas), LEV_SIDE)
-        return {"dir": d, "lvl": lvl, "meas": meas, "dline": dline, "pts": pts, "src": "ah"}
+        same = (b.get("ah_lines") or {}).get(f"{a['ah'][0]:g}")
+        if same:
+            meas = (novig(same)[0] - novig(a["ah"][1:])[0]) * 100
+        else:                                           # linea piu' negativa = casa piu' favorita
+            meas = (novig(b["ah"][1:])[0] - novig(a["ah"][1:])[0]) * 100 - dline / 0.25 * LINE_PTS
+        return {"dir": _sign(meas), "lvl": tier(abs(meas), LEV_SIDE), "meas": meas, "dline": dline, "src": "ah"}
     if a.get("x") and b.get("x"):
         pa, pb = novig(a["x"]), novig(b["x"])
         pts = ((pb[0] - pa[0]) - (pb[2] - pa[2])) / 2 * 100
-        return {"dir": _sign(pts), "lvl": tier(abs(pts), LEV_SIDE), "meas": pts, "dline": 0.0, "pts": pts, "src": "x"}
+        return {"dir": _sign(pts), "lvl": tier(abs(pts), LEV_SIDE), "meas": pts, "dline": 0.0, "src": "x"}
     return None
 
 
 def gol_move(a: dict, b: dict) -> dict | None:
-    """Movimento della linea gol: dir +1 = piu' gol (Over), -1 = meno gol (Under)."""
+    """Movimento della linea gol: dir +1 = piu' gol (Over), -1 = meno gol (Under). Misura come side_move: l'Over
+    della linea dell'apertura adesso, se no la linea di adesso con un quarto = LINE_PTS punti."""
     if not (a.get("ou") and b.get("ou")):
         return None
     dline = round(b["ou"][0] - a["ou"][0], 2)
-    pts = (novig(b["ou"][1:])[0] - novig(a["ou"][1:])[0]) * 100
-    meas = pts + dline / 0.25 * LINE_PTS
-    ld = _sign(dline)
-    if ld and meas * ld > 0:
-        d, lvl = ld, _line_level(dline, pts, ld)
+    same = (b.get("lines") or {}).get(f"{a['ou'][0]:g}")
+    if same:
+        meas = (novig(same)[0] - novig(a["ou"][1:])[0]) * 100
     else:
-        d, lvl = _sign(meas), tier(abs(meas), LEV_GOL)
-    return {"dir": d, "lvl": lvl, "meas": meas, "dline": dline, "pts": pts, "src": "ou"}
+        meas = (novig(b["ou"][1:])[0] - novig(a["ou"][1:])[0]) * 100 + dline / 0.25 * LINE_PTS
+    return {"dir": _sign(meas), "lvl": tier(abs(meas), LEV_GOL), "meas": meas, "dline": dline, "src": "ou"}
 
 
 def gg_move(a: dict, b: dict) -> dict | None:
@@ -829,7 +837,7 @@ def gg_move(a: dict, b: dict) -> dict | None:
     if not (a.get("gg") and b.get("gg")):
         return None
     pts = (novig(b["gg"])[0] - novig(a["gg"])[0]) * 100
-    return {"dir": _sign(pts), "lvl": tier(abs(pts), LEV_GG), "meas": pts, "dline": 0.0, "pts": pts, "src": "gg"}
+    return {"dir": _sign(pts), "lvl": tier(abs(pts), LEV_GG), "meas": pts, "dline": 0.0, "src": "gg"}
 
 
 MOVE_FN = {"side": side_move, "gol": gol_move, "gg": gg_move}
@@ -840,7 +848,7 @@ PATH_POINTS = 150               # andamento: al massimo 150 momenti per book (ba
 
 def combine(fam: str, moves: dict) -> dict | None:
     """Segnale di un mercato: almeno 2 book mossi nella stessa direzione; l'ampiezza e' la seconda piu' alta (cioe'
-    confermata da 2 book). Con un solo book con le quote serve ampiezza 2, e conta un punto in meno."""
+    confermata da 2 book). Con un solo book con le quote serve ampiezza 2 (e i book contano -1 nella forza)."""
     valid = {s: m for s, m in moves.items() if m}
     for d in (1, -1):
         lv = sorted((m["lvl"] for m in valid.values() if m["dir"] == d and m["lvl"] >= 1), reverse=True)
@@ -848,8 +856,16 @@ def combine(fam: str, moves: dict) -> dict | None:
         if len(lv) >= 2:
             return {"fam": fam, "dir": d, "lvl": lv[1], "books": agree, "n": len(valid)}
         if len(valid) == 1 and lv and lv[0] >= 2:
-            return {"fam": fam, "dir": d, "lvl": lv[0] - 1, "books": agree, "n": 1}
+            return {"fam": fam, "dir": d, "lvl": lv[0], "books": agree, "n": 1}
     return None
+
+
+def forza_of(lvl: int, nbooks: int, ratio: float, coe: int) -> tuple:
+    """Forza 1-10 = 2 x ampiezza + book (3 d'accordo +1, 2 0, uno solo -1) + tenuta (ha tenuto 0, tornato un po'
+    indietro -1, rientrato -2) + altro mercato (+1). Ritorna (forza, punti book, punti tenuta)."""
+    acc = 1 if nbooks >= 3 else 0 if nbooks == 2 else -1
+    ten = 0 if ratio >= TENUTA_OK else -1 if ratio >= TENUTA_MEZZA else -2
+    return max(1, min(10, 2 * lvl + acc + ten + coe)), acc, ten
 
 
 def move_path(R: dict, slug: str, fam: str, end) -> list:
@@ -873,16 +889,15 @@ def move_path(R: dict, slug: str, fam: str, end) -> list:
     return out
 
 
-def tenuta(pth: list, d: int) -> tuple:
-    """2 = ha tenuto (adesso almeno l'80% del punto piu' alto), 1 = tornato un po' indietro, 0 = rientrato."""
+def tenuta(pth: list, d: int) -> float:
+    """Quanto del punto piu' alto del movimento c'e' ancora adesso (1 = ha tenuto tutto, 0 = rientrato)."""
     if not pth:
-        return 2, 1.0
+        return 1.0
     cur = pth[-1][1]["meas"] * d
     peak = max(mv["meas"] * d for _, mv in pth)
     if peak <= 0:
-        return 0, 0.0
-    ratio = max(0.0, cur / peak)
-    return (2 if ratio >= TENUTA_OK else 1 if ratio >= TENUTA_MEZZA else 0), ratio
+        return 0.0
+    return max(0.0, min(1.0, cur / peak))
 
 
 def event_move(a, b, g: str) -> tuple:
@@ -940,10 +955,18 @@ def coerenza(fam: str, d: int, a: dict, b: dict, evdir: dict) -> int:
     return 1 if g and g["meas"] * d >= MIN_BOOK_PTS else 0
 
 
-def line_force(moves: dict, books: list) -> int:
-    """Per il colore: 1 = stessa linea, 2 = asiatico spostato di un quarto, 3 = di mezzo gol (confermato da 2 book)."""
-    fs = sorted(((3 if abs(moves[s]["dline"]) >= 0.5 - 1e-9 else 2 if abs(moves[s]["dline"]) >= 0.25 - 1e-9 else 1)
-                 for s in books if moves.get(s)), reverse=True)
+def line_force(moves: dict, books: list, d: int) -> int:
+    """Per il colore della riga Mercato: 2 = asiatico spostato di un quarto verso la squadra con un movimento vero
+    (ampiezza 3, cioe' da 6 punti), 3 = di mezzo gol (ampiezza 5), 1 = il resto; confermato da 2 book."""
+    fs = []
+    for s in books:
+        m = moves.get(s)
+        if not m:
+            continue
+        toward = abs(m["dline"]) >= 0.25 - 1e-9 and _sign(-m["dline"]) == d
+        fs.append(3 if toward and abs(m["dline"]) >= 0.5 - 1e-9 and m["lvl"] >= 5 else
+                  2 if toward and m["lvl"] >= 3 else 1)
+    fs.sort(reverse=True)
     if not fs:
         return 1
     return fs[1] if len(fs) >= 2 else fs[0]
@@ -1086,13 +1109,12 @@ def analyze(R: dict, ko: datetime | None = None, extra: dict | None = None) -> d
             continue
         sref = ref if ref in sig["books"] else (sig["books"][0] if sig["books"] else ref)
         pth = move_path(R, sref, fam, at_eff)
-        ten, ratio = tenuta(pth, sig["dir"])
-        acc = 2 if len(sig["books"]) >= 3 else 1 if len(sig["books"]) == 2 else 0
+        ratio = tenuta(pth, sig["dir"])
         coe = coerenza(fam, sig["dir"], base.get(sref) or {}, now.get(sref) or {}, evdir)
-        sig.update(moves=moves, ref=sref, path=pth, acc=acc, ten=ten, ratio=ratio, coe=coe,
-                   forza=max(1, min(10, sig["lvl"] + acc + ten + coe)))
+        forza, acc, ten = forza_of(sig["lvl"], len(sig["books"]), ratio, coe)
+        sig.update(moves=moves, ref=sref, path=pth, acc=acc, ten=ten, ratio=ratio, coe=coe, forza=forza)
         if fam == "side":
-            sig["force"] = line_force(moves, [s for s in sig["books"] if moves.get(s) and moves[s]["dir"] == sig["dir"]])
+            sig["force"] = line_force(moves, sig["books"], sig["dir"])
         sigs.append(sig)
     shown = [s for s in sigs if s["forza"] >= FORZA_MIN_AVVISO]
     fav = favourite(base)
@@ -1638,6 +1660,9 @@ class QuoteTopic:
         return (self.group_id, tid) if tid else (None, None)
 
     def send(self, text: str) -> bool:
+        if MUTO:                        # prova muta: il messaggio va solo nel registro
+            print("[MUTO] messaggio:\n" + re.sub(r"</?(b|i|pre)>", "", text) + "\n[/MUTO]")
+            return True
         for _ in range(2):
             chat_id, thread_id = self.target()
             res = send_telegram_message(text, disable_preview=True, chat_id=chat_id, thread_id=thread_id)
@@ -1950,6 +1975,8 @@ def do_riepilogo(st: dict, topic: QuoteTopic, key: str | None, matches: list, fo
 
 def send_legend(st: dict, topic: QuoteTopic, force: bool = False) -> None:
     """La legenda (come leggere i messaggi): una volta, e di nuovo solo se cambia."""
+    if MUTO:
+        return
     if (force or st.get("legend") != LEGEND_VERSION) and topic.send(LEGEND):
         st["legend"] = LEGEND_VERSION
 
@@ -1990,8 +2017,10 @@ def describe(an: dict) -> str:
     """Per il registro: segnali con i pezzi della forza."""
     out = []
     for s in an["sigs"]:
-        out.append(f"{s['fam']} {'+' if s['dir'] > 0 else '-'} forza {s['forza']} = ampiezza {s['lvl']} + book "
-                   f"{s['acc']} ({','.join(s['books'])}) + tenuta {s['ten']} ({s['ratio']:.2f}) + mercato {s['coe']}")
+        mv = s["moves"].get(s["ref"]) or {}
+        out.append(f"{s['fam']} {'+' if s['dir'] > 0 else '-'} forza {s['forza']} = 2x{s['lvl']} "
+                   f"({abs(mv.get('meas', 0)):.1f} punti, linea {mv.get('dline', 0):+g}) book {s['acc']:+d} "
+                   f"({','.join(s['books'])}) tenuta {s['ten']:+d} ({s['ratio']:.2f}) mercato +{s['coe']}")
     return " | ".join(out) or "nessun movimento"
 
 
@@ -2106,7 +2135,13 @@ def do_rivedi(st: dict, topic: QuoteTopic, query: str = "") -> None:
         an = analyze(R, m["ko"])
         save_stats(st, stats_entry(m, an, "rivedi"))
         results.append((m, names, an, R))
-        print(f"  {names['home']} - {names['away']} ({when_text(m['ko'])}): forza {an['forza']} · {describe(an)}")
+        a, b = an["a"], an["b"]
+        print(f"  {names['home']} - {names['away']} ({when_text(m['ko'])}): forza {an['forza']} · {describe(an)}\n"
+              f"     {an['ref']}: 1X2 {a.get('x')} -> {b.get('x')} | AH {a.get('ah')} -> {b.get('ah')} | gol "
+              f"{a.get('ou')} -> {b.get('ou')} | squadre { {g: sorted(r) for g, r in an['events'].items()} } | "
+              f"mercati nello storico (tutti, usati) {_HIST_INFO}")
+        if len(results) == 1:
+            print(f"     id non usati nello storico: {_HIST_UNKNOWN}")
     if not results:
         topic.send("🧪 Rivedi: storico delle quote non letto (riprova tra poco).")
         return
@@ -2155,12 +2190,14 @@ _START = time.monotonic()
 
 
 def main() -> int:
-    global _START
+    global _START, MUTO
     _START = time.monotonic()
     ap = argparse.ArgumentParser()
     ap.add_argument("--mode", default="auto", choices=["auto", "test", "ora", "apertura", "riepilogo", "rivedi"])
     ap.add_argument("--partita", default="", help="per --mode rivedi: squadra da cercare (vuoto = tutta la settimana)")
+    ap.add_argument("--muto", action="store_true", help="prove a mano: messaggi nel registro, non nel gruppo")
     args = ap.parse_args()
+    MUTO = bool(args.muto) and args.mode != "auto"
     if not API_KEY:
         print("Bot quote: manca il secret ODDSPAPI_API_KEY, non faccio niente")
         return 0
