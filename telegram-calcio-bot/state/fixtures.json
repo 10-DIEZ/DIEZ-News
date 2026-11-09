@@ -412,7 +412,7 @@
       "home": "ACF Fiorentina",
       "away": "Juventus FC",
       "kickoff": "2026-11-08T19:45:00Z",
-      "status": "IN_PLAY"
+      "status": "FINISHED"
     },
     {
       "competition": "FL1",
@@ -421,7 +421,7 @@
       "home": "Racing Club de Lens",
       "away": "Olympique de Marseille",
       "kickoff": "2026-11-08T19:45:00Z",
-      "status": "IN_PLAY"
+      "status": "FINISHED"
     },
     {
       "competition": "PD",
@@ -430,7 +430,7 @@
       "home": "Club Atlético de Madrid",
       "away": "FC Barcelona",
       "kickoff": "2026-11-08T20:00:00Z",
-      "status": "IN_PLAY"
+      "status": "FINISHED"
     }
   ],
   "teams": [
