@@ -31,7 +31,8 @@ Gira da solo nel cloud tramite GitHub Actions, non serve tenere niente acceso.
 ## Bot quote (argomento «📈 Quote» del gruppo)
 
 Segue le quote dei 5 campionati con OddsPapi (piano gratuito, 250 chiamate al
-mese, secret `ODDSPAPI_API_KEY`), sui book Pinnacle, Sbobet e Singbet.
+mese, secret `ODDSPAPI_API_KEY`), sui book Pinnacle (il riferimento), Sbobet e
+Singbet.
 
 - **Apertura**: le quote del venerdì alle 15:00 per le partite del weekend
   (venerdì-lunedì), del martedì alle 15:00 per i turni infrasettimanali: lo
@@ -41,30 +42,49 @@ mese, secret `ODDSPAPI_API_KEY`), sui book Pinnacle, Sbobet e Singbet.
   con un messaggio breve.
 - **Riepilogo**: alle 19 le partite di domani, un messaggio per campionato.
   Per ogni partita: una riga di quote (1X2, handicap asiatico, linea gol,
-  Over 2,5, GG) con le frecce del movimento, il giudizio (calo forte/leggero,
-  colore del foglio Mercato) e un 🎯 pronostico ricavato solo dall'andamento
-  delle quote, con la probabilità di adesso.
+  Over 2,5, GG) con le frecce del movimento, il giudizio con la **forza** del
+  segnale (colore del foglio Mercato) e un 🎯 pronostico ricavato solo
+  dall'andamento delle quote, con la probabilità di adesso e la quota giusta.
+- **Forza del segnale (1-10)** = quanto si è mosso (linea asiatica o gol
+  spostata di un quarto = 3, di mezzo gol = 5; stessa linea: da 3 punti di
+  probabilità in su, fino a 4) + quanti book sono d'accordo (2 su 3 = 1, 3 su
+  3 = 2) + se ha tenuto o è tornato indietro (0-2) + se un altro mercato dice
+  la stessa cosa (asiatico e 1X2, linea gol e GG o gol di squadra: 1). Da 7
+  forte, 4-6 medio (da farsi domande), sotto 4 rumore. Le soglie sono in cima
+  a `monitor_quote.py` (`FORZA_MIN_AVVISO`, `FORZA_FORTE`, `LEV_SIDE`,
+  `LEV_GOL`, `LEV_GG`).
 - **A ridosso**: 40 minuti prima di ogni orario d'inizio (formazioni già
   uscite) legge lo storico di ogni partita e confronta adesso con l'apertura.
-  Arriva un messaggio **solo** se il movimento è importante su almeno 2 book su
-  3: linea asiatica spostata di un quarto, oppure stessa linea con la quota
-  mossa di 2 punti di probabilità, oppure linea gol spostata. Il messaggio ha
-  una tabellina apertura/adesso, il giudizio, il colore da mettere nella riga
-  «Mercato» della Direzione generale e il pronostico dalle quote.
-- **Pronostico dalle quote**: calo forte → segno secco, calo leggero → doppia
-  chance, quota della favorita in salita → doppia chance contro di lei, linea
-  gol su/giù → Over/Under, mercato Goal mosso → GG/NG. La prima volta il bot
-  manda nel gruppo la legenda completa.
+  Arriva un messaggio **solo** se un movimento ha forza 4/10 o più. Il
+  messaggio ha: i segnali con la forza, la tabellina apertura/adesso
+  (Pinnacle), **Squadre** (corner, gol e tiri in porta di ogni squadra; i
+  tiri in porta da bet365, solo come informazione, se i 3 book non li
+  quotano), **Conferme** (come si sono mossi i 3 book, con le stesse frecce),
+  **Quando** (a che ora si è mosso, chi per primo, cosa è cambiato dopo le
+  formazioni), **Lettura** (cosa può voler dire, come domanda), il colore da
+  mettere nella riga «Mercato» della Direzione generale e il pronostico con la
+  quota giusta.
+- **Pronostico dalle quote**: calo forte → segno secco, calo → doppia chance,
+  quota della favorita in salita → doppia chance contro di lei e la sfavorita
+  che segna (contro quota), linea gol su/giù → Over/Under, mercato Goal mosso
+  → GG/NG. Il bot manda nel gruppo la legenda completa la prima volta e quando
+  cambia.
+- **Numeri per tarare**: ogni partita controllata lascia la forza e i suoi
+  pezzi in `state/quote_state.json` (`stats`).
 - **Consumo**: lo storico delle quote non conta nelle 250 chiamate (verificato
   sul contatore dell'account); contano solo gli aggiornamenti dell'elenco
-  partite, circa 10-20 chiamate al mese. Il contatore si allinea a quello
-  dell'account e non fa mai superare il limite.
+  partite e l'elenco dei mercati (una volta al mese), circa 10-20 chiamate al
+  mese. Il contatore si allinea a quello dell'account e non fa mai superare il
+  limite.
 - **Come parte**: lo lancia il giro ogni 5 minuti del bot notizie (passo «Bot
   quote» in `monitor-news.yml`); quasi sempre esce subito. Ogni giro lavora al
   massimo 3 minuti: se le partite sono tante, finisce al giro dopo, senza
   doppioni. Prove a mano: Actions → «Prova bot quote» → Run workflow
   (test = prova completa, ora = controllo subito delle prossime partite,
-  apertura = aggiorna subito l'elenco, riepilogo = riepilogo subito di domani).
+  apertura = aggiorna subito l'elenco, riepilogo = riepilogo subito di domani,
+  rivedi = rilegge le partite già giocate negli ultimi 8 giorni come 40 minuti
+  prima: con «partita» vuoto il conto forti/medi/rumore e le 3 più forti, con
+  una squadra il messaggio di quella partita).
 - Codice in `monitor_quote.py` (orari, soglie e book in cima al file), stato in
   `state/quote_state.json`.
 

@@ -4,9 +4,8 @@ Bot QUOTE: come si muovono le quote dei 5 campionati (OddsPapi, piano gratuito).
 COSA FA
 - Alle 19 manda il RIEPILOGO delle partite di domani (un messaggio per
   campionato): per ogni partita una riga di quote con le frecce del movimento,
-  il giudizio (calo forte/leggero, colore del foglio Mercato) e un pronostico
-  ricavato solo dall'andamento delle quote (1/2 secco, doppia chance,
-  Over/Under, GG/NG) con la probabilita' di adesso.
+  il giudizio con la FORZA del segnale (1-10) e un pronostico ricavato solo
+  dall'andamento delle quote, con la probabilita' e la quota giusta.
 - 40 minuti prima di ogni orario d'inizio (le formazioni ufficiali escono circa
   un'ora prima) legge lo STORICO delle quote di ogni partita su 3 book
   (Pinnacle, Sbobet, Singbet) e confronta:
@@ -15,18 +14,28 @@ COSA FA
                  infrasettimanali: lo stesso momento delle quote di apertura
                  usate nello studio del foglio Mercato del Pace Index;
       ADESSO   = le quote a ridosso, con le formazioni uscite.
-- Ti scrive SOLO per le partite con un movimento importante confermato su
-  almeno 2 book su 3: tabellina apertura/adesso, giudizio, colore da mettere
-  nella riga "Mercato" della Direzione generale e pronostico dalle quote.
-- La prima volta manda la legenda (come leggere i messaggi).
+- Ogni movimento (handicap asiatico, linea gol, Goal/No Goal) ha una FORZA da
+  1 a 10 = quanto si e' mosso (1-5) + quanti book sono d'accordo (0-2) + se ha
+  tenuto o e' tornato indietro (0-2) + se un altro mercato dice la stessa cosa
+  (0-1). Ti scrive SOLO da FORZA_MIN_AVVISO (4/10) in su: 7-10 forte, 4-6
+  medio (da farsi domande), sotto 4 rumore.
+- Il messaggio: tabellina apertura/adesso (Pinnacle), SQUADRE (corner, gol e
+  tiri in porta di ogni squadra), CONFERME degli altri book, QUANDO si e' mosso
+  (chi per primo, cosa e' cambiato dopo le formazioni), LETTURA (cosa puo'
+  voler dire, come domanda), colore per la riga "Mercato" della Direzione
+  generale e pronostico dalle quote con la quota giusta (senza margine).
+- La legenda la manda la prima volta e quando cambia (LEGEND_VERSION).
 - Il venerdi' alle 15 (e il martedi', se c'e' il turno infrasettimanale)
   aggiorna l'elenco delle partite e te lo dice con un messaggio breve.
+- Ogni partita controllata lascia i suoi numeri nello stato ("stats"): servono
+  a tarare le soglie.
 - Tutto nell'argomento "📈 Quote" del gruppo (lo crea il bot).
 
 QUANTO CONSUMA: lo storico delle quote NON conta nelle 250 chiamate al mese
 del piano gratuito (verificato con il contatore dell'account il 6/11/2026).
-Contano solo gli aggiornamenti dell'elenco partite: 1-4 a settimana. Un
-contatore (allineato a quello dell'account) non fa mai superare il limite.
+Contano solo gli aggiornamenti dell'elenco partite (1-4 a settimana) e l'elenco
+dei mercati (1 al mese). Un contatore (allineato a quello dell'account) non fa
+mai superare il limite.
 
 COME PARTE: lo lancia il giro ogni 5 minuti del bot notizie (monitor-news.yml,
 avviato da cron-job.org). Quasi sempre controlla l'ora ed esce subito.
@@ -35,14 +44,19 @@ Prove a mano: workflow "Prova bot quote".
 STATO: state/quote_state.json (solo questo file; lo stato delle notizie lo
 legge e basta, per sapere qual e' il gruppo Telegram).
 
-Uso: python monitor_quote.py                 giro normale
-     python monitor_quote.py --mode test     prova (diagnostica + messaggio di prova)
-     python monitor_quote.py --mode ora      controllo subito delle prossime partite
-     python monitor_quote.py --mode apertura aggiorna subito l'elenco delle partite
+Uso: python monitor_quote.py                   giro normale
+     python monitor_quote.py --mode test       prova (diagnostica + messaggio di prova)
+     python monitor_quote.py --mode ora        controllo subito delle prossime partite
+     python monitor_quote.py --mode apertura   aggiorna subito l'elenco delle partite
      python monitor_quote.py --mode riepilogo  riepilogo subito delle partite di domani
+     python monitor_quote.py --mode rivedi [--partita Roma]
+                                               rilegge le partite gia' giocate come 40 minuti prima:
+                                               con --partita manda quelle partite; senza, il conto
+                                               forti/medi/rumore della settimana e le 3 piu' forti
 """
 
 import argparse
+import bisect
 import html
 import json
 import math
@@ -67,9 +81,12 @@ API_BASE = "https://api.oddspapi.io/v4"
 API_KEY = os.environ.get("ODDSPAPI_API_KEY", "").strip()
 QUOTE_STATE_FILE = os.path.join(os.path.dirname(__file__), "state", "quote_state.json")
 
-# I 3 book confrontati (lo storico ne accetta al massimo 3 per chiamata)
+# I 3 book confrontati (lo storico ne accetta al massimo 3 per chiamata): Pinnacle e' il riferimento
 BOOKMAKERS = ["pinnacle", "sbobet", "singbet"]
 BOOK_LABEL = {"pinnacle": "Pinnacle", "singbet": "Singbet", "sbobet": "Sbobet", "bet365": "Bet365"}
+BOOK_SHORT = {"pinnacle": "Pinn", "sbobet": "Sbo", "singbet": "Sing"}
+SOT_BOOK = "bet365"             # tiri in porta di squadra se nessuno dei 3 book li quota: solo informazione
+SOT_MAX_TRIES = 8               # se in 8 partite quel book non li ha mai, smette di chiederli
 
 # Campionati: codice football-data (calendario del bot notizie) -> nome, paese, id OddsPapi di riserva
 LEAGUES_Q = {
@@ -97,21 +114,34 @@ RIEPILOGO_HOUR = 19             # riepilogo delle partite di domani alle 19 (fin
 RIEPILOGO_WINDOW_HOURS = 4
 
 AH_HOME_SIGN = 1                # la linea del mercato e' quella della squadra di casa (-0,5 = casa favorita: verificato)
-TH_LINE = 0.25                  # linea asiatica o gol: un quarto = movimento importante
-TH_PROB = 2.0                   # stessa linea: 2 punti di probabilita' (senza margine)
-TH_1X2 = 3.0                    # solo 1X2 (se manca l'asiatico): 3 punti
-TH_OU_PROB = 3.0                # linea gol ferma: Over di 3 punti
 FAV_GAP = 0.05                  # sotto 5 punti di differenza non c'e' una favorita
-TH_GG = 3.0                     # Goal/No Goal: 3 punti di probabilita' sul GG
 ARROW_PTS = 1.5                 # freccia accanto a una quota: probabilita' mossa di almeno 1,5 punti...
 ARROW_STRONG_PTS = 5.0          # ...doppia freccia da 5 punti in su
 STALE_HOURS = 6                 # linea non aggiornata da 6 ore piu' delle altre = tolta dal book
 
+# Forza del segnale (1-10) = ampiezza (1-5) + book d'accordo (0-2) + tenuta (0-2) + altro mercato (0-1)
+FORZA_MIN_AVVISO = 4            # avviso a 40 minuti da 4/10 in su (sotto e' rumore)
+FORZA_FORTE = 7                 # da 7/10: segnale forte
+LEV_SIDE = (3.0, 4.0, 5.5, 7.0) # stessa linea asiatica (o solo 1X2): punti di probabilita' per l'ampiezza 1-4
+LEV_GOL = (3.5, 4.5, 6.0, 8.0)  # stessa linea gol: punti dell'Over per l'ampiezza 1-4
+LEV_GG = (3.5, 5.0, 6.5, 8.0)   # Goal/No Goal: punti del GG per l'ampiezza 1-4
+#                                 linea spostata di un quarto = ampiezza 3 (4 se la quota continua), mezzo gol = 5
+LINE_PTS = 5.0                  # un quarto di linea vale circa 5 punti di probabilita' (andamento e tenuta)
+MIN_BOOK_PTS = 1.5              # un book "si muove" (conferme, frecce, altro mercato) da 1,5 punti
+EVENT_PTS = 3.0                 # corner/gol/tiri di squadra con la linea ferma: freccia da 3 punti dell'Over
+FORMAZIONI_MINUTES = 60         # le formazioni ufficiali escono circa un'ora prima
+TENUTA_OK = 0.8                 # tenuta: adesso almeno l'80% del punto piu' alto = ha tenuto (2 punti)...
+TENUTA_MEZZA = 0.5              # ...almeno la meta' = e' tornato un po' indietro (1); meno = rientrato (0)
+
 TOPIC_NAME = "📈 Quote"
 TOPIC_COLOR = 9367192           # verde
-KEEP_DAYS = 3                   # partite finite tenute nello stato per qualche giorno
-LEGEND_VERSION = 1              # se cambia, la legenda viene rimandata una volta
-MARKETS_VERSION = 2             # se cambia, l'elenco dei mercati viene riletto subito (2 = anche Goal/No Goal)
+KEEP_DAYS = 8                   # partite finite tenute nello stato una settimana (per "rivedi")
+LEGEND_VERSION = 2              # se cambia, la legenda viene rimandata una volta (2 = forza, squadre, conferme)
+MARKETS_VERSION = 3             # se cambia, l'elenco dei mercati viene riletto subito (3 = corner, gol e tiri di squadra)
+STATS_KEEP = 400                # numeri delle partite tenuti per tarare le soglie
+RIVEDI_DAYS = 8                 # "rivedi": partite giocate negli ultimi 8 giorni
+RIVEDI_BUDGET_SECONDS = 480     # "rivedi" di tutta la settimana: al massimo 8 minuti di letture
+RIVEDI_TOP = 3                  # ...e nel gruppo le 3 partite piu' forti
 
 
 # =====================================================================
@@ -137,7 +167,7 @@ def load_qstate() -> dict:
         st["version"] = 2
     for key, default in (("month", ""), ("calls", 0), ("fixtures", {}), ("done", []), ("topic", {}),
                          ("tournaments", {}), ("participants", {}), ("markets", {}), ("markets_month", ""),
-                         ("notices", []), ("log", []), ("refresh_at", "")):
+                         ("notices", []), ("log", []), ("refresh_at", ""), ("stats", [])):
         st.setdefault(key, default)
     month = now_utc().astimezone(ROME).strftime("%Y-%m")
     if st["month"] != month:
@@ -329,9 +359,64 @@ def ensure_tournaments(st: dict, force: bool = False) -> dict:
     return found
 
 
+_SKIP_WORDS = {"half", "halves", "first", "second", "1st", "2nd", "player", "players", "card", "cards", "booking",
+               "bookings", "minute", "minutes", "odd", "even", "exact", "range", "race", "interval", "margin",
+               "winning", "method", "scorer", "anytime"}
+
+
+def classify_market(m: dict) -> list | None:
+    """Un mercato di /markets -> [tipo, linea, periodo, esiti in ordine, gruppo, squadra] (None = non usato).
+    gruppo: 'main' = 1X2, handicap asiatico, linea gol e Goal/No Goal della partita; 'ct' = corner della partita;
+    'tc' = corner di una squadra; 'tg' = gol di una squadra; 'ts' = tiri in porta di una squadra.
+    squadra: 'home' / 'away' per i mercati di una sola squadra, '' per gli altri."""
+    if int(m.get("sportId") or 10) != 10 or m.get("playerProp"):
+        return None
+    mtype = str(m.get("marketType") or "").lower()
+    words = norm(m.get("marketName")).split()
+    ws = set(words)
+    if ws & _SKIP_WORDS:
+        return None                     # tempi, cartellini, giocatori, pari/dispari...
+    period = str(m.get("period") or "").lower()
+    handicap = float(m.get("handicap") or 0)
+    corner = bool(ws & {"corner", "corners"})
+    shots = bool(ws & {"shot", "shots", "sot"})
+    sot = shots and ("target" in ws or "sot" in ws)
+    side = ""
+    if "team" in ws or ws & {"home", "away"}:
+        home, away = bool(ws & {"1", "home"}), bool(ws & {"2", "away"})
+        if home == away:
+            return None                 # non si capisce di quale squadra
+        side = "home" if home else "away"
+    if corner or shots or side:
+        if mtype != "totals" or (shots and not sot) or handicap <= 0:
+            return None                 # handicap dei corner, tiri totali, sì/no di squadra...: non usati
+        if corner:
+            group = "tc" if side else "ct"
+        elif sot:
+            if not side:
+                return None             # tiri in porta della partita: non usati
+            group = "ts"
+        else:
+            group = "tg"
+        order = outcome_order("totals", m.get("outcomes") or [])
+        return ["totals", handicap, period, order, group, side] if order else None
+    first_words = {(norm(o.get("outcomeName")).split() or [""])[0] for o in (m.get("outcomes") or [])}
+    if first_words & {"yes", "no"}:     # mercati Si'/No: si tiene solo Goal/No Goal (entrambe segnano)
+        if not ((("both" in words and "score" in words) or "btts" in words) and
+                not any(w in words for w in ("and", "win", "result", "over", "under", "double", "1x2"))):
+            return None
+        mtype = "btts"
+    elif mtype not in ("1x2", "spreads", "totals"):
+        return None
+    order = outcome_order(mtype, m.get("outcomes") or [])
+    if not order:
+        return None                     # non si capisce quale esito e' casa/Over: meglio non usarlo
+    return [mtype, handicap, period, order, "main", ""]
+
+
 def ensure_markets(st: dict, force: bool = False) -> dict:
-    """Descrizione dei mercati (id -> tipo, linea, periodo, esiti), riletta una volta al mese
-    (e subito se cambia il modo di leggerli, MARKETS_VERSION)."""
+    """Descrizione dei mercati (id -> classify_market), riletta una volta al mese (e subito se cambia il modo di
+    leggerli, MARKETS_VERSION)."""
     same = st.get("markets_v") == MARKETS_VERSION
     if st["markets"] and st["markets_month"] == st["month"] and same and not force:
         return st["markets"]
@@ -346,33 +431,25 @@ def ensure_markets(st: dict, force: bool = False) -> dict:
     except Exception as e:      # noqa: BLE001
         print(f"[WARN] elenco mercati non letto ({e})")
         return st["markets"]
-    meta = {}
+    meta, names = {}, {}
     for m in items:
         try:
-            if int(m.get("sportId") or 10) != 10 or m.get("playerProp"):
-                continue
-            mtype = str(m.get("marketType") or "").lower()
-            words = norm(m.get("marketName")).split()
-            if any(w in words for w in ("corner", "corners", "card", "cards", "booking", "bookings", "team", "home",
-                                        "away", "half", "halves", "first", "second", "1st", "2nd", "player")):
-                continue            # corner, cartellini, gol di una sola squadra, tempi
-            first_words = {(norm(o.get("outcomeName")).split() or [""])[0] for o in (m.get("outcomes") or [])}
-            if first_words & {"yes", "no"}:     # mercati Si'/No: si tiene solo Goal/No Goal (entrambe segnano)
-                if not ((("both" in words and "score" in words) or "btts" in words) and
-                        not any(w in words for w in ("and", "win", "result", "over", "under", "double", "1x2"))):
-                    continue
-                mtype = "btts"
-            elif mtype not in ("1x2", "spreads", "totals"):
-                continue
-            order = outcome_order(mtype, m.get("outcomes") or [])
-            if not order:
-                continue            # non si capisce quale esito e' casa/Over: meglio non usarlo
-            meta[str(m["marketId"])] = [mtype, float(m.get("handicap") or 0), str(m.get("period") or "").lower(), order]
+            info = classify_market(m)
+            if info:
+                meta[str(m["marketId"])] = info
+                if info[4] != "main":
+                    names.setdefault(info[4], set()).add(str(m.get("marketName")))
         except (KeyError, TypeError, ValueError):
             continue
     if meta:
         st["markets"], st["markets_month"], st["markets_v"] = meta, st["month"], MARKETS_VERSION
-    print(f"Mercati letti: {len(meta)} (1X2, handicap asiatico, linea gol, Goal/No Goal)")
+    kinds = {}
+    for v in meta.values():
+        kinds[v[4]] = kinds.get(v[4], 0) + 1
+    print(f"Mercati letti: {len(meta)} {kinds} (main = 1X2, asiatico, linea gol, GG · ct/tc = corner partita/squadra · "
+          f"tg = gol di squadra · ts = tiri in porta di squadra)")
+    for k, ns in sorted(names.items()):
+        print(f"   {k}: {sorted(ns)[:8]}")
     return st["markets"]
 
 
@@ -476,144 +553,220 @@ def _pick_main(cands: list):
     return [best[0], best[1], best[2]]
 
 
-def _price_at(entries, at):
-    """Prezzo in vigore al momento 'at' (None = l'ultimo) da una lista di cambi con createdAt."""
-    best = None
-    for e in entries or []:
-        t = parse_time(e.get("createdAt"))
-        if not t or (at is not None and t > at):
-            continue
-        if best is None or t > best[0]:
-            best = (t, e)
-    if not best:
-        return None, None
-    e = best[1]
-    if e.get("active") is False:
-        return None, best[0]
-    try:
-        p = float(e.get("price"))
-        return (p if p > 1.0 else None), best[0]
-    except (TypeError, ValueError):
-        return None, best[0]
-
-
-def _first_time(entries):
-    ts = [parse_time(e.get("createdAt")) for e in entries or []]
-    ts = [t for t in ts if t]
-    return min(ts) if ts else None
-
-
 def _fresh_lines(cands: list) -> dict:
-    """Tutte le linee gol ancora aggiornate: {"2.5": [Over, Under], ...} (per Over 2,5 e per il pronostico)."""
+    """Tutte le linee ancora aggiornate: {"2.5": [Over, Under], ...} (per Over 2,5, gol di squadra e pronostico)."""
     if not cands:
         return {}
     newest = max(c[3] for c in cands)
     return {f"{c[0]:g}": [c[1], c[2]] for c in cands if c[3] >= newest - timedelta(hours=STALE_HOURS)}
 
 
-def books_at(hist: dict, meta: dict, at) -> dict:
-    """Dallo storico, per ogni book al momento 'at': 1X2, linea asiatica principale, linea gol principale,
-    tutte le linee gol e Goal/No Goal."""
-    out = {}
-    for slug, bk in ((hist or {}).get("bookmakers") or {}).items():
-        res = {"x": None, "ah": None, "ou": None, "lines": {}, "gg": None}
-        ah, ou = [], []
+EVENT_GROUPS = ("tc", "tg", "ts")
+
+
+class BookHist:
+    """Storico di un book: per ogni mercato gli esiti (nell'ordine giusto) con i cambi di prezzo in ordine di tempo."""
+
+    def __init__(self, slug: str, bk: dict, meta: dict):
+        self.slug = slug
+        self.mk = []            # (id mercato, info, gruppo, squadra, [(tempi, cambi) per esito])
         for mid, m in ((bk or {}).get("markets") or {}).items():
             info = meta.get(str(mid))
-            if not info or len(info) < 4:
-                continue
-            if info[2] not in ("fulltime", "result", ""):
+            if not info or len(info) < 4 or info[2] not in ("fulltime", "result", ""):
                 continue
             outs = (m or {}).get("outcomes") or {}
-            prices, times = [], []
-            for oid in info[3]:             # esiti nell'ordine giusto (1-X-2, casa-ospite, Over-Under)
+            series = []
+            for oid in info[3]:
                 pls = (outs.get(str(oid)) or {}).get("players") or {}
                 entries = next(iter(pls.values()), []) if isinstance(pls, dict) and pls else []
-                p, t = _price_at(entries, at)
+                rows = []
+                for e in entries if isinstance(entries, list) else []:
+                    t = parse_time(e.get("createdAt")) if isinstance(e, dict) else None
+                    if t:
+                        rows.append((t, e))
+                rows.sort(key=lambda r: r[0])
+                series.append(([r[0] for r in rows], [r[1] for r in rows]))
+            group = info[4] if len(info) > 4 else "main"
+            side = info[5] if len(info) > 5 else ""
+            self.mk.append((str(mid), info, group, side, series))
+
+    @staticmethod
+    def _price(ser, at):
+        """Prezzo in vigore al momento 'at' (None = l'ultimo) e quando e' stato messo."""
+        times, entries = ser
+        if not times:
+            return None, None
+        i = len(times) - 1 if at is None else bisect.bisect_right(times, at) - 1
+        if i < 0:
+            return None, None
+        e = entries[i]
+        if e.get("active") is False:
+            return None, times[i]
+        try:
+            p = float(e.get("price"))
+        except (TypeError, ValueError):
+            return None, times[i]
+        return (p if p > 1.0 else None), times[i]
+
+    def snapshot(self, at=None, groups=None, mtypes=None) -> dict:
+        """Quote al momento 'at' (None = le ultime): 1X2, asiatico e linea gol principali, tutte le linee gol, GG,
+        corner della partita e, per ogni squadra, corner, gol e tiri in porta (linea principale e tutte le linee).
+        groups / mtypes: solo quei gruppi / tipi di mercato (piu' veloce per l'andamento)."""
+        res = {"x": None, "ah": None, "ou": None, "lines": {}, "gg": None, "ct": None,
+               "tc": {}, "tg": {}, "ts": {}, "ev_lines": {}}
+        ah, ou, ct = [], [], []
+        ev = {g: {"home": [], "away": []} for g in EVENT_GROUPS}
+        for mid, info, group, side, series in self.mk:
+            if (groups and group not in groups) or (mtypes and info[0] not in mtypes):
+                continue
+            prices, times = [], []
+            for ser in series:
+                p, t = self._price(ser, at)
                 prices.append(p)
                 times.append(t)
             if not all(prices):
                 continue
-            if info[0] == "1x2":
-                if len(prices) == 3 and (res["x"] is None or str(mid) == "101"):
-                    res["x"] = prices
-            elif info[0] == "btts":
-                if len(prices) == 2 and (res["gg"] is None or str(mid) == "104"):
-                    res["gg"] = prices
+            last = max(times)
+            if group == "main":
+                if info[0] == "1x2":
+                    if len(prices) == 3 and (res["x"] is None or mid == "101"):
+                        res["x"] = prices
+                elif info[0] == "btts":
+                    if len(prices) == 2 and (res["gg"] is None or mid == "104"):
+                        res["gg"] = prices
+                elif len(prices) == 2:
+                    if info[0] == "spreads":
+                        ah.append((AH_HOME_SIGN * info[1], prices[0], prices[1], last))
+                    elif info[0] == "totals" and info[1] > 0:
+                        ou.append((info[1], prices[0], prices[1], last))
             elif len(prices) == 2:
-                if info[0] == "spreads":
-                    ah.append((AH_HOME_SIGN * info[1], prices[0], prices[1], max(times)))
-                elif info[0] == "totals" and info[1] > 0:
-                    ou.append((info[1], prices[0], prices[1], max(times)))
+                if group == "ct":
+                    ct.append((info[1], prices[0], prices[1], last))
+                elif group in ev and side in ("home", "away"):
+                    ev[group][side].append((info[1], prices[0], prices[1], last))
         res["ah"], res["ou"], res["lines"] = _pick_main(ah), _pick_main(ou), _fresh_lines(ou)
-        if res["x"] or res["ah"] or res["ou"] or res["gg"]:
-            out[slug] = res
-    return out
+        res["ct"] = _pick_main(ct)
+        for g, sides in ev.items():
+            for side, cands in sides.items():
+                main = _pick_main(cands)
+                if main:
+                    res[g][side] = main
+                    res["ev_lines"][f"{g}|{side}"] = _fresh_lines(cands)
+        return res
+
+    def first_time(self, groups=None, side=None, mids=None):
+        """Primo prezzo pubblicato dei mercati scelti."""
+        best = None
+        for mid, info, group, sd, series in self.mk:
+            if (groups and group not in groups) or (side and sd != side) or (mids and mid not in mids):
+                continue
+            for times, _ in series:
+                if times and (best is None or times[0] < best):
+                    best = times[0]
+        return best
+
+    def first_spread_time(self):
+        best = None
+        for mid, info, group, sd, series in self.mk:
+            if group == "main" and info[0] == "spreads":
+                for times, _ in series:
+                    if times and (best is None or times[0] < best):
+                        best = times[0]
+        return best
+
+    def change_times(self, groups, start, end, mtypes=None) -> list:
+        """Momenti in cui cambia un prezzo dei mercati scelti, dopo 'start' e fino a 'end' (None = fino in fondo)."""
+        out = set()
+        for mid, info, group, sd, series in self.mk:
+            if group not in groups or (mtypes and info[0] not in mtypes):
+                continue
+            for times, _ in series:
+                lo = bisect.bisect_right(times, start) if start else 0
+                hi = len(times) if end is None else bisect.bisect_right(times, end)
+                out.update(times[lo:hi])
+        return sorted(out)
 
 
-def opening_time(hist: dict) -> datetime | None:
-    """Quando il primo dei book ha pubblicato la partita (il primo prezzo dello storico)."""
-    firsts = []
-    for bk in ((hist or {}).get("bookmakers") or {}).values():
-        m = ((bk or {}).get("markets") or {}).get("101") or {}
-        for o in (m.get("outcomes") or {}).values():
-            for entries in ((o or {}).get("players") or {}).values():
-                t = _first_time(entries)
-                if t:
-                    firsts.append(t)
-    return min(firsts) if firsts else None
+def has_data(snap: dict) -> bool:
+    return bool(snap and (snap.get("x") or snap.get("ah") or snap.get("ou") or snap.get("gg") or snap.get("ct")
+                          or snap.get("tc") or snap.get("tg") or snap.get("ts")))
+
+
+def first_quotes(h: BookHist) -> dict:
+    """Le prime quote di un book: appena pubblicato il 1X2 (o l'handicap asiatico, se arriva dopo)."""
+    t = h.first_time({"main"}, mids={"101"}) or h.first_time({"main"})
+    if not t:
+        return {}
+    snap = h.snapshot(t + timedelta(minutes=1))
+    if not snap.get("ah"):
+        t2 = h.first_spread_time()
+        if t2 and t < t2 < t + timedelta(days=2):
+            snap = h.snapshot(t2 + timedelta(minutes=1))
+    return snap if has_data(snap) else {}
 
 
 _HIST_INFO = {}         # per la prova: mercati trovati nello storico per ogni book (tutti, usati)
 
 
-def read_history(st: dict, fid: str, ap_at: datetime, force: bool = False):
-    """Storico della partita (NON consuma chiamate): quote all'apertura e adesso sui 3 book."""
-    meta = ensure_markets(st)
-    hist = api_get("/historical-odds", {"fixtureId": fid, "bookmakers": ",".join(BOOKMAKERS)}, st,
+def fetch_history(st: dict, fid: str, books: list, force: bool = False) -> dict:
+    """Storico grezzo di una partita sui book scelti (NON consuma chiamate): {book: {...}}."""
+    hist = api_get("/historical-odds", {"fixtureId": fid, "bookmakers": ",".join(books)}, st,
                    counts=False, force=force)
     if isinstance(hist, dict) and fid in hist and isinstance(hist[fid], dict):
         hist = hist[fid]
+    bks = hist.get("bookmakers") if isinstance(hist, dict) else None
+    return bks if isinstance(bks, dict) else {}
+
+
+def read_history(st: dict, fid: str, ap_at: datetime, at: datetime | None = None, force: bool = False,
+                 books: list | None = None) -> dict:
+    """Storico della partita: quote all'apertura (base) e al momento 'at' (None = adesso) su ogni book.
+    Se la partita e' stata pubblicata dopo l'apertura si parte dalla prima quota; corner, gol e tiri di squadra
+    pubblicati dopo l'apertura partono dalla loro prima quota."""
+    meta = ensure_markets(st)
+    bks = fetch_history(st, fid, books or BOOKMAKERS, force=force)
     _HIST_INFO.clear()
-    for slug, bk in ((hist or {}).get("bookmakers") or {}).items() if isinstance(hist, dict) else []:
+    for slug, bk in bks.items():
         mk = (bk or {}).get("markets") or {}
         _HIST_INFO[slug] = (len(mk), sum(1 for k in mk if k in meta))
-    now = books_at(hist, meta, None)
-    opened = opening_time(hist)
-    first = None
-    if ap_at > now_utc():            # apertura non ancora arrivata (riepilogo del giorno prima, prove): prima quota
-        base = {}
-    else:
-        base = books_at(hist, meta, ap_at)
-    if not base and opened:          # oppure partita pubblicata dopo l'apertura: si parte dalla prima quota
-        first = opened + timedelta(minutes=1)
-        base = {}
-        for slug, bk in ((hist or {}).get("bookmakers") or {}).items():
-            base.update(first_quotes(slug, bk, meta))   # di ogni book (non tutti pubblicano insieme)
-    return base, now, (first or ap_at), bool(first)
-
-
-def first_quotes(slug: str, bk: dict, meta: dict) -> dict:
-    """Le prime quote di un book: appena pubblicato il 1X2 (o l'handicap asiatico, se arriva dopo)."""
-    one = {"bookmakers": {slug: bk}}
-    t = opening_time(one)
-    if not t:
-        return {}
-    res = books_at(one, meta, t + timedelta(minutes=1))
-    if slug in res and not res[slug].get("ah"):
-        ts = []
-        for mid, m in ((bk or {}).get("markets") or {}).items():
-            if (meta.get(str(mid)) or [""])[0] == "spreads":
-                for o in ((m or {}).get("outcomes") or {}).values():
-                    ts += [x for x in (_first_time(e) for e in ((o or {}).get("players") or {}).values()) if x]
-        t2 = min(ts) if ts else None
-        if t2 and t < t2 < t + timedelta(days=2):
-            res = books_at(one, meta, t2 + timedelta(minutes=1))
-    return res
+    bh = {slug: BookHist(slug, bk, meta) for slug, bk in bks.items()}
+    ref_at = at or now_utc()
+    now = {s: h.snapshot(at) for s, h in bh.items()}
+    now = {s: v for s, v in now.items() if has_data(v)}
+    opened = None
+    for h in bh.values():
+        t = h.first_time({"main"}, mids={"101"})
+        if t and (opened is None or t < opened):
+            opened = t
+    base, first, base_at = {}, False, ap_at
+    if ap_at <= ref_at:
+        base = {s: h.snapshot(ap_at) for s, h in bh.items()}
+        base = {s: v for s, v in base.items() if has_data(v)}
+    if not base and opened and opened <= ref_at:
+        first, base_at = True, opened + timedelta(minutes=1)
+        base = {s: first_quotes(h) for s, h in bh.items()}
+        base = {s: v for s, v in base.items() if v}
+    for s, b in base.items():
+        n, h = now.get(s) or {}, bh[s]
+        if n.get("ct") and not b.get("ct"):
+            t0 = h.first_time({"ct"})
+            if t0 and t0 <= ref_at:
+                b["ct"] = h.snapshot(t0 + timedelta(minutes=1), {"ct"}).get("ct")
+        for g in EVENT_GROUPS:
+            for side in (n.get(g) or {}):
+                if side in (b.get(g) or {}):
+                    continue
+                t0 = h.first_time({g}, side=side)
+                if t0 and t0 <= ref_at:
+                    snap = h.snapshot(t0 + timedelta(minutes=1), {g})
+                    if side in snap.get(g, {}):
+                        b.setdefault(g, {})[side] = snap[g][side]
+                        b.setdefault("ev_lines", {})[f"{g}|{side}"] = snap["ev_lines"].get(f"{g}|{side}", {})
+    return {"base": base, "now": now, "base_at": base_at, "first": first, "bh": bh, "at": at}
 
 
 # =====================================================================
-# Lettura dei movimenti (regole del foglio Mercato)
+# Lettura dei movimenti: segnali e forza (1-10)
 # =====================================================================
 def novig(prices):
     inv = [1.0 / p for p in prices]
@@ -621,53 +774,179 @@ def novig(prices):
     return [x / s for x in inv]
 
 
-def book_move(a: dict, b: dict) -> dict:
-    """Movimento di un book da a (apertura) a b (adesso). dir: 'home' / 'away' / None; forza 1 quota, 2 un quarto, 3 mezzo gol."""
-    res = {"dir": None, "force": 0, "ou": None}
+def tier(value: float, ths) -> int:
+    return sum(1 for t in ths if value >= t - 1e-9)
+
+
+def _sign(x: float) -> int:
+    return 1 if x > 1e-9 else -1 if x < -1e-9 else 0
+
+
+def _line_level(dline: float, pts: float, d: int) -> int:
+    """Linea spostata: un quarto = 3 (4 se anche la quota continua nella stessa direzione), mezzo gol o piu' = 5."""
+    if abs(dline) >= 0.5 - 1e-9:
+        return 5
+    return 3 + (1 if pts * d >= 2.0 else 0)
+
+
+def side_move(a: dict, b: dict) -> dict | None:
+    """Movimento verso la squadra di casa (dir +1) o l'ospite (-1). Con l'asiatico: linea spostata (un quarto vale
+    LINE_PTS punti) o stessa linea con la quota mossa (punti di probabilita' senza margine); se no il 1X2."""
     if a.get("ah") and b.get("ah"):
         dline = round(b["ah"][0] - a["ah"][0], 2)
-        if abs(dline) >= TH_LINE - 1e-9:
-            res["dir"] = "home" if dline < 0 else "away"
-            res["force"] = 3 if abs(dline) >= 0.5 - 1e-9 else 2
+        pts = (novig(b["ah"][1:])[0] - novig(a["ah"][1:])[0]) * 100
+        meas = pts - dline / 0.25 * LINE_PTS            # linea piu' negativa = casa piu' favorita
+        ld = -_sign(dline)
+        if ld and meas * ld > 0:
+            d, lvl = ld, _line_level(dline, pts, ld)
         else:
-            dp = (novig(b["ah"][1:])[0] - novig(a["ah"][1:])[0]) * 100
-            if abs(dp) >= TH_PROB:
-                res["dir"], res["force"] = ("home" if dp > 0 else "away"), 1
-    elif a.get("x") and b.get("x"):
+            d, lvl = _sign(meas), tier(abs(meas), LEV_SIDE)
+        return {"dir": d, "lvl": lvl, "meas": meas, "dline": dline, "pts": pts, "src": "ah"}
+    if a.get("x") and b.get("x"):
         pa, pb = novig(a["x"]), novig(b["x"])
-        d1, d2 = (pb[0] - pa[0]) * 100, (pb[2] - pa[2]) * 100
-        if max(abs(d1), abs(d2)) >= TH_1X2:
-            res["dir"], res["force"] = ("home" if d1 - d2 > 0 else "away"), 1
-    if a.get("ou") and b.get("ou"):
-        dl = round(b["ou"][0] - a["ou"][0], 2)
-        if abs(dl) >= TH_LINE - 1e-9:
-            res["ou"] = "over" if dl > 0 else "under"
-        else:
-            dpo = (novig(b["ou"][1:])[0] - novig(a["ou"][1:])[0]) * 100
-            if abs(dpo) >= TH_OU_PROB:
-                res["ou"] = "over" if dpo > 0 else "under"
-    return res
+        pts = ((pb[0] - pa[0]) - (pb[2] - pa[2])) / 2 * 100
+        return {"dir": _sign(pts), "lvl": tier(abs(pts), LEV_SIDE), "meas": pts, "dline": 0.0, "pts": pts, "src": "x"}
+    return None
 
 
-def read_movement(base: dict, now: dict) -> dict | None:
-    """Confronto apertura -> adesso. None se non c'e' niente di importante su almeno 2 book su 3."""
-    moves = {s: book_move(base[s], now[s]) for s in BOOKMAKERS if s in base and s in now}
-    if not moves:
+def gol_move(a: dict, b: dict) -> dict | None:
+    """Movimento della linea gol: dir +1 = piu' gol (Over), -1 = meno gol (Under)."""
+    if not (a.get("ou") and b.get("ou")):
         return None
-    side = None
-    for d in ("home", "away"):
-        agree = [s for s, m in moves.items() if m["dir"] == d]
-        if len(agree) >= 2:
-            forces = sorted((moves[s]["force"] for s in agree), reverse=True)
-            side = {"dir": d, "books": agree, "force": forces[1]}   # la forza confermata da almeno 2 book
-    ou = None
-    for d in ("over", "under"):
-        agree = [s for s, m in moves.items() if m["ou"] == d]
-        if len(agree) >= 2:
-            ou = {"dir": d, "books": agree}
-    if not side and not ou:
+    dline = round(b["ou"][0] - a["ou"][0], 2)
+    pts = (novig(b["ou"][1:])[0] - novig(a["ou"][1:])[0]) * 100
+    meas = pts + dline / 0.25 * LINE_PTS
+    ld = _sign(dline)
+    if ld and meas * ld > 0:
+        d, lvl = ld, _line_level(dline, pts, ld)
+    else:
+        d, lvl = _sign(meas), tier(abs(meas), LEV_GOL)
+    return {"dir": d, "lvl": lvl, "meas": meas, "dline": dline, "pts": pts, "src": "ou"}
+
+
+def gg_move(a: dict, b: dict) -> dict | None:
+    """Goal/No Goal: dir +1 = GG piu' probabile, -1 = NG."""
+    if not (a.get("gg") and b.get("gg")):
         return None
-    return {"side": side, "ou": ou, "fav": favourite(base), "moves": moves}
+    pts = (novig(b["gg"])[0] - novig(a["gg"])[0]) * 100
+    return {"dir": _sign(pts), "lvl": tier(abs(pts), LEV_GG), "meas": pts, "dline": 0.0, "pts": pts, "src": "gg"}
+
+
+MOVE_FN = {"side": side_move, "gol": gol_move, "gg": gg_move}
+MOVE_TYPES = {"side": {"spreads", "1x2"}, "gol": {"totals"}, "gg": {"btts"}}     # mercati che servono a ogni segnale
+LINE_KEY = {"side": "ah", "gol": "ou"}
+PATH_POINTS = 150               # andamento: al massimo 150 momenti per book (basta e non rallenta il giro)
+
+
+def combine(fam: str, moves: dict) -> dict | None:
+    """Segnale di un mercato: almeno 2 book mossi nella stessa direzione; l'ampiezza e' la seconda piu' alta (cioe'
+    confermata da 2 book). Con un solo book con le quote serve ampiezza 2, e conta un punto in meno."""
+    valid = {s: m for s, m in moves.items() if m}
+    for d in (1, -1):
+        lv = sorted((m["lvl"] for m in valid.values() if m["dir"] == d and m["lvl"] >= 1), reverse=True)
+        agree = [s for s in BOOKMAKERS if s in valid and valid[s]["dir"] == d and abs(valid[s]["meas"]) >= MIN_BOOK_PTS]
+        if len(lv) >= 2:
+            return {"fam": fam, "dir": d, "lvl": lv[1], "books": agree, "n": len(valid)}
+        if len(valid) == 1 and lv and lv[0] >= 2:
+            return {"fam": fam, "dir": d, "lvl": lv[0] - 1, "books": agree, "n": 1}
+    return None
+
+
+def move_path(R: dict, slug: str, fam: str, end) -> list:
+    """Andamento del movimento di un book dall'apertura al momento del controllo: [(momento, movimento)]."""
+    h, a = R["bh"].get(slug), R["base"].get(slug)
+    if not h or not a:
+        return []
+    fn, mt = MOVE_FN[fam], MOVE_TYPES[fam]
+    times = [t for t in h.change_times({"main"}, R["base_at"], end, mt) if end is None or t < end]
+    if len(times) > PATH_POINTS:
+        step = len(times) / float(PATH_POINTS)
+        times = [times[int(i * step)] for i in range(PATH_POINTS)]
+    out = []
+    for t in times:
+        mv = fn(a, h.snapshot(t, {"main"}, mt))
+        if mv:
+            out.append((t, mv))
+    mv = fn(a, h.snapshot(R["at"], {"main"}, mt))
+    if mv:
+        out.append((end or now_utc(), mv))
+    return out
+
+
+def tenuta(pth: list, d: int) -> tuple:
+    """2 = ha tenuto (adesso almeno l'80% del punto piu' alto), 1 = tornato un po' indietro, 0 = rientrato."""
+    if not pth:
+        return 2, 1.0
+    cur = pth[-1][1]["meas"] * d
+    peak = max(mv["meas"] * d for _, mv in pth)
+    if peak <= 0:
+        return 0, 0.0
+    ratio = max(0.0, cur / peak)
+    return (2 if ratio >= TENUTA_OK else 1 if ratio >= TENUTA_MEZZA else 0), ratio
+
+
+def event_move(a, b, g: str) -> tuple:
+    """Linea di una squadra (corner, gol, tiri in porta) da a a b: (dir +1 piu' eventi / -1 meno / 0, forte?)."""
+    if not a:
+        return 0, False
+    dline = round(b[0] - a[0], 2)
+    if abs(dline) > 1e-9:
+        return _sign(dline), abs(dline) >= (0.5 if g == "tg" else 1.0) - 1e-9
+    pts = (novig(b[1:])[0] - novig(a[1:])[0]) * 100
+    if abs(pts) >= EVENT_PTS:
+        return _sign(pts), abs(pts) >= 2 * EVENT_PTS
+    return 0, False
+
+
+def team_events(R: dict, extra: dict | None = None) -> dict:
+    """Corner, gol e tiri in porta di squadra dal primo book che li ha (Pinnacle prima); i tiri in porta anche da
+    SOT_BOOK (extra), solo come informazione. {gruppo: {"src": book, "home": (apertura, adesso, dir, forte), ...}}"""
+    out = {}
+    sources = [(s, R) for s in BOOKMAKERS] + ([(SOT_BOOK, extra)] if extra else [])
+    for g in EVENT_GROUPS:
+        for s, RR in sources:
+            if s == SOT_BOOK and g != "ts":
+                continue
+            n = (RR["now"].get(s) or {}).get(g) or {}
+            if not n:
+                continue
+            b0 = (RR["base"].get(s) or {}).get(g) or {}
+            row = {"src": s}
+            for side in ("home", "away"):
+                if n.get(side):
+                    d, strong = event_move(b0.get(side), n[side], g)
+                    row[side] = (b0.get(side), n[side], d, strong)
+            out[g] = row
+            break
+    return out
+
+
+def coerenza(fam: str, d: int, a: dict, b: dict, evdir: dict) -> int:
+    """1 se un altro mercato dice la stessa cosa: asiatico <-> 1X2 o gol della squadra; linea gol <-> GG o gol delle
+    squadre; GG <-> linea gol."""
+    if fam == "side":
+        if a.get("ah") and a.get("x") and b.get("x"):
+            x = side_move({"x": a["x"]}, {"x": b["x"]})
+            if x and x["meas"] * d >= MIN_BOOK_PTS:
+                return 1
+        team, other = ("home", "away") if d > 0 else ("away", "home")
+        return 1 if evdir.get(f"tg|{team}") == 1 or evdir.get(f"tg|{other}") == -1 else 0
+    if fam == "gol":
+        g = gg_move(a, b)
+        if g and g["meas"] * d >= MIN_BOOK_PTS:
+            return 1
+        return 1 if evdir.get("tg|home") == d or evdir.get("tg|away") == d else 0
+    g = gol_move(a, b)
+    return 1 if g and g["meas"] * d >= MIN_BOOK_PTS else 0
+
+
+def line_force(moves: dict, books: list) -> int:
+    """Per il colore: 1 = stessa linea, 2 = asiatico spostato di un quarto, 3 = di mezzo gol (confermato da 2 book)."""
+    fs = sorted(((3 if abs(moves[s]["dline"]) >= 0.5 - 1e-9 else 2 if abs(moves[s]["dline"]) >= 0.25 - 1e-9 else 1)
+                 for s in books if moves.get(s)), reverse=True)
+    if not fs:
+        return 1
+    return fs[1] if len(fs) >= 2 else fs[0]
 
 
 def favourite(odds: dict) -> str | None:
@@ -677,20 +956,6 @@ def favourite(odds: dict) -> str | None:
         if x:
             p = novig(x)
             return ("home" if p[0] > p[2] else "away") if abs(p[0] - p[2]) >= FAV_GAP else None
-    return None
-
-
-def gg_signal(base: dict, now: dict) -> dict | None:
-    """Goal/No Goal: probabilita' del GG mossa di almeno 3 punti su 2 book (4 punti se lo ha un solo book)."""
-    deltas = {}
-    for s in BOOKMAKERS:
-        a, b = (base.get(s) or {}).get("gg"), (now.get(s) or {}).get("gg")
-        if a and b:
-            deltas[s] = (novig(b)[0] - novig(a)[0]) * 100
-    for d, sign in (("gg", 1), ("ng", -1)):
-        agree = [s for s, v in deltas.items() if sign * v >= TH_GG]
-        if len(agree) >= 2 or (len(deltas) == 1 and agree and sign * deltas[agree[0]] >= TH_GG + 1):
-            return {"dir": d, "books": agree}
     return None
 
 
@@ -711,21 +976,138 @@ def _line_prob(now: dict, ref: str | None, line: float, over: bool):
     return None
 
 
-def analyze(base: dict, now: dict) -> dict:
-    """Movimento (2 book su 3), giudizio con il colore del foglio Mercato e pronostico dalle sole quote:
-    calo forte -> segno secco, calo leggero -> doppia chance, favorita in salita -> doppia chance contro di lei,
-    linea gol su/giu' -> Over/Under, mercato Goal mosso -> GG/NG."""
-    mv = read_movement(base, now) or {"side": None, "ou": None, "fav": favourite(base), "moves": {}}
-    ref = next((s for s in BOOKMAKERS if s in base and s in now), next((s for s in BOOKMAKERS if s in now), None))
+def _team_scores_prob(now: dict, ref: str | None, side: str):
+    """Probabilita' (senza margine) che la squadra segni almeno un gol (gol di squadra Over 0,5)."""
+    for s in [ref] + [b for b in BOOKMAKERS if b != ref]:
+        lp = (((now.get(s) or {}).get("ev_lines") or {}).get(f"tg|{side}") or {}).get("0.5")
+        if lp:
+            return novig(lp)[0]
+    return None
+
+
+def _price_pair(fam: str, d: int, a: dict, b: dict):
+    """Quota che racconta il movimento, prima e dopo: 1 o 2 (squadra), Over della linea gol di adesso, GG."""
+    if fam == "side":
+        if a.get("x") and b.get("x"):
+            i = 0 if d > 0 else 2
+            return ("1" if d > 0 else "2", a["x"][i], b["x"][i])
+    elif fam == "gol":
+        if b.get("ou"):
+            key = f"{b['ou'][0]:g}"
+            pa, pb = (a.get("lines") or {}).get(key), (b.get("lines") or {}).get(key)
+            if pa and pb:
+                return (f"Over {fmt_goal(b['ou'][0])}", pa[0], pb[0])
+    elif a.get("gg") and b.get("gg"):
+        return ("GG", a["gg"][0], b["gg"][0])
+    return None
+
+
+def _half_time(pth: list, d: int):
+    """Momento in cui il movimento ha fatto meta' della strada (rispetto a dove e' adesso)."""
+    if not pth:
+        return None
+    final = pth[-1][1]["meas"] * d
+    if final <= 0:
+        return None
+    for t, mv in pth:
+        if mv["meas"] * d >= 0.5 * final:
+            return t
+    return None
+
+
+def timing(R: dict, sig: dict, ko: datetime | None, at_eff: datetime) -> dict:
+    """QUANDO del segnale principale: cambio di linea (quando e' arrivata la linea di adesso) o momento del grosso
+    del movimento, chi si e' mosso per primo, cosa e' cambiato dopo le formazioni (ultima ora prima della partita)."""
+    fam, d, sref, pth = sig["fam"], sig["dir"], sig["ref"], sig["path"]
+    if not pth:
+        return {}
+    res = {"fam": fam, "late": False}
+    final = pth[-1][1]
+    key = LINE_KEY.get(fam)
+    base_line = ((R["base"].get(sref) or {}).get(key) or [None])[0] if key else None
+    if key and base_line is not None and abs(final["dline"]) > 1e-9:
+        t_set = None
+        for t, mv in pth:
+            if abs(mv["dline"] - final["dline"]) > 1e-9:
+                t_set = None
+            elif t_set is None:
+                t_set = t
+        res["line"] = (t_set, base_line, base_line + final["dline"])
+    else:
+        res["t_half"] = _half_time(pth, d)
+        res["pp"] = _price_pair(fam, d, R["base"].get(sref) or {}, R["now"].get(sref) or {})
+    order = []
+    for s in sig["books"]:
+        p = pth if s == sref else move_path(R, s, fam, at_eff)
+        th = _half_time(p, d)
+        if th:
+            order.append((th, s))
+    res["order"] = sorted(order)
+    if ko:
+        t60 = ko - timedelta(minutes=FORMAZIONI_MINUTES)
+        if R["base_at"] < t60 < at_eff:
+            prev = [mv for t, mv in pth if t <= t60]
+            m60 = prev[-1] if prev else {"meas": 0.0, "dline": 0.0}     # niente prima: fermo dall'apertura
+            delta = (final["meas"] - m60["meas"]) * d
+            snap60, snap1 = R["bh"][sref].snapshot(t60, {"main"}), R["now"].get(sref) or {}
+            main_t = res["line"][0] if res.get("line") else res.get("t_half")
+            if main_t and main_t > t60:
+                res["after"] = ("main",)                # il movimento e' arrivato dopo le formazioni
+            elif key and abs(final["dline"] - m60["dline"]) > 1e-9 and base_line is not None:
+                res["after"] = ("line", base_line + m60["dline"], base_line + final["dline"])
+            else:
+                dd = delta
+                if fam == "side" and abs(dd) < MIN_BOOK_PTS and snap60.get("x") and snap1.get("x"):
+                    xm = side_move({"x": snap60["x"]}, {"x": snap1["x"]})      # asiatico fermo: guarda il 1X2
+                    dd = xm["meas"] * d if xm else dd
+                kind = "more" if dd >= MIN_BOOK_PTS else "back" if dd <= -MIN_BOOK_PTS else "still"
+                res["after"] = (kind, _price_pair(fam, d, snap60, snap1))
+            fin = final["meas"] * d
+            res["late"] = fin > 0 and delta >= 0.5 * fin
+    return res
+
+
+def analyze(R: dict, ko: datetime | None = None, extra: dict | None = None) -> dict:
+    """Segnali (asiatico/1X2, linea gol, Goal/No Goal) con la forza, colore per la riga Mercato, pronostico dalle
+    quote, eventi di squadra, conferme e QUANDO. Si mostrano (e fanno partire l'avviso) i segnali da
+    FORZA_MIN_AVVISO in su."""
+    base, now = R["base"], R["now"]
+    books = [s for s in BOOKMAKERS if s in base and s in now]
+    ref = next((s for s in BOOKMAKERS if s in books), next((s for s in BOOKMAKERS if s in now), None))
     a, b = base.get(ref) or {}, now.get(ref) or {}
-    an = {"mv": mv, "ref": ref, "a": a, "b": b, "gg": gg_signal(base, now), "color": None, "team": None, "picks": [],
-          "base": base, "now": now}
-    side, fav = mv["side"], mv["fav"]
+    at_eff = R.get("at") or now_utc()
+    events = team_events(R, extra)
+    evdir = {f"{g}|{side}": row[side][2] for g, row in events.items() for side in ("home", "away") if side in row}
+    sigs = []
+    for fam in ("side", "gol", "gg"):
+        moves = {s: MOVE_FN[fam](base[s], now[s]) for s in books}
+        sig = combine(fam, moves)
+        if not sig:
+            continue
+        sref = ref if ref in sig["books"] else (sig["books"][0] if sig["books"] else ref)
+        pth = move_path(R, sref, fam, at_eff)
+        ten, ratio = tenuta(pth, sig["dir"])
+        acc = 2 if len(sig["books"]) >= 3 else 1 if len(sig["books"]) == 2 else 0
+        coe = coerenza(fam, sig["dir"], base.get(sref) or {}, now.get(sref) or {}, evdir)
+        sig.update(moves=moves, ref=sref, path=pth, acc=acc, ten=ten, ratio=ratio, coe=coe,
+                   forza=max(1, min(10, sig["lvl"] + acc + ten + coe)))
+        if fam == "side":
+            sig["force"] = line_force(moves, [s for s in sig["books"] if moves.get(s) and moves[s]["dir"] == sig["dir"]])
+        sigs.append(sig)
+    shown = [s for s in sigs if s["forza"] >= FORZA_MIN_AVVISO]
+    fav = favourite(base)
+    an = {"ref": ref, "a": a, "b": b, "base": base, "now": now, "fav": fav, "sigs": sigs, "shown": shown,
+          "forza": max((s["forza"] for s in sigs), default=0), "events": events, "color": None, "team": None,
+          "picks": [], "ko": ko, "at": at_eff, "timing": {}, "late": False}
+    side = next((s for s in shown if s["fam"] == "side"), None)
+    gol = next((s for s in shown if s["fam"] == "gol"), None)
+    gg = next((s for s in shown if s["fam"] == "gg"), None)
     px = novig(b["x"]) if b.get("x") else None
     if side:
-        if fav is None or side["dir"] == fav:
-            an["color"], an["team"] = ("verde_forte" if side["force"] >= 2 else "verde"), side["dir"]
-            home = side["dir"] == "home"
+        team = "home" if side["dir"] > 0 else "away"
+        if fav is None or team == fav:
+            an["color"], an["team"] = ("verde_forte" if side["force"] >= 2 else "verde"), team
+            home = team == "home"
             if an["color"] == "verde_forte":
                 an["picks"].append(("1" if home else "2", (px[0] if home else px[2]) if px else None))
             else:
@@ -734,22 +1116,25 @@ def analyze(base: dict, now: dict) -> dict:
             an["color"], an["team"] = ("rosso_forte" if side["force"] >= 3 else "rosso"), fav
             home_fav = fav == "home"
             an["picks"].append(("X2" if home_fav else "1X", (px[1] + px[2] if home_fav else px[0] + px[1]) if px else None))
-    if mv["ou"]:
+            under = "away" if home_fav else "home"
+            p = _team_scores_prob(now, ref, under)
+            if p:
+                an["picks"].append(("segna", p, under))     # contro quota: la sfavorita segna
+    if gol:
         cur = b.get("ou") or next((now[s]["ou"] for s in BOOKMAKERS if (now.get(s) or {}).get("ou")), None)
         if cur:
-            over = mv["ou"]["dir"] == "over"
-            line = goal_pick_line(mv["ou"]["dir"], cur[0])
+            over = gol["dir"] > 0
+            line = goal_pick_line("over" if over else "under", cur[0])
             an["picks"].append((f"{'Over' if over else 'Under'} {fmt_goal(line)}", _line_prob(now, ref, line, over)))
-    if an["gg"]:
-        yes = an["gg"]["dir"] == "gg"
+    if gg:
+        yes = gg["dir"] > 0
         gp = next((novig(now[s]["gg"]) for s in [ref] + BOOKMAKERS if (now.get(s) or {}).get("gg")), None)
         an["picks"].append(("GG" if yes else "NG", (gp[0] if yes else gp[1]) if gp else None))
+    if shown:
+        main = max(shown, key=lambda s: (s["forza"], {"side": 2, "gol": 1, "gg": 0}[s["fam"]]))
+        an["timing"] = timing(R, main, ko, at_eff)
+        an["late"] = bool(an["timing"].get("late"))
     return an
-
-
-def moved(an: dict) -> bool:
-    """Movimento importante (quello che fa partire il messaggio a ridosso)."""
-    return bool(an["color"] or an["mv"]["ou"])
 
 
 # =====================================================================
@@ -874,47 +1259,20 @@ def match_title(names: dict) -> str:
     return f"{esc(names['home'])} – {esc(names['away'])}"
 
 
-def signal_rows(an: dict) -> list:
-    """Righe in piu' per i book che hanno fatto scattare il giudizio e non sono quello della tabellina: linea asiatica
-    (o, se la linea e' rimasta quella, probabilita' della squadra di casa) e linea gol (o probabilita' dell'Over)."""
-    mv, ref = an.get("mv") or {}, an.get("ref")
-    base, now = an.get("base") or {}, an.get("now") or {}
-    rows = []
-    if an.get("color") and mv.get("side"):
-        for s in mv["side"]["books"]:
-            a, b = (base.get(s) or {}).get("ah"), (now.get(s) or {}).get("ah")
-            if s == ref or not (a and b):
-                continue
-            lab = f"AH {BOOK_LABEL.get(s, s)}"
-            if abs(a[0] - b[0]) > 0.01:
-                rows.append((lab, fmt_line(a[0], True), fmt_line(b[0], True), arrow_l(a[0], b[0])))
-            else:
-                pa, pb = novig(a[1:])[0], novig(b[1:])[0]
-                rows.append((f"AH% {BOOK_LABEL.get(s, s)}", f"{round(pa * 100)}%", f"{round(pb * 100)}%", arrow_p(1 - pa, 1 - pb)))
-    if mv.get("ou"):
-        for s in mv["ou"]["books"]:
-            a, b = (base.get(s) or {}).get("ou"), (now.get(s) or {}).get("ou")
-            if s == ref or not (a and b):
-                continue
-            lab = f"Gol {BOOK_LABEL.get(s, s)}"
-            if abs(a[0] - b[0]) > 0.01:
-                rows.append((lab, fmt_goal(a[0]), fmt_goal(b[0]), arrow_l(a[0], b[0])))
-            else:
-                pa, pb = novig(a[1:])[0], novig(b[1:])[0]
-                rows.append((f"O% {BOOK_LABEL.get(s, s)}", f"{round(pa * 100)}%", f"{round(pb * 100)}%", arrow_p(1 - pa, 1 - pb)))
-    return rows
+def _pre(lines: list) -> str:
+    return "<pre>" + esc("\n".join(lines)) + "</pre>"
 
 
-def fmt_table(names: dict, a: dict, b: dict, extra: list | None = None) -> str:
-    """Tabellina apertura/adesso del book di riferimento (caratteri a larghezza fissa, sta nello schermo del telefono);
-    in fondo, separate da una riga, le righe dei book che hanno fatto scattare il giudizio (signal_rows)."""
+def fmt_table(names: dict, a: dict, b: dict, an: dict | None = None) -> str:
+    """Tabellina apertura/adesso del book di riferimento (caratteri a larghezza fissa, sta nello schermo del
+    telefono). Se mancano i corner di squadra, in fondo i corner della partita."""
     rows = []
     if a.get("x") and b.get("x"):
         pa, pb = novig(a["x"]), novig(b["x"])
         for i, lab in enumerate(("1", "X", "2")):
             rows.append((lab, fmt_num(a["x"][i]), fmt_num(b["x"][i]), arrow_p(pa[i], pb[i])))
     if a.get("ah") and b.get("ah"):
-        rows.append((f"AH {names['home'][:8]}", fmt_line(a["ah"][0], True), fmt_line(b["ah"][0], True),
+        rows.append((f"AH {names['home'][:11]}", fmt_line(a["ah"][0], True), fmt_line(b["ah"][0], True),
                      arrow_l(a["ah"][0], b["ah"][0])))
     if a.get("ou") and b.get("ou"):
         rows.append(("Linea gol", fmt_goal(a["ou"][0]), fmt_goal(b["ou"][0]), arrow_l(a["ou"][0], b["ou"][0])))
@@ -923,14 +1281,179 @@ def fmt_table(names: dict, a: dict, b: dict, extra: list | None = None) -> str:
         rows.append(("Over 2,5", fmt_num(oa[0]), fmt_num(ob[0]), arrow_p(novig(oa)[0], novig(ob)[0])))
     if a.get("gg") and b.get("gg"):
         rows.append(("GG", fmt_num(a["gg"][0]), fmt_num(b["gg"][0]), arrow_p(novig(a["gg"])[0], novig(b["gg"])[0])))
-    if not rows and not extra:
+    if an is not None and not an["events"].get("tc") and a.get("ct") and b.get("ct"):
+        rows.append(("Corner tot.", fmt_goal(a["ct"][0]), fmt_goal(b["ct"][0]), arrow_l(a["ct"][0], b["ct"][0])))
+    if not rows:
         return ""
-    w = max(len(r[0]) for r in rows + (extra or []))
-    fmt = lambda r: f"{r[0]:<{w}} {r[1]:>6} {r[2]:>6} {r[3]}".rstrip()  # noqa: E731
-    lines = [f"{'':<{w}} {'apert.':>6} {'adesso':>6}"] + [fmt(r) for r in rows]
-    if extra:
-        lines += ["-" * (w + 14)] + [fmt(r) for r in extra]
-    return "<pre>" + esc("\n".join(lines)) + "</pre>"
+    w = max(len(r[0]) for r in rows)
+    return _pre([f"{'':<{w}} {'apert.':>6} {'adesso':>6}"] +
+                [f"{r[0]:<{w}} {r[1]:>6} {r[2]:>6} {r[3]}".rstrip() for r in rows])
+
+
+EVENT_LABEL = {"tc": "Corner", "tg": "Gol squadra", "ts": "Tiri porta"}
+
+
+def _ev_cell(item) -> tuple:
+    if not item:
+        return "—", ""
+    a, b, d, strong = item
+    val = f"{fmt_goal(a[0])}→{fmt_goal(b[0])}" if a and abs(a[0] - b[0]) > 1e-9 else fmt_goal(b[0])
+    return val, ("" if d == 0 else ("▲" if d > 0 else "▼") * (2 if strong else 1))
+
+
+def fmt_teams(an: dict, names: dict) -> tuple:
+    """Tabellina SQUADRE: linea di adesso di corner, gol e tiri in porta di ogni squadra, con la freccia
+    (▲ = piu' eventi attesi) e 'a→b' se la linea e' cambiata. Ritorna (tabellina, nota sotto)."""
+    rows, note = [], ""
+    for g in EVENT_GROUPS:
+        row = an["events"].get(g)
+        if not row or not (row.get("home") or row.get("away")):
+            continue
+        lab = EVENT_LABEL[g]
+        if row["src"] not in BOOKMAKERS:
+            lab += "*"
+            note = f"* tiri in porta: {BOOK_LABEL.get(row['src'], row['src'])}, solo informazione"
+        rows.append((lab, _ev_cell(row.get("home")), _ev_cell(row.get("away"))))
+    if not rows:
+        return "", ""
+    hn, aw_n = names["home"][:11], names["away"][:11]
+    lw = max(len(r[0]) for r in rows)
+    hw = max(len(hn), max(len(r[1][0]) for r in rows))
+    aw = max(len(aw_n), max(len(r[2][0]) for r in rows))
+    lines = [f"{'':<{lw}} {hn:>{hw}}    {aw_n:>{aw}}".rstrip()]
+    for lab, (hv, ha), (av, aa) in rows:
+        lines.append(f"{lab:<{lw}} {hv:>{hw}} {ha:<2} {av:>{aw}} {aa:<2}".rstrip())
+    return _pre(lines), note
+
+
+def _book_arrow(fam: str, m: dict | None) -> str:
+    """Freccia di un book nella griglia CONFERME, con lo stesso significato della riga della tabellina:
+    AH ▼ = casa piu' favorita, Linea gol ▲ = piu' gol, GG ▼ = GG piu' probabile; = fermo, · non quotato."""
+    if m is None:
+        return "·"
+    if fam in LINE_KEY and abs(m["dline"]) >= 0.25 - 1e-9 and m["dir"] == _sign(-m["dline"] if fam == "side" else m["dline"]):
+        up = m["dline"] > 0
+        return ("▲" if up else "▼") * (2 if abs(m["dline"]) >= 0.5 - 1e-9 else 1)
+    if abs(m["meas"]) < MIN_BOOK_PTS:
+        return "="
+    pos = m["meas"] > 0
+    ar = ("▲" if pos else "▼") if fam == "gol" else ("▼" if pos else "▲")
+    return ar * (2 if abs(m["meas"]) >= ARROW_STRONG_PTS else 1)
+
+
+def fmt_grid(an: dict, names: dict) -> str:
+    """Griglia CONFERME: come si sono mossi i 3 book sui mercati del segnale."""
+    rows = []
+    for s in an["shown"]:
+        lab = {"side": f"AH {names['home'][:11]}", "gol": "Linea gol", "gg": "GG"}[s["fam"]]
+        rows.append((lab, [_book_arrow(s["fam"], s["moves"].get(bk)) for bk in BOOKMAKERS]))
+    if not rows:
+        return ""
+    w = max(len("Conferme"), max(len(r[0]) for r in rows))
+    lines = [(f"{'Conferme':<{w}}  " + "  ".join(f"{BOOK_SHORT[bk]:^4}" for bk in BOOKMAKERS)).rstrip()]
+    for lab, cells in rows:
+        lines.append((f"{lab:<{w}}  " + "  ".join(f"{c:^4}" for c in cells)).rstrip())
+    return _pre(lines)
+
+
+def quando_text(an: dict, names: dict) -> str:
+    """⏱ QUANDO: cambio di linea o grosso del movimento, chi per primo, cosa e' cambiato dopo le formazioni."""
+    tm = an.get("timing") or {}
+    if not tm:
+        return ""
+    fam = tm["fam"]
+    fl = (lambda v: fmt_line(v, True)) if fam == "side" else fmt_goal
+    lab = {"side": f"AH {esc(names['home'])}", "gol": "linea gol", "gg": "GG"}[fam]
+    parts = []
+    if tm.get("line") and tm["line"][0]:
+        t, l0, l1 = tm["line"]
+        parts.append(f"{when_text(t)} {lab} {fl(l0)} → {fl(l1)}")
+    elif tm.get("t_half"):
+        txt = f"il grosso {when_text(tm['t_half'])}"
+        if tm.get("pp"):
+            txt += f" ({tm['pp'][0]} {fmt_num(tm['pp'][1])} → {fmt_num(tm['pp'][2])})"
+        parts.append(txt)
+    order = tm.get("order") or []
+    if len(order) >= 2:
+        if order[-1][0] - order[0][0] <= timedelta(minutes=10):
+            who = "tutti insieme"
+        else:
+            who = f"prima {BOOK_LABEL[order[0][1]]}, poi " + " e ".join(BOOK_LABEL[s] for _, s in order[1:])
+        if parts:
+            parts[-1] += f" ({who})"
+        else:
+            parts.append(who)
+    aft = tm.get("after")
+    if aft:
+        if aft[0] == "main":
+            parts.append("arrivato dopo le formazioni")
+        elif aft[0] == "line":
+            parts.append(f"dopo le formazioni: {lab} {fl(aft[1])} → {fl(aft[2])}")
+        else:
+            pp = aft[1]
+            det = f" ({pp[0]} {fmt_num(pp[1])} → {fmt_num(pp[2])})" if pp and abs(pp[1] - pp[2]) > 1e-9 else ""
+            parts.append({"more": f"dopo le formazioni si muove ancora{det}",
+                          "back": f"dopo le formazioni torna un po' indietro{det}",
+                          "still": "dopo le formazioni: ferma"}[aft[0]])
+    return "⏱ <b>Quando</b>: " + " · ".join(parts) if parts else ""
+
+
+def lettura(an: dict, names: dict) -> str:
+    """💡 LETTURA: cosa puo' voler dire il movimento, incrociando asiatico, gol e corner, come domanda da verificare."""
+    shown = an["shown"]
+    side = next((s for s in shown if s["fam"] == "side"), None)
+    gol = next((s for s in shown if s["fam"] == "gol"), None)
+    gg = next((s for s in shown if s["fam"] == "gg"), None)
+    fav, late = an["fav"], an.get("late")
+    N = {k: esc(names[k]) for k in ("home", "away")}
+    other = {"home": "away", "away": "home"}
+
+    def corner_note(team: str) -> str:
+        item = (an["events"].get("tc") or {}).get(team)
+        if item and item[2] > 0:
+            return f" La linea corner di {N[team]} sale."
+        if item and item[2] < 0:
+            return f" Ma la linea corner di {N[team]} scende."
+        return ""
+
+    txt = ""
+    if side and an["color"] in ("verde", "verde_forte"):
+        T = an["team"]
+        if gol and gol["dir"] < 0:
+            txt = (f"{N[T]} più favorita ma meno gol attesi: {N[T]} dovrebbe fare la partita contro una squadra "
+                   f"chiusa → occhio a corner e tiri di {N[T]} e all'Under." + corner_note(T))
+        elif gol and gol["dir"] > 0:
+            txt = (f"{N[T]} più favorita e più gol attesi: il mercato si aspetta che {N[T]} segni → gol e tiri in "
+                   f"porta di {N[T]}.")
+        else:
+            txt = (f"Il mercato crede nella vittoria di {N[T]} e la linea gol non cambia: conferma per il segno e per "
+                   f"gli eventi di {N[T]} (tiri in porta, corner).")
+    elif side:
+        F = an["team"]
+        U = other[F]
+        txt = (f"La favorita {N[F]} perde fiducia{' proprio dopo le formazioni' if late else ''}. <b>Perché?</b> "
+               f"Controlla chi manca in {N[F]}. Se il motivo regge, valuta il contro quota su {N[U]} con linee basse "
+               f"(segna, tiri in porta).")
+    elif gol:
+        if fav and gol["dir"] < 0:
+            txt = (f"Meno gol attesi ma {N[fav]} resta favorita: partita chiusa, con {N[fav]} che attacca una squadra "
+                   f"bassa → occhio a corner e tiri di {N[fav]}. <b>Perché è scesa?</b> Guarda modulo e formazione "
+                   f"di {N[other[fav]]}." + corner_note(fav))
+        elif fav:
+            txt = (f"Più gol attesi con {N[fav]} favorita: partita aperta → gol e tiri di {N[fav]}, occhio anche al "
+                   f"GG. <b>Perché è salita?</b> Guarda le formazioni.")
+        elif gol["dir"] < 0:
+            txt = ("Meno gol attesi e nessuna favorita: partita bloccata per tutte e due → eventi bassi. "
+                   "<b>Perché?</b> Guarda formazioni e moduli.")
+        else:
+            txt = ("Più gol attesi e partita equilibrata: più eventi per tutte e due, occhio al GG. "
+                   "<b>Perché?</b> Guarda formazioni e moduli.")
+    elif gg:
+        txt = ("Il mercato sposta il Goal verso il GG: tutte e due dovrebbero segnare." if gg["dir"] > 0 else
+               "Il mercato sposta il Goal verso il NG: una delle due potrebbe restare a zero.")
+    if txt and late and an["color"] not in ("rosso", "rosso_forte"):
+        txt += " Il grosso è arrivato dopo le formazioni: guarda chi gioca."
+    return f"💡 {txt}" if txt else ""
 
 
 COLOR_TXT = {"verde_forte": "Verde forte", "verde": "Verde", "rosso": "Rosso", "rosso_forte": "Rosso forte"}
@@ -944,78 +1467,79 @@ def _prob_change(an: dict, team: str, sep: str = " → ") -> str:
     return f"{round(novig(a)[i] * 100)}%{sep}{round(novig(b)[i] * 100)}%"
 
 
-def judgement(an: dict, names: dict, short: bool) -> str:
-    """Giudizio: calo forte (Verde forte) / leggero (Verde), quota della favorita in salita (Rosso), stabile."""
-    mv, col = an["mv"], an["color"]
-    parts = []
-    if col:
+def signal_head(an: dict, s: dict, names: dict, short: bool = False) -> str:
+    """Riga del segnale: giudizio (stessi colori del foglio Mercato), forza, book d'accordo."""
+    if s["fam"] == "side":
         team = esc(names[an["team"]])
-        n = len(mv["side"]["books"])
-        force = mv["side"]["force"]
-        head, why = {
-            "verde_forte": (f"🟢🟢 <b>Calo forte {team}</b>", "linea asiatica spostata verso di lei"),
-            "verde": (f"🟢 <b>Calo leggero {team}</b>", "stessa linea, quota scesa"),
-            "rosso": (f"🔴 <b>Si alza la quota di {team}</b> (favorita)",
-                      "linea di un quarto contro" if force == 2 else "stessa linea, quota salita"),
-            "rosso_forte": (f"🔴🔴 <b>Si alza molto la quota di {team}</b> (favorita)", "linea di mezzo gol contro"),
-        }[col]
+        head = {"verde_forte": f"🟢🟢 <b>Calo forte {team}</b>", "verde": f"🟢 <b>Calo {team}</b>",
+                "rosso": f"🔴 <b>Si alza la quota di {team}</b> (favorita)",
+                "rosso_forte": f"🔴🔴 <b>Si alza molto la quota di {team}</b> (favorita)"}[an["color"]]
         if short:
             ch = _prob_change(an, an["team"], "→")
-            src = "" if an["ref"] in mv["side"]["books"] else \
-                " (" + ", ".join(BOOK_LABEL.get(x, x) for x in mv["side"]["books"]) + ")"
-            parts.append(f"{head} {ch} · {COLOR_TXT[col]}{src}" if ch else f"{head} · {COLOR_TXT[col]}{src}")
-        else:
-            ch = _prob_change(an, an["team"])
-            who = " e ".join(BOOK_LABEL.get(x, x) for x in mv["side"]["books"])
-            parts.append(f"{head}: {('vittoria ' + ch + ' su ' + BOOK_LABEL.get(an['ref'], '') + ', ') if ch else ''}{why}, "
-                         f"su {n} book su 3 ({who})")
-    if mv["ou"]:
-        d = "Over" if mv["ou"]["dir"] == "over" else "Under"
-        if short:
-            parts.append(f"⚽ gol verso l'<b>{d}</b>")
-        else:
-            a, b = an["a"].get("ou"), an["b"].get("ou")
-            how = f"linea {fmt_goal(a[0])} → {fmt_goal(b[0])}" if a and b and abs(a[0] - b[0]) > 0.01 else \
-                f"{d} piu' giocato"
-            who = " e ".join(BOOK_LABEL.get(x, x) for x in mv["ou"]["books"])
-            parts.append(f"⚽ <b>Gol verso l'{d}</b>: {how}, su {len(mv['ou']['books'])} book su 3 ({who})")
-    if not parts:
-        x = an["b"].get("x")
-        if x:
-            p = novig(x)
-            fav = ("home" if p[0] > p[2] else "away") if abs(p[0] - p[2]) >= FAV_GAP else None
-            extra = f" (favorita {esc(names[fav])} {round(max(p[0], p[2]) * 100)}%)" if fav else " (partita equilibrata)"
-        else:
-            extra = ""
-        return f"⚪ Quote stabili{extra}"
-    if not col and short:
-        parts.insert(0, "⚪ 1X2 stabile")
-    return (" · " if short else "\n").join(parts)
+            head += (f" {ch}" if ch else "") + f" · {COLOR_TXT[an['color']]}"
+    elif s["fam"] == "gol":
+        head = "📈 <b>Gol verso l'Over</b>" if s["dir"] > 0 else "📉 <b>Gol verso l'Under</b>"
+    else:
+        head = "⚽ <b>GG più probabile</b>" if s["dir"] > 0 else "⚽ <b>NG più probabile</b>"
+    head += f" · forza <b>{s['forza']}/10</b>"
+    if not short:
+        head += f" · {len(s['books'])} book su {s['n']}"
+    return head
 
 
-def picks_text(an: dict) -> str:
-    """🎯 pronostico dalle quote, con la probabilita' di adesso (senza margine)."""
-    if not an["picks"]:
-        return ""
-    return "🎯 " + " · ".join(f"<b>{esc(p)}</b>" + (f" ({round(pr * 100)}%)" if pr else "") for p, pr in an["picks"])
+def judgement_short(an: dict, names: dict) -> str:
+    """Giudizio del riepilogo: i segnali da FORZA_MIN_AVVISO in su, se no quote stabili (o movimenti leggeri)."""
+    if an["shown"]:
+        return "\n".join(signal_head(an, s, names, short=True) for s in an["shown"])
+    x = an["b"].get("x")
+    extra = ""
+    if x:
+        p = novig(x)
+        fav = ("home" if p[0] > p[2] else "away") if abs(p[0] - p[2]) >= FAV_GAP else None
+        extra = f" (favorita {esc(names[fav])} {round(max(p[0], p[2]) * 100)}%)" if fav else " (partita equilibrata)"
+    weak = f" · movimenti leggeri, forza {an['forza']}/10" if an["sigs"] else ""
+    return f"⚪ Quote stabili{extra}{weak}"
 
 
-def build_message(m: dict, names: dict, an: dict, base_at: datetime, first: bool, note: str = "formazioni uscite") -> str:
-    """Messaggio a ridosso (una partita): tabellina, giudizio, colore per la riga Mercato, pronostico."""
+def picks_text(an: dict, names: dict, short: bool = False) -> str:
+    """🎯 pronostico dalle quote, con la probabilita' di adesso (senza margine) e la quota giusta."""
+    out = []
+    for p in an["picks"]:
+        label = f"{names[p[2]]} segna" if len(p) > 2 else p[0]
+        txt = f"<b>{esc(label)}</b>"
+        if p[1]:
+            txt += f" ({round(p[1] * 100)}% · {'giusta' if short else 'quota giusta'} {fmt_num(1 / p[1])})"
+        out.append(txt)
+    return "🎯 " + " · ".join(out) if out else ""
+
+
+def build_message(m: dict, names: dict, an: dict, base_at: datetime, first: bool, note: str = "formazioni uscite",
+                  prefix: str = "") -> str:
+    """Avviso a ridosso (una partita): segnali con la forza, tabellina, squadre, conferme, quando, lettura,
+    colore per la riga Mercato, pronostico con la quota giusta."""
     lg = LEAGUES_Q.get(m["code"], {"flag": ""})
-    rows = [f"{lg['flag']} <b>{match_title(names)}</b> · {m['ko'].astimezone(ROME):%H:%M}",
-            fmt_table(names, an["a"], an["b"], signal_rows(an)),
-            judgement(an, names, short=False)]
+    rows = [f"{prefix}{lg['flag']} <b>{match_title(names)}</b> · {m['ko'].astimezone(ROME):%H:%M}"]
+    rows += [signal_head(an, s, names) for s in an["shown"]]
+    rows.append(fmt_table(names, an["a"], an["b"], an))
+    teams, tnote = fmt_teams(an, names)
+    if teams:
+        rows.append(teams)
+        if tnote:
+            rows.append(f"<i>{esc(tnote)}</i>")
+    rows.append(fmt_grid(an, names))
+    rows.append(quando_text(an, names))
+    rows.append(lettura(an, names))
     if an["color"]:
         rows.append(f"Mercato: <b>{COLOR_TXT[an['color']]}</b> a {esc(names[an['team']])}")
-    rows.append(picks_text(an))
-    rows.append(f"<i>{BOOK_LABEL.get(an['ref'], '')} · {base_label(base_at, first)} → adesso ({when_text(now_utc())})"
+    rows.append(picks_text(an, names))
+    rows.append(f"<i>{BOOK_LABEL.get(an['ref'], '')} · {base_label(base_at, first)} → adesso ({when_text(an['at'])})"
                 f"{', ' + note if note else ''}</i>")
     return "\n".join(r for r in rows if r)
 
 
 def riepilogo_row(m: dict, names: dict, an: dict | None) -> str:
-    """Una partita nel riepilogo: titolo, una riga di quote (adesso, con le frecce), giudizio e pronostico."""
+    """Una partita nel riepilogo: titolo, una riga di quote (adesso, con le frecce), giudizio con la forza e
+    pronostico con la quota giusta."""
     title = f"<b>{match_title(names)}</b> {m['ko'].astimezone(ROME):%H:%M}"
     if not an or not an["b"]:
         return f"{title}\n<i>quote non trovate su OddsPapi</i>"
@@ -1035,34 +1559,46 @@ def riepilogo_row(m: dict, names: dict, an: dict | None) -> str:
         bits.append("O2,5 " + fmt_num(ob[0]) + (arrow_p(novig(oa)[0], novig(ob)[0]) if oa else ""))
     if b.get("gg"):
         bits.append("GG " + fmt_num(b["gg"][0]) + (arrow_p(novig(a["gg"])[0], novig(b["gg"])[0]) if a.get("gg") else ""))
-    rows = [title, " · ".join(bits), judgement(an, names, short=True), picks_text(an)]
+    rows = [title, " · ".join(bits), judgement_short(an, names), picks_text(an, names, short=True)]
     return "\n".join(r for r in rows if r)
 
 
-LEGEND_SHORT = ("<i>▼ quota scesa (piu' probabile) · ▲ salita · AH = handicap della squadra di casa · "
-                "🎯 pronostico solo dall'andamento delle quote, tra parentesi la probabilita' di adesso</i>")
+LEGEND_SHORT = ("<i>▼ quota scesa (più probabile) · ▲ salita · AH = handicap della squadra di casa · forza 1-10: "
+                f"da {FORZA_FORTE} forte, {FORZA_MIN_AVVISO}-{FORZA_FORTE - 1} medio, sotto {FORZA_MIN_AVVISO} "
+                "rumore · 🎯 pronostico solo dall'andamento delle quote, tra parentesi la probabilità di adesso e la "
+                "quota giusta (senza margine)</i>")
 
 LEGEND = ("📖 <b>Come leggere i messaggi delle quote</b>\n\n"
           "<b>Quando arrivano</b>\n"
           f"• ore {RIEPILOGO_HOUR}: <b>riepilogo</b> delle partite di domani, un messaggio per campionato\n"
-          f"• {RIDOSSO_MINUTES} minuti prima della partita (formazioni uscite): solo se le quote si sono mosse davvero\n"
-          "• venerdi' alle 15 (martedi' se c'e' il turno infrasettimanale): <b>apertura</b>, le quote di riferimento\n\n"
-          "<b>Le quote</b> (di Pinnacle; il giudizio guarda anche Sbobet e Singbet)\n"
-          "▼ quota scesa = piu' probabile · ▲ quota salita = meno probabile · doppia freccia = movimento forte\n"
-          "AH = handicap asiatico della squadra di casa (▼ = casa piu' favorita) · Gol = linea gol principale "
-          "(▲ = piu' gol attesi) · O2,5 = Over 2,5 · GG = Goal\n"
-          "Sotto la riga tratteggiata: i book che hanno fatto scattare il giudizio, se non e' Pinnacle (la loro linea, "
-          "o la % se la linea e' rimasta quella)\n\n"
-          "<b>Giudizio</b> (regole del foglio Mercato, su almeno 2 book su 3)\n"
+          f"• {RIDOSSO_MINUTES} minuti prima della partita (formazioni uscite): solo se un movimento ha "
+          f"<b>forza {FORZA_MIN_AVVISO}/10 o più</b>\n"
+          "• venerdì alle 15 (martedì se c'è il turno infrasettimanale): <b>apertura</b>, le quote di riferimento\n\n"
+          "<b>Forza del segnale (1-10)</b>\n"
+          "quanto si è mosso (linea asiatica o linea gol spostata = tanto) + quanti book sono d'accordo + se ha "
+          "tenuto o è tornato indietro + se un altro mercato dice la stessa cosa\n"
+          f"{FORZA_FORTE}-10 forte · {FORZA_MIN_AVVISO}-{FORZA_FORTE - 1} medio, da farsi domande · sotto "
+          f"{FORZA_MIN_AVVISO} rumore: a {RIDOSSO_MINUTES} minuti non arriva\n\n"
+          "<b>Tabella</b> (Pinnacle, apertura e adesso)\n"
+          "▼ quota scesa = più probabile · ▲ quota salita · doppia freccia = movimento forte\n"
+          "AH = handicap asiatico della squadra di casa (▼ = casa più favorita) · Linea gol (▲ = più gol attesi) · "
+          "Over 2,5 · GG\n\n"
+          "<b>Squadre</b>: la linea di adesso di corner, gol e tiri in porta di ogni squadra (Pinnacle; * = altro "
+          "book, solo informazione) · ▲ = più eventi attesi · a→b = linea cambiata\n"
+          "<b>Conferme</b>: come si sono mossi Pinnacle, Sbobet e Singbet, con le stesse frecce della tabella "
+          "(= fermo, · non quotato)\n"
+          "⏱ <b>Quando</b>: a che ora si è mosso, chi per primo e cosa è cambiato dopo le formazioni\n"
+          "💡 <b>Lettura</b>: cosa può voler dire il movimento, come domanda da verificare: non è una verità\n\n"
+          "<b>Giudizio</b> (colore per la riga «Mercato» del foglio)\n"
           "🟢🟢 calo forte: linea asiatica spostata verso la squadra → Verde forte\n"
-          "🟢 calo leggero: stessa linea, quota scesa di almeno 2 punti → Verde\n"
+          "🟢 calo: stessa linea, quota scesa → Verde\n"
           "🔴 si alza la quota della favorita → Rosso · 🔴🔴 di mezzo gol → Rosso forte\n"
-          "⚪ quote stabili\n\n"
-          "<b>🎯 Pronostico dalle quote</b> (solo dall'andamento delle quote, non e' un'analisi della partita)\n"
-          "calo forte → segno secco (1 o 2) · calo leggero → doppia chance (1X o X2)\n"
-          "quota della favorita in salita → doppia chance contro di lei\n"
-          "linea gol su → Over · giu' → Under · GG/NG se si muove il mercato Goal\n"
-          "Tra parentesi la probabilita' secondo le quote di adesso, senza il margine del book.")
+          "📈 📉 linea gol su o giù · ⚽ Goal/No Goal\n\n"
+          "<b>🎯 Pronostico dalle quote</b> (solo dall'andamento delle quote, non è un'analisi della partita)\n"
+          "calo forte → segno secco · calo → doppia chance · favorita in salita → doppia chance contro di lei e la "
+          "sfavorita che segna · linea gol su → Over · giù → Under · GG/NG\n"
+          "Tra parentesi la probabilità di adesso senza margine e la <b>quota giusta</b>: se il tuo book paga di "
+          "più, c'è valore.")
 
 
 # =====================================================================
@@ -1205,8 +1741,8 @@ def do_apertura(st: dict, topic: QuoteTopic, key: str | None, cal: list, force: 
             f"{when_text(last).split()[0]}") if key else \
         f"📸 <b>Elenco partite aggiornato a mano</b> ({when_text(now)}): {len(soon)} partite nei prossimi 4 giorni"
     topic.send(f"{head} · {detail}\n"
-               f"<i>Riepilogo alle {RIEPILOGO_HOUR} del giorno prima, avvisi {RIDOSSO_MINUTES} minuti prima solo se le quote "
-               f"si muovono davvero · elenco OddsPapi {n} partite · chiamate usate {st['calls']}/"
+               f"<i>Riepilogo alle {RIEPILOGO_HOUR} del giorno prima, avvisi {RIDOSSO_MINUTES} minuti prima solo da "
+               f"forza {FORZA_MIN_AVVISO}/10 · elenco OddsPapi {n} partite · chiamate usate {st['calls']}/"
                f"{st.get('limit', MONTH_LIMIT)}</i>")
 
 
@@ -1214,10 +1750,49 @@ def match_key(m: dict) -> str:
     return f"M|{m['ko'].isoformat()[:16]}|{m['code']}|{m['home']}"
 
 
+def stats_entry(m: dict, an: dict, src: str) -> dict:
+    """Numeri di una partita controllata (per tarare le soglie): forza e pezzi della forza di ogni segnale."""
+    return {"k": match_key(m), "src": src, "lg": m["code"], "m": f"{m['home_short']}-{m['away_short']}",
+            "f": an["forza"], "sent": bool(an["shown"]),
+            "sig": [[s["fam"], s["dir"], s["forza"], s["lvl"], s["acc"], s["ten"], s["coe"]] for s in an["sigs"]],
+            "t": now_utc().isoformat(timespec="minutes")}
+
+
+def save_stats(st: dict, entry: dict) -> None:
+    st["stats"] = [e for e in st.get("stats", []) if not (e.get("k") == entry["k"] and e.get("src") == entry["src"])]
+    st["stats"].append(entry)
+    st["stats"] = st["stats"][-STATS_KEEP:]
+
+
+def add_sot(st: dict, fid: str, m: dict, R: dict, an: dict, force: bool = False) -> dict:
+    """Tiri in porta di squadra da SOT_BOOK (solo informazione) se nessuno dei 3 book li quota: una lettura in piu'
+    dello storico (gratis). Se in SOT_MAX_TRIES partite non li ha mai, smette di chiederli."""
+    if not SOT_BOOK or an["events"].get("ts"):
+        return an
+    if not any(len(v) > 4 and v[4] == "ts" for v in (st.get("markets") or {}).values()):
+        return an
+    sot = st.setdefault("sot", {"tries": 0, "hits": 0})
+    if sot.get("hits", 0) == 0 and sot.get("tries", 0) >= SOT_MAX_TRIES:
+        return an
+    sot["tries"] = sot.get("tries", 0) + 1
+    try:
+        R2 = read_history(st, fid, apertura_time(m["ko"]), at=R.get("at"), force=force, books=[SOT_BOOK])
+    except QuotaExhausted:
+        raise
+    except Exception as e:      # noqa: BLE001
+        print(f"  tiri in porta ({SOT_BOOK}) non letti: {e}")
+        return an
+    if (R2["now"].get(SOT_BOOK) or {}).get("ts"):
+        sot["hits"] = sot.get("hits", 0) + 1
+        return analyze(R, m["ko"], extra=R2)
+    return an
+
+
 def do_ridosso(st: dict, topic: QuoteTopic, key: str | None, group: dict | None, cal: list, force: bool = False) -> int:
-    """Per ogni partita del gruppo: storico (gratis) -> apertura e adesso sui 3 book -> messaggio se serve.
-    Ogni partita controllata viene segnata e salvata subito: se il giro si interrompe (o finisce il tempo),
-    il giro dopo riprende dalle partite mancanti, senza doppioni."""
+    """Per ogni partita del gruppo: storico (gratis) -> apertura e adesso sui 3 book -> forza dei segnali ->
+    messaggio se almeno un segnale arriva a FORZA_MIN_AVVISO. Ogni partita controllata viene segnata e salvata
+    subito: se il giro si interrompe (o finisce il tempo), il giro dopo riprende dalle partite mancanti, senza
+    doppioni."""
     manual = key is None
     if group is None:                       # controllo a mano: il prossimo gruppo di partite
         groups = kickoff_groups([m for m in cal if m["ko"] > now_utc()])
@@ -1244,7 +1819,7 @@ def do_ridosso(st: dict, topic: QuoteTopic, key: str | None, group: dict | None,
             print(f"  {names['home']} - {names['away']}: non trovata su OddsPapi")
         else:
             try:
-                base, now, base_at, first = read_history(st, fid, apertura_time(m["ko"]), force=force)
+                R = read_history(st, fid, apertura_time(m["ko"]), force=force)
                 checked += 1
             except QuotaExhausted:
                 raise
@@ -1252,16 +1827,20 @@ def do_ridosso(st: dict, topic: QuoteTopic, key: str | None, group: dict | None,
                 print(f"  {names['home']} - {names['away']}: storico non letto ({e}): riprovo al prossimo giro")
                 unfinished = True
                 continue
-            an = analyze(base, now)
-            if not moved(an):
-                print(f"  {names['home']} - {names['away']}: niente di importante (book: {sorted(set(base) & set(now))})")
-            elif topic.send(build_message(m, names, an, base_at, first,
+            an = analyze(R, m["ko"])
+            if an["shown"]:
+                an = add_sot(st, fid, m, R, an, force=force)
+            save_stats(st, stats_entry(m, an, "a mano" if manual else "ridosso"))
+            sig_txt = ", ".join(f"{s['fam']} {s['forza']}" for s in an["sigs"]) or "nessun movimento"
+            if not an["shown"]:
+                print(f"  {names['home']} - {names['away']}: sotto la soglia ({sig_txt})")
+            elif topic.send(build_message(m, names, an, R["base_at"], R["first"],
                                           "controllo a mano" if manual else "formazioni uscite")):
                 sent += 1
-                print(f"  {names['home']} - {names['away']}: MOVIMENTO -> inviato")
+                print(f"  {names['home']} - {names['away']}: SEGNALE ({sig_txt}) -> inviato")
                 time.sleep(SEND_DELAY_GROUP_SECONDS)
             else:
-                print(f"  {names['home']} - {names['away']}: MOVIMENTO, ma Telegram non ha accettato: riprovo")
+                print(f"  {names['home']} - {names['away']}: SEGNALE, ma Telegram non ha accettato: riprovo")
                 unfinished = True
                 continue
         if not manual:
@@ -1270,8 +1849,8 @@ def do_ridosso(st: dict, topic: QuoteTopic, key: str | None, group: dict | None,
     if key and not unfinished:
         st["done"].append(key)
     if manual and sent == 0:
-        topic.send(f"🔎 Controllo a mano delle partite di {when_text(group['first'])}: nessun movimento "
-                   f"importante dall'apertura ({checked} partite lette su {len(todo)}).")
+        topic.send(f"🔎 Controllo a mano delle partite di {when_text(group['first'])}: nessun movimento da "
+                   f"{FORZA_MIN_AVVISO}/10 in su dall'apertura ({checked} partite lette su {len(todo)}).")
     st["log"].append(f"{now_utc().isoformat(timespec='minutes')} {'a mano' if manual else 'ridosso'} "
                      f"{len(todo)} partite, {checked} lette, {sent} messaggi{' (da finire)' if unfinished else ''}")
     return sent
@@ -1334,8 +1913,9 @@ def do_riepilogo(st: dict, topic: QuoteTopic, key: str | None, matches: list, fo
         an, base_at, first = None, None, False
         if fid:
             try:
-                base, now, base_at, first = read_history(st, fid, apertura_time(m["ko"]), force=force)
-                an = analyze(base, now)
+                R = read_history(st, fid, apertura_time(m["ko"]), force=force)
+                an = analyze(R, m["ko"])
+                base_at, first = R["base_at"], R["first"]
                 done_now.append((m, names, an, base_at, first))
             except QuotaExhausted:
                 raise
@@ -1406,6 +1986,15 @@ def _safe_account(acc) -> str:
     return json.dumps(out)
 
 
+def describe(an: dict) -> str:
+    """Per il registro: segnali con i pezzi della forza."""
+    out = []
+    for s in an["sigs"]:
+        out.append(f"{s['fam']} {'+' if s['dir'] > 0 else '-'} forza {s['forza']} = ampiezza {s['lvl']} + book "
+                   f"{s['acc']} ({','.join(s['books'])}) + tenuta {s['ten']} ({s['ratio']:.2f}) + mercato {s['coe']}")
+    return " | ".join(out) or "nessun movimento"
+
+
 def do_test(st: dict, topic: QuoteTopic, cal: list) -> None:
     """Prova: diagnostica nel registro, poi nel gruppo la legenda e un ESEMPIO di riepilogo e di avviso
     sulle prossime partite (con la prima quota come riferimento se l'apertura non e' ancora arrivata)."""
@@ -1415,38 +2004,142 @@ def do_test(st: dict, topic: QuoteTopic, cal: list) -> None:
     meta = ensure_markets(st, force=st.get("markets_v") != MARKETS_VERSION)
     kinds = {}
     for v in meta.values():
-        kinds[v[0]] = kinds.get(v[0], 0) + 1
-    print("Mercati usati:", kinds, "| Goal/No Goal:", {k: v for k, v in meta.items() if v[0] == "btts"})
+        kinds[v[4] if len(v) > 4 else "main"] = kinds.get(v[4] if len(v) > 4 else "main", 0) + 1
+    print("Mercati usati:", kinds)
     day_m = next_day_matches(cal, now_utc())          # esempio: un solo campionato (il primo che gioca domani)
     code = next((c for c in LEAGUES_Q if any(m["code"] == c for m in day_m)), None)
     matches = [m for m in day_m if m["code"] == code][:10]
     if not matches:
-        topic.send("🧪 Prova del bot quote: nessuna partita in arrivo nel calendario.")
+        topic.send("🧪 Prova del bot quote: nessuna partita in arrivo nel calendario (per provare il formato sulle "
+                   "partite gia' giocate usa la modalita' «rivedi»).")
         return
     send_legend(st, topic, force=True)
     done = do_riepilogo(st, topic, None, matches, force=True, preview=True)
     for m, names, an, base_at, first in done:
         print(f"  {names['home']} - {names['away']} ({when_text(m['ko'])}): {base_label(base_at, first)} | "
-              f"rif. {an['ref']} | colore {an['color']} | gol {an['mv']['ou']} | GG {an['gg']} | pronostico {an['picks']}")
-        print(f"     prima {an['a']}\n     adesso {an['b']}")
-        print(f"     movimenti per book: {an['mv']['moves']}")
-
-    def score(item):
-        an = item[2]
-        sc = {"verde_forte": 30, "rosso_forte": 30, "verde": 20, "rosso": 20}.get(an["color"], 0)
-        sc += 10 if an["mv"]["ou"] else 0
-        a, b = an["a"].get("x"), an["b"].get("x")
-        if a and b:
-            sc += max(abs(novig(b)[i] - novig(a)[i]) for i in (0, 2)) * 100
-        return sc
+              f"rif. {an['ref']} | colore {an['color']} | pronostico {an['picks']}")
+        print(f"     {describe(an)}")
+        print(f"     eventi: { {g: {k: (v if k == 'src' else v[1][0]) for k, v in r.items()} for g, r in an['events'].items()} }")
+        print(f"     prima {an['a'].get('x')} {an['a'].get('ah')} {an['a'].get('ou')}\n"
+              f"     adesso {an['b'].get('x')} {an['b'].get('ah')} {an['b'].get('ou')}")
     if done:
-        m, names, an, base_at, first = max(done, key=score)
-        topic.send(f"🧪 <b>ESEMPIO di avviso {RIDOSSO_MINUTES} minuti prima</b> (arriva solo se le quote si muovono "
-                   f"davvero):\n\n" + build_message(m, names, an, base_at, first, "esempio"))
+        m, names, an, base_at, first = max(done, key=lambda it: it[2]["forza"])
+        if an["shown"]:
+            topic.send(f"🧪 <b>ESEMPIO di avviso {RIDOSSO_MINUTES} minuti prima</b> (arriva solo da forza "
+                       f"{FORZA_MIN_AVVISO}/10):\n\n" + build_message(m, names, an, base_at, first, "esempio"))
+        else:
+            topic.send(f"🧪 Nessuna partita di domani ha ancora un movimento da {FORZA_MIN_AVVISO}/10: niente esempio "
+                       f"di avviso (il piu' forte e' {an['forza']}/10).")
     try:
         print("Account dopo:", _safe_account(api_get("/account", {}, st, counts=False, force=True)))
     except Exception as e:      # noqa: BLE001
         print(f"[WARN] account non letto: {e}")
+
+
+def finished_matches(st: dict, days: int = RIVEDI_DAYS) -> list:
+    """Partite gia' giocate negli ultimi giorni, con il loro id OddsPapi: dal calendario del bot notizie e, se li'
+    non ci sono piu', dall'elenco OddsPapi tenuto nello stato (nomi ricondotti a quelli del calendario)."""
+    now = now_utc()
+    lo, hi = now - timedelta(days=days), now - timedelta(minutes=RIDOSSO_MINUTES)
+    cal = load_json(FIXTURES_FILE, {})
+    teams = {t.get("name"): t for t in cal.get("teams", []) if isinstance(t, dict)}
+    out, used = [], set()
+    for f in cal.get("fixtures", []):
+        code, ko = f.get("competition"), parse_time(f.get("kickoff"))
+        if code not in LEAGUES_Q or not ko or not (lo <= ko <= hi) or \
+                f.get("status") in ("POSTPONED", "CANCELLED", "SUSPENDED", "AWARDED"):
+            continue
+        m = {"code": code, "home": f.get("home", ""), "away": f.get("away", ""), "ko": ko,
+             "home_short": (teams.get(f.get("home")) or {}).get("shortName") or f.get("home", ""),
+             "away_short": (teams.get(f.get("away")) or {}).get("shortName") or f.get("away", "")}
+        m["fid"] = find_fixture(st, m)
+        if m["fid"]:
+            used.add(m["fid"])
+            out.append(m)
+    known = list(HASHTAGS)
+
+    def calendar_name(name: str) -> str:
+        best = max(known, key=lambda k: _similar(name, k), default=None)
+        return best if best and _similar(name, best) >= 0.5 else name
+
+    for fid, rec in st["fixtures"].items():
+        ko = parse_time(rec.get("start"))
+        if fid in used or rec.get("code") not in LEAGUES_Q or not ko or not (lo <= ko <= hi):
+            continue
+        n1, n2 = st["participants"].get(str(rec.get("p1")), ""), st["participants"].get(str(rec.get("p2")), "")
+        if not n1 or not n2:
+            continue
+        h, a = calendar_name(n1), calendar_name(n2)
+        out.append({"code": rec["code"], "home": h, "away": a, "ko": ko, "home_short": h, "away_short": a, "fid": fid})
+    return sorted(out, key=lambda m: m["ko"])
+
+
+def do_rivedi(st: dict, topic: QuoteTopic, query: str = "") -> None:
+    """Rilegge le partite gia' giocate come 40 minuti prima del fischio, con le regole di adesso (storico, gratis).
+    Con 'query' (es. "Roma") manda il messaggio di quelle partite; senza, il conto forti/medi/rumore e le
+    RIVEDI_TOP piu' forti come sarebbero arrivate."""
+    matches = finished_matches(st)
+    if query:
+        q = norm(query)
+        matches = [m for m in matches if any(q in norm(x) for x in (
+            m["home"], m["away"], m["home_short"], m["away_short"],
+            split_camel(HASHTAGS.get(m["home"], "")), split_camel(HASHTAGS.get(m["away"], ""))))]
+    print(f"Rivedi: {len(matches)} partite da rileggere" + (f" con «{query}»" if query else ""))
+    if not matches:
+        topic.send(f"🧪 Rivedi: nessuna partita giocata negli ultimi {RIVEDI_DAYS} giorni"
+                   f"{' con «' + esc(query) + '»' if query else ''} nell'elenco del bot.")
+        return
+    results, start = [], time.monotonic()
+    for m in matches:
+        if time.monotonic() - start > RIVEDI_BUDGET_SECONDS:
+            print("Rivedi: tempo finito, mi fermo qui")
+            break
+        names = team_names(m)
+        try:
+            R = read_history(st, m["fid"], apertura_time(m["ko"]), at=m["ko"] - timedelta(minutes=RIDOSSO_MINUTES),
+                             force=True)
+        except QuotaExhausted:
+            raise
+        except Exception as e:      # noqa: BLE001
+            print(f"  {names['home']} - {names['away']}: storico non letto ({e})")
+            continue
+        an = analyze(R, m["ko"])
+        save_stats(st, stats_entry(m, an, "rivedi"))
+        results.append((m, names, an, R))
+        print(f"  {names['home']} - {names['away']} ({when_text(m['ko'])}): forza {an['forza']} · {describe(an)}")
+    if not results:
+        topic.send("🧪 Rivedi: storico delle quote non letto (riprova tra poco).")
+        return
+    send_legend(st, topic)
+    if query:
+        chosen = results
+    else:
+        forti = sum(1 for r in results if r[2]["forza"] >= FORZA_FORTE)
+        medi = sum(1 for r in results if FORZA_MIN_AVVISO <= r[2]["forza"] < FORZA_FORTE)
+        chosen = sorted((r for r in results if r[2]["shown"]), key=lambda r: -r[2]["forza"])[:RIVEDI_TOP]
+        topic.send(f"🧪 <b>Rivedi</b>: {len(results)} partite giocate da {day_text(results[0][0]['ko'])} a "
+                   f"{day_text(results[-1][0]['ko'])}, rilette come {RIDOSSO_MINUTES} minuti prima con le regole "
+                   f"nuove\nforti ({FORZA_FORTE}-10): <b>{forti}</b> · medie ({FORZA_MIN_AVVISO}-{FORZA_FORTE - 1}): "
+                   f"<b>{medi}</b> · rumore (sotto {FORZA_MIN_AVVISO}, niente avviso): "
+                   f"<b>{len(results) - forti - medi}</b>"
+                   + (f"\n<i>Qui sotto le {len(chosen)} più forti, come sarebbero arrivate.</i>" if chosen else ""))
+        time.sleep(SEND_DELAY_GROUP_SECONDS)
+    for m, names, an, R in chosen:
+        if an["shown"]:
+            an = add_sot(st, m["fid"], m, R, an, force=True)
+            text = build_message(m, names, an, R["base_at"], R["first"], "formazioni uscite", prefix="🧪 RIVEDI · ")
+        else:
+            lg = LEAGUES_Q.get(m["code"], {"flag": ""})
+            text = "\n".join(r for r in (
+                f"🧪 RIVEDI · {lg['flag']} <b>{match_title(names)}</b> · {m['ko'].astimezone(ROME):%H:%M}",
+                f"⚪ Sotto la soglia: forza {an['forza']}/10, l'avviso non sarebbe arrivato",
+                fmt_table(names, an["a"], an["b"], an),
+                f"<i>{BOOK_LABEL.get(an['ref'], '')} · {base_label(R['base_at'], R['first'])} → "
+                f"{when_text(an['at'])}</i>") if r)
+        topic.send(text)
+        time.sleep(SEND_DELAY_GROUP_SECONDS)
+    st["log"].append(f"{now_utc().isoformat(timespec='minutes')} rivedi {query or 'settimana'}: {len(results)} "
+                     f"partite lette, {len(chosen)} messaggi")
 
 
 def cleanup(st: dict) -> None:
@@ -1455,6 +2148,7 @@ def cleanup(st: dict) -> None:
     keep = (now_utc() - timedelta(days=10)).isoformat()[:16]
     st["done"] = [d for d in st["done"] if d.split("|", 1)[-1] >= keep][-400:]
     st["log"] = st["log"][-60:]
+    st["stats"] = st.get("stats", [])[-STATS_KEEP:]
 
 
 _START = time.monotonic()
@@ -1464,7 +2158,8 @@ def main() -> int:
     global _START
     _START = time.monotonic()
     ap = argparse.ArgumentParser()
-    ap.add_argument("--mode", default="auto", choices=["auto", "test", "ora", "apertura", "riepilogo"])
+    ap.add_argument("--mode", default="auto", choices=["auto", "test", "ora", "apertura", "riepilogo", "rivedi"])
+    ap.add_argument("--partita", default="", help="per --mode rivedi: squadra da cercare (vuoto = tutta la settimana)")
     args = ap.parse_args()
     if not API_KEY:
         print("Bot quote: manca il secret ODDSPAPI_API_KEY, non faccio niente")
@@ -1492,6 +2187,8 @@ def main() -> int:
             do_ridosso(st, topic, None, None, cal, force=True)
         elif args.mode == "riepilogo":
             do_riepilogo(st, topic, None, next_day_matches(cal, now), force=True)
+        elif args.mode == "rivedi":
+            do_rivedi(st, topic, (args.partita or "").strip())
         else:
             send_legend(st, topic)
             if rkey:                    # prima gli avvisi a ridosso (hanno l'orario piu' stretto)

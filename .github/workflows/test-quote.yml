@@ -5,17 +5,25 @@ name: Prova bot quote
 #   ora       = controllo subito delle prossime partite (come quello di 40 minuti prima)
 #   apertura  = aggiorna subito l'elenco delle partite
 #   riepilogo = riepilogo subito delle partite di domani
+#   rivedi    = rilegge le partite gia' giocate (ultimi 8 giorni) come 40 minuti prima, con le regole di adesso:
+#               "partita" vuoto = conto forti/medi/rumore della settimana e le 3 piu' forti nel gruppo;
+#               "partita" con una squadra (es. Roma) = il messaggio di quella partita
 # Ogni prova consuma da 0 a 3 chiamate delle 250 del mese (lo storico delle quote e' gratis).
 
 on:
   workflow_dispatch:
     inputs:
       modo:
-        description: "test = prova completa · ora = controllo subito · apertura = elenco partite · riepilogo = riepilogo di domani"
+        description: "test = prova completa · ora = controllo subito · apertura = elenco partite · riepilogo = riepilogo di domani · rivedi = partite gia' giocate"
         required: true
         default: test
         type: choice
-        options: [test, ora, apertura, riepilogo]
+        options: [test, ora, apertura, riepilogo, rivedi]
+      partita:
+        description: "solo per rivedi: squadra da cercare (vuoto = tutta la settimana)"
+        required: false
+        default: ""
+        type: string
 
 permissions:
   contents: write
@@ -27,7 +35,7 @@ concurrency:
 jobs:
   run:
     runs-on: ubuntu-24.04
-    timeout-minutes: 10
+    timeout-minutes: 15
     steps:
       - name: Checkout repo
         uses: actions/checkout@v5
@@ -50,7 +58,9 @@ jobs:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
           TELEGRAM_GROUP_ID: ${{ secrets.TELEGRAM_GROUP_ID }}
-        run: python monitor_quote.py --mode "${{ inputs.modo }}"
+          MODO: ${{ inputs.modo }}
+          PARTITA: ${{ inputs.partita }}
+        run: python monitor_quote.py --mode "$MODO" --partita "$PARTITA"
 
       - name: Salva lo stato delle quote
         if: always()
