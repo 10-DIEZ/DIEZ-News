@@ -45,11 +45,12 @@ Singbet.
   Over 2,5, GG) con le frecce del movimento, il giudizio con la **forza** del
   segnale (colore del foglio Mercato) e un 🎯 pronostico ricavato solo
   dall'andamento delle quote, con la probabilità di adesso e la quota giusta.
-- **Forza del segnale (1-10)** = quanto si è mosso (linea asiatica o gol
-  spostata di un quarto = 3, di mezzo gol = 5; stessa linea: da 3 punti di
-  probabilità in su, fino a 4) + quanti book sono d'accordo (2 su 3 = 1, 3 su
-  3 = 2) + se ha tenuto o è tornato indietro (0-2) + se un altro mercato dice
-  la stessa cosa (asiatico e 1X2, linea gol e GG o gol di squadra: 1). Da 7
+- **Forza del segnale (1-10)** = 2 × ampiezza (1-5: punti di probabilità
+  senza margine misurati sulla linea dell'apertura, così un cambio di linea
+  "di confine" non conta come un movimento grande; asiatico 3 / 4,5 / 6 / 8 /
+  10 punti) + book (3 su 3 d'accordo +1, 2 su 3 0, uno solo −1) + tenuta (ha
+  tenuto 0, tornato un po' indietro −1, rientrato −2) + altro mercato che dice
+  la stessa cosa (asiatico e 1X2, linea gol e GG o gol di squadra: +1). Da 7
   forte, 4-6 medio (da farsi domande), sotto 4 rumore. Le soglie sono in cima
   a `monitor_quote.py` (`FORZA_MIN_AVVISO`, `FORZA_FORTE`, `LEV_SIDE`,
   `LEV_GOL`, `LEV_GG`).
