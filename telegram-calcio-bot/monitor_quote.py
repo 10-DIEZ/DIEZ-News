@@ -117,7 +117,8 @@ AH_HOME_SIGN = 1                # la linea del mercato e' quella della squadra d
 FAV_GAP = 0.05                  # sotto 5 punti di differenza non c'e' una favorita
 ARROW_PTS = 1.5                 # freccia accanto a una quota: probabilita' mossa di almeno 1,5 punti...
 ARROW_STRONG_PTS = 5.0          # ...doppia freccia da 5 punti in su
-STALE_HOURS = 6                 # linea non aggiornata da 6 ore piu' delle altre = tolta dal book
+STALE_HOURS = 6                 # linea principale: una linea ferma da 6 ore piu' delle altre deve essere 1 punto piu'
+STALE_MAX_HOURS = 72            # equilibrata per vincere; ferma da piu' di 72 ore = tolta dal book
 
 # Forza del segnale (1-10) = 2 x ampiezza (1-5) + book (3 su 3 +1, 2 su 3 0, uno solo -1)
 #                            + tenuta (ha tenuto 0, tornato un po' indietro -1, rientrato -2) + altro mercato (+1)
@@ -557,18 +558,27 @@ def refresh_fixtures(st: dict, force: bool = False) -> int:
 # Lettura dello storico: quote di ogni book in un certo momento
 # ---------------------------------------------------------------------
 def _pick_main(cands: list):
-    """Tra le linee (linea, prezzo1, prezzo2, ultimo aggiornamento) sceglie quella principale: la piu' equilibrata
-    tra quelle ancora aggiornate (una linea tolta dal book resta nello storico con il suo ultimo prezzo)."""
+    """Tra le linee (linea, prezzo1, prezzo2, ultimo aggiornamento) sceglie quella principale: la piu' equilibrata.
+    Una linea tolta dal book resta nello storico con il suo ultimo prezzo: per questo una linea ferma da piu' ore
+    delle altre deve essere un po' piu' equilibrata per vincere (1 punto ogni STALE_HOURS ore), e quelle ferme da
+    piu' di STALE_MAX_HOURS ore non contano. (Prima bastavano 6 ore di differenza per scartarla: in un momento
+    passato veniva scartata anche la linea principale ferma da qualche ora, e si prendeva una linea sbilanciata.)"""
     if not cands:
         return None
     newest = max(c[3] for c in cands)
-    fresh = [c for c in cands if c[3] >= newest - timedelta(hours=STALE_HOURS)]
-    best = min(fresh, key=lambda c: abs(1 / c[1] - 1 / c[2]))
+    alive = [c for c in cands if c[3] >= newest - timedelta(hours=STALE_MAX_HOURS)] or cands
+
+    def score(c):
+        age = (newest - c[3]).total_seconds() / 3600.0
+        return abs(1 / c[1] - 1 / c[2]) + 0.01 * age / STALE_HOURS
+    best = min(alive, key=score)
     return [best[0], best[1], best[2]]
 
 
 def _fresh_lines(cands: list) -> dict:
-    """Tutte le linee ancora aggiornate: {"2.5": [Over, Under], ...} (per Over 2,5, gol di squadra e pronostico)."""
+    """Tutte le linee ancora aggiornate: {"2.5": [Over, Under], ...} (per Over 2,5, gol di squadra, pronostico e per
+    misurare il movimento sulla linea dell'apertura: una linea ferma da 6 ore piu' delle altre puo' essere stata
+    tolta dal book, e il suo ultimo prezzo non direbbe com'e' adesso)."""
     if not cands:
         return {}
     newest = max(c[3] for c in cands)
@@ -668,6 +678,20 @@ class BookHist:
                     res[g][side] = main
                     res["ev_lines"][f"{g}|{side}"] = _fresh_lines(cands)
         return res
+
+    def ladder(self, at, mtype: str) -> str:
+        """Per il registro: tutte le linee di un mercato principale al momento 'at' (linea prezzo1/prezzo2 e da
+        quante ore e' fermo il prezzo)."""
+        ref_t = at or now_utc()
+        out = []
+        for mid, info, group, sd, series in self.mk:
+            if group != "main" or info[0] != mtype:
+                continue
+            got = [self._price(ser, at) for ser in series]
+            if len(got) == 2 and all(p for p, _ in got):
+                age = (ref_t - max(t for _, t in got)).total_seconds() / 3600
+                out.append((info[1], got[0][0], got[1][0], age))
+        return " ".join(f"{l:g}:{p1:.2f}/{p2:.2f}({a:.0f}h)" for l, p1, p2, a in sorted(out))
 
     def first_time(self, groups=None, side=None, mids=None):
         """Primo prezzo pubblicato dei mercati scelti."""
@@ -2107,6 +2131,7 @@ def do_rivedi(st: dict, topic: QuoteTopic, query: str = "") -> None:
     """Rilegge le partite gia' giocate come 40 minuti prima del fischio, con le regole di adesso (storico, gratis).
     Con 'query' (es. "Roma") manda il messaggio di quelle partite; senza, il conto forti/medi/rumore e le
     RIVEDI_TOP piu' forti come sarebbero arrivate."""
+    ensure_markets(st, force=st.get("markets_v") != MARKETS_VERSION)     # prova a mano: mercati nuovi subito
     matches = finished_matches(st)
     if query:
         q = norm(query)
@@ -2142,6 +2167,11 @@ def do_rivedi(st: dict, topic: QuoteTopic, query: str = "") -> None:
               f"mercati nello storico (tutti, usati) {_HIST_INFO}")
         if len(results) == 1:
             print(f"     id non usati nello storico: {_HIST_UNKNOWN}")
+        if query and an["ref"] in R["bh"]:
+            h = R["bh"][an["ref"]]
+            for lab, t in (("apertura", R["base_at"]), ("adesso", R["at"])):
+                print(f"     {an['ref']} {lab}: AH {h.ladder(t, 'spreads')}\n"
+                      f"     {an['ref']} {lab}: gol {h.ladder(t, 'totals')}")
     if not results:
         topic.send("🧪 Rivedi: storico delle quote non letto (riprova tra poco).")
         return
