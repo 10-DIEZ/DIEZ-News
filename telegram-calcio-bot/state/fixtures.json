@@ -1,51 +1,6 @@
 {
   "fixtures": [
     {
-      "competition": "BL1",
-      "league": "Bundesliga",
-      "flag": "🇩🇪",
-      "home": "Hamburger SV",
-      "away": "Borussia Mönchengladbach",
-      "kickoff": "2026-11-06T19:30:00Z",
-      "status": "FINISHED"
-    },
-    {
-      "competition": "SA",
-      "league": "Serie A",
-      "flag": "🇮🇹",
-      "home": "Venezia FC",
-      "away": "Udinese Calcio",
-      "kickoff": "2026-11-06T19:45:00Z",
-      "status": "FINISHED"
-    },
-    {
-      "competition": "FL1",
-      "league": "Ligue 1",
-      "flag": "🇫🇷",
-      "home": "Toulouse FC",
-      "away": "RC Strasbourg Alsace",
-      "kickoff": "2026-11-06T19:45:00Z",
-      "status": "FINISHED"
-    },
-    {
-      "competition": "PL",
-      "league": "Premier League",
-      "flag": "🏴󠁧󠁢󠁥󠁮󠁧󠁿",
-      "home": "Everton FC",
-      "away": "Coventry City FC",
-      "kickoff": "2026-11-06T20:00:00Z",
-      "status": "FINISHED"
-    },
-    {
-      "competition": "PD",
-      "league": "La Liga",
-      "flag": "🇪🇸",
-      "home": "Sevilla FC",
-      "away": "Deportivo Alavés",
-      "kickoff": "2026-11-06T20:00:00Z",
-      "status": "FINISHED"
-    },
-    {
       "competition": "PL",
       "league": "Premier League",
       "flag": "🏴󠁧󠁢󠁥󠁮󠁧󠁿",
