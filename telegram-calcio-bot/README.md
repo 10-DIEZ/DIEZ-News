@@ -30,9 +30,9 @@ Gira da solo nel cloud tramite GitHub Actions, non serve tenere niente acceso.
 
 ## Bot quote (argomento «📈 Quote» del gruppo)
 
-Segue le quote dei 5 campionati con OddsPapi (piano gratuito, 250 chiamate al
-mese, secret `ODDSPAPI_API_KEY`), sui book Pinnacle (il riferimento), Sbobet e
-Singbet.
+Segue le quote dei 5 campionati e delle coppe europee (Champions, Europa e
+Conference League) con OddsPapi (piano gratuito, 250 chiamate al mese, secret
+`ODDSPAPI_API_KEY`), sui book Pinnacle (il riferimento), Sbobet e Singbet.
 
 - **Apertura**: le quote del venerdì alle 15:00 per le partite del weekend
   (venerdì-lunedì), del martedì alle 15:00 per i turni infrasettimanali: lo
@@ -40,7 +40,16 @@ Singbet.
   del Pace Index. Il bot le legge dallo **storico** delle quote, quindi non
   deve fotografarle: a quell'ora aggiorna solo l'elenco delle partite e lo dice
   con un messaggio breve.
-- **Riepilogo**: alle 19 le partite di domani, un messaggio per campionato.
+- **Coppe europee** (⭐ Champions, 🟠 Europa e 🟢 Conference League): le
+  partite arrivano dall'elenco OddsPapi, letto il **lunedì alle 15** con una
+  chiamata a parte; il lunedì alle 15 è anche la loro apertura (dopo il turno
+  di campionato). Solo le partite con almeno una squadra dei 5 campionati
+  (`CUPS_ONLY_TOP5 = False` in cima a `monitor_quote.py` per averle tutte). Le
+  squadre dei 5 campionati hanno gli stessi nomi italiani e hashtag del
+  campionato: il bot li impara dalle partite di campionato, senza chiamate.
+  Riepilogo e avvisi come per i campionati, un messaggio per coppa.
+- **Riepilogo**: alle 19 le partite di domani, un messaggio per campionato o
+  coppa.
   Per ogni partita: una riga di quote (1X2, handicap asiatico, linea gol,
   Over 2,5, GG) con le frecce del movimento, il giudizio con la **forza** del
   segnale (colore del foglio Mercato) e un 🎯 pronostico ricavato solo
@@ -74,9 +83,10 @@ Singbet.
   pezzi in `state/quote_state.json` (`stats`).
 - **Consumo**: lo storico delle quote non conta nelle 250 chiamate (verificato
   sul contatore dell'account); contano solo gli aggiornamenti dell'elenco
-  partite e l'elenco dei mercati (una volta al mese), circa 10-20 chiamate al
-  mese. Il contatore si allinea a quello dell'account e non fa mai superare il
-  limite.
+  partite (venerdì i campionati, lunedì le coppe, il martedì se c'è il turno
+  infrasettimanale), i nomi delle squadre nuove e l'elenco dei mercati (una
+  volta al mese): circa 15-30 chiamate al mese. Il contatore si allinea a
+  quello dell'account e non fa mai superare il limite.
 - **Come parte**: lo lancia il giro ogni 5 minuti del bot notizie (passo «Bot
   quote» in `monitor-news.yml`); quasi sempre esce subito. Ogni giro lavora al
   massimo 3 minuti: se le partite sono tante, finisce al giro dopo, senza
@@ -85,7 +95,9 @@ Singbet.
   apertura = aggiorna subito l'elenco, riepilogo = riepilogo subito di domani,
   rivedi = rilegge le partite già giocate negli ultimi 8 giorni come 40 minuti
   prima: con «partita» vuoto il conto forti/medi/rumore e le 3 più forti, con
-  una squadra il messaggio di quella partita).
+  una squadra il messaggio di quella partita). «partita» vale anche per test,
+  ora e riepilogo, e accetta una competizione: SA, PL, PD, BL1, FL1, CL, EL,
+  ECL o «coppe» (con rivedi fa il conto di quella competizione).
 - Codice in `monitor_quote.py` (orari, soglie e book in cima al file), stato in
   `state/quote_state.json`.
 

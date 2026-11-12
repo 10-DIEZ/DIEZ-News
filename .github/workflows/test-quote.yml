@@ -8,7 +8,9 @@ name: Prova bot quote
 #   rivedi    = rilegge le partite gia' giocate (ultimi 8 giorni) come 40 minuti prima, con le regole di adesso:
 #               "partita" vuoto = conto forti/medi/rumore della settimana e le 3 piu' forti nel gruppo;
 #               "partita" con una squadra (es. Roma) = il messaggio di quella partita
-# Ogni prova consuma da 0 a 3 chiamate delle 250 del mese (lo storico delle quote e' gratis).
+# "partita" vale anche per test, ora e riepilogo e accetta una competizione: SA, PL, PD, BL1, FL1, CL, EL, ECL o
+# "coppe" (es. test + coppe = prova sulle prossime partite delle coppe; rivedi + CL = conto della Champions).
+# Ogni prova consuma da 0 a 4 chiamate delle 250 del mese (lo storico delle quote e' gratis).
 
 on:
   workflow_dispatch:
@@ -20,7 +22,7 @@ on:
         type: choice
         options: [test, ora, apertura, riepilogo, rivedi]
       partita:
-        description: "solo per rivedi: squadra da cercare (vuoto = tutta la settimana)"
+        description: "squadra (es. Roma) o competizione (SA, PL, PD, BL1, FL1, CL, EL, ECL, coppe); per rivedi vuoto = tutta la settimana"
         required: false
         default: ""
         type: string

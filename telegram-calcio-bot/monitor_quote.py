@@ -1,9 +1,9 @@
 """
-Bot QUOTE: come si muovono le quote dei 5 campionati (OddsPapi, piano gratuito).
+Bot QUOTE: come si muovono le quote dei 5 campionati e delle coppe europee (OddsPapi, piano gratuito).
 
 COSA FA
 - Alle 19 manda il RIEPILOGO delle partite di domani (un messaggio per
-  campionato): per ogni partita una riga di quote con le frecce del movimento,
+  campionato o coppa): per ogni partita una riga di quote con le frecce del movimento,
   il giudizio con la FORZA del segnale (1-10) e un pronostico ricavato solo
   dall'andamento delle quote, con la probabilita' e la quota giusta.
 - 40 minuti prima di ogni orario d'inizio (le formazioni ufficiali escono circa
@@ -27,15 +27,22 @@ COSA FA
 - La legenda la manda la prima volta e quando cambia (LEGEND_VERSION).
 - Il venerdi' alle 15 (e il martedi', se c'e' il turno infrasettimanale)
   aggiorna l'elenco delle partite e te lo dice con un messaggio breve.
+- COPPE (Champions, Europa e Conference League): le partite arrivano
+  dall'elenco OddsPapi, letto il LUNEDI' alle 15 (una chiamata, a parte da
+  quella dei campionati). Il lunedi' alle 15 e' anche la loro APERTURA (dopo il
+  turno di campionato). Con CUPS_ONLY_TOP5 solo le partite con almeno una
+  squadra dei 5 campionati; le squadre dei 5 campionati hanno gli stessi nomi
+  italiani e hashtag delle partite di campionato. Riepilogo e avvisi uguali.
 - Ogni partita controllata lascia i suoi numeri nello stato ("stats"): servono
   a tarare le soglie.
 - Tutto nell'argomento "📈 Quote" del gruppo (lo crea il bot).
 
 QUANTO CONSUMA: lo storico delle quote NON conta nelle 250 chiamate al mese
 del piano gratuito (verificato con il contatore dell'account il 6/11/2026).
-Contano solo gli aggiornamenti dell'elenco partite (1-4 a settimana) e l'elenco
-dei mercati (1 al mese). Un contatore (allineato a quello dell'account) non fa
-mai superare il limite.
+Contano solo gli aggiornamenti dell'elenco partite (venerdi' i campionati,
+lunedi' le coppe, a volte il martedi'), i nomi delle squadre nuove e l'elenco
+dei mercati (1 al mese): 15-30 chiamate al mese. Un contatore (allineato a
+quello dell'account) non fa mai superare il limite.
 
 COME PARTE: lo lancia il giro ogni 5 minuti del bot notizie (monitor-news.yml,
 avviato da cron-job.org). Quasi sempre controlla l'ora ed esce subito.
@@ -47,12 +54,14 @@ legge e basta, per sapere qual e' il gruppo Telegram).
 Uso: python monitor_quote.py                   giro normale
      python monitor_quote.py --mode test       prova (diagnostica + messaggio di prova)
      python monitor_quote.py --mode ora        controllo subito delle prossime partite
-     python monitor_quote.py --mode apertura   aggiorna subito l'elenco delle partite
+     python monitor_quote.py --mode apertura   aggiorna subito l'elenco delle partite (campionati e coppe)
      python monitor_quote.py --mode riepilogo  riepilogo subito delle partite di domani
      python monitor_quote.py --mode rivedi [--partita Roma]
                                                rilegge le partite gia' giocate come 40 minuti prima:
                                                con --partita manda quelle partite; senza, il conto
                                                forti/medi/rumore della settimana e le 3 piu' forti
+     --partita con test, ora, riepilogo e rivedi: una squadra (es. Roma) o una competizione
+     (SA, PL, PD, BL1, FL1, CL, EL, ECL, "coppe"); con una competizione rivedi fa il conto di quella
 """
 
 import argparse
@@ -98,7 +107,20 @@ LEAGUES_Q = {
     "FL1": {"name": "Ligue 1", "flag": "🇫🇷", "country": "france", "names": ("ligue 1",), "id": 34},
 }
 
-APERTURA_DAYS = (1, 4)          # quote di riferimento: martedi' (1) e venerdi' (4)...
+# Coppe europee: le partite arrivano dall'elenco OddsPapi (il calendario gratuito di football-data ha solo la
+# Champions), con una chiamata a parte (l'elenco ammette al massimo 3 coppe per chiamata).
+CUPS_Q = {
+    "CL": {"name": "Champions League", "flag": "⭐", "names": ("uefa champions league",), "id": 7},
+    "EL": {"name": "Europa League", "flag": "🟠", "names": ("uefa europa league",), "id": 679},
+    "ECL": {"name": "Conference League", "flag": "🟢",
+            "names": ("uefa conference league", "uefa europa conference league"), "id": 34480},
+}
+COMPS_Q = {**LEAGUES_Q, **CUPS_Q}
+CUPS_ONLY_TOP5 = True           # coppe: solo le partite con almeno una squadra dei 5 campionati (False = tutte)
+CUP_APERTURA_DAY = 0            # coppe: quote di riferimento del lunedi' alle 15:00 (dopo il turno di campionato)
+TOP5_KEEP_DAYS = 120            # squadre dei 5 campionati ricordate (per il filtro delle coppe) fino a 120 giorni
+
+APERTURA_DAYS = (1, 4)          # quote di riferimento dei campionati: martedi' (1) e venerdi' (4)...
 APERTURA_HOUR = 15              # ...alle 15:00
 APERTURA_WINDOW_HOURS = 3       # giro delle 15 (aggiornamento elenco): va bene fino alle 18
 LOOKAHEAD_DAYS = 6              # partite tenute nell'elenco
@@ -140,7 +162,8 @@ TENUTA_MEZZA = 0.5              # ...almeno la meta' = e' tornato un po' indietr
 TOPIC_NAME = "📈 Quote"
 TOPIC_COLOR = 9367192           # verde
 KEEP_DAYS = 8                   # partite finite tenute nello stato una settimana (per "rivedi")
-LEGEND_VERSION = 2              # se cambia, la legenda viene rimandata una volta (2 = forza, squadre, conferme)
+LEGEND_VERSION = 3              # se cambia, la legenda viene rimandata una volta (2 = forza, squadre, conferme; 3 = coppe)
+APERTURA_TRIES = 3              # elenco partite non letto all'apertura: si riprova al giro dopo, al massimo 3 volte
 MARKETS_VERSION = 4             # se cambia, l'elenco dei mercati viene riletto subito (3-4 = corner, gol e tiri di squadra)
 STATS_KEEP = 400                # numeri delle partite tenuti per tarare le soglie
 RIVEDI_DAYS = 8                 # "rivedi": partite giocate negli ultimi 8 giorni
@@ -208,14 +231,17 @@ def parse_time(value):
         return None
 
 
-def calendar_matches() -> list:
-    """Partite dei 5 campionati dal calendario del bot notizie (state/fixtures.json)."""
+def calendar_matches(st: dict | None = None, finished: bool = False) -> list:
+    """Partite dei 5 campionati dal calendario del bot notizie (state/fixtures.json) e, con lo stato, quelle delle
+    coppe dall'elenco OddsPapi (la Champions del calendario notizie non si usa: arriva gia' da OddsPapi).
+    finished: anche le partite gia' finite (per imparare i nomi delle squadre)."""
     cal = load_json(FIXTURES_FILE, {})
     teams = {t.get("name"): t for t in cal.get("teams", []) if isinstance(t, dict)}
+    skip = ("POSTPONED", "CANCELLED", "SUSPENDED", "AWARDED") + (() if finished else ("FINISHED",))
     out = []
     for f in cal.get("fixtures", []):
         code = f.get("competition")
-        if code not in LEAGUES_Q or f.get("status") in ("FINISHED", "POSTPONED", "CANCELLED", "SUSPENDED", "AWARDED"):
+        if code not in LEAGUES_Q or f.get("status") in skip:
             continue
         ko = parse_time(f.get("kickoff"))
         if not ko:
@@ -223,15 +249,43 @@ def calendar_matches() -> list:
         out.append({"code": code, "home": f.get("home", ""), "away": f.get("away", ""), "ko": ko,
                     "home_short": (teams.get(f.get("home")) or {}).get("shortName") or f.get("home", ""),
                     "away_short": (teams.get(f.get("away")) or {}).get("shortName") or f.get("away", "")})
+    if st is not None:
+        out += cup_matches(st)[0]
     return sorted(out, key=lambda m: m["ko"])
 
 
-def apertura_time(ko: datetime) -> datetime:
-    """Momento delle quote di riferimento: l'ultimo martedi' o venerdi' alle 15:00 almeno 2 ore prima del fischio."""
+def cup_matches(st: dict, lo: datetime | None = None, hi: datetime | None = None) -> tuple:
+    """Partite delle coppe dall'elenco OddsPapi tenuto nello stato: (partite, quante lasciate fuori dal filtro).
+    Con CUPS_ONLY_TOP5 solo quelle con almeno una squadra dei 5 campionati."""
+    top5 = st.get("top5") or {}
+    out, skipped = [], 0
+    for fid, rec in st["fixtures"].items():
+        if rec.get("code") not in CUPS_Q:
+            continue
+        ko = parse_time(rec.get("start"))
+        if not ko or (lo and ko < lo) or (hi and ko > hi):
+            continue
+        p1, p2 = str(rec.get("p1")), str(rec.get("p2"))
+        if CUPS_ONLY_TOP5 and p1 not in top5 and p2 not in top5:
+            skipped += 1
+            continue
+        (h, hs), (a, as_) = cup_team(st, p1), cup_team(st, p2)
+        if not h or not a:
+            print(f"[WARN] coppe: mancano i nomi delle squadre della partita {fid}")
+            continue
+        out.append({"code": rec["code"], "home": h, "away": a, "ko": ko, "home_short": hs, "away_short": as_,
+                    "fid": fid})
+    return sorted(out, key=lambda m: m["ko"]), skipped
+
+
+def apertura_time(ko: datetime, code: str = "") -> datetime:
+    """Momento delle quote di riferimento: per i campionati l'ultimo martedi' o venerdi' alle 15:00 almeno 2 ore prima
+    del fischio, per le coppe l'ultimo lunedi' alle 15:00."""
+    days = (CUP_APERTURA_DAY,) if code in CUPS_Q else APERTURA_DAYS
     limit = (ko - timedelta(hours=2)).astimezone(ROME)
     for back in range(0, 8):
         d = (limit - timedelta(days=back)).date()
-        if d.weekday() in APERTURA_DAYS:
+        if d.weekday() in days:
             t = datetime(d.year, d.month, d.day, APERTURA_HOUR, tzinfo=ROME)
             if t <= limit:
                 return t.astimezone(timezone.utc)
@@ -338,9 +392,11 @@ def norm(text: str) -> str:
 
 
 def ensure_tournaments(st: dict, force: bool = False) -> dict:
-    """Id OddsPapi dei 5 campionati (cercati una volta per nome e paese; se non si trovano, quelli di riserva)."""
-    if st["tournaments"] and not force:
-        return st["tournaments"]
+    """Id OddsPapi dei 5 campionati (per nome e paese) e delle coppe (per nome), cercati una volta; se non si
+    trovano, quelli di riserva."""
+    have = st.get("tournaments") or {}
+    if have and all(c in have for c in COMPS_Q) and not force:
+        return have
     try:
         items = as_list(api_get("/tournaments", {"sportId": 10}, st))
     except QuotaExhausted:
@@ -349,18 +405,22 @@ def ensure_tournaments(st: dict, force: bool = False) -> dict:
         print(f"[WARN] elenco campionati non letto ({e}): uso gli id di riserva")
         items = []
     found = {}
-    for code, lg in LEAGUES_Q.items():
+    for code, lg in COMPS_Q.items():
         best = None
         for t in items:
             name = norm(t.get("tournamentName") or t.get("name"))
             cat = norm(t.get("categoryName") or t.get("categorySlug") or t.get("category"))
-            if name in lg["names"] and lg["country"] in cat:
+            if name in lg["names"] and (code in CUPS_Q or lg["country"] in cat):
                 tid = t.get("tournamentId") or t.get("id")
                 if best is None or tid == lg["id"]:
                     best = tid
-        found[code] = int(best) if best else lg["id"]
+        found[code] = int(best) if best else int(have.get(code) or lg["id"])
     st["tournaments"] = found
-    print("Id OddsPapi dei campionati:", found)
+    print("Id OddsPapi di campionati e coppe:", found)
+    uefa = [f"{t.get('tournamentId') or t.get('id')}:{t.get('tournamentName') or t.get('name')}"
+            f"[{t.get('categoryName') or t.get('categorySlug') or t.get('category')}]"
+            for t in items if "uefa" in norm(t.get("tournamentName") or t.get("name"))]
+    print(f"   competizioni UEFA nell'elenco ({len(items)} in tutto): {uefa[:20]}")
     return found
 
 
@@ -501,8 +561,8 @@ def ensure_participants(st: dict, ids: set) -> dict:
     if not missing:
         return st["participants"]
     last = parse_time(st.get("participants_try"))
-    if last and now_utc() - last < timedelta(days=3):
-        return st["participants"]   # gia' provato da poco: si usano i nomi del calendario
+    if last and now_utc() - last < timedelta(hours=12):
+        return st["participants"]   # gia' provato da poco (per le coppe i nomi servono: si riprova dopo 12 ore)
     st["participants_try"] = now_utc().isoformat(timespec="seconds")
     try:
         data = api_get("/participants", {"sportId": 10, "language": "en"}, st)
@@ -527,30 +587,53 @@ def ensure_participants(st: dict, ids: set) -> dict:
 _SNAPSHOT = {}          # ultimo elenco letto (solo per la prova: confronto con lo storico)
 
 
-def refresh_fixtures(st: dict, force: bool = False) -> int:
-    """Elenco delle partite dei 5 campionati con il loro id OddsPapi: UNA chiamata (Pinnacle)."""
+def refresh_fixtures(st: dict, force: bool = False, which: str = "campionati", days: int | None = None) -> int:
+    """Elenco delle partite con il loro id OddsPapi (Pinnacle): UNA chiamata per i 5 campionati e UNA per le coppe
+    (l'elenco ammette poche competizioni per chiamata). which: 'campionati', 'coppe' o 'tutto'."""
     tour = ensure_tournaments(st)
     code_by_tid = {str(v): k for k, v in tour.items()}
-    data = api_get("/odds-by-tournaments", {"tournamentIds": ",".join(str(tour[c]) for c in LEAGUES_Q),
-                                            "bookmaker": "pinnacle"}, st, force=force)
-    horizon = now_utc() + timedelta(days=LOOKAHEAD_DAYS + 2)
-    n = 0
-    for fx in as_list(data):
+    groups = []
+    if which in ("campionati", "tutto"):
+        groups.append(("campionati", [c for c in LEAGUES_Q if c in tour]))
+    if which in ("coppe", "tutto"):
+        groups.append(("coppe", [c for c in CUPS_Q if c in tour]))
+    horizon = now_utc() + timedelta(days=days or LOOKAHEAD_DAYS + 2)
+    n, counts, errors, raw = 0, {}, [], {}
+    for label, codes in groups:
+        if not codes:
+            continue
         try:
-            fid = str(fx["fixtureId"])
-        except (KeyError, TypeError):
+            data = api_get("/odds-by-tournaments", {"tournamentIds": ",".join(str(tour[c]) for c in codes),
+                                                    "bookmaker": "pinnacle"}, st, force=force)
+        except QuotaExhausted:
+            raise
+        except Exception as e:      # noqa: BLE001
+            print(f"[WARN] elenco {label} non letto: {e}")
+            errors.append(e)
             continue
-        start = parse_time(fx.get("startTime"))
-        if not start or start > horizon:
-            continue
-        _SNAPSHOT[fid] = fx
-        rec = st["fixtures"].setdefault(fid, {})
-        rec.update(code=code_by_tid.get(str(fx.get("tournamentId")), rec.get("code", "")),
-                   p1=fx.get("participant1Id"), p2=fx.get("participant2Id"), start=start.isoformat())
-        n += 1
-    st["refresh_at"] = now_utc().isoformat(timespec="seconds")
+        for fx in as_list(data):
+            try:
+                fid = str(fx["fixtureId"])
+            except (KeyError, TypeError):
+                continue
+            tid = str(fx.get("tournamentId"))
+            raw[tid] = raw.get(tid, 0) + 1
+            start = parse_time(fx.get("startTime"))
+            code = code_by_tid.get(str(fx.get("tournamentId")), (st["fixtures"].get(fid) or {}).get("code", ""))
+            if not start or start > horizon or code not in codes:
+                continue
+            _SNAPSHOT[fid] = fx
+            rec = st["fixtures"].setdefault(fid, {})
+            rec.update(code=code, p1=fx.get("participant1Id"), p2=fx.get("participant2Id"), start=start.isoformat())
+            counts[code] = counts.get(code, 0) + 1
+            n += 1
+        if label == "campionati":
+            st["refresh_at"] = now_utc().isoformat(timespec="seconds")
+    if errors and len(errors) == len([g for g in groups if g[1]]):
+        raise errors[0]
     ensure_participants(st, {r.get("p1") for r in st["fixtures"].values()} | {r.get("p2") for r in st["fixtures"].values()})
-    print(f"Elenco partite aggiornato: {n} partite (chiamate del mese {st['calls']}/{MONTH_LIMIT})")
+    print(f"Elenco partite aggiornato ({which}): {n} partite {counts} (nell'elenco per id: {raw}; chiamate del mese "
+          f"{st['calls']}/{MONTH_LIMIT})")
     return n
 
 
@@ -1223,23 +1306,88 @@ def _similar(a: str, b: str) -> float:
     return inter / min(len(ta), len(tb))
 
 
-def find_fixture(st: dict, m: dict) -> str | None:
-    """Id OddsPapi della partita del calendario (stesso campionato e orario, nomi simili)."""
+def _name_sim(name: str, m: dict, side: str) -> float:
+    return max(_similar(name, m[side]), _similar(name, m[f"{side}_short"]))
+
+
+def find_fixture(st: dict, m: dict, strict: bool = False) -> str | None:
+    """Id OddsPapi della partita del calendario (stesso campionato e orario, nomi simili). Le partite delle coppe
+    ce l'hanno gia' (vengono dall'elenco OddsPapi). strict: solo se la scelta e' sicura (per imparare i nomi)."""
+    if m.get("fid"):
+        return m["fid"]
     pn = st["participants"]
     cands = []
     for fid, rec in st["fixtures"].items():
         start = parse_time(rec.get("start"))
         if rec.get("code") == m["code"] and start and abs((start - m["ko"]).total_seconds()) <= 25 * 60:
             n1, n2 = pn.get(str(rec.get("p1")), ""), pn.get(str(rec.get("p2")), "")
-            score = max(_similar(n1, m["home"]), _similar(n1, m["home_short"])) + \
-                max(_similar(n2, m["away"]), _similar(n2, m["away_short"]))
-            cands.append((score, fid))
+            cands.append((_name_sim(n1, m, "home") + _name_sim(n2, m, "away"), fid))
     if not cands:
         return None
     cands.sort(reverse=True)
+    if strict:
+        sure = cands[0][0] >= 1.0 and (len(cands) == 1 or cands[0][0] - cands[1][0] >= 0.5)
+        return cands[0][1] if sure else None
     if cands[0][0] > 0 or len(cands) == 1:
         return cands[0][1]
     return None
+
+
+def _jaccard(a: str, b: str) -> float:
+    ta, tb = _tokens(a), _tokens(b)
+    return len(ta & tb) / len(ta | tb) if ta and tb else 0.0
+
+
+def learn_teams(st: dict) -> None:
+    """Squadre dei 5 campionati imparate dall'elenco OddsPapi (nessuna chiamata): id -> campionato (il filtro delle
+    coppe) e id -> nome del calendario, preso dalle partite di campionato abbinate con sicurezza (cosi' nelle coppe
+    nomi italiani e hashtag sono gli stessi del campionato)."""
+    today = now_utc().astimezone(ROME).date().isoformat()
+    top5 = st.get("top5") if isinstance(st.get("top5"), dict) else {}
+    for rec in st["fixtures"].values():
+        if rec.get("code") in LEAGUES_Q:
+            for p in (rec.get("p1"), rec.get("p2")):
+                if p is not None:
+                    top5[str(p)] = [rec["code"], today]
+    fd = st.get("team_fd") if isinstance(st.get("team_fd"), dict) else {}
+    pn = st["participants"]
+    for m in calendar_matches(finished=True):
+        fid = find_fixture(st, m, strict=True)
+        rec = st["fixtures"].get(fid) if fid else None
+        if not rec or rec.get("p1") is None or rec.get("p2") is None:
+            continue
+        p1, p2 = str(rec["p1"]), str(rec["p2"])
+        n1, n2 = pn.get(p1, ""), pn.get(p2, "")
+        if _name_sim(n1, m, "away") + _name_sim(n2, m, "home") > _name_sim(n1, m, "home") + _name_sim(n2, m, "away"):
+            p1, p2 = p2, p1             # casa e trasferta invertite nell'elenco: si segue il calendario
+        fd[p1], fd[p2] = m["home"], m["away"]
+    limit = (now_utc() - timedelta(days=TOP5_KEEP_DAYS)).astimezone(ROME).date().isoformat()
+    st["top5"] = {k: v for k, v in top5.items() if isinstance(v, list) and len(v) == 2 and str(v[1]) >= limit}
+    st["team_fd"] = {k: v for k, v in fd.items() if k in st["top5"]}
+
+
+def fd_team_name(st: dict, pid: str) -> str:
+    """Nome del calendario di una squadra dei 5 campionati: quello imparato dalle partite di campionato o, se non
+    ancora, quello con le stesse parole del nome OddsPapi (solo se uno solo); '' se non si sa."""
+    known = (st.get("team_fd") or {}).get(pid)
+    if known:
+        return known
+    name = st["participants"].get(pid, "")
+    if not name:
+        return ""
+    hits = [k for k, v in HASHTAGS.items() if max(_jaccard(name, k), _jaccard(name, split_camel(v))) >= 0.99]
+    return hits[0] if len(hits) == 1 else ""
+
+
+def cup_team(st: dict, pid: str) -> tuple:
+    """Squadra di una partita di coppa: (nome, nome breve). Per quelle dei 5 campionati il nome del calendario, con
+    il nome italiano e l'hashtag del campionato; per le altre il nome OddsPapi."""
+    op = st["participants"].get(pid, "")
+    if pid in (st.get("top5") or {}):
+        fd = fd_team_name(st, pid)
+        if fd:
+            return fd, split_camel(HASHTAGS.get(fd, "")) or op or fd
+    return op, op
 
 
 def team_names(m: dict) -> dict:
@@ -1563,7 +1711,7 @@ def build_message(m: dict, names: dict, an: dict, base_at: datetime, first: bool
                   prefix: str = "") -> str:
     """Avviso a ridosso (una partita): segnali con la forza, tabellina, squadre, conferme, quando, lettura,
     colore per la riga Mercato, pronostico con la quota giusta."""
-    lg = LEAGUES_Q.get(m["code"], {"flag": ""})
+    lg = COMPS_Q.get(m["code"], {"flag": ""})
     rows = [f"{prefix}{lg['flag']} <b>{match_title(names)}</b> · {m['ko'].astimezone(ROME):%H:%M}"]
     rows += [signal_head(an, s, names) for s in an["shown"]]
     rows.append(fmt_table(names, an["a"], an["b"], an))
@@ -1616,10 +1764,13 @@ LEGEND_SHORT = ("<i>▼ quota scesa (più probabile) · ▲ salita · AH = handi
 
 LEGEND = ("📖 <b>Come leggere i messaggi delle quote</b>\n\n"
           "<b>Quando arrivano</b>\n"
-          f"• ore {RIEPILOGO_HOUR}: <b>riepilogo</b> delle partite di domani, un messaggio per campionato\n"
+          f"• ore {RIEPILOGO_HOUR}: <b>riepilogo</b> delle partite di domani, un messaggio per campionato o coppa\n"
           f"• {RIDOSSO_MINUTES} minuti prima della partita (formazioni uscite): solo se un movimento ha "
           f"<b>forza {FORZA_MIN_AVVISO}/10 o più</b>\n"
-          "• venerdì alle 15 (martedì se c'è il turno infrasettimanale): <b>apertura</b>, le quote di riferimento\n\n"
+          "• venerdì alle 15 (martedì se c'è il turno infrasettimanale): <b>apertura</b>, le quote di riferimento\n"
+          f"• lunedì alle 15: <b>apertura delle coppe</b> ({CUPS_Q['CL']['flag']} Champions, {CUPS_Q['EL']['flag']} "
+          f"Europa e {CUPS_Q['ECL']['flag']} Conference League"
+          + (": solo le partite con almeno una squadra dei 5 campionati" if CUPS_ONLY_TOP5 else "") + ")\n\n"
           "<b>Forza del segnale (1-10)</b>\n"
           "quanto si è mosso (linea asiatica o linea gol spostata = tanto) + quanti book sono d'accordo + se ha "
           "tenuto o è tornato indietro + se un altro mercato dice la stessa cosa\n"
@@ -1717,19 +1868,24 @@ def kickoff_groups(cal: list) -> list:
 
 
 def apertura_matches(cal: list, now: datetime) -> list:
-    """Partite che hanno come apertura le 15:00 di oggi (venerdi': weekend; martedi': turno infrasettimanale)."""
+    """Partite che hanno come apertura le 15:00 di oggi (venerdi': weekend; martedi': turno infrasettimanale;
+    lunedi': coppe)."""
     loc = now.astimezone(ROME)
     ap = datetime(loc.year, loc.month, loc.day, APERTURA_HOUR, tzinfo=ROME).astimezone(timezone.utc)
-    return [m for m in cal if m["ko"] > now and apertura_time(m["ko"]) == ap]
+    return [m for m in cal if m["ko"] > now and apertura_time(m["ko"], m["code"]) == ap]
 
 
 def due_apertura(st: dict, cal: list, now: datetime) -> str | None:
     loc = now.astimezone(ROME)
-    if loc.weekday() not in APERTURA_DAYS or not (APERTURA_HOUR <= loc.hour < APERTURA_HOUR + APERTURA_WINDOW_HOURS):
+    if not (APERTURA_HOUR <= loc.hour < APERTURA_HOUR + APERTURA_WINDOW_HOURS):
         return None
     key = f"A|{loc:%Y-%m-%d}T{APERTURA_HOUR:02d}"
-    if key in st["done"] or not apertura_matches(cal, now):
-        return None             # gia' fatto, o martedi' senza turno infrasettimanale
+    if key in st["done"]:
+        return None
+    if loc.weekday() == CUP_APERTURA_DAY:
+        return key              # coppe: l'elenco si legge comunque (le partite delle coppe arrivano da li')
+    if loc.weekday() not in APERTURA_DAYS or not apertura_matches(cal, now):
+        return None             # martedi' senza turno infrasettimanale
     return key
 
 
@@ -1773,29 +1929,59 @@ def due_ridosso(st: dict, cal: list, now: datetime):
 # =====================================================================
 # Azioni
 # =====================================================================
-def do_apertura(st: dict, topic: QuoteTopic, key: str | None, cal: list, force: bool = False) -> None:
-    n = refresh_fixtures(st, force=force)
+def do_apertura(st: dict, topic: QuoteTopic, key: str | None, cal: list, force: bool = False) -> list:
+    """Aggiorna l'elenco delle partite (lunedi' le coppe, martedi' e venerdi' i campionati, a mano tutto) e lo dice
+    con un messaggio breve. Se l'elenco non arriva si riprova al giro dopo (al massimo APERTURA_TRIES volte).
+    Ritorna il calendario aggiornato."""
+    now = now_utc()
+    cups_day = bool(key) and now.astimezone(ROME).weekday() == CUP_APERTURA_DAY
+    which = "coppe" if cups_day else "campionati" if key else "tutto"
+    try:
+        n = refresh_fixtures(st, force=force, which=which)
+    except QuotaExhausted:
+        raise
+    except Exception as e:      # noqa: BLE001
+        if not key:
+            raise
+        tries = st["ap_tries"] = {key: (st.get("ap_tries") or {}).get(key, 0) + 1}
+        print(f"[WARN] elenco partite non letto ({e}): tentativo {tries[key]} di {APERTURA_TRIES}")
+        if tries[key] >= APERTURA_TRIES:
+            st["done"].append(key)
+            topic.send(f"⚠️ Bot quote: elenco delle partite non aggiornato ({esc(str(e)[:150])}).")
+        return cal
+    st.pop("ap_tries", None)
     if key:
         st["done"].append(key)
-    now = now_utc()
+    learn_teams(st)
+    cal = calendar_matches(st)
     soon = apertura_matches(cal, now) if key else [m for m in cal if now < m["ko"] <= now + timedelta(days=4)]
     if not soon:
-        return
+        print("Apertura: nessuna partita da segnalare")
+        return cal
     per = {}
     for m in soon:
         per[m["code"]] = per.get(m["code"], 0) + 1
-    detail = " · ".join(f"{LEAGUES_Q[c]['flag']} {k}" for c, k in per.items())
+    detail = " · ".join(f"{COMPS_Q[c]['flag']} {per[c]}" for c in COMPS_Q if c in per)
     last = max(m["ko"] for m in soon)
-    head = (f"📸 <b>Apertura delle quote</b> ({when_text(now)}): riferimento fissato per {len(soon)} partite fino a "
-            f"{when_text(last).split()[0]}") if key else \
+    head = (f"📸 <b>Apertura {'delle coppe' if cups_day else 'delle quote'}</b> ({when_text(now)}): riferimento "
+            f"fissato per {len(soon)} partite fino a {when_text(last).split()[0]}") if key else \
         f"📸 <b>Elenco partite aggiornato a mano</b> ({when_text(now)}): {len(soon)} partite nei prossimi 4 giorni"
+    cups = ""
+    if CUPS_ONLY_TOP5 and any(m["code"] in CUPS_Q for m in soon):
+        cups = (f"Coppe: solo le partite con almeno una squadra dei 5 campionati "
+                f"({cup_matches(st, now, last)[1]} lasciate fuori) · ")
     topic.send(f"{head} · {detail}\n"
-               f"<i>Riepilogo alle {RIEPILOGO_HOUR} del giorno prima, avvisi {RIDOSSO_MINUTES} minuti prima solo da "
-               f"forza {FORZA_MIN_AVVISO}/10 · elenco OddsPapi {n} partite · chiamate usate {st['calls']}/"
+               f"<i>{cups}Riepilogo alle {RIEPILOGO_HOUR} del giorno prima, avvisi {RIDOSSO_MINUTES} minuti prima "
+               f"solo da forza {FORZA_MIN_AVVISO}/10 · elenco OddsPapi {n} partite · chiamate usate {st['calls']}/"
                f"{st.get('limit', MONTH_LIMIT)}</i>")
+    return cal
 
 
 def match_key(m: dict) -> str:
+    """Chiave di una partita (per non rifarla). Per le coppe con l'id OddsPapi: i nomi possono cambiare quando il bot
+    impara quelli italiani dalle partite di campionato."""
+    if m["code"] in CUPS_Q and m.get("fid"):
+        return f"M|{m['ko'].isoformat()[:16]}|{m['code']}|{m['fid']}"
     return f"M|{m['ko'].isoformat()[:16]}|{m['code']}|{m['home']}"
 
 
@@ -1825,7 +2011,8 @@ def add_sot(st: dict, fid: str, m: dict, R: dict, an: dict, force: bool = False)
         return an
     sot["tries"] = sot.get("tries", 0) + 1
     try:
-        R2 = read_history(st, fid, apertura_time(m["ko"]), at=R.get("at"), force=force, books=[SOT_BOOK])
+        R2 = read_history(st, fid, apertura_time(m["ko"], m["code"]), at=R.get("at"), force=force,
+                          books=[SOT_BOOK])
     except QuotaExhausted:
         raise
     except Exception as e:      # noqa: BLE001
@@ -1868,7 +2055,7 @@ def do_ridosso(st: dict, topic: QuoteTopic, key: str | None, group: dict | None,
             print(f"  {names['home']} - {names['away']}: non trovata su OddsPapi")
         else:
             try:
-                R = read_history(st, fid, apertura_time(m["ko"]), force=force)
+                R = read_history(st, fid, apertura_time(m["ko"], m["code"]), force=force)
                 checked += 1
             except QuotaExhausted:
                 raise
@@ -1911,7 +2098,7 @@ def riepilogo_messages(rows: list, header_day: str, preview: bool) -> list:
     common_base = max({r["base"] for r in found}, key=lambda b: sum(r["base"] == b for r in found)) if found else ""
     common_ref = max({r["ref"] for r in found}, key=lambda b: sum(r["ref"] == b for r in found)) if found else ""
     msgs = []
-    for code, lg in LEAGUES_Q.items():
+    for code, lg in COMPS_Q.items():
         lrows = sorted((r for r in rows if r["code"] == code), key=lambda r: r["ko"])
         if not lrows:
             continue
@@ -1962,7 +2149,7 @@ def do_riepilogo(st: dict, topic: QuoteTopic, key: str | None, matches: list, fo
         an, base_at, first = None, None, False
         if fid:
             try:
-                R = read_history(st, fid, apertura_time(m["ko"]), force=force)
+                R = read_history(st, fid, apertura_time(m["ko"], m["code"]), force=force)
                 an = analyze(R, m["ko"])
                 base_at, first = R["base_at"], R["first"]
                 done_now.append((m, names, an, base_at, first))
@@ -2048,23 +2235,62 @@ def describe(an: dict) -> str:
     return " | ".join(out) or "nessun movimento"
 
 
-def do_test(st: dict, topic: QuoteTopic, cal: list) -> None:
+def query_codes(query: str) -> set:
+    """Competizioni chieste per codice o nome (es. "CL", "Europa League", "coppe", "campionati"); vuoto = una squadra."""
+    q = norm(query)
+    if q in ("coppe", "coppa"):
+        return set(CUPS_Q)
+    if q in ("campionati", "campionato"):
+        return set(LEAGUES_Q)
+    return {c for c in COMPS_Q if q and (norm(c) == q or norm(COMPS_Q[c]["name"]) == q)}
+
+
+def filter_matches(matches: list, query: str) -> list:
+    """Partite di una squadra (es. "Roma") o di una competizione (SA, PL, PD, BL1, FL1, CL, EL, ECL, "coppe",
+    "campionati")."""
+    q = norm(query)
+    if not q:
+        return matches
+    codes = query_codes(query)
+    if codes:
+        return [m for m in matches if m["code"] in codes]
+    return [m for m in matches if any(q in norm(x) for x in (
+        m["home"], m["away"], m["home_short"], m["away_short"],
+        split_camel(HASHTAGS.get(m["home"], "")), split_camel(HASHTAGS.get(m["away"], ""))))]
+
+
+TEST_LOOKAHEAD_DAYS = 15        # prova: elenco partite fino a 15 giorni (per vedere anche le coppe della settimana dopo)
+
+
+def do_test(st: dict, topic: QuoteTopic, cal: list, query: str = "") -> None:
     """Prova: diagnostica nel registro, poi nel gruppo la legenda e un ESEMPIO di riepilogo e di avviso
-    sulle prossime partite (con la prima quota come riferimento se l'apertura non e' ancora arrivata)."""
+    sulle prossime partite (con la prima quota come riferimento se l'apertura non e' ancora arrivata).
+    Con 'query' le prossime partite di quella squadra o competizione (es. "CL", "coppe", "Roma")."""
     print("=== PROVA BOT QUOTE ===")
     print(f"Account: piano gratuito, chiamate usate {st['calls']}/{st.get('limit', MONTH_LIMIT)}")
-    refresh_fixtures(st, force=True)
+    refresh_fixtures(st, force=True, which="tutto", days=TEST_LOOKAHEAD_DAYS)
+    learn_teams(st)
+    cal = calendar_matches(st)
     meta = ensure_markets(st, force=st.get("markets_v") != MARKETS_VERSION)
     kinds = {}
     for v in meta.values():
         kinds[v[4] if len(v) > 4 else "main"] = kinds.get(v[4] if len(v) > 4 else "main", 0) + 1
     print("Mercati usati:", kinds)
-    day_m = next_day_matches(cal, now_utc())          # esempio: un solo campionato (il primo che gioca domani)
-    code = next((c for c in LEAGUES_Q if any(m["code"] == c for m in day_m)), None)
+    now = now_utc()
+    cups, skipped = cup_matches(st, now)
+    print(f"Squadre dei 5 campionati conosciute: {len(st.get('top5') or {})} (nomi del calendario: "
+          f"{len(st.get('team_fd') or {})}) · coppe in arrivo: {len(cups)} partite tenute, {skipped} lasciate fuori")
+    for m in cups[:40]:
+        names = team_names(m)
+        print(f"   {m['code']} {when_text(m['ko'])} {names['home']} - {names['away']} {' '.join('#' + t for t in names['tags'])}"
+              f" (apertura {when_text(apertura_time(m['ko'], m['code']))})")
+    day_m = next_day_matches(filter_matches(cal, query), now)     # esempio: una sola competizione
+    code = next((c for c in COMPS_Q if any(m["code"] == c for m in day_m)), None)
     matches = [m for m in day_m if m["code"] == code][:10]
     if not matches:
-        topic.send("🧪 Prova del bot quote: nessuna partita in arrivo nel calendario (per provare il formato sulle "
-                   "partite gia' giocate usa la modalita' «rivedi»).")
+        topic.send("🧪 Prova del bot quote: nessuna partita in arrivo nel calendario"
+                   f"{' per «' + esc(query) + '»' if query else ''} (per provare il formato sulle partite gia' "
+                   "giocate usa la modalita' «rivedi»).")
         return
     send_legend(st, topic, force=True)
     done = do_riepilogo(st, topic, None, matches, force=True, preview=True)
@@ -2111,7 +2337,9 @@ def finished_matches(st: dict, days: int = RIVEDI_DAYS) -> list:
             out.append(m)
     known = list(HASHTAGS)
 
-    def calendar_name(name: str) -> str:
+    def calendar_name(pid: str, name: str) -> str:
+        if fd_team_name(st, pid):
+            return fd_team_name(st, pid)
         best = max(known, key=lambda k: _similar(name, k), default=None)
         return best if best and _similar(name, best) >= 0.5 else name
 
@@ -2119,25 +2347,24 @@ def finished_matches(st: dict, days: int = RIVEDI_DAYS) -> list:
         ko = parse_time(rec.get("start"))
         if fid in used or rec.get("code") not in LEAGUES_Q or not ko or not (lo <= ko <= hi):
             continue
-        n1, n2 = st["participants"].get(str(rec.get("p1")), ""), st["participants"].get(str(rec.get("p2")), "")
+        p1, p2 = str(rec.get("p1")), str(rec.get("p2"))
+        n1, n2 = st["participants"].get(p1, ""), st["participants"].get(p2, "")
         if not n1 or not n2:
             continue
-        h, a = calendar_name(n1), calendar_name(n2)
+        h, a = calendar_name(p1, n1), calendar_name(p2, n2)
         out.append({"code": rec["code"], "home": h, "away": a, "ko": ko, "home_short": h, "away_short": a, "fid": fid})
+    out += cup_matches(st, lo, hi)[0]
     return sorted(out, key=lambda m: m["ko"])
 
 
 def do_rivedi(st: dict, topic: QuoteTopic, query: str = "") -> None:
     """Rilegge le partite gia' giocate come 40 minuti prima del fischio, con le regole di adesso (storico, gratis).
-    Con 'query' (es. "Roma") manda il messaggio di quelle partite; senza, il conto forti/medi/rumore e le
-    RIVEDI_TOP piu' forti come sarebbero arrivate."""
+    Con una squadra (es. "Roma") manda il messaggio di quelle partite; senza, o con una competizione (es. "CL",
+    "coppe"), il conto forti/medi/rumore e le RIVEDI_TOP piu' forti come sarebbero arrivate."""
     ensure_markets(st, force=st.get("markets_v") != MARKETS_VERSION)     # prova a mano: mercati nuovi subito
-    matches = finished_matches(st)
-    if query:
-        q = norm(query)
-        matches = [m for m in matches if any(q in norm(x) for x in (
-            m["home"], m["away"], m["home_short"], m["away_short"],
-            split_camel(HASHTAGS.get(m["home"], "")), split_camel(HASHTAGS.get(m["away"], ""))))]
+    learn_teams(st)
+    matches = filter_matches(finished_matches(st), query)
+    team_query = bool(query) and not query_codes(query)
     print(f"Rivedi: {len(matches)} partite da rileggere" + (f" con «{query}»" if query else ""))
     if not matches:
         topic.send(f"🧪 Rivedi: nessuna partita giocata negli ultimi {RIVEDI_DAYS} giorni"
@@ -2150,8 +2377,8 @@ def do_rivedi(st: dict, topic: QuoteTopic, query: str = "") -> None:
             break
         names = team_names(m)
         try:
-            R = read_history(st, m["fid"], apertura_time(m["ko"]), at=m["ko"] - timedelta(minutes=RIDOSSO_MINUTES),
-                             force=True)
+            R = read_history(st, m["fid"], apertura_time(m["ko"], m["code"]),
+                             at=m["ko"] - timedelta(minutes=RIDOSSO_MINUTES), force=True)
         except QuotaExhausted:
             raise
         except Exception as e:      # noqa: BLE001
@@ -2167,7 +2394,7 @@ def do_rivedi(st: dict, topic: QuoteTopic, query: str = "") -> None:
               f"mercati nello storico (tutti, usati) {_HIST_INFO}")
         if len(results) == 1:
             print(f"     id non usati nello storico: {_HIST_UNKNOWN}")
-        if query and an["ref"] in R["bh"]:
+        if team_query and an["ref"] in R["bh"]:
             h = R["bh"][an["ref"]]
             for lab, t in (("apertura", R["base_at"]), ("adesso", R["at"])):
                 print(f"     {an['ref']} {lab}: AH {h.ladder(t, 'spreads')}\n"
@@ -2176,13 +2403,14 @@ def do_rivedi(st: dict, topic: QuoteTopic, query: str = "") -> None:
         topic.send("🧪 Rivedi: storico delle quote non letto (riprova tra poco).")
         return
     send_legend(st, topic)
-    if query:
+    if team_query:
         chosen = results
     else:
         forti = sum(1 for r in results if r[2]["forza"] >= FORZA_FORTE)
         medi = sum(1 for r in results if FORZA_MIN_AVVISO <= r[2]["forza"] < FORZA_FORTE)
         chosen = sorted((r for r in results if r[2]["shown"]), key=lambda r: -r[2]["forza"])[:RIVEDI_TOP]
-        topic.send(f"🧪 <b>Rivedi</b>: {len(results)} partite giocate da {day_text(results[0][0]['ko'])} a "
+        topic.send(f"🧪 <b>Rivedi{' · ' + esc(query) if query else ''}</b>: {len(results)} partite giocate da "
+                   f"{day_text(results[0][0]['ko'])} a "
                    f"{day_text(results[-1][0]['ko'])}, rilette come {RIDOSSO_MINUTES} minuti prima con le regole "
                    f"nuove\nforti ({FORZA_FORTE}-10): <b>{forti}</b> · medie ({FORZA_MIN_AVVISO}-{FORZA_FORTE - 1}): "
                    f"<b>{medi}</b> · rumore (sotto {FORZA_MIN_AVVISO}, niente avviso): "
@@ -2194,7 +2422,7 @@ def do_rivedi(st: dict, topic: QuoteTopic, query: str = "") -> None:
             an = add_sot(st, m["fid"], m, R, an, force=True)
             text = build_message(m, names, an, R["base_at"], R["first"], "formazioni uscite", prefix="🧪 RIVEDI · ")
         else:
-            lg = LEAGUES_Q.get(m["code"], {"flag": ""})
+            lg = COMPS_Q.get(m["code"], {"flag": ""})
             text = "\n".join(r for r in (
                 f"🧪 RIVEDI · {lg['flag']} <b>{match_title(names)}</b> · {m['ko'].astimezone(ROME):%H:%M}",
                 f"⚪ Sotto la soglia: forza {an['forza']}/10, l'avviso non sarebbe arrivato",
@@ -2224,7 +2452,8 @@ def main() -> int:
     _START = time.monotonic()
     ap = argparse.ArgumentParser()
     ap.add_argument("--mode", default="auto", choices=["auto", "test", "ora", "apertura", "riepilogo", "rivedi"])
-    ap.add_argument("--partita", default="", help="per --mode rivedi: squadra da cercare (vuoto = tutta la settimana)")
+    ap.add_argument("--partita", default="", help="prove a mano: squadra (es. Roma) o competizione (es. CL, coppe); "
+                                                  "per rivedi vuoto = tutta la settimana")
     ap.add_argument("--muto", action="store_true", help="prove a mano: messaggi nel registro, non nel gruppo")
     args = ap.parse_args()
     MUTO = bool(args.muto) and args.mode != "auto"
@@ -2232,7 +2461,7 @@ def main() -> int:
         print("Bot quote: manca il secret ODDSPAPI_API_KEY, non faccio niente")
         return 0
     st = load_qstate()
-    cal = calendar_matches()
+    cal = calendar_matches(st)
     now = now_utc()
     key = rkey = group = skey = None
     smatches = []
@@ -2243,19 +2472,22 @@ def main() -> int:
         if not key and not rkey and not skey:
             print("Bot quote: niente da fare adesso")
             return 0
+    learn_teams(st)                     # squadre dei 5 campionati (filtro e nomi delle coppe): nessuna chiamata
+    cal = calendar_matches(st)
+    query = (args.partita or "").strip()
     topic = QuoteTopic(st)
     try:
         sync_calls(st)
         if args.mode == "test":
-            do_test(st, topic, cal)
+            do_test(st, topic, cal, query)
         elif args.mode == "apertura":
             do_apertura(st, topic, None, cal, force=True)
         elif args.mode == "ora":
-            do_ridosso(st, topic, None, None, cal, force=True)
+            do_ridosso(st, topic, None, None, filter_matches(cal, query), force=True)
         elif args.mode == "riepilogo":
-            do_riepilogo(st, topic, None, next_day_matches(cal, now), force=True)
+            do_riepilogo(st, topic, None, next_day_matches(filter_matches(cal, query), now), force=True)
         elif args.mode == "rivedi":
-            do_rivedi(st, topic, (args.partita or "").strip())
+            do_rivedi(st, topic, query)
         else:
             send_legend(st, topic)
             if rkey:                    # prima gli avvisi a ridosso (hanno l'orario piu' stretto)
@@ -2264,7 +2496,7 @@ def main() -> int:
                 do_ridosso(st, topic, rkey, group, cal)
             if key:
                 print(f"Bot quote: apertura ({key})")
-                do_apertura(st, topic, key, cal)
+                cal = do_apertura(st, topic, key, cal)
             if skey:
                 print(f"Bot quote: riepilogo ({skey}, {len(smatches)} partite)")
                 do_riepilogo(st, topic, skey, smatches)
