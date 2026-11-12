@@ -129,6 +129,7 @@ RIDOSSO_LATEST_MINUTES = 12     # in ritardo si fa fino a 12 minuti prima, poi s
 MERGE_MINUTES = 15              # orari d'inizio entro 15 minuti: un solo controllo
 REFRESH_MIN_HOURS = 6           # elenco partite riletto al massimo ogni 6 ore se manca una partita
 HIST_PAUSE = 5.3                # lo storico vuole 5 secondi tra una chiamata e l'altra
+API_PAUSE = 1.2                 # le altre: 1 secondo tra due chiamate allo stesso indirizzo (una rifiutata conta lo stesso)
 MONTH_LIMIT = 250               # chiamate al mese del piano gratuito
 MONTH_RESERVE = 12              # tenute da parte per le prove a mano
 RUN_BUDGET_SECONDS = 170        # tempo massimo per giro (il giro ogni 5 minuti deve poi controllare le notizie)
@@ -308,8 +309,8 @@ def api_get(path: str, params: dict, st: dict, counts: bool = True, force: bool 
         raise RuntimeError("manca il secret ODDSPAPI_API_KEY")
     if counts and not force and st["calls"] >= MONTH_LIMIT - MONTH_RESERVE:
         raise QuotaExhausted(f"chiamate del mese finite ({st['calls']}/{MONTH_LIMIT})")
-    if path == "/historical-odds" and path in _LAST_CALL:      # pausa obbligatoria tra due letture dello storico
-        wait = HIST_PAUSE - (time.monotonic() - _LAST_CALL[path])
+    if path in _LAST_CALL:          # pausa obbligatoria tra due chiamate allo stesso indirizzo
+        wait = (HIST_PAUSE if path == "/historical-odds" else API_PAUSE) - (time.monotonic() - _LAST_CALL[path])
         if wait > 0:
             time.sleep(wait)
     q = dict(params or {})
@@ -1379,15 +1380,30 @@ def fd_team_name(st: dict, pid: str) -> str:
     return hits[0] if len(hits) == 1 else ""
 
 
+_CLUB_TAGS = {"FC", "SK", "AC", "PFC", "GNK", "HNK", "NK", "FK", "SC", "CF", "AFC", "BK", "IF", "SV", "KV", "CFC",
+              "OFK", "PFK", "FF", "TC", "SL", "BSC", "KAA", "KRC", "RSC", "IK", "CS"}
+
+
+def club_name(name: str) -> str:
+    """Nome di una squadra straniera senza le sigle di societa' all'inizio o alla fine: 'SK Sturm Graz' -> 'Sturm Graz',
+    'Heart of Midlothian FC' -> 'Heart of Midlothian' (anche l'hashtag viene piu' pulito)."""
+    words = str(name or "").split()
+    while len(words) > 1 and words[0] in _CLUB_TAGS:
+        words = words[1:]
+    while len(words) > 1 and words[-1] in _CLUB_TAGS:
+        words = words[:-1]
+    return " ".join(words)
+
+
 def cup_team(st: dict, pid: str) -> tuple:
     """Squadra di una partita di coppa: (nome, nome breve). Per quelle dei 5 campionati il nome del calendario, con
-    il nome italiano e l'hashtag del campionato; per le altre il nome OddsPapi."""
+    il nome italiano e l'hashtag del campionato; per le altre il nome OddsPapi senza sigle (FC, SK...)."""
     op = st["participants"].get(pid, "")
     if pid in (st.get("top5") or {}):
         fd = fd_team_name(st, pid)
         if fd:
             return fd, split_camel(HASHTAGS.get(fd, "")) or op or fd
-    return op, op
+    return club_name(op), club_name(op)
 
 
 def team_names(m: dict) -> dict:
