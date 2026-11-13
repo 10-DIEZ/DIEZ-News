@@ -1790,8 +1790,11 @@ def chart_block(an: dict, names: dict, ko: datetime | None) -> list:
     q0, qend = 1.0 / pts[0], 1.0 / pts[-1]
     qx = 1.0 / ext if ext else qend
     total = abs(qx - q0)
+    lo_p, hi_p = min(v for _, v in series), max(v for _, v in series)
     if total < 0.015 and abs(qend - q0) < 0.015:
         parts.append("quota quasi ferma")
+    elif abs(qend - q0) < 0.015:
+        parts.append(f"su e giù tra {fmt_num(lo_p)} e {fmt_num(hi_p)}, adesso {fmt_num(pts[-1])} come all'apertura")
     else:
         sgn = 1 if qx > q0 else -1          # probabilita' su = quota giu'
         verb = "giù" if sgn > 0 else "su"
@@ -1810,12 +1813,17 @@ def chart_block(an: dict, names: dict, ko: datetime | None) -> list:
             _, b0, b1, v0, v1 = best
             piece = (f"{when_text(b0)}" + ("" if b1 - b0 < timedelta(minutes=20) else f"-{b1.astimezone(ROME):%H:%M}")
                      + f" ({fmt_num(v0)} → {fmt_num(v1)})")
-            t10 = next((t for t, v in series if (1.0 / v - q0) * sgn >= 0.1 * total), None)
+            share = best[0] / total
+            t20 = next((t for t, v in series if (1.0 / v - q0) * sgn >= 0.2 * total), None)
             t80 = next((t for t, v in series if (1.0 / v - q0) * sgn >= 0.8 * total), None)
-            if best[0] >= 0.6 * total or not t10 or not t80 or t80 - t10 <= timedelta(hours=3):
+            if share >= 0.75 or (t20 and t80 and t80 - t20 <= timedelta(hours=3)):
                 parts.append(f"{verb} di colpo {piece}")
+            elif share >= 0.4 or not t20 or not t80:
+                parts.append(f"{verb} soprattutto {piece}")
             else:
-                parts.append(f"{verb} piano piano da {when_text(t10)} a {when_text(t80)}, il pezzo più grosso {piece}")
+                parts.append(f"{verb} piano piano da {when_text(t20)} a {when_text(t80)}, il pezzo più grosso {piece}")
+            if not side and abs(qx - qend) >= 0.2 * total:
+                parts.append(f"poi torna a {fmt_num(pts[-1])}")
     if ko:
         t60 = ko - timedelta(minutes=FORMAZIONI_MINUTES)
         p60 = price(t60) if t0 < t60 < t1 else None
