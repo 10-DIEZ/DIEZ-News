@@ -1794,26 +1794,30 @@ def andamento(an: dict, s: dict, names: dict) -> list:
 
     def price(t):
         return sp["get"](h.snapshot(t, {"main"}, sp["mtypes"]))
+    ts = [t0 + (t1 - t0) * (i / SPARK_POINTS) for i in range(SPARK_POINTS + 1)]
     pts, last = [], None
-    for i in range(SPARK_POINTS + 1):
-        v = price(t0 + (t1 - t0) * (i / SPARK_POINTS)) or last
+    for t in ts:
+        v = price(t) or last
         pts.append(v)
         last = v
     first = next((v for v in pts if v), None)
     if not first:
         return []
     pts = [v or first for v in pts]
+    best, best_t = None, None              # punto estremo (piu' bassa se il segnale fa scendere la quota)
+    for t in [t0] + h.change_times({"main"}, t0, t1, sp["mtypes"]):
+        v = price(t)
+        if v and (best is None or (v < best if sp["falling"] else v > best)):
+            best, best_t = v, t
+    if best and t0 < best_t < t1 and (best < min(pts) - 0.005 if sp["falling"] else best > max(pts) + 0.005):
+        j = min(range(1, SPARK_POINTS), key=lambda i: abs((ts[i] - best_t).total_seconds()))
+        pts[j] = best                       # il punto estremo cade tra due barre: lo si fa vedere
     probs = [1.0 / v for v in pts]
     span = max(max(probs) - min(probs), SPARK_MIN_PTS / 100.0)
     lo = (max(probs) + min(probs) - span) / 2
     bars = "".join(SPARK[max(0, min(7, int(round((1 - (p - lo) / span) * 7))))] for p in probs)
     out = [f"📊 Andamento quota {sp['label']}: {fmt_num(pts[0])} {bars} {fmt_num(pts[-1])}"]
     if s.get("ratio", 1.0) < TENUTA_OK:
-        best, best_t = None, None
-        for t in [t0] + h.change_times({"main"}, t0, t1, sp["mtypes"]):
-            v = price(t)
-            if v and (best is None or (v < best if sp["falling"] else v > best)):
-                best, best_t = v, t
         how = "un po' indietro (forza −1)" if s["ratio"] >= TENUTA_MEZZA else "indietro per più di metà (forza −2)"
         beyond = best and (best <= min(pts[0], pts[-1]) - 0.01 if sp["falling"] else best >= max(pts[0], pts[-1]) + 0.01)
         if beyond:
