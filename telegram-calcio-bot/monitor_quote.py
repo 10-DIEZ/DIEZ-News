@@ -19,8 +19,10 @@ COSA FA
   tenuto o e' tornato indietro (0-2) + se un altro mercato dice la stessa cosa
   (0-1). Ti scrive SOLO da FORZA_MIN_AVVISO (4/10) in su: 7-10 forte, 4-6
   medio (da farsi domande), sotto 4 rumore.
-- Il messaggio: tabellina apertura/adesso (Pinnacle), SQUADRE (corner, gol e
-  tiri in porta di ogni squadra), CONFERME degli altri book, QUANDO si e' mosso
+- Il messaggio: tabellina apertura/adesso (Pinnacle), ANDAMENTO della quota in
+  barre (e ↩️ se e' tornata indietro di almeno un quinto dal suo punto estremo),
+  SQUADRE (corner, gol e tiri in porta di ogni squadra), CONFERME degli altri
+  book, QUANDO si e' mosso
   (chi per primo, cosa e' cambiato dopo le formazioni), LETTURA (cosa puo'
   voler dire, come domanda), colore per la riga "Mercato" della Direzione
   generale e pronostico dalle quote con la quota giusta (senza margine).
@@ -161,6 +163,10 @@ EVENT_PTS = 3.0                 # corner/gol/tiri di squadra con la linea ferma:
 FORMAZIONI_MINUTES = 60         # le formazioni ufficiali escono circa un'ora prima
 TENUTA_OK = 0.8                 # tenuta: adesso almeno l'80% del punto piu' alto = ha tenuto (2 punti)...
 TENUTA_MEZZA = 0.5              # ...almeno la meta' = e' tornato un po' indietro (1); meno = rientrato (0)
+
+SPARK = "▁▂▃▄▅▆▇█"             # andamento della quota: barra alta = quota alta
+SPARK_POINTS = 10               # la quota in 10 tratti uguali dall'apertura ad adesso (11 barre)
+SPARK_MIN_PTS = 4.0             # sotto 4 punti di probabilita' di differenza le barre restano quasi piatte
 
 TOPIC_NAME = "📈 Quote"
 TOPIC_COLOR = 9367192           # verde
@@ -1230,7 +1236,7 @@ def analyze(R: dict, ko: datetime | None = None, extra: dict | None = None) -> d
         sigs.append(sig)
     shown = [s for s in sigs if s["forza"] >= FORZA_MIN_AVVISO]
     fav = favourite(base)
-    an = {"ref": ref, "a": a, "b": b, "base": base, "now": now, "fav": fav, "sigs": sigs, "shown": shown,
+    an = {"R": R, "ref": ref, "a": a, "b": b, "base": base, "now": now, "fav": fav, "sigs": sigs, "shown": shown,
           "forza": max((s["forza"] for s in sigs), default=0), "events": events, "color": None, "team": None,
           "picks": [], "ko": ko, "at": at_eff, "timing": {}, "late": False}
     side = next((s for s in shown if s["fam"] == "side"), None)
@@ -1735,6 +1741,8 @@ def build_message(m: dict, names: dict, an: dict, base_at: datetime, first: bool
     rows = [f"{prefix}{lg['flag']} <b>{match_title(names)}</b> · {m['ko'].astimezone(ROME):%H:%M}"]
     rows += [signal_head(an, s, names) for s in an["shown"]]
     rows.append(fmt_table(names, an["a"], an["b"], an))
+    for s in an["shown"]:
+        rows += andamento(an, s, names)
     teams, tnote = fmt_teams(an, names)
     if teams:
         rows.append(teams)
@@ -1749,6 +1757,72 @@ def build_message(m: dict, names: dict, an: dict, base_at: datetime, first: bool
     rows.append(f"<i>{BOOK_LABEL.get(an['ref'], '')} · {base_label(base_at, first)} → adesso ({when_text(an['at'])})"
                 f"{', ' + note if note else ''}</i>")
     return "\n".join(r for r in rows if r)
+
+
+def signal_price(an: dict, s: dict, names: dict) -> dict | None:
+    """La quota che racconta un segnale: 1X2 della squadra del giudizio (calo: la sua quota scende; favorita in
+    salita: la sua quota sale), Over/Under sulla linea gol dell'apertura, GG/NG. {label, get, mtypes, falling}"""
+    fam, d = s["fam"], s["dir"]
+    if fam == "side":
+        team = an.get("team") or ("home" if d > 0 else "away")
+        idx = 0 if team == "home" else 2
+        return {"label": esc(names[team]), "mtypes": {"1x2"},
+                "falling": an.get("color") not in ("rosso", "rosso_forte"),
+                "get": lambda snap: (snap.get("x") or [None, None, None])[idx]}
+    if fam == "gol":
+        line = ((an["R"]["base"].get(s["ref"]) or {}).get("ou") or [None])[0]
+        if line is None:
+            return None
+        key, k = f"{line:g}", (0 if d > 0 else 1)
+        return {"label": f"{'Over' if d > 0 else 'Under'} {fmt_goal(line)}", "mtypes": {"totals"}, "falling": True,
+                "get": lambda snap: ((snap.get("lines") or {}).get(key) or [None, None])[k]}
+    k = 0 if d > 0 else 1
+    return {"label": "GG" if d > 0 else "NG", "mtypes": {"btts"}, "falling": True,
+            "get": lambda snap: (snap.get("gg") or [None, None])[k]}
+
+
+def andamento(an: dict, s: dict, names: dict) -> list:
+    """📊 Andamento della quota del segnale dall'apertura ad adesso, in barre (barra alta = quota alta, una barra per
+    ogni tratto di tempo uguale) e, se il movimento e' tornato indietro di almeno un quinto dal suo punto estremo
+    (la tenuta che toglie forza), la riga ↩️ con il punto estremo e quando."""
+    R = an.get("R") or {}
+    sp = signal_price(an, s, names) if R else None
+    h = (R.get("bh") or {}).get(s["ref"]) if R else None
+    t0, t1 = R.get("base_at"), R.get("at") or an.get("at") or now_utc()
+    if not sp or not h or not t0 or t1 <= t0:
+        return []
+
+    def price(t):
+        return sp["get"](h.snapshot(t, {"main"}, sp["mtypes"]))
+    pts, last = [], None
+    for i in range(SPARK_POINTS + 1):
+        v = price(t0 + (t1 - t0) * (i / SPARK_POINTS)) or last
+        pts.append(v)
+        last = v
+    first = next((v for v in pts if v), None)
+    if not first:
+        return []
+    pts = [v or first for v in pts]
+    probs = [1.0 / v for v in pts]
+    span = max(max(probs) - min(probs), SPARK_MIN_PTS / 100.0)
+    lo = (max(probs) + min(probs) - span) / 2
+    bars = "".join(SPARK[max(0, min(7, int(round((1 - (p - lo) / span) * 7))))] for p in probs)
+    out = [f"📊 Andamento quota {sp['label']}: {fmt_num(pts[0])} {bars} {fmt_num(pts[-1])}"]
+    if s.get("ratio", 1.0) < TENUTA_OK:
+        best, best_t = None, None
+        for t in [t0] + h.change_times({"main"}, t0, t1, sp["mtypes"]):
+            v = price(t)
+            if v and (best is None or (v < best if sp["falling"] else v > best)):
+                best, best_t = v, t
+        how = "un po' indietro (forza −1)" if s["ratio"] >= TENUTA_MEZZA else "indietro per più di metà (forza −2)"
+        beyond = best and (best <= min(pts[0], pts[-1]) - 0.01 if sp["falling"] else best >= max(pts[0], pts[-1]) + 0.01)
+        if beyond:
+            out.append(f"↩️ Era {'scesa' if sp['falling'] else 'salita'} fino a {fmt_num(best)} ({when_text(best_t)}), "
+                       f"adesso {fmt_num(pts[-1])}: è tornata {how}")
+        else:
+            peak = max(s.get("path") or [(None, {"meas": 0.0})], key=lambda it: it[1]["meas"] * s["dir"])[0]
+            out.append(f"↩️ Il movimento è tornato {how}" + (f" dal punto più alto ({when_text(peak)})" if peak else ""))
+    return out
 
 
 def riepilogo_row(m: dict, names: dict, an: dict | None) -> str:
@@ -1773,11 +1847,16 @@ def riepilogo_row(m: dict, names: dict, an: dict | None) -> str:
         bits.append("O2,5 " + fmt_num(ob[0]) + (arrow_p(novig(oa)[0], novig(ob)[0]) if oa else ""))
     if b.get("gg"):
         bits.append("GG " + fmt_num(b["gg"][0]) + (arrow_p(novig(a["gg"])[0], novig(b["gg"])[0]) if a.get("gg") else ""))
-    rows = [title, " · ".join(bits), judgement_short(an, names), picks_text(an, names, short=True)]
+    rows = [title, " · ".join(bits), judgement_short(an, names)]
+    if an["shown"]:
+        main = max(an["shown"], key=lambda s: (s["forza"], {"side": 2, "gol": 1, "gg": 0}[s["fam"]]))
+        rows += andamento(an, main, names)
+    rows.append(picks_text(an, names, short=True))
     return "\n".join(r for r in rows if r)
 
 
-LEGEND_SHORT = ("<i>▼ quota scesa (più probabile) · ▲ salita · AH = handicap della squadra di casa · forza 1-10: "
+LEGEND_SHORT = ("<i>▼ quota scesa (più probabile) · ▲ salita · AH = handicap della squadra di casa · 📊 andamento "
+                "della quota dall'apertura (barra alta = quota alta) · ↩️ tornata indietro · forza 1-10: "
                 f"da {FORZA_FORTE} forte, {FORZA_MIN_AVVISO}-{FORZA_FORTE - 1} medio, sotto {FORZA_MIN_AVVISO} "
                 "rumore · 🎯 pronostico solo dall'andamento delle quote, tra parentesi la probabilità di adesso e la "
                 "quota giusta (senza margine)</i>")
@@ -1802,6 +1881,10 @@ LEGEND = ("📖 <b>Come leggere i messaggi delle quote</b>\n\n"
           "▼ quota scesa = più probabile · ▲ quota salita · doppia freccia = movimento forte\n"
           "AH = handicap asiatico della squadra di casa (▼ = casa più favorita) · Linea gol (▲ = più gol attesi) · "
           "Over 2,5 · GG\n\n"
+          "📊 <b>Andamento</b>: la quota del segnale dall'apertura ad adesso, una barra per ogni tratto di tempo "
+          "uguale; barra alta = quota alta (▇▆▄▂▁ = la quota è scesa piano piano, ▇▇▇▇▁ = è scesa tutta alla fine)\n"
+          "↩️ <b>Tornata indietro</b>: era arrivata più in là e ha restituito almeno un quinto del movimento; c'è il "
+          "punto più basso (o più alto) e quando. Un po' indietro: forza −1 · più di metà: forza −2\n\n"
           "<b>Squadre</b>: la linea di adesso di corner, gol e tiri in porta di ogni squadra (Pinnacle; * = altro "
           "book, solo informazione) · ▲ = più eventi attesi · a→b = linea cambiata\n"
           "<b>Conferme</b>: come si sono mossi Pinnacle, Sbobet e Singbet, con le stesse frecce della tabella "

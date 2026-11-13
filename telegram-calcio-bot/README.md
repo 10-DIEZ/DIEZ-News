@@ -54,7 +54,8 @@ Conference League) con OddsPapi (piano gratuito, 250 chiamate al mese, secret
   coppa.
   Per ogni partita: una riga di quote (1X2, handicap asiatico, linea gol,
   Over 2,5, GG) con le frecce del movimento, il giudizio con la **forza** del
-  segnale (colore del foglio Mercato) e un 🎯 pronostico ricavato solo
+  segnale (colore del foglio Mercato), l'andamento della quota se c'è un
+  segnale da 4/10 e un 🎯 pronostico ricavato solo
   dall'andamento delle quote, con la probabilità di adesso e la quota giusta.
 - **Forza del segnale (1-10)** = 2 × ampiezza (1-5: punti di probabilità
   senza margine misurati sulla linea dell'apertura, così un cambio di linea
@@ -71,7 +72,11 @@ Conference League) con OddsPapi (piano gratuito, 250 chiamate al mese, secret
   messaggio ha: i segnali con la forza, la tabellina apertura/adesso
   (Pinnacle), **Squadre** (corner, gol e tiri in porta di ogni squadra; i
   tiri in porta da bet365, solo come informazione, se i 3 book non li
-  quotano), **Conferme** (come si sono mossi i 3 book, con le stesse frecce),
+  quotano), **📊 Andamento** (la quota del segnale dall'apertura ad adesso in
+  barre, una per ogni tratto di tempo uguale: barra alta = quota alta), **↩️**
+  quando la quota è tornata indietro di almeno un quinto dal suo punto più
+  basso o più alto (con quel punto e l'ora: forza −1, oltre metà −2),
+  **Conferme** (come si sono mossi i 3 book, con le stesse frecce),
   **Quando** (a che ora si è mosso, chi per primo, cosa è cambiato dopo le
   formazioni), **Lettura** (cosa può voler dire, come domanda), il colore da
   mettere nella riga «Mercato» della Direzione generale e il pronostico con la
