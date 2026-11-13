@@ -5,8 +5,8 @@ name: Prova bot quote
 #   ora       = controllo subito delle prossime partite (come quello di 40 minuti prima)
 #   apertura  = aggiorna subito l'elenco delle partite
 #   riepilogo = riepilogo subito delle partite di domani
-#   esempio   = prova grafica nel gruppo: un esempio di ogni messaggio con quote vere (legenda, apertura delle
-#               coppe, riepilogo con l'andamento, riepilogo di una coppa, avviso che tiene e avviso tornato indietro)
+#   esempio   = prova grafica nel gruppo con quote vere: legenda e tre avvisi di 40 minuti prima (calo che tiene,
+#               tornato indietro, solo gol); con "partita" = tutto anche apertura delle coppe e riepiloghi
 #   rivedi    = rilegge le partite gia' giocate (ultimi 8 giorni) come 40 minuti prima, con le regole di adesso:
 #               "partita" vuoto = conto forti/medi/rumore della settimana e le 3 piu' forti nel gruppo;
 #               "partita" con una squadra (es. Roma) = il messaggio di quella partita

@@ -69,18 +69,20 @@ Conference League) con OddsPapi (piano gratuito, 250 chiamate al mese, secret
 - **A ridosso**: 40 minuti prima di ogni orario d'inizio (formazioni già
   uscite) legge lo storico di ogni partita e confronta adesso con l'apertura.
   Arriva un messaggio **solo** se un movimento ha forza 4/10 o più. Il
-  messaggio ha: i segnali con la forza, la tabellina apertura/adesso
-  (Pinnacle), **Squadre** (corner, gol e tiri in porta di ogni squadra; i
-  tiri in porta da bet365, solo come informazione, se i 3 book non li
-  quotano), **📊 Andamento** (la quota del segnale dall'apertura ad adesso in
-  barre, una per ogni tratto di tempo uguale: barra alta = quota alta), **↩️**
-  quando la quota è tornata indietro di almeno un quinto dal suo punto più
-  basso o più alto (con quel punto e l'ora: forza −1, oltre metà −2),
-  **Conferme** (come si sono mossi i 3 book, con le stesse frecce),
-  **Quando** (a che ora si è mosso, chi per primo, cosa è cambiato dopo le
-  formazioni), **Lettura** (cosa può voler dire, come domanda), il colore da
-  mettere nella riga «Mercato» della Direzione generale e il pronostico con la
-  quota giusta.
+  messaggio ha, in quest'ordine: il segnale principale con la forza e quanti
+  book sono d'accordo (⚠️ se manca Pinnacle); una **tabella unica**
+  apertura/adesso (Pinnacle) con 1X2, asiatico, linea gol, Over 2,5, GG e,
+  sotto, corner, gol e tiri in porta di ogni squadra (* = da un altro book);
+  il **📊 grafico** della direzione della partita, cioè la quota della
+  favorita (o della squadra su cui si muove il mercato) dall'apertura ad
+  adesso in 22 barre a tempi uguali (barra alta = quota alta), con sotto **⏱**
+  quando si è mossa (di colpo o piano piano, con il pezzo più grosso e le
+  quote), cosa è successo dopo le formazioni e **↩️** se è tornata indietro
+  di almeno un quinto (fin dove era arrivata e quando: forza −1, oltre metà
+  −2); **Si muovono anche** (linea gol, GG, corner e gol di squadra con un
+  movimento forte, senza grafico); la **💡 lettura**, il colore da mettere
+  nella riga «Mercato» della Direzione generale e il pronostico con la quota
+  giusta.
 - **Pronostico dalle quote**: calo forte → segno secco, calo → doppia chance,
   quota della favorita in salita → doppia chance contro di lei e la sfavorita
   che segna (contro quota), linea gol su/giù → Over/Under, mercato Goal mosso
@@ -103,7 +105,9 @@ Conference League) con OddsPapi (piano gratuito, 250 chiamate al mese, secret
   rivedi = rilegge le partite già giocate negli ultimi 8 giorni come 40 minuti
   prima: con «partita» vuoto il conto forti/medi/rumore e le 3 più forti, con
   una squadra il messaggio di quella partita; esempio = prova grafica nel
-  gruppo, un esempio di ogni messaggio con quote vere). «partita» vale anche per test,
+  gruppo con quote vere, la legenda e tre avvisi: un calo che tiene, uno
+  tornato indietro e uno solo sui gol; con «partita» = tutto anche apertura
+  delle coppe e riepiloghi). «partita» vale anche per test,
   ora e riepilogo, e accetta una competizione: SA, PL, PD, BL1, FL1, CL, EL,
   ECL o «coppe» (con rivedi fa il conto di quella competizione).
 - Codice in `monitor_quote.py` (orari, soglie e book in cima al file), stato in
