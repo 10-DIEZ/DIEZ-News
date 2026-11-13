@@ -102,7 +102,8 @@ Conference League) con OddsPapi (piano gratuito, 250 chiamate al mese, secret
   apertura = aggiorna subito l'elenco, riepilogo = riepilogo subito di domani,
   rivedi = rilegge le partite già giocate negli ultimi 8 giorni come 40 minuti
   prima: con «partita» vuoto il conto forti/medi/rumore e le 3 più forti, con
-  una squadra il messaggio di quella partita). «partita» vale anche per test,
+  una squadra il messaggio di quella partita; esempio = prova grafica nel
+  gruppo, un esempio di ogni messaggio con quote vere). «partita» vale anche per test,
   ora e riepilogo, e accetta una competizione: SA, PL, PD, BL1, FL1, CL, EL,
   ECL o «coppe» (con rivedi fa il conto di quella competizione).
 - Codice in `monitor_quote.py` (orari, soglie e book in cima al file), stato in

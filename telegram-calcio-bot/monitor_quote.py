@@ -63,6 +63,7 @@ Uso: python monitor_quote.py                   giro normale
                                                rilegge le partite gia' giocate come 40 minuti prima:
                                                con --partita manda quelle partite; senza, il conto
                                                forti/medi/rumore della settimana e le 3 piu' forti
+     python monitor_quote.py --mode esempio    prova grafica nel gruppo: un esempio di ogni messaggio (quote vere)
      --partita con test, ora, riepilogo e rivedi: una squadra (es. Roma) o una competizione
      (SA, PL, PD, BL1, FL1, CL, EL, ECL, "coppe"); con una competizione rivedi fa il conto di quella
 """
@@ -2038,6 +2039,29 @@ def due_ridosso(st: dict, cal: list, now: datetime):
 # =====================================================================
 # Azioni
 # =====================================================================
+def apertura_text(st: dict, soon: list, when: datetime, n: int, kind: str) -> str:
+    """Messaggio d'apertura: kind 'coppe' (lunedi'), 'quote' (martedi' e venerdi') o 'mano' (elenco a mano)."""
+    per = {}
+    for m in soon:
+        per[m["code"]] = per.get(m["code"], 0) + 1
+    detail = " · ".join(f"{COMPS_Q[c]['flag']} {per[c]}" for c in COMPS_Q if c in per)
+    last = max(m["ko"] for m in soon)
+    if kind == "mano":
+        head = (f"📸 <b>Elenco partite aggiornato a mano</b> ({when_text(when)}): {len(soon)} partite nei prossimi "
+                f"4 giorni")
+    else:
+        head = (f"📸 <b>Apertura {'delle coppe' if kind == 'coppe' else 'delle quote'}</b> ({when_text(when)}): "
+                f"riferimento fissato per {len(soon)} partite fino a {when_text(last).split()[0]}")
+    cups, left = "", cup_matches(st, when, last)[1]
+    if left:
+        cups = (f"Coppe: solo le partite con almeno una squadra dei 5 campionati"
+                f"{'' if CUPS_ONLY_TOP5 else ' (preliminari)'}, {left} lasciate fuori · ")
+    return (f"{head} · {detail}\n"
+            f"<i>{cups}Riepilogo alle {RIEPILOGO_HOUR} del giorno prima, avvisi {RIDOSSO_MINUTES} minuti prima "
+            f"solo da forza {FORZA_MIN_AVVISO}/10 · elenco OddsPapi {n} partite · chiamate usate {st['calls']}/"
+            f"{st.get('limit', MONTH_LIMIT)}</i>")
+
+
 def do_apertura(st: dict, topic: QuoteTopic, key: str | None, cal: list, force: bool = False) -> list:
     """Aggiorna l'elenco delle partite (lunedi' le coppe, martedi' e venerdi' i campionati, a mano tutto) e lo dice
     con un messaggio breve. Se l'elenco non arriva si riprova al giro dopo (al massimo APERTURA_TRIES volte).
@@ -2067,22 +2091,7 @@ def do_apertura(st: dict, topic: QuoteTopic, key: str | None, cal: list, force: 
     if not soon:
         print("Apertura: nessuna partita da segnalare")
         return cal
-    per = {}
-    for m in soon:
-        per[m["code"]] = per.get(m["code"], 0) + 1
-    detail = " · ".join(f"{COMPS_Q[c]['flag']} {per[c]}" for c in COMPS_Q if c in per)
-    last = max(m["ko"] for m in soon)
-    head = (f"📸 <b>Apertura {'delle coppe' if cups_day else 'delle quote'}</b> ({when_text(now)}): riferimento "
-            f"fissato per {len(soon)} partite fino a {when_text(last).split()[0]}") if key else \
-        f"📸 <b>Elenco partite aggiornato a mano</b> ({when_text(now)}): {len(soon)} partite nei prossimi 4 giorni"
-    cups, left = "", cup_matches(st, now, last)[1]
-    if left:
-        cups = (f"Coppe: solo le partite con almeno una squadra dei 5 campionati"
-                f"{'' if CUPS_ONLY_TOP5 else ' (preliminari)'}, {left} lasciate fuori · ")
-    topic.send(f"{head} · {detail}\n"
-               f"<i>{cups}Riepilogo alle {RIEPILOGO_HOUR} del giorno prima, avvisi {RIDOSSO_MINUTES} minuti prima "
-               f"solo da forza {FORZA_MIN_AVVISO}/10 · elenco OddsPapi {n} partite · chiamate usate {st['calls']}/"
-               f"{st.get('limit', MONTH_LIMIT)}</i>")
+    topic.send(apertura_text(st, soon, now, n, "coppe" if cups_day else "quote" if key else "mano"))
     return cal
 
 
@@ -2573,6 +2582,68 @@ def do_rivedi(st: dict, topic: QuoteTopic, query: str = "") -> None:
                      f"partite lette, {len(chosen)} messaggi")
 
 
+def do_esempio(st: dict, topic: QuoteTopic) -> None:
+    """Prova grafica nel gruppo, con quote vere e nessuna chiamata (solo storico): la legenda, l'apertura della
+    prossima settimana di coppe, un riepilogo di Serie A con le partite gia' giocate rilette 40 minuti prima (cosi' si
+    vedono giudizi e andamento), il riepilogo vero della prossima giornata di coppa e due avvisi gia' giocati: uno
+    che ha tenuto e uno tornato indietro (↩️)."""
+    ensure_markets(st)
+    learn_teams(st)
+    now = now_utc()
+    pre = "🧪 <b>ESEMPIO</b> · "
+
+    def send(text):
+        topic.send(text)
+        time.sleep(SEND_DELAY_GROUP_SECONDS)
+    send("🧪 <b>Prova grafica del bot quote</b>: qui sotto un esempio di ogni messaggio, con quote vere (partite già "
+         "giocate rilette come 40 minuti prima e le prossime partite delle coppe). Sono solo esempi, non segnali.")
+    if not MUTO:
+        send_legend(st, topic, force=True)
+        time.sleep(SEND_DELAY_GROUP_SECONDS)
+    cups = [m for m in calendar_matches(st) if m["code"] in CUPS_Q and m["ko"] > now]
+    if cups:
+        ap = apertura_time(cups[0]["ko"], cups[0]["code"])
+        week = [m for m in cups if apertura_time(m["ko"], m["code"]) == ap]
+        last = max(m["ko"] for m in week)
+        send(pre + apertura_text(st, week, ap, len(week) + cup_matches(st, ap, last)[1], "coppe"))
+    played = finished_matches(st)
+    pick = [m for m in played if m["code"] == "SA"] or played
+    rows, reads = [], []
+    for m in pick[:12]:
+        names = team_names(m)
+        try:
+            R = read_history(st, m["fid"], apertura_time(m["ko"], m["code"]),
+                             at=m["ko"] - timedelta(minutes=RIDOSSO_MINUTES), force=True)
+        except QuotaExhausted:
+            raise
+        except Exception as e:      # noqa: BLE001
+            print(f"  {names['home']} - {names['away']}: storico non letto ({e})")
+            continue
+        an = analyze(R, m["ko"])
+        reads.append((m, names, an, R))
+        rows.append({"code": m["code"], "ko": m["ko"].isoformat(), "text": riepilogo_row(m, names, an),
+                     "base": base_label(R["base_at"], R["first"]) if an["b"] else "", "ref": an["ref"]})
+    if rows:
+        days = sorted({m["ko"].astimezone(ROME).date() for m, _, _, _ in reads})
+        dd = [day_text(datetime(d.year, d.month, d.day, 12, tzinfo=ROME)) for d in days]
+        label = ", ".join(dd[:-1]) + " e " + dd[-1] if len(dd) > 1 else dd[0]
+        for text in riepilogo_messages(rows, f"{label} (quote di 40 minuti prima)", True):
+            send(text)
+    if cups:
+        d0, c0 = cups[0]["ko"].astimezone(ROME).date(), cups[0]["code"]
+        do_riepilogo(st, topic, None, [m for m in cups if m["code"] == c0 and m["ko"].astimezone(ROME).date() == d0],
+                     force=True, preview=True)
+    shown = [x for x in reads if x[2]["shown"]]
+    for what, group in (("che ha tenuto", [x for x in shown if all(sg["ratio"] >= TENUTA_OK for sg in x[2]["shown"])]),
+                        ("tornato indietro", [x for x in shown if any(sg["ratio"] < TENUTA_OK
+                                                                      for sg in x[2]["shown"])])):
+        if group:
+            m, names, an, R = max(group, key=lambda x: x[2]["forza"])
+            send(build_message(m, names, an, R["base_at"], R["first"], "formazioni uscite",
+                               prefix=f"🧪 <b>ESEMPIO di avviso {what}</b> · "))
+    st["log"].append(f"{now_utc().isoformat(timespec='minutes')} esempio: {len(rows)} partite rilette")
+
+
 def cleanup(st: dict) -> None:
     limit = now_utc() - timedelta(days=KEEP_DAYS)
     st["fixtures"] = {k: v for k, v in st["fixtures"].items() if (parse_time(v.get("start")) or now_utc()) > limit}
@@ -2589,7 +2660,8 @@ def main() -> int:
     global _START, MUTO
     _START = time.monotonic()
     ap = argparse.ArgumentParser()
-    ap.add_argument("--mode", default="auto", choices=["auto", "test", "ora", "apertura", "riepilogo", "rivedi"])
+    ap.add_argument("--mode", default="auto",
+                    choices=["auto", "test", "ora", "apertura", "riepilogo", "rivedi", "esempio"])
     ap.add_argument("--partita", default="", help="prove a mano: squadra (es. Roma) o competizione (es. CL, coppe); "
                                                   "per rivedi vuoto = tutta la settimana")
     ap.add_argument("--muto", action="store_true", help="prove a mano: messaggi nel registro, non nel gruppo")
@@ -2626,6 +2698,8 @@ def main() -> int:
             do_riepilogo(st, topic, None, next_day_matches(filter_matches(cal, query), now), force=True)
         elif args.mode == "rivedi":
             do_rivedi(st, topic, query)
+        elif args.mode == "esempio":
+            do_esempio(st, topic)
         else:
             send_legend(st, topic)
             if rkey:                    # prima gli avvisi a ridosso (hanno l'orario piu' stretto)

@@ -5,6 +5,8 @@ name: Prova bot quote
 #   ora       = controllo subito delle prossime partite (come quello di 40 minuti prima)
 #   apertura  = aggiorna subito l'elenco delle partite
 #   riepilogo = riepilogo subito delle partite di domani
+#   esempio   = prova grafica nel gruppo: un esempio di ogni messaggio con quote vere (legenda, apertura delle
+#               coppe, riepilogo con l'andamento, riepilogo di una coppa, avviso che tiene e avviso tornato indietro)
 #   rivedi    = rilegge le partite gia' giocate (ultimi 8 giorni) come 40 minuti prima, con le regole di adesso:
 #               "partita" vuoto = conto forti/medi/rumore della settimana e le 3 piu' forti nel gruppo;
 #               "partita" con una squadra (es. Roma) = il messaggio di quella partita
@@ -16,11 +18,11 @@ on:
   workflow_dispatch:
     inputs:
       modo:
-        description: "test = prova completa · ora = controllo subito · apertura = elenco partite · riepilogo = riepilogo di domani · rivedi = partite gia' giocate"
+        description: "test = prova completa · ora = controllo subito · apertura = elenco partite · riepilogo = riepilogo di domani · rivedi = partite gia' giocate · esempio = prova grafica nel gruppo"
         required: true
         default: test
         type: choice
-        options: [test, ora, apertura, riepilogo, rivedi]
+        options: [test, ora, apertura, riepilogo, rivedi, esempio]
       partita:
         description: "squadra (es. Roma) o competizione (SA, PL, PD, BL1, FL1, CL, EL, ECL, coppe); per rivedi vuoto = tutta la settimana"
         required: false
