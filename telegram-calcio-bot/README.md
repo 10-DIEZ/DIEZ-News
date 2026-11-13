@@ -43,11 +43,13 @@ Conference League) con OddsPapi (piano gratuito, 250 chiamate al mese, secret
 - **Coppe europee** (⭐ Champions, 🟠 Europa e 🟢 Conference League): le
   partite arrivano dall'elenco OddsPapi, letto il **lunedì alle 15** con una
   chiamata a parte; il lunedì alle 15 è anche la loro apertura (dopo il turno
-  di campionato). Solo le partite con almeno una squadra dei 5 campionati
-  (`CUPS_ONLY_TOP5 = False` in cima a `monitor_quote.py` per averle tutte). Le
-  squadre dei 5 campionati hanno gli stessi nomi italiani e hashtag del
-  campionato: il bot li impara dalle partite di campionato, senza chiamate.
-  Riepilogo e avvisi come per i campionati, un messaggio per coppa.
+  di campionato). Tutte le partite; a luglio e agosto (preliminari, anche
+  80-90 partite il giovedì) solo quelle con almeno una squadra dei 5
+  campionati (`CUPS_ONLY_TOP5` e `CUPS_TOP5_MONTHS` in cima a
+  `monitor_quote.py`). Le squadre dei 5 campionati hanno gli stessi nomi
+  italiani e hashtag del campionato: il bot li impara dalle partite di
+  campionato, senza chiamate. Riepilogo e avvisi come per i campionati, un
+  messaggio per coppa.
 - **Riepilogo**: alle 19 le partite di domani, un messaggio per campionato o
   coppa.
   Per ogni partita: una riga di quote (1X2, handicap asiatico, linea gol,

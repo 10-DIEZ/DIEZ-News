@@ -30,9 +30,10 @@ COSA FA
 - COPPE (Champions, Europa e Conference League): le partite arrivano
   dall'elenco OddsPapi, letto il LUNEDI' alle 15 (una chiamata, a parte da
   quella dei campionati). Il lunedi' alle 15 e' anche la loro APERTURA (dopo il
-  turno di campionato). Con CUPS_ONLY_TOP5 solo le partite con almeno una
-  squadra dei 5 campionati; le squadre dei 5 campionati hanno gli stessi nomi
-  italiani e hashtag delle partite di campionato. Riepilogo e avvisi uguali.
+  turno di campionato). Tutte le partite, tranne a luglio e agosto
+  (preliminari): li' solo quelle con almeno una squadra dei 5 campionati
+  (CUPS_ONLY_TOP5 / CUPS_TOP5_MONTHS). Le squadre dei 5 campionati hanno gli
+  stessi nomi italiani e hashtag del campionato. Riepilogo e avvisi uguali.
 - Ogni partita controllata lascia i suoi numeri nello stato ("stats"): servono
   a tarare le soglie.
 - Tutto nell'argomento "📈 Quote" del gruppo (lo crea il bot).
@@ -116,7 +117,8 @@ CUPS_Q = {
             "names": ("uefa conference league", "uefa europa conference league"), "id": 34480},
 }
 COMPS_Q = {**LEAGUES_Q, **CUPS_Q}
-CUPS_ONLY_TOP5 = True           # coppe: solo le partite con almeno una squadra dei 5 campionati (False = tutte)
+CUPS_ONLY_TOP5 = False          # coppe: True = solo le partite con almeno una squadra dei 5 campionati; False = tutte...
+CUPS_TOP5_MONTHS = (7, 8)       # ...ma a luglio e agosto (preliminari: anche 80-90 partite il giovedi') solo quelle
 CUP_APERTURA_DAY = 0            # coppe: quote di riferimento del lunedi' alle 15:00 (dopo il turno di campionato)
 TOP5_KEEP_DAYS = 120            # squadre dei 5 campionati ricordate (per il filtro delle coppe) fino a 120 giorni
 
@@ -257,7 +259,8 @@ def calendar_matches(st: dict | None = None, finished: bool = False) -> list:
 
 def cup_matches(st: dict, lo: datetime | None = None, hi: datetime | None = None) -> tuple:
     """Partite delle coppe dall'elenco OddsPapi tenuto nello stato: (partite, quante lasciate fuori dal filtro).
-    Con CUPS_ONLY_TOP5 solo quelle con almeno una squadra dei 5 campionati."""
+    Tutte; solo quelle con almeno una squadra dei 5 campionati con CUPS_ONLY_TOP5 o nei mesi CUPS_TOP5_MONTHS
+    (preliminari d'estate)."""
     top5 = st.get("top5") or {}
     out, skipped = [], 0
     for fid, rec in st["fixtures"].items():
@@ -267,7 +270,8 @@ def cup_matches(st: dict, lo: datetime | None = None, hi: datetime | None = None
         if not ko or (lo and ko < lo) or (hi and ko > hi):
             continue
         p1, p2 = str(rec.get("p1")), str(rec.get("p2"))
-        if CUPS_ONLY_TOP5 and p1 not in top5 and p2 not in top5:
+        only5 = CUPS_ONLY_TOP5 or ko.astimezone(ROME).month in CUPS_TOP5_MONTHS
+        if only5 and p1 not in top5 and p2 not in top5:
             skipped += 1
             continue
         (h, hs), (a, as_) = cup_team(st, p1), cup_team(st, p2)
@@ -1786,7 +1790,9 @@ LEGEND = ("📖 <b>Come leggere i messaggi delle quote</b>\n\n"
           "• venerdì alle 15 (martedì se c'è il turno infrasettimanale): <b>apertura</b>, le quote di riferimento\n"
           f"• lunedì alle 15: <b>apertura delle coppe</b> ({CUPS_Q['CL']['flag']} Champions, {CUPS_Q['EL']['flag']} "
           f"Europa e {CUPS_Q['ECL']['flag']} Conference League"
-          + (": solo le partite con almeno una squadra dei 5 campionati" if CUPS_ONLY_TOP5 else "") + ")\n\n"
+          + (": solo le partite con almeno una squadra dei 5 campionati" if CUPS_ONLY_TOP5 else
+             ": tutte le partite; a luglio e agosto, nei preliminari, solo quelle con squadre dei 5 campionati")
+          + ")\n\n"
           "<b>Forza del segnale (1-10)</b>\n"
           "quanto si è mosso (linea asiatica o linea gol spostata = tanto) + quanti book sono d'accordo + se ha "
           "tenuto o è tornato indietro + se un altro mercato dice la stessa cosa\n"
@@ -1982,10 +1988,10 @@ def do_apertura(st: dict, topic: QuoteTopic, key: str | None, cal: list, force: 
     head = (f"📸 <b>Apertura {'delle coppe' if cups_day else 'delle quote'}</b> ({when_text(now)}): riferimento "
             f"fissato per {len(soon)} partite fino a {when_text(last).split()[0]}") if key else \
         f"📸 <b>Elenco partite aggiornato a mano</b> ({when_text(now)}): {len(soon)} partite nei prossimi 4 giorni"
-    cups = ""
-    if CUPS_ONLY_TOP5 and any(m["code"] in CUPS_Q for m in soon):
-        cups = (f"Coppe: solo le partite con almeno una squadra dei 5 campionati "
-                f"({cup_matches(st, now, last)[1]} lasciate fuori) · ")
+    cups, left = "", cup_matches(st, now, last)[1]
+    if left:
+        cups = (f"Coppe: solo le partite con almeno una squadra dei 5 campionati"
+                f"{'' if CUPS_ONLY_TOP5 else ' (preliminari)'}, {left} lasciate fuori · ")
     topic.send(f"{head} · {detail}\n"
                f"<i>{cups}Riepilogo alle {RIEPILOGO_HOUR} del giorno prima, avvisi {RIDOSSO_MINUTES} minuti prima "
                f"solo da forza {FORZA_MIN_AVVISO}/10 · elenco OddsPapi {n} partite · chiamate usate {st['calls']}/"
@@ -2278,6 +2284,33 @@ def filter_matches(matches: list, query: str) -> list:
 TEST_LOOKAHEAD_DAYS = 15        # prova: elenco partite fino a 15 giorni (per vedere anche le coppe della settimana dopo)
 
 
+def path_text(R: dict, s: dict, ko: datetime) -> str:
+    """Per il registro (rivedi di una squadra): come si e' mosso un segnale dall'apertura (punti di probabilita'
+    verso la sua direzione), nei momenti in cui cambia di almeno 1 punto o di linea, con il punto piu' alto e il
+    valore alle 19 del giorno prima (l'ora del riepilogo)."""
+    pth, d, h = s.get("path") or [], s["dir"], R["bh"].get(s["ref"])
+    if not pth or not h:
+        return "-"
+    steps, last = [], None
+    for t, mv in pth:
+        v = mv["meas"] * d
+        if last is None or abs(v - last[0]) >= 1.0 or abs(mv["dline"] - last[1]) > 1e-9:
+            steps.append(f"{when_text(t)} {v:+.1f}" + (f" (linea {mv['dline']:+g})" if abs(mv["dline"]) > 1e-9 else ""))
+            last = (v, mv["dline"])
+    if len(steps) > 14:
+        steps = steps[:7] + ["..."] + steps[-7:]
+    peak_t, peak = max(((t, mv["meas"] * d) for t, mv in pth), key=lambda it: it[1])
+    rie = (ko.astimezone(ROME) - timedelta(days=1)).replace(hour=RIEPILOGO_HOUR, minute=0, second=0, microsecond=0)
+    before = [mv["meas"] * d for t, mv in pth if t <= rie]
+
+    def x_at(t):
+        x = h.snapshot(t, {"main"}).get("x")
+        return "/".join(fmt_num(v) for v in x) if x else "-"
+    return (f"{' → '.join(steps)} | alle {RIEPILOGO_HOUR} del giorno prima {(before[-1] if before else 0.0):+.1f} "
+            f"(1X2 {x_at(rie)}) | massimo {peak:+.1f} {when_text(peak_t)} (1X2 {x_at(peak_t)}) | adesso "
+            f"{pth[-1][1]['meas'] * d:+.1f} (tenuta {s['ratio']:.2f})")
+
+
 def do_test(st: dict, topic: QuoteTopic, cal: list, query: str = "") -> None:
     """Prova: diagnostica nel registro, poi nel gruppo la legenda e un ESEMPIO di riepilogo e di avviso
     sulle prossime partite (con la prima quota come riferimento se l'apertura non e' ancora arrivata).
@@ -2406,7 +2439,7 @@ def do_rivedi(st: dict, topic: QuoteTopic, query: str = "") -> None:
         a, b = an["a"], an["b"]
         print(f"  {names['home']} - {names['away']} ({when_text(m['ko'])}): forza {an['forza']} · {describe(an)}\n"
               f"     {an['ref']}: 1X2 {a.get('x')} -> {b.get('x')} | AH {a.get('ah')} -> {b.get('ah')} | gol "
-              f"{a.get('ou')} -> {b.get('ou')} | squadre { {g: sorted(r) for g, r in an['events'].items()} } | "
+              f"{a.get('ou')} -> {b.get('ou')} | squadre { {g: r.get('src') for g, r in an['events'].items()} } | "
               f"mercati nello storico (tutti, usati) {_HIST_INFO}")
         if len(results) == 1:
             print(f"     id non usati nello storico: {_HIST_UNKNOWN}")
@@ -2415,6 +2448,8 @@ def do_rivedi(st: dict, topic: QuoteTopic, query: str = "") -> None:
             for lab, t in (("apertura", R["base_at"]), ("adesso", R["at"])):
                 print(f"     {an['ref']} {lab}: AH {h.ladder(t, 'spreads')}\n"
                       f"     {an['ref']} {lab}: gol {h.ladder(t, 'totals')}")
+            for sg in an["sigs"]:
+                print(f"     andamento {sg['fam']} ({sg['ref']}): {path_text(R, sg, m['ko'])}")
     if not results:
         topic.send("🧪 Rivedi: storico delle quote non letto (riprova tra poco).")
         return
