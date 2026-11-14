@@ -1,5 +1,33 @@
 {
-  "fixtures": [],
+  "fixtures": [
+    {
+      "competition": "BL1",
+      "league": "Bundesliga",
+      "flag": "🇩🇪",
+      "home": "FC Bayern München",
+      "away": "1. FC Köln",
+      "kickoff": "2026-11-20T19:30:00Z",
+      "status": "TIMED"
+    },
+    {
+      "competition": "FL1",
+      "league": "Ligue 1",
+      "flag": "🇫🇷",
+      "home": "ES Troyes AC",
+      "away": "Le Havre AC",
+      "kickoff": "2026-11-20T19:45:00Z",
+      "status": "TIMED"
+    },
+    {
+      "competition": "PD",
+      "league": "La Liga",
+      "flag": "🇪🇸",
+      "home": "Athletic Club",
+      "away": "RCD Espanyol de Barcelona",
+      "kickoff": "2026-11-20T20:00:00Z",
+      "status": "TIMED"
+    }
+  ],
   "teams": [
     {
       "name": "AC Milan",
