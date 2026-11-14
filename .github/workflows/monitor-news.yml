@@ -69,6 +69,7 @@ jobs:
           git config user.email "calcio-bot@users.noreply.github.com"
           STATE=telegram-calcio-bot/state/state.json
           QUOTE=telegram-calcio-bot/state/quote_state.json
+          PACE=telegram-calcio-bot/state/mercato.csv
           cp "$STATE" "$RUNNER_TEMP/state.json"
           # stato del bot quote: si salva solo se in questo giro e' cambiato
           # (cosi' non si cancella quello salvato nel frattempo dalla "Prova bot quote")
@@ -76,6 +77,12 @@ jobs:
           if [ -f "$QUOTE" ] && { ! git ls-files --error-unmatch "$QUOTE" >/dev/null 2>&1 || ! git diff --quiet -- "$QUOTE"; }; then
             cp "$QUOTE" "$RUNNER_TEMP/quote_state.json"
             SAVE_QUOTE=1
+          fi
+          # file del bot quote per i Pace Index (mercato.csv): come sopra, solo se e' cambiato
+          SAVE_PACE=0
+          if [ -f "$PACE" ] && { ! git ls-files --error-unmatch "$PACE" >/dev/null 2>&1 || ! git diff --quiet -- "$PACE"; }; then
+            cp "$PACE" "$RUNNER_TEMP/mercato.csv"
+            SAVE_PACE=1
           fi
           # I giri non si sovrappongono mai (vedi "concurrency"), quindi lo stato
           # appena calcolato e' quello giusto: si riparte dall'ultima versione di
@@ -89,6 +96,10 @@ jobs:
             if [ "$SAVE_QUOTE" = 1 ]; then
               cp "$RUNNER_TEMP/quote_state.json" "$QUOTE"
               git add "$QUOTE"
+            fi
+            if [ "$SAVE_PACE" = 1 ]; then
+              cp "$RUNNER_TEMP/mercato.csv" "$PACE"
+              git add "$PACE"
             fi
             if git diff --staged --quiet; then
               echo "Stato invariato, niente da salvare."

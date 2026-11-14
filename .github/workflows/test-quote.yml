@@ -4,9 +4,10 @@ name: Prova bot quote
 #   test      = prova completa (legenda + esempio di riepilogo e di avviso nel gruppo)
 #   ora       = controllo subito delle prossime partite (come quello di 40 minuti prima)
 #   apertura  = aggiorna subito l'elenco delle partite
-#   riepilogo = riepilogo subito delle partite di domani
-#   esempio   = prova grafica nel gruppo con quote vere: legenda e tre avvisi di 40 minuti prima (calo che tiene,
-#               tornato indietro, solo gol); con "partita" = tutto anche apertura delle coppe e riepiloghi
+#   riepilogo = riepilogo subito delle partite di domani (quello automatico delle 19 e' spento)
+#   esempio   = prova grafica nel gruppo con quote vere: legenda, tre avvisi di 40 minuti prima (calo che tiene,
+#               tornato indietro, solo gol), un esempio degli ultimi minuti e la riga «Non controllate»;
+#               con "partita" = tutto anche apertura delle coppe e riepiloghi
 #   rivedi    = rilegge le partite gia' giocate (ultimi 8 giorni) come 40 minuti prima, con le regole di adesso:
 #               "partita" vuoto = conto forti/medi/rumore della settimana e le 3 piu' forti nel gruppo;
 #               "partita" con una squadra (es. Roma) = il messaggio di quella partita
@@ -81,13 +82,24 @@ jobs:
           git config user.name "calcio-bot"
           git config user.email "calcio-bot@users.noreply.github.com"
           FILE=telegram-calcio-bot/state/quote_state.json
+          PACE=telegram-calcio-bot/state/mercato.csv
           [ -f "$FILE" ] || { echo "Niente da salvare."; exit 0; }
           cp "$FILE" "$RUNNER_TEMP/quote_state.json"
+          # file per i Pace Index (mercato.csv): solo se questa prova l'ha cambiato (modo "ora")
+          SAVE_PACE=0
+          if [ -f "$PACE" ] && { ! git ls-files --error-unmatch "$PACE" >/dev/null 2>&1 || ! git diff --quiet -- "$PACE"; }; then
+            cp "$PACE" "$RUNNER_TEMP/mercato.csv"
+            SAVE_PACE=1
+          fi
           for i in 1 2 3 4 5; do
             git fetch --quiet origin +refs/heads/main:refs/remotes/origin/main
             git reset --quiet --hard refs/remotes/origin/main
             cp "$RUNNER_TEMP/quote_state.json" "$FILE"
             git add "$FILE"
+            if [ "$SAVE_PACE" = 1 ]; then
+              cp "$RUNNER_TEMP/mercato.csv" "$PACE"
+              git add "$PACE"
+            fi
             if git diff --staged --quiet; then
               echo "Stato invariato, niente da salvare."
               exit 0

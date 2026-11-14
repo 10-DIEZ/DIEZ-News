@@ -48,15 +48,12 @@ Conference League) con OddsPapi (piano gratuito, 250 chiamate al mese, secret
   campionati (`CUPS_ONLY_TOP5` e `CUPS_TOP5_MONTHS` in cima a
   `monitor_quote.py`). Le squadre dei 5 campionati hanno gli stessi nomi
   italiani e hashtag del campionato: il bot li impara dalle partite di
-  campionato, senza chiamate. Riepilogo e avvisi come per i campionati, un
-  messaggio per coppa.
-- **Riepilogo**: alle 19 le partite di domani, un messaggio per campionato o
-  coppa.
-  Per ogni partita: una riga di quote (1X2, handicap asiatico, linea gol,
-  Over 2,5, GG) con le frecce del movimento, il giudizio con la **forza** del
-  segnale (colore del foglio Mercato), l'andamento della quota se c'è un
-  segnale da 4/10 e un 🎯 pronostico ricavato solo
-  dall'andamento delle quote, con la probabilità di adesso e la quota giusta.
+  campionato, senza chiamate. L'elenco viene **riletto alle 11** nei giorni con
+  partite di coppa nelle 36 ore dopo (martedì, mercoledì, giovedì: una
+  chiamata, nessun messaggio): così entrano le partite che Pinnacle pubblica
+  dopo il lunedì e gli orari cambiati.
+- **Riepilogo delle 19**: spento dal 14/11/2026 (`RIEPILOGO_AUTO` in cima a
+  `monitor_quote.py`). A mano resta: «Prova bot quote» → riepilogo.
 - **Forza del segnale (1-10)** = 2 × ampiezza (1-5: punti di probabilità
   senza margine misurati sulla linea dell'apertura, così un cambio di linea
   "di confine" non conta come un movimento grande; asiatico 3 / 4,5 / 6 / 8 /
@@ -68,21 +65,43 @@ Conference League) con OddsPapi (piano gratuito, 250 chiamate al mese, secret
   `LEV_GOL`, `LEV_GG`).
 - **A ridosso**: 40 minuti prima di ogni orario d'inizio (formazioni già
   uscite) legge lo storico di ogni partita e confronta adesso con l'apertura.
-  Arriva un messaggio **solo** se un movimento ha forza 4/10 o più. Il
+  Arriva un messaggio **solo** se un movimento ha forza 4/10 o più; per
+  🟠 Europa e 🟢 Conference League, nelle sere in cui insieme hanno più di 8
+  partite, **solo da 6/10** (`CUP_BUSY_MATCHES`, `FORZA_MIN_BUSY`). Gli avvisi
+  della stessa ora partono **dal più forte**. Il
   messaggio ha, in quest'ordine: il segnale principale con la forza e quanti
   book sono d'accordo (⚠️ se manca Pinnacle); una **tabella unica**
   apertura/adesso (Pinnacle) con 1X2, asiatico, linea gol, Over 2,5, GG e,
-  sotto, corner, gol e tiri in porta di ogni squadra (* = da un altro book);
+  sotto, **gol attesi** e **corner attesi** di ogni squadra (quanti se ne
+  aspetta il mercato: ricavati da linea e quote dei gol e dei corner di
+  squadra; se i gol di squadra non sono quotati, da linea gol e 1X2; * = da un
+  altro book) e i tiri in porta se quotati;
   il **📊 grafico** della direzione della partita, cioè la quota della
   favorita (o della squadra su cui si muove il mercato) dall'apertura ad
   adesso in 22 barre a tempi uguali (barra alta = quota alta), con sotto **⏱**
   quando si è mossa (di colpo o piano piano, con il pezzo più grosso e le
   quote), cosa è successo dopo le formazioni e **↩️** se è tornata indietro
   di almeno un quinto (fin dove era arrivata e quando: forza −1, oltre metà
-  −2); **Si muovono anche** (linea gol, GG, corner e gol di squadra con un
-  movimento forte, senza grafico); la **💡 lettura**, il colore da mettere
+  −2); **Si muovono anche** (linea gol, GG, gol e corner attesi che si sono
+  mossi, senza grafico); la **💡 lettura**, il colore da mettere
   nella riga «Mercato» della Direzione generale e il pronostico con la quota
   giusta.
+- **Ultimi minuti**: da 12 a 3 minuti prima del fischio il bot rilegge le
+  partite e scrive **solo per i casi forti**: 🚨 un movimento da 7/10 in su
+  nato dopo il controllo dei 40 minuti (misurato solo su quel tratto) oppure
+  ⚠️ **ribaltone**, cioè un segnale forte già mandato che dall'apertura non
+  arriva più a 4/10. Tabellina «ora del controllo / adesso», come sta
+  dall'apertura e il colore aggiornato per la riga «Mercato».
+- **Non controllate**: se una partita non è nell'elenco di OddsPapi, o le sue
+  quote non si riescono a leggere entro 12 minuti dal fischio, il bot lo
+  scrive. Così il silenzio vuol dire davvero «nessun segnale».
+- **File per i Pace Index**: `state/mercato.csv`, una riga per partita
+  controllata (separatore `;`, numeri con il punto): competizione, data, ora,
+  squadre, quando (40 minuti, 10 minuti, a mano), forza, avviso SI/NO, colore
+  per la riga «Mercato» e a quale squadra si riferisce, verso e forza di
+  segno / gol / GG, quote 1X2, asiatico e linea gol di apertura e di adesso,
+  gol e corner attesi di apertura e di adesso. Tiene le partite degli ultimi
+  10 giorni. I file Excel lo leggono con Power Query.
 - **Pronostico dalle quote**: calo forte → segno secco, calo → doppia chance,
   quota della favorita in salita → doppia chance contro di lei e la sfavorita
   che segna (contro quota), linea gol su/giù → Over/Under, mercato Goal mosso
@@ -93,8 +112,9 @@ Conference League) con OddsPapi (piano gratuito, 250 chiamate al mese, secret
 - **Consumo**: lo storico delle quote non conta nelle 250 chiamate (verificato
   sul contatore dell'account); contano solo gli aggiornamenti dell'elenco
   partite (venerdì i campionati, lunedì le coppe, il martedì se c'è il turno
-  infrasettimanale), i nomi delle squadre nuove e l'elenco dei mercati (una
-  volta al mese): circa 15-30 chiamate al mese. Il contatore si allinea a
+  infrasettimanale, le riletture delle coppe: fino a 3 per settimana di
+  coppe), i nomi delle squadre nuove e l'elenco dei mercati (una
+  volta al mese): circa 25-40 chiamate al mese. Il contatore si allinea a
   quello dell'account e non fa mai superare il limite.
 - **Come parte**: lo lancia il giro ogni 5 minuti del bot notizie (passo «Bot
   quote» in `monitor-news.yml`); quasi sempre esce subito. Ogni giro lavora al
@@ -105,13 +125,14 @@ Conference League) con OddsPapi (piano gratuito, 250 chiamate al mese, secret
   rivedi = rilegge le partite già giocate negli ultimi 8 giorni come 40 minuti
   prima: con «partita» vuoto il conto forti/medi/rumore e le 3 più forti, con
   una squadra il messaggio di quella partita; esempio = prova grafica nel
-  gruppo con quote vere, la legenda e tre avvisi: un calo che tiene, uno
-  tornato indietro e uno solo sui gol; con «partita» = tutto anche apertura
+  gruppo con quote vere, la legenda, tre avvisi (un calo che tiene, uno
+  tornato indietro e uno solo sui gol), un esempio degli ultimi minuti e la
+  riga «Non controllate»; con «partita» = tutto anche apertura
   delle coppe e riepiloghi). «partita» vale anche per test,
   ora e riepilogo, e accetta una competizione: SA, PL, PD, BL1, FL1, CL, EL,
   ECL o «coppe» (con rivedi fa il conto di quella competizione).
 - Codice in `monitor_quote.py` (orari, soglie e book in cima al file), stato in
-  `state/quote_state.json`.
+  `state/quote_state.json`, file per i Pace Index in `state/mercato.csv`.
 
 ---
 
