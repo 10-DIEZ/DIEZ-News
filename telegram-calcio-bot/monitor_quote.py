@@ -207,12 +207,13 @@ LEGEND_VERSION = 5              # se cambia, la legenda viene rimandata una volt
                                 # 5 = gol e corner attesi, ultimi minuti, soglia Europa/Conference, niente riepilogo)
 APERTURA_TRIES = 3              # elenco partite non letto all'apertura: si riprova al giro dopo, al massimo 3 volte
 MARKETS_VERSION = 4             # se cambia, l'elenco dei mercati viene riletto subito (3-4 = corner, gol e tiri di squadra)
-STATS_KEEP = 400                # numeri delle partite tenuti per tarare le soglie
+STATS_KEEP = 800                # numeri delle partite tenuti per tarare le soglie (40 minuti e ultimi minuti)
 PACE_KEEP_DAYS = 10             # file per il Pace Index (mercato.csv): partite degli ultimi 10 giorni
 RIVEDI_DAYS = 8                 # "rivedi": partite giocate negli ultimi 8 giorni
 RIVEDI_BUDGET_SECONDS = 480     # "rivedi" di tutta la settimana: al massimo 8 minuti di letture
 RIVEDI_TOP = 3                  # ...e nel gruppo le 3 partite piu' forti
 ESEMPIO_READS = 16              # "esempio": per l'esempio degli ultimi minuti guarda fino a 16 partite giocate
+LAST_REVIEW_MINUTES = 8         # prove sulle partite giocate: gli "ultimi minuti" sono le quote di 8 minuti prima
 MUTO = False                    # --muto (solo prove a mano): i messaggi vanno nel registro, non nel gruppo
 
 
@@ -2716,6 +2717,21 @@ def at_time(R: dict, t: datetime) -> dict:
     return dict(R, now={s: v for s, v in now.items() if has_data(v)}, at=t)
 
 
+def last_review(m: dict, names: dict, an: dict, R: dict, alert: bool):
+    """Per le prove sulle partite gia' giocate: cosa avrebbero visto gli ULTIMI MINUTI, cioe' le quote di
+    LAST_REVIEW_MINUTES prima del fischio contro quelle del controllo dei 40 minuti (lo storico e' lo stesso: nessuna
+    lettura in piu'). Ritorna (analisi dall'apertura, analisi dell'ultimo tratto, storico dell'ultimo tratto, riga
+    dei 40 minuti, ribaltone) o None."""
+    t40 = m["ko"] - timedelta(minutes=RIDOSSO_MINUTES)
+    Rl = at_time(R, m["ko"] - timedelta(minutes=LAST_REVIEW_MINUTES))
+    R2 = rebase(Rl, t40)
+    if not (Rl["now"] and R2["base"]):
+        return None
+    anl, an2 = analyze(Rl, m["ko"]), analyze(R2, m["ko"])
+    prev = dict(pace_row(m, names, an, R, alert, PACE_RIDOSSO), _at=t40.isoformat())
+    return anl, an2, R2, prev, flipped(prev, anl)
+
+
 def flipped(prev: dict | None, an: dict):
     """RIBALTONE: l'avviso di 40 minuti prima aveva un segnale forte (da FORZA_FORTE) che adesso, dall'apertura, non
     arriva piu' a FORZA_MIN_AVVISO (rientrato, o nel verso opposto). Ritorna (famiglia, verso, forza di prima,
@@ -2845,6 +2861,8 @@ def do_last(st: dict, topic: QuoteTopic, key: str, group: dict, cal: list) -> in
         print(f"  {names['home']} - {names['away']}: da {when_text(R2['base_at'])} forza {an2['forza'] if an2 else '-'} "
               f"({describe(an2) if an2 else 'niente'}), dall'apertura forza {an['forza']}"
               + (" -> RIBALTONE" if flip else " -> FORTE" if late else ""))
+        if an2:
+            save_stats(st, dict(stats_entry(m, an2, "ultimi", late or bool(flip), FORZA_FORTE), flip=int(bool(flip))))
         if late or flip:
             found.append((m, names, an, an2, R, R2, prev, late, flip, lk))
         else:
@@ -3189,13 +3207,21 @@ def do_rivedi(st: dict, topic: QuoteTopic, query: str = "") -> None:
         an = analyze(R, m["ko"])
         floor = alert_floor(m, everything)
         an["alert"] = an["forza"] >= floor
-        save_stats(st, stats_entry(m, an, "rivedi", an["alert"], floor))
+        entry = stats_entry(m, an, "rivedi", an["alert"], floor)
+        lr = last_review(m, names, an, R, an["alert"])
+        if lr:                              # ultimi minuti: forza dell'ultimo tratto e ribaltone
+            an["last"] = (lr[1]["forza"], bool(lr[4]))
+            entry["last"] = [lr[1]["forza"], int(bool(lr[4]))]
+        save_stats(st, entry)
         results.append((m, names, an, R))
         a, b = an["a"], an["b"]
         print(f"  {names['home']} - {names['away']} ({when_text(m['ko'])}): forza {an['forza']} · {describe(an)}\n"
               f"     {an['ref']}: 1X2 {a.get('x')} -> {b.get('x')} | AH {a.get('ah')} -> {b.get('ah')} | gol "
               f"{a.get('ou')} -> {b.get('ou')} | squadre { {g: r.get('src') for g, r in an['events'].items()} } | "
               f"mercati nello storico (tutti, usati) {_HIST_INFO}")
+        if lr:
+            print(f"     ultimi minuti (da {RIDOSSO_MINUTES} a {LAST_REVIEW_MINUTES} minuti prima): forza "
+                  f"{lr[1]['forza']} · {describe(lr[1])}" + (" · RIBALTONE" if lr[4] else ""))
         if len(results) == 1:
             print(f"     id non usati nello storico: {_HIST_UNKNOWN}")
         if team_query and an["ref"] in R["bh"]:
@@ -3220,7 +3246,10 @@ def do_rivedi(st: dict, topic: QuoteTopic, query: str = "") -> None:
                    f"{day_text(results[-1][0]['ko'])}, rilette come {RIDOSSO_MINUTES} minuti prima con le regole "
                    f"nuove\nforti ({FORZA_FORTE}-10): <b>{forti}</b> · medie ({FORZA_MIN_AVVISO}-{FORZA_FORTE - 1}): "
                    f"<b>{medi}</b> · sotto la soglia (niente avviso): "
-                   f"<b>{len(results) - forti - medi}</b>"
+                   f"<b>{len(results) - forti - medi}</b>\n"
+                   f"ultimi minuti (tra {RIDOSSO_MINUTES} e {LAST_REVIEW_MINUTES} minuti prima): 🚨 movimenti da "
+                   f"{FORZA_FORTE}/10 <b>{sum(1 for r in results if not r[2].get('last', (0, 0))[1] and r[2].get('last', (0, 0))[0] >= FORZA_FORTE)}"
+                   f"</b> · ⚠️ ribaltoni <b>{sum(1 for r in results if r[2].get('last', (0, 0))[1])}</b>"
                    + (f"\n<i>Qui sotto le {len(chosen)} più forti, come sarebbero arrivate.</i>" if chosen else ""))
         time.sleep(SEND_DELAY_GROUP_SECONDS)
     for m, names, an, R in chosen:
@@ -3297,17 +3326,11 @@ def do_esempio(st: dict, topic: QuoteTopic, query: str = "") -> None:
             kind = "solo sui gol" if an["shown"] else ""
         if kind and (kind not in found or an["forza"] > found[kind][2]["forza"]):
             found[kind] = (m, names, an, R)
-        t40, t8 = m["ko"] - timedelta(minutes=RIDOSSO_MINUTES), m["ko"] - timedelta(minutes=8)
-        Rl = at_time(R, t8)             # la stessa partita 8 minuti prima del fischio: cosa e' cambiato dai 40
-        R2 = rebase(Rl, t40)
-        if Rl["now"] and R2["base"]:
-            anl, an2 = analyze(Rl, m["ko"]), analyze(R2, m["ko"])
-            prev = dict(pace_row(m, names, an, R, an["forza"] >= FORZA_MIN_AVVISO, PACE_RIDOSSO), _at=t40.isoformat())
-            flip = flipped(prev, anl)
-            if an2["shown"] or flip:
-                rank = (bool(flip), an2["forza"])
-                if last is None or rank > last[:2]:
-                    last = (bool(flip), an2["forza"], (m, names, anl, an2, R2, prev, flip))
+        lr = last_review(m, names, an, R, an["forza"] >= FORZA_MIN_AVVISO)      # 8 minuti prima del fischio
+        if lr and (lr[1]["shown"] or lr[4]):
+            rank = (bool(lr[4]), lr[1]["forza"])
+            if last is None or rank > last[:2]:
+                last = (*rank, (m, names) + lr)
     if full and rows:
         days = sorted({m["ko"].astimezone(ROME).date() for m, _, _, _ in reads if m["code"] == "SA"})
         dd = [day_text(datetime(d.year, d.month, d.day, 12, tzinfo=ROME)) for d in days]
