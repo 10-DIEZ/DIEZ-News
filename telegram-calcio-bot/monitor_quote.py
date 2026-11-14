@@ -3274,7 +3274,7 @@ def do_esempio(st: dict, topic: QuoteTopic, query: str = "") -> None:
     """Prova grafica nel gruppo, con quote vere e nessuna chiamata (solo storico): la legenda e tre avvisi di partite
     gia' giocate, rilette 40 minuti prima: un calo che ha tenuto, uno tornato indietro (↩️) e uno solo sui gol; poi
     un esempio degli ULTIMI MINUTI (il movimento piu' forte tra 40 e 8 minuti prima trovato in quelle partite, o un
-    ribaltone) e la riga «Non controllate».
+    ribaltone), un ribaltone FINTO se non ce n'e' uno vero, e la riga «Non controllate».
     Con query "tutto" anche l'apertura delle coppe, un riepilogo con l'andamento e il riepilogo di una coppa."""
     ensure_markets(st)
     learn_teams(st)
@@ -3356,6 +3356,24 @@ def do_esempio(st: dict, topic: QuoteTopic, query: str = "") -> None:
     else:
         send("🧪 <b>ESEMPIO degli ultimi minuti</b>: in queste partite tra 40 e 8 minuti prima non si è mosso "
              "niente, quindi non sarebbe arrivato nessun messaggio (è il caso più frequente).")
+    if not (last and last[0]):          # nessun ribaltone vero: uno FINTO, per vedere com'e' fatto il messaggio
+        strong = next((found[k] for k in ("che ha tenuto", "tornato indietro", "solo sui gol")
+                       if k in found and any(sg["forza"] >= FORZA_FORTE for sg in found[k][2]["shown"])), None)
+        try:
+            if strong:
+                m, names, an, R = strong
+                t40 = m["ko"] - timedelta(minutes=RIDOSSO_MINUTES)
+                Rf = dict(R, now=R["base"], at=m["ko"] - timedelta(minutes=LAST_REVIEW_MINUTES))
+                R2 = rebase(Rf, t40)        # finto: «adesso» sono le quote dell'apertura
+                anl, an2 = analyze(Rf, m["ko"]), analyze(R2, m["ko"])
+                prev = dict(pace_row(m, names, an, R, True, PACE_RIDOSSO), _at=t40.isoformat())
+                flip = flipped(prev, anl)
+                if flip:
+                    send(last_message(m, names, anl, an2, R2, prev, an2["forza"] >= FORZA_FORTE, flip,
+                                      prefix="🧪 <b>ESEMPIO FINTO di ribaltone</b> (come sarebbe arrivato se le quote "
+                                             "fossero tornate a quelle dell'apertura: non è successo) · "))
+        except Exception as e:      # noqa: BLE001
+            print(f"  esempio di ribaltone non costruito: {e.__class__.__name__}: {e}")
     if reads:
         m, names = reads[-1][0], reads[-1][1]
         send(pre + missed_text(m["ko"], [names], "quote non lette in tempo"))
