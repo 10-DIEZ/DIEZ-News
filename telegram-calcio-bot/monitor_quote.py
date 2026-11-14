@@ -154,7 +154,7 @@ LOOKAHEAD_DAYS = 6              # partite tenute nell'elenco
 RIDOSSO_MINUTES = 40            # minuti prima del fischio d'inizio
 RIDOSSO_LATEST_MINUTES = 12     # in ritardo si fa fino a 12 minuti prima, poi si salta
 MERGE_MINUTES = 15              # orari d'inizio entro 15 minuti: un solo controllo
-REFRESH_MIN_HOURS = 6           # elenco partite riletto al massimo ogni 6 ore se manca una partita
+REFRESH_MIN_HOURS = 3           # elenco partite riletto al massimo ogni 3 ore se manca una partita (1 chiamata)
 HIST_PAUSE = 5.3                # lo storico vuole 5 secondi tra una chiamata e l'altra
 API_PAUSE = 1.2                 # le altre: 1 secondo tra due chiamate allo stesso indirizzo (una rifiutata conta lo stesso)
 MONTH_LIMIT = 250               # chiamate al mese del piano gratuito
@@ -1438,8 +1438,11 @@ _STRIP = {"fc", "cf", "ac", "as", "ss", "ssc", "us", "sc", "afc", "cfc", "calcio
           "1913", "1901", "29"}
 
 
+_SAME_WORD = {"cologne": "koln"}        # nomi di citta' scritti in un'altra lingua nell'elenco OddsPapi
+
+
 def _tokens(name: str) -> set:
-    return {w for w in norm(name).split() if w not in _STRIP and len(w) > 1}
+    return {_SAME_WORD.get(w, w) for w in norm(name).split() if w not in _STRIP and len(w) > 1}
 
 
 def _similar(a: str, b: str) -> float:
@@ -1459,25 +1462,33 @@ def _name_sim(name: str, m: dict, side: str) -> float:
 
 def find_fixture(st: dict, m: dict, strict: bool = False) -> str | None:
     """Id OddsPapi della partita del calendario (stesso campionato e orario, nomi simili). Le partite delle coppe
-    ce l'hanno gia' (vengono dall'elenco OddsPapi). strict: solo se la scelta e' sicura (per imparare i nomi)."""
+    ce l'hanno gia' (vengono dall'elenco OddsPapi). strict: solo se la scelta e' sicura e solo dai nomi (per
+    imparare i nomi). Senza strict si usano anche i nomi gia' imparati (team_fd): una partita OddsPapi con una
+    squadra gia' nota come un'ALTRA squadra viene scartata, cosi' se una partita manca dall'elenco non le vengono
+    date le quote di un'altra partita della stessa ora."""
     if m.get("fid"):
         return m["fid"]
     pn = st["participants"]
+    fd = {} if strict else (st.get("team_fd") or {})
+    teams = (m["home"], m["away"])
     cands = []
     for fid, rec in st["fixtures"].items():
         start = parse_time(rec.get("start"))
         if rec.get("code") == m["code"] and start and abs((start - m["ko"]).total_seconds()) <= 25 * 60:
-            n1, n2 = pn.get(str(rec.get("p1")), ""), pn.get(str(rec.get("p2")), "")
-            cands.append((_name_sim(n1, m, "home") + _name_sim(n2, m, "away"), fid))
+            p1, p2 = str(rec.get("p1")), str(rec.get("p2"))
+            k1, k2 = fd.get(p1), fd.get(p2)
+            if (k1 and k1 not in teams) or (k2 and k2 not in teams):
+                continue
+            n1, n2 = pn.get(p1, ""), pn.get(p2, "")
+            cands.append(((1.0 if k1 == m["home"] else _name_sim(n1, m, "home"))
+                          + (1.0 if k2 == m["away"] else _name_sim(n2, m, "away")), fid))
     if not cands:
         return None
     cands.sort(reverse=True)
     if strict:
         sure = cands[0][0] >= 1.0 and (len(cands) == 1 or cands[0][0] - cands[1][0] >= 0.5)
         return cands[0][1] if sure else None
-    if cands[0][0] > 0 or len(cands) == 1:
-        return cands[0][1]
-    return None
+    return cands[0][1] if cands[0][0] > 0 else None      # nessun nome in comune: meglio «non trovata» che un'altra partita
 
 
 def _jaccard(a: str, b: str) -> float:
@@ -2402,7 +2413,12 @@ def apertura_text(st: dict, soon: list, when: datetime, n: int, kind: str) -> st
               + (" " + " e ".join(day_text(datetime(d.year, d.month, d.day, 12, tzinfo=ROME)) for d in busy)
                  if len(busy) <= 2 else "") + ")") if busy else ""
     riep = f"Riepilogo alle {RIEPILOGO_HOUR} del giorno prima · " if RIEPILOGO_AUTO else ""
-    return (f"{head} · {detail}\n"
+    lost = [m for m in soon if m["code"] in LEAGUES_Q and not find_fixture(st, m)]
+    warn = ""
+    if lost:                                # partite del calendario che OddsPapi non ha (ancora) nell'elenco
+        warn = ("\n⚠️ Non ancora nell'elenco di OddsPapi: " + ", ".join(match_title(team_names(m)) for m in lost[:6])
+                + (f" e altre {len(lost) - 6}" if len(lost) > 6 else "") + f" (riprovo {RIDOSSO_MINUTES} minuti prima)")
+    return (f"{head} · {detail}{warn}\n"
             f"<i>{cups}{riep}Avvisi {RIDOSSO_MINUTES} minuti prima da forza {FORZA_MIN_AVVISO}/10{strict}, poi a 10 "
             f"minuti solo i casi forti · elenco OddsPapi {n} partite · chiamate usate {st['calls']}/"
             f"{st.get('limit', MONTH_LIMIT)}</i>")
