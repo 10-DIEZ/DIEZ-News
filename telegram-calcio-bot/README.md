@@ -134,6 +134,16 @@ Conference League) con OddsPapi (piano gratuito, 250 chiamate al mese, secret
   mossi, senza grafico); la **💡 lettura**, il colore da mettere
   nella riga «Mercato» della Direzione generale e il pronostico con la quota
   giusta.
+- **📰 Notizie sotto l'avviso**: subito dopo ogni avviso (40 minuti prima e
+  ultimi minuti), in risposta, arriva un messaggio con le notizie delle due
+  squadre delle ultime 36 ore: conferenze stampa, infortuni, formazioni e
+  allenatore (non le generali), al massimo 4 per squadra, dalla più recente,
+  con ora e testata. Toccando il titolo si apre la notizia nell'argomento del
+  campionato. Le prende dal registro del bot notizie (`state/state.json`,
+  `log`), quindi nessuna chiamata in più. Se non ce ne sono non arriva niente;
+  dopo un messaggio degli ultimi minuti arrivano solo le notizie nuove. Si
+  regola in cima a `monitor_quote.py` (`NOTIZIE_SOTTO_AVVISO`, `NOTIZIE_ORE`,
+  `NOTIZIE_PER_SQUADRA`); il codice è in `notizie_partita.py`.
 - **Ultimi minuti**: da 12 a 3 minuti prima del fischio il bot rilegge le
   partite e scrive **solo per i casi forti**: 🚨 un movimento da 7/10 in su
   nato dopo il controllo dei 40 minuti (misurato solo su quel tratto) oppure
@@ -172,7 +182,9 @@ Conference League) con OddsPapi (piano gratuito, 250 chiamate al mese, secret
   apertura = aggiorna subito l'elenco, riepilogo = riepilogo subito di domani,
   rivedi = rilegge le partite già giocate negli ultimi 8 giorni come 40 minuti
   prima: con «partita» vuoto il conto forti/medi/rumore e le 3 più forti, con
-  una squadra il messaggio di quella partita; esempio = prova grafica nel
+  una squadra il messaggio di quella partita; notizie = il messaggio 📰 della
+  prossima partita (di una squadra, se scritta in «partita») come arriverebbe
+  adesso sotto l'avviso, senza quote e senza chiamate; esempio = prova grafica nel
   gruppo con quote vere, la legenda, tre avvisi (un calo che tiene, uno
   tornato indietro e uno solo sui gol), un esempio degli ultimi minuti e la
   riga «Non controllate»; con «partita» = tutto anche apertura

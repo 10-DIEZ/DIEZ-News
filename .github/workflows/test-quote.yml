@@ -8,6 +8,8 @@ name: Prova bot quote
 #   esempio   = prova grafica nel gruppo con quote vere: legenda, tre avvisi di 40 minuti prima (calo che tiene,
 #               tornato indietro, solo gol), un esempio degli ultimi minuti e la riga «Non controllate»;
 #               con "partita" = tutto anche apertura delle coppe e riepiloghi
+#   notizie   = le notizie che arriverebbero adesso sotto l'avviso della prossima partita (di una squadra, se
+#               scritta in "partita"): nessuna chiamata, nessuna quota
 #   rivedi    = rilegge le partite gia' giocate (ultimi 8 giorni) come 40 minuti prima, con le regole di adesso:
 #               "partita" vuoto = conto forti/medi/rumore della settimana e le 3 piu' forti nel gruppo;
 #               "partita" con una squadra (es. Roma) = il messaggio di quella partita
@@ -19,11 +21,11 @@ on:
   workflow_dispatch:
     inputs:
       modo:
-        description: "test = prova completa · ora = controllo subito · apertura = elenco partite · riepilogo = riepilogo di domani · rivedi = partite gia' giocate · esempio = prova grafica nel gruppo"
+        description: "test = prova completa · ora = controllo subito · apertura = elenco partite · riepilogo = riepilogo di domani · rivedi = partite gia' giocate · esempio = prova grafica nel gruppo · notizie = notizie sotto l'avviso"
         required: true
         default: test
         type: choice
-        options: [test, ora, apertura, riepilogo, rivedi, esempio]
+        options: [test, ora, apertura, riepilogo, rivedi, esempio, notizie]
       partita:
         description: "squadra (es. Roma) o competizione (SA, PL, PD, BL1, FL1, CL, EL, ECL, coppe); per rivedi vuoto = tutta la settimana"
         required: false

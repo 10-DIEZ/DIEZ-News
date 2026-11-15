@@ -675,6 +675,34 @@ def classify(title: str, spans: list, lang: str = "") -> tuple:
     return ("official" if official else "press" if is_press else "key" if types else "general"), types
 
 
+_PREFIX_JOIN_RE = re.compile(r"\s*(?:[-–—/]|vs?\.?)\s*", re.IGNORECASE)     # "Juve-Lazio", "Juve vs Lazio"
+_PREFIX_END_RE = re.compile(r"\s*(?:[,:;|.!]|\s[-–—])\s*")
+
+
+def short_title(title: str, spans: list) -> str:
+    """
+    Il titolo senza le squadre all'inizio, per gli elenchi gia' divisi per
+    squadra (le notizie sotto l'avviso quote):
+    "Juventus, Bremer out" -> "Bremer out"; "Juve-Lazio, le ufficiali: ..." ->
+    "Le ufficiali: ...". Gli allenatori restano ("Spalletti: «...»").
+    """
+    pos, found = 0, False
+    for start, end, _, is_coach in sorted(spans):
+        if is_coach or start < pos:
+            continue
+        gap = title[pos:start]
+        if gap.strip() and not (found and _PREFIX_JOIN_RE.fullmatch(gap)):
+            break
+        pos, found = end, True
+    if not found:
+        return title
+    m = _PREFIX_END_RE.match(title, pos)
+    rest = title[m.end():].strip() if m else ""
+    if len(rest) < 12:
+        return title
+    return rest[:1].upper() + rest[1:]
+
+
 # Parole che, accanto ai nomi delle squadre, non fanno una notizia
 _BARE_FILLER = {
     "contro", "gegen", "contra", "uefa", "champions", "europa", "conference", "league", "liga", "laliga",
@@ -1457,15 +1485,17 @@ def run():
         remember(recent, c, c["tokens"], ts)
         if tokens_it != c["tokens"]:
             remember(recent, c, tokens_it, ts)
-        # registro degli invii: serve ai limiti e a ritrovare le ultime notizie di una squadra
+        # registro degli invii: serve ai limiti e alle notizie sotto l'avviso quote
+        # (monitor_quote.py: le ultime notizie delle due squadre, con il link al post)
         entry = {"t": int(time.time()), "tm": c["teams"], "c": c["category"], "y": c["types"],
                  "ti": c["it_title"][:140], "s": (meta.get("site_name") or domain_of(c["url"]))[:40]}
-        if dest.last_message_id:
-            entry["m"] = dest.last_message_id          # con questo si costruisce il link al post
-            if dest.last_thread_id:
-                entry["th"] = dest.last_thread_id
+        short = short_title(c["it_title"], team_index.find(c["it_title"], "it")[1])
+        if short != c["it_title"]:
+            entry["tc"] = short[:140]                   # titolo senza la squadra davanti
+        if dest.last_message_id and dest.last_thread_id:
+            entry["m"], entry["th"] = dest.last_message_id, dest.last_thread_id     # post nel gruppo
         else:
-            entry["u"] = c["url"]
+            entry["u"] = c["url"]                       # chat privata: niente link al post, quello all'articolo
         log.append(entry)
         stats["inviati"] += 1
         stats["sent:" + c["category"]] += 1

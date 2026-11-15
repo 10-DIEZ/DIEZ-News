@@ -30,6 +30,13 @@ COSA FA
   SOLO per i casi forti: 🚨 un movimento da FORZA_FORTE (7/10) in su nato dopo
   il controllo dei 40 minuti (misurato solo su quel tratto), o ⚠️ RIBALTONE (un
   segnale forte gia' mandato che dall'apertura non arriva piu' a 4/10).
+- NOTIZIE SOTTO L'AVVISO: subito dopo ogni avviso (40 minuti e ultimi minuti),
+  in risposta, un messaggio 📰 con le notizie delle due squadre delle ultime
+  NOTIZIE_ORE (36) ore: conferenze stampa, infortuni, formazioni, allenatore,
+  al massimo NOTIZIE_PER_SQUADRA (4) per squadra, con ora e testata; il titolo
+  porta al post nell'argomento del campionato. Le prende dal registro del bot
+  notizie (state/state.json, "log"; vedi notizie_partita.py): nessuna chiamata.
+  Se non ce ne sono non arriva niente; dopo gli ultimi minuti solo quelle nuove.
 - «NON CONTROLLATE»: se una partita non e' nell'elenco di OddsPapi, o le sue
   quote non si riescono a leggere entro 12 minuti dal fischio, lo scrive. Cosi'
   il silenzio vuol dire davvero "nessun segnale".
@@ -68,7 +75,8 @@ avviato da cron-job.org). Quasi sempre controlla l'ora ed esce subito.
 Prove a mano: workflow "Prova bot quote".
 
 STATO: state/quote_state.json e state/mercato.csv (solo questi file; lo stato
-delle notizie lo legge e basta, per sapere qual e' il gruppo Telegram).
+delle notizie lo legge e basta, per sapere qual e' il gruppo Telegram e per le
+notizie sotto l'avviso).
 
 Uso: python monitor_quote.py                   giro normale
      python monitor_quote.py --mode test       prova (diagnostica + messaggio di prova)
@@ -79,6 +87,9 @@ Uso: python monitor_quote.py                   giro normale
                                                rilegge le partite gia' giocate come 40 minuti prima:
                                                con --partita manda quelle partite; senza, il conto
                                                forti/medi/rumore della settimana e le 3 piu' forti
+     python monitor_quote.py --mode notizie [--partita Roma]
+                                               prova delle notizie sotto l'avviso: il messaggio 📰 della
+                                               prossima partita (di quella squadra), come arriverebbe adesso
      python monitor_quote.py --mode esempio [--partita tutto]
                                                prova grafica nel gruppo (quote vere): legenda, tre avvisi,
                                                un esempio degli ultimi minuti e la riga «Non controllate»;
@@ -103,6 +114,7 @@ from zoneinfo import ZoneInfo
 import requests
 
 from config import FIXTURES_FILE, HASHTAGS, SEND_DELAY_GROUP_SECONDS, STATE_FILE
+from notizie_partita import match_news
 from utils import send_telegram_message, telegram_api
 
 # =====================================================================
@@ -199,6 +211,10 @@ TENUTA_MEZZA = 0.5              # ...almeno la meta' = e' tornato un po' indietr
 SPARK = "▁▂▃▄▅▆▇█"             # andamento della quota: barra alta = quota alta
 SPARK_POINTS = 10               # la quota in 10 tratti uguali dall'apertura ad adesso (11 barre)
 SPARK_MIN_PTS = 4.0             # sotto 4 punti di probabilita' di differenza le barre restano quasi piatte
+
+NOTIZIE_SOTTO_AVVISO = True     # dopo ogni avviso, in risposta, le notizie delle due squadre (False = spento)
+NOTIZIE_ORE = 36                # notizie delle ultime 36 ore...
+NOTIZIE_PER_SQUADRA = 4         # ...al massimo 4 per squadra (conferenze, infortuni, formazioni, allenatore)
 
 TOPIC_NAME = "📈 Quote"
 TOPIC_COLOR = 9367192           # verde
@@ -2208,7 +2224,10 @@ LEGEND = ("📖 <b>Come leggere i messaggi delle quote</b>\n\n"
           "forza −2)\n"
           "<b>Si muovono anche</b>: gli altri movimenti buoni (linea gol, GG, gol e corner attesi delle squadre), "
           "senza grafico\n"
-          "💡 <b>Lettura</b>: cosa può voler dire il movimento, come domanda da verificare: non è una verità\n\n"
+          "💡 <b>Lettura</b>: cosa può voler dire il movimento, come domanda da verificare: non è una verità\n"
+          f"📰 <b>Notizie</b> (in risposta all'avviso): conferenze, infortuni, formazioni e allenatore delle due "
+          f"squadre delle ultime {NOTIZIE_ORE} ore, al massimo {NOTIZIE_PER_SQUADRA} per squadra; tocca il titolo "
+          "per aprire la notizia\n\n"
           "<b>Giudizio</b> (colore per la riga «Mercato» del foglio)\n"
           "🟢🟢 calo forte: linea asiatica spostata verso la squadra → Verde forte\n"
           "🟢 calo: stessa linea, quota scesa → Verde\n"
@@ -2233,6 +2252,7 @@ class QuoteTopic:
         tg = news.get("telegram") or {}
         self.group_id = tg.get("group_id") if tg.get("ready") else None
         self.recreated = False
+        self.last_id = None             # id dell'ultimo messaggio mandato (per rispondergli con le notizie)
 
     def _create(self) -> int | None:
         payload = {"chat_id": self.group_id, "name": TOPIC_NAME, "icon_color": TOPIC_COLOR}
@@ -2257,14 +2277,17 @@ class QuoteTopic:
         tid = self._create()
         return (self.group_id, tid) if tid else (None, None)
 
-    def send(self, text: str) -> bool:
+    def send(self, text: str, reply_to: int | None = None) -> bool:
+        self.last_id = None
         if MUTO:                        # prova muta: il messaggio va solo nel registro
             print("[MUTO] messaggio:\n" + re.sub(r"</?(b|i|pre)>", "", text) + "\n[/MUTO]")
             return True
         for _ in range(2):
             chat_id, thread_id = self.target()
-            res = send_telegram_message(text, disable_preview=True, chat_id=chat_id, thread_id=thread_id)
+            res = send_telegram_message(text, disable_preview=True, chat_id=chat_id, thread_id=thread_id,
+                                        reply_to=reply_to)
             if res:
+                self.last_id = res.result.get("message_id") if isinstance(res.result, dict) else None
                 return True
             desc = (res.description or "").lower()
             if thread_id and any(k in desc for k in _THREAD_GONE) and not self.recreated:
@@ -2662,6 +2685,7 @@ def do_ridosso(st: dict, topic: QuoteTopic, key: str | None, group: dict | None,
             print(f"  {names['home']} - {names['away']}: SEGNALE ({sig_txt}) -> inviato")
             mark(m)
             time.sleep(SEND_DELAY_GROUP_SECONDS)
+            send_news(st, topic, m, names, reply_to=topic.last_id, record=not manual)
         else:
             print(f"  {names['home']} - {names['away']}: SEGNALE, ma Telegram non ha accettato: riprovo")
             unfinished = True
@@ -2891,6 +2915,7 @@ def do_last(st: dict, topic: QuoteTopic, key: str, group: dict, cal: list) -> in
             pace_save(st, m, names, an, R, an["forza"] >= alert_floor(m, cal), PACE_LAST)
             save_qstate(st)
             time.sleep(SEND_DELAY_GROUP_SECONDS)
+            send_news(st, topic, m, names, reply_to=topic.last_id)
         else:
             unfinished = True
     if not unfinished:
@@ -3362,6 +3387,8 @@ def do_esempio(st: dict, topic: QuoteTopic, query: str = "") -> None:
             m, names, an, R = found[kind]
             send(build_message(m, names, an, R["base_at"], R["first"], "formazioni uscite",
                                prefix=f"🧪 <b>ESEMPIO di avviso {kind}</b> · "))
+            send_news(st, topic, m, names, reply_to=topic.last_id, record=False,
+                      prefix="🧪 <b>ESEMPIO</b> (le notizie di adesso delle due squadre) · ")
     if last:
         m, names, anl, an2, R2, prev, flip = last[2]
         real = bool(flip) or an2["forza"] >= FORZA_FORTE
@@ -3397,6 +3424,60 @@ def do_esempio(st: dict, topic: QuoteTopic, query: str = "") -> None:
                      f"partite rilette, avvisi {sorted(found)}")
 
 
+def send_news(st: dict, topic: QuoteTopic, m: dict, names: dict, reply_to: int | None = None, prefix: str = "",
+              record: bool = True) -> bool:
+    """📰 NOTIZIE SOTTO L'AVVISO: in risposta all'avviso appena mandato, le notizie delle due squadre (conferenze,
+    infortuni, formazioni, allenatore) delle ultime NOTIZIE_ORE ore, dal registro del bot notizie (nessuna chiamata).
+    Se per la partita c'e' gia' stato un messaggio 📰 (avviso dei 40 minuti, poi ultimi minuti) solo quelle uscite
+    dopo. Niente messaggio se non ce ne sono. record=False (prove): non segna la partita. True se e' partito."""
+    if not NOTIZIE_SOTTO_AVVISO:
+        return False
+    key = match_key(m)
+    shown = st.setdefault("news_at", {})
+    since = shown.get(key, 0) if record else 0
+    labels = {}
+    for side in ("home", "away"):
+        tag = make_hashtag(HASHTAGS.get(m[side], "")) or make_hashtag(names[side])
+        labels[m[side]] = f"#{tag}" if tag else esc(names[side])
+    try:
+        text, _ = match_news(load_json(STATE_FILE, {}), m["home"], m["away"], labels, now_utc(), NOTIZIE_ORE,
+                             NOTIZIE_PER_SQUADRA, since_ts=since)
+    except Exception as e:      # noqa: BLE001  (le notizie non devono mai fermare il bot quote)
+        print(f"  {names['home']} - {names['away']}: notizie non lette ({e.__class__.__name__}: {e})")
+        return False
+    if not text:
+        print(f"  {names['home']} - {names['away']}: nessuna notizia nuova da mettere sotto l'avviso")
+        return False
+    if not topic.send(prefix + text, reply_to=reply_to):
+        print(f"  {names['home']} - {names['away']}: notizie non accettate da Telegram")
+        return False
+    print(f"  {names['home']} - {names['away']}: notizie inviate sotto l'avviso")
+    if record:
+        shown[key] = now_utc().timestamp()
+        save_qstate(st)
+    time.sleep(SEND_DELAY_GROUP_SECONDS)
+    return True
+
+
+def do_notizie(st: dict, topic: QuoteTopic, cal: list, query: str = "") -> None:
+    """Prova delle NOTIZIE SOTTO L'AVVISO, senza quote e senza chiamate: per la prossima partita (di una squadra o di
+    una competizione, se indicata) il messaggio 📰 come arriverebbe adesso sotto un avviso."""
+    future = [m for m in filter_matches(cal, query) if m["ko"] > now_utc()]
+    if not future:
+        topic.send(f"🧪 <b>Prova notizie</b>: nessuna partita in arrivo{' per ' + esc(query) if query else ''} "
+                   "nel calendario.")
+        return
+    m = future[0]
+    names = team_names(m)
+    lg = COMPS_Q.get(m["code"], {"flag": ""})
+    head = (f"🧪 <b>Prova notizie</b> · {lg['flag']} <b>{match_title(names)}</b> · {when_text(m['ko'])}\n"
+            "<i>Così arrivano, in risposta all'avviso delle quote:</i>\n\n")
+    if not send_news(st, topic, m, names, prefix=head, record=False):
+        topic.send(head + f"nessuna notizia su conferenze, infortuni, formazioni o allenatore delle due squadre "
+                          f"nelle ultime {NOTIZIE_ORE} ore: sotto l'avviso non arriverebbe niente.")
+    st["log"].append(f"{now_utc().isoformat(timespec='minutes')} prova notizie {names['home']} - {names['away']}")
+
+
 def cleanup(st: dict) -> None:
     limit = now_utc() - timedelta(days=KEEP_DAYS)
     st["fixtures"] = {k: v for k, v in st["fixtures"].items() if (parse_time(v.get("start")) or now_utc()) > limit}
@@ -3406,6 +3487,7 @@ def cleanup(st: dict) -> None:
     st["stats"] = st.get("stats", [])[-STATS_KEEP:]
     old = (now_utc() - timedelta(days=PACE_KEEP_DAYS)).isoformat()
     st["pace"] = {k: r for k, r in (st.get("pace") or {}).items() if r.get("_ko", "") >= old}
+    st["news_at"] = {k: v for k, v in (st.get("news_at") or {}).items() if k.split("|")[1:2] >= [keep]}
 
 
 _START = time.monotonic()
@@ -3416,7 +3498,7 @@ def main() -> int:
     _START = time.monotonic()
     ap = argparse.ArgumentParser()
     ap.add_argument("--mode", default="auto",
-                    choices=["auto", "test", "ora", "apertura", "riepilogo", "rivedi", "esempio"])
+                    choices=["auto", "test", "ora", "apertura", "riepilogo", "rivedi", "esempio", "notizie"])
     ap.add_argument("--partita", default="", help="prove a mano: squadra (es. Roma) o competizione (es. CL, coppe); "
                                                   "per rivedi vuoto = tutta la settimana")
     ap.add_argument("--muto", action="store_true", help="prove a mano: messaggi nel registro, non nel gruppo")
@@ -3458,6 +3540,8 @@ def main() -> int:
             do_rivedi(st, topic, query)
         elif args.mode == "esempio":
             do_esempio(st, topic, query)
+        elif args.mode == "notizie":
+            do_notizie(st, topic, cal, query)
         else:
             send_legend(st, topic)
             if lkey:                    # prima gli ultimi minuti (l'orario piu' stretto), poi gli avvisi a ridosso

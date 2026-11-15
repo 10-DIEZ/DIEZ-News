@@ -150,11 +150,13 @@ def send_telegram_photo_upload(photo_url: str, caption: str, button_text: str = 
 
 
 def send_telegram_message(text: str, disable_preview: bool = False, button_text: str = "",
-                          button_url: str = "", chat_id=None, thread_id=None) -> TgResult:
+                          button_url: str = "", chat_id=None, thread_id=None, reply_to=None) -> TgResult:
     """
     Invia un messaggio di testo (con pulsante opzionale).
     disable_preview=False (default) fa mostrare a Telegram l'anteprima
     automatica del link, quando il messaggio contiene un link.
+    reply_to: id di un messaggio della stessa chat a cui rispondere (se non
+    c'e' piu', il messaggio parte lo stesso, senza risposta).
     """
     target = chat_id or TELEGRAM_CHAT_ID
     if not TELEGRAM_BOT_TOKEN or not target:
@@ -165,6 +167,8 @@ def send_telegram_message(text: str, disable_preview: bool = False, button_text:
                "disable_web_page_preview": "true" if disable_preview else "false"}
     if thread_id:
         payload["message_thread_id"] = thread_id
+    if reply_to:
+        payload["reply_parameters"] = json.dumps({"message_id": int(reply_to), "allow_sending_without_reply": True})
     return telegram_api("sendMessage", _with_button(payload, button_text, button_url), timeout=20)
 
 
