@@ -159,21 +159,51 @@ TEAMS_REFRESH_HOURS = 24
 DUPLICATE_SUPPRESS_HOURS = 12
 
 # Per quanti giorni ricordare i link gia' visti (oltre l'eta' massima non servono)
-SEEN_KEEP_DAYS = 4
+SEEN_KEEP_DAYS = 3
+
+# Per quante ore tenere l'elenco delle notizie inviate (titolo, squadre, tipo,
+# indirizzo del post): serve ai limiti qui sotto e a ritrovare le ultime
+# notizie di una squadra.
+LOG_KEEP_HOURS = 48
 
 # =====================================================================
 # QUANTITA'
 # =====================================================================
-# Massimo di notizie AL GIORNO per singola squadra, per tipo:
-# - press: conferenze stampa
+# Massimo di notizie per singola squadra, per tipo, in una FINESTRA MOBILE
+# di ore: (quante, in quante ore). Es. (3, 6) = al massimo 3 nelle ultime 6 ore.
+# - official: formazioni UFFICIALI (escono un'ora prima della partita, proprio
+#   quando si muovono le quote): hanno un limite a parte, cosi' passano sempre
+#   anche se la squadra ha gia' avuto le sue notizie sulle probabili formazioni
+# - press: conferenze stampa e dichiarazioni dell'allenatore
 # - key: infortuni, squalifiche, assenze, formazioni, cambio allenatore
 # - general: tutto il resto (notizie generali sulla squadra)
-# Le notizie oltre il limite vengono scartate (non rimandate). La priorita'
-# va sempre a conferenze stampa e notizie "key".
-TEAM_DAILY_CAPS = {"press": 2, "key": 3, "general": 2}
+# "match" = limiti per le squadre che giocano entro MATCH_SOON_HOURS ore: e'
+# li' che le quote si muovono e servono piu' informazioni.
+# Prima il limite era "al giorno" (2 conferenze, 3 key, 2 generali) e si
+# azzerava a mezzanotte: partiva una raffica di notte e la sera, a quota
+# esaurita, non passava quasi piu' nulla. Le notizie oltre il limite vengono
+# scartate (non rimandate). La priorita' va a ufficiali, conferenze e "key".
+TEAM_CAPS = {
+    "official": {"normal": (2, 3), "match": (2, 3)},
+    "press": {"normal": (2, 12), "match": (3, 12)},
+    "key": {"normal": (2, 6), "match": (3, 6)},
+    "general": {"normal": (1, 8), "match": (2, 8)},
+}
+MATCH_SOON_HOURS = 36
 
-# Massimo di messaggi per singolo giro (protezione contro le raffiche)
-MAX_MESSAGES_PER_RUN = 60
+# Massimo di messaggi per singolo giro. Nel gruppo Telegram accetta 20
+# messaggi al minuto: 45 messaggi sono poco piu' di 2 minuti di invii, cosi'
+# il giro dopo (che controlla anche le quote) parte comunque in tempo. Quelle
+# che non entrano partono al giro successivo.
+MAX_MESSAGES_PER_RUN = 45
+
+# Riassunti Groq (piano gratuito: 1000 richieste e 200.000 token al giorno
+# per ognuno dei 3 modelli, cioe' circa 1100 riassunti al giorno in tutto).
+# Superate queste chiamate nelle ULTIME 24 ORE, le notizie GENERALI non usano
+# piu' Groq: quelle italiane escono con titolo e descrizione del sito, quelle
+# estere (che andrebbero tradotte) vengono saltate. Cosi' i riassunti che
+# restano vanno a conferenze, infortuni, formazioni e allenatore.
+GROQ_GENERAL_DAILY_BUDGET = 600
 
 # Calciomercato (trattative, offerte, voci): escluso. Metti True per riaverlo.
 INCLUDE_TRANSFER_NEWS = False
@@ -185,6 +215,11 @@ INCLUDE_TRANSFER_NEWS = False
 # gira ogni 5 minuti, le ricerche si distribuiscono sui giri successivi)
 TEAM_QUERY_INTERVAL_MINUTES = 15
 GOOGLE_MAX_ITEMS = 100
+# A volte Google News blocca il computer di GitHub su cui gira il bot (succede
+# in circa un giro su venti): se le prime N ricerche del giro falliscono tutte,
+# le altre si saltano e si riprova al giro dopo, invece di restare appesi minuti.
+GOOGLE_BREAKER_FAILS = 6
+GOOGLE_TIMEOUT_SECONDS = 10
 
 # Parole aggiunte alla ricerca di ogni squadra per restare sul calcio
 # (senza, "Torino" o "Roma" restituirebbero anche cronaca cittadina)
@@ -415,46 +450,166 @@ COACH_SURNAME_STOPLIST = {
 }
 
 # =====================================================================
-# TIPO DI NOTIZIA (decide priorita' e limiti giornalieri)
+# TIPO DI NOTIZIA (decide priorita', limiti, l'etichetta e l'hashtag del tipo)
 # =====================================================================
+# Una notizia di cui si riconosce il tipo lo porta scritto due volte:
+# - in alto, accanto al campionato:   🇮🇹 Serie A · 🚑 Infortuni
+#   (si vede subito scorrendo l'argomento o i risultati di una ricerca)
+# - in fondo, dopo gli hashtag delle squadre:   #Juventus #Lazio · #Infortuni
+#   (toccando #Infortuni si vedono tutte le notizie di quel tipo)
+# Le notizie generali non hanno ne' etichetta ne' hashtag di tipo.
+# "Infortuni" vale per tutte le assenze: infortuni, squalifiche, rientri.
+TYPE_TAGS = {
+    "press": ("🎙", "Conferenza"),
+    "coach": ("👔", "Allenatore"),
+    "injury": ("🚑", "Infortuni"),
+    "lineup": ("📋", "Formazioni"),
+}
+MAX_TYPE_LABELS = 2     # etichette in alto (gli hashtag in fondo ci sono tutti)
+
+# Come sono fatte le liste qui sotto:
+# - XXX_KEYWORDS: parole/frasi che valgono in qualsiasi lingua
+# - XXX_KEYWORDS_BY_LANG: parole che contano solo negli articoli di quella
+#   lingua ("out" in italiano vuol dire infortunato, in inglese quasi mai)
+# - XXX_NOT_KEYWORDS: modi di dire che contengono una di quelle parole ma
+#   parlano d'altro ("senza dubbio", "minuti di recupero"): vengono ignorati
+# - una voce che comincia con "~" e' un'espressione regolare (serve per le
+#   parole composte tedesche e poco altro)
+
+# Conferenze stampa. "conferenza" da sola vale (in italiano e' quasi sempre
+# quella dell'allenatore); in francese serve la frase intera, perche'
+# "Conférence" e' anche la Conference League. Vale come conferenza anche un
+# titolo che riporta le parole dell'allenatore ("Conte: «Domani gioca...»").
 PRESS_KEYWORDS = [
-    "conferenza stampa", "in conferenza", "conferenza", "alla vigilia",
-    "press conference", "presser", "pre-match press", "media conference",
-    "rueda de prensa", "conferencia de prensa", "sala de prensa",
-    "pressekonferenz", "pk", "conférence de presse", "en conférence", "conférence", "point presse",
+    "conferenza stampa", "in conferenza", "conferenza", "sala stampa", "le parole di",
+    "press conference", "presser", "pre-match press", "media conference", "news conference",
+    "rueda de prensa", "conferencia de prensa", "sala de prensa", "en rueda",
+    "~\\w*pressekonferenz", "conférence de presse", "en conférence", "point presse", "les mots forts",
+]
+PRESS_KEYWORDS_BY_LANG = {"de": ["pk"]}     # "PK" in tedesco = Pressekonferenz
+PRESS_NOT_KEYWORDS = [
+    "conferenza dei servizi", "conferenza di servizi", "conference league", "conferenza episcopale",
+    "conferenza programmatica", "conferenza stato-regioni",
 ]
 
-KEY_KEYWORDS = [
-    # italiano
-    "infortunio", "infortuni", "infortunato", "infortunati", "infortunata", "lesione", "stiramento",
-    "risentimento", "affaticamento", "elongazione", "distorsione", "frattura", "operato", "squalifica",
-    "squalificato", "squalificati", "squalifiche", "diffidato", "diffidati", "indisponibile",
-    "indisponibili", "assente", "assenti", "assenza", "assenze", "out", "ko", "stop", "salta", "saltano",
-    "in dubbio", "dubbio", "dubbi", "recupera", "recuperato", "recupero", "rientra", "rientro",
-    "rientrano", "a disposizione", "convocati", "convocazioni", "probabili formazioni",
-    "probabile formazione", "formazione", "formazioni", "titolare", "titolari", "turnover",
-    "ballottaggio", "ballottaggi", "esonero", "esonerato", "dimissioni", "si dimette",
-    "nuovo allenatore", "nuovo tecnico", "panchina", "traghettatore", "esami", "esami strumentali",
-    "affaticato", "acciaccato", "acciaccati", "problema muscolare", "problemi fisici",
-    # inglese
-    "injury", "injuries", "injured", "hamstring", "groin", "ruled out", "sidelined", "doubt", "doubts",
-    "doubtful", "fitness", "suspended", "suspension", "ban", "banned", "team news", "line-up", "lineup",
-    "line-ups", "lineups", "starting xi", "rotation", "sacked", "sacking", "appointed", "new manager",
-    "new head coach", "resigns", "resigned", "interim", "caretaker", "back in training", "scan",
-    # spagnolo
-    "lesión", "lesiones", "lesionado", "lesionados", "baja", "bajas", "duda", "dudas", "sanción",
-    "sancionado", "convocatoria", "convocados", "alineación", "alineaciones", "posible once",
-    "once probable", "rotaciones", "destituido", "destitución", "cesado", "despedido",
-    "nuevo entrenador", "dimite", "dimisión", "interino", "parte médico", "pruebas médicas",
-    # tedesco
-    "verletzt", "verletzung", "verletzungen", "ausfall", "ausfälle", "fällt aus", "fehlt", "fehlen",
-    "fraglich", "gesperrt", "sperre", "kader", "aufstellung", "startelf", "entlassen", "entlassung",
-    "freigestellt", "neuer trainer", "rücktritt", "interimstrainer", "comeback", "untersuchung",
-    # francese
-    "blessé", "blessés", "blessure", "blessures", "forfait", "forfaits", "absent", "absents",
-    "absence", "absences", "incertain", "suspendu", "groupe", "composition", "compo", "limogé",
-    "limogeage", "démission", "nouvel entraîneur", "intérim", "infirmerie",
+# Cambio allenatore
+COACH_KEYWORDS = [
+    "esonero", "esonerato", "esonerati", "dimissioni", "si dimette", "nuovo allenatore", "nuovo tecnico",
+    "traghettatore", "cambio in panchina", "cambio di allenatore", "panchina a rischio",
+    "rischia la panchina", "panchina che scotta", "salta la panchina", "panchina di",
+    "esordio in panchina", "debutto in panchina",
+    "sacked", "sacking", "sack", "sacks", "appointed", "appoints", "new manager", "new head coach",
+    "new boss", "resigns", "resigned", "interim", "caretaker", "steps down", "part company",
+    "parts company", "parted company",
+    "destituido", "destitución", "destituye", "cesado", "despedido", "nuevo entrenador", "dimite",
+    "dimisión", "interino",
+    "entlassen", "entlassung", "freigestellt", "beurlaubt", "neuer trainer", "rücktritt",
+    "interimstrainer", "trainerwechsel", "trainerentlassung", "trainer-aus",
+    "limogé", "limogeage", "démission", "nouvel entraîneur", "intérim", "intérimaire",
 ]
+
+# Formazioni: probabili, scelte, convocati
+LINEUP_KEYWORDS = [
+    "probabili formazioni", "probabile formazione", "formazione", "formazioni", "undici titolare",
+    "probabile undici", "undici iniziale", "titolare", "titolari", "turnover", "rotazioni",
+    "ballottaggio", "ballottaggi", "in panchina", "dalla panchina", "convocati", "convocazioni",
+    "dal primo minuto", "dal 1'", "le scelte di", "possibili scelte", "maglia da titolare",
+    "verso una maglia",
+    "team news", "line-up", "lineup", "line-ups", "lineups", "starting xi", "predicted xi",
+    "starting lineup", "starting line-up", "rotation", "benched", "left out of",
+    "alineación", "alineaciones", "posible once", "once probable", "once titular", "rotaciones",
+    "convocatoria", "convocados", "titular", "titulares", "suplente", "suplentes",
+    "aufstellung", "aufstellungen", "startelf", "kader",
+    "composition", "compositions", "compo", "compos", "onze de départ", "onze probable", "titulaire",
+    "titulaires", "dans le groupe", "sur le groupe", "le groupe pour", "le groupe de",
+    "le groupe des", "le groupe du", "groupe retenu", "groupe convoqué",
+    "~le groupe \\w+ pour", "~groupe de \\d+ joueurs",
+]
+# Formazioni UFFICIALI (vedi TEAM_CAPS "official")
+OFFICIAL_LINEUP_KEYWORDS = [
+    "formazioni ufficiali", "formazione ufficiale", "le ufficiali",
+    "confirmed lineups", "confirmed line-ups", "confirmed lineup", "confirmed line-up", "confirmed team",
+    "confirmed xi", "xi confirmed", "lineups confirmed", "line-ups confirmed", "lineup confirmed",
+    "line-up confirmed", "team confirmed:", "team news confirmed", "official lineups",
+    "official line-ups", "~confirmed \\w+ (?:team|xi|line-?ups?)",
+    "alineaciones confirmadas", "alineaciones oficiales", "alineación confirmada", "alineación oficial",
+    "once confirmado", "once oficial", "onces confirmados", "onces oficiales",
+    "offizielle aufstellung", "offizielle aufstellungen", "aufstellungen sind da", "aufstellung ist da",
+    "compos officielles", "compositions officielles", "composition officielle", "compo officielle",
+]
+LINEUP_NOT_KEYWORDS = [
+    # qui "panchina" e' quella dell'allenatore, e "formazione" vuol dire "squadra"
+    "esordio in panchina", "debutto in panchina", "cambio in panchina", "prima in panchina",
+    "~formazione (?:giallo|ner|bianco|rosso|azzurr|viola|granata|blucerchiat|gialloblù)\\w*",
+]
+
+# Infortuni, squalifiche, assenze, recuperi
+INJURY_KEYWORDS = [
+    # italiano
+    "infortunio", "infortuni", "infortunato", "infortunati", "infortunata", "infermeria", "lesione",
+    "lesioni", "stiramento", "risentimento muscolare", "affaticamento", "elongazione", "distorsione",
+    "frattura", "problema muscolare", "problemi muscolari", "problemi fisici", "guaio muscolare",
+    "operato al", "operato alla", "sarà operato", "è stato operato", "intervento chirurgico",
+    "squalifica", "squalificato", "squalificati", "squalifiche", "diffidato", "diffidati",
+    "indisponibile", "indisponibili", "assente", "assenti", "assenza", "assenze", "forfait", "ai box",
+    "in dubbio", "a disposizione", "esami strumentali", "affaticato", "acciaccato", "acciaccati",
+    "tegola", "differenziato", "si allena a parte", "lavoro a parte",
+    "~(?:torn\\w+|rientr\\w+|di nuovo|lavoro|allenamento) in gruppo", "influenzato",
+    "sindrome influenzale", "attacco febbrile", "tempi di recupero", "recuperato", "recuperati",
+    "rientro", "rientri", "rientra", "rientrano", "rientrato", "saltare", "brutte notizie",
+    "ginocchio", "caviglia", "polpaccio", "flessore", "flessori", "adduttore", "adduttori", "menisco",
+    "crociato", "tendine", "pubalgia", "bicipite femorale", "quadricipite", "soleo", "trauma",
+    "contusione", "lombalgia", "ricaduta",
+    # inglese
+    "injury", "injuries", "injured", "hamstring", "groin", "ankle", "calf", "knee", "thigh",
+    "achilles", "concussion",
+    "surgery", "ruled out", "sidelined", "doubtful", "fitness", "suspended", "suspension", "banned",
+    "back in training", "returns to training", "back fit", "fit again", "scan", "out injured",
+    "out of action", "absentee", "absentees", "unavailable", "illness", "withdraws", "withdrawn",
+    # spagnolo
+    "lesión", "lesiones", "lesionado", "lesionados", "enfermería", "parte médico", "pruebas médicas",
+    "alta médica", "recibe el alta", "quirófano", "esguince", "rotura", "molestias", "rodilla",
+    "tobillo", "isquiotibiales", "sóleo", "gemelo", "musculares", "sanción",
+    "sancionado", "sancionados", "se pierde", "recupera a", "recuperan a",
+    # tedesco
+    "verletzt", "verletzte", "~\\w*verletzung(?:en)?", "ausfall", "ausfälle", "fällt aus",
+    "fallen aus", "~f[aä]ll(?:t|en)\\b[^.:!?|]{0,70}\\baus(?=\\s*(?:$|[.,:;!?|–-]))", "fraglich",
+    "gesperrt", "sperre", "gelbsperre", "untersuchung", "zerrung", "angeschlagen", "lazarett",
+    "zurück im training", "kreuzbandriss", "muskelfaserriss", "bänderriss", "muskelbündelriss",
+    "sehnenriss", "meniskusriss", "innenbandriss", "syndesmoseriss", "sprunggelenk",
+    "oberschenkel", "adduktoren", "~muskel(?:verletzung|problem|beschwerden)\\w*", "~muskulär\\w*",
+    # francese
+    "blessé", "blessés", "blessure", "blessures", "forfaits", "absent", "absents", "absence",
+    "absences", "incertain", "incertains", "suspendu", "suspendus", "infirmerie", "préservé",
+    "ménagé", "mis au repos", "apte", "aptes", "inapte", "opéré", "point médical", "genou",
+    "cheville", "mollet", "cuisse", "ischios", "adducteurs", "musculaire",
+]
+INJURY_KEYWORDS_BY_LANG = {
+    "it": ["out", "stop", "salta", "saltano", "dubbio", "dubbi", "recupera", "recuperano", "recupero",
+           "esami", "emergenza"],
+    "en": ["doubt", "doubts", "ban", "to miss", "will miss", "set to miss"],
+    "es": ["baja", "bajas", "duda", "dudas"],
+    "de": ["fehlt", "fehlen", "comeback"],
+}
+INJURY_NOT_KEYWORDS = [
+    "senza dubbio", "senza dubbi", "nessun dubbio", "mai avuto dubbi", "non ha dubbi", "non ho dubbi",
+    "non ci sono dubbi", "ogni dubbio", "minuti di recupero", "fermato nel recupero",
+    "gol nel recupero", "rete nel recupero", "pari nel recupero", "beffa nel recupero",
+    "vince nel recupero", "segna nel recupero", "decide nel recupero", "pieno recupero",
+    "recupero palla", "recupero della", "gara di recupero", "partita di recupero",
+    "recupero di campionato", "stop al mercato", "stop al campionato", "stop alle", "stop alla",
+    "non stop", "salta la conferenza", "salta la panchina", "salta l'accordo", "salta tutto",
+    "salta la trattativa", "saltare il banco", "saltare l'accordo", "saltare la trattativa",
+    "saltare la panchina",
+    "out-of", "hits out", "hit out", "miss out", "misses out", "missed out", "missing out",
+    "crying out", "no doubt", "without doubt", "without a doubt",
+    "sube y baja", "a la baja", "baja forma", "sin duda", "sin dudas", "no hay duda", "ninguna duda",
+    "ans d'absence", "ans d’absence",
+]
+# In italiano "ko" e "si ferma" parlano di un infortunio solo dopo il nome di
+# un giocatore ("Bremer ko", "Bremer si ferma"): dopo il nome di una squadra
+# sono una sconfitta ("Milan ko a Bergamo", "la Juve si ferma").
+INJURY_PLAYER_WORDS = {"it": ["ko", "k.o.", "si ferma", "si fermano"]}
 
 # =====================================================================
 # ESCLUSIONI
@@ -475,6 +630,19 @@ EXCLUDE_TITLE_WORDS = [
     "primera rfef", "segunda federación", "segunda rfef", "tercera", "castilla", "atlètic", "filial",
     "2. bundesliga", "zweite liga", "3. liga", "dritte liga", "regionalliga", "oberliga", "ligue 2",
     "national 2", "national 3",
+    "sub-23", "sub 23", "sub-21", "sub 21", "sub-19", "sub 19", "sub-18", "sub-17", "sub 17", "sub-16",
+    "juvenil", "juveniles", "u 23", "u 21", "u 19", "u 17", "1ª federación", "1ª rfef", "2ª rfef",
+    "bilbao athletic", "sevilla atlético", "betis deportivo", "villarreal b", "real sociedad b",
+    "sevilla b", "celta fortuna", "équipe réserve", "équipe amateur", "lyon-duchère", "la duchère",
+    # cronaca e cultura delle citta'/regioni che hanno il nome di una squadra (Lecce, Lazio, Venezia...)
+    "stagione lirica", "consiglio comunale", "consiglio regionale", "regione lazio",
+    "provincia di lecce", "intergruppo", "sagra", "mercatino", "elezioni comunali",
+    "elezioni regionali", "ca' foscari", "ca’ foscari", "bataille d'échecs", "bataille d’échecs",
+    "torneo solidario", "torneo benéfico", "cuddly toy",
+    # pagine di statistiche e calendari automatici (nessuna notizia dentro)
+    "h2h", "historial de enfrentamientos", "direkter vergleich", "statistiken", "statistiche di",
+    "estadísticas de", "stats for", "resultado ·", "resumen y goles", "por la fecha", "cómo seguir",
+    "dónde seguir",
     # squadre di altri campionati con nomi uguali
     "inter miami", "mls", "inter turku", "juve stabia", "liga mx", "brasileirão", "brasileirao",
     "saudi pro league", "lok leipzig", "lokomotive leipzig", "chemie leipzig", "viktoria köln",
@@ -499,7 +667,8 @@ EXCLUDE_TITLE_WORDS = [
     "prediction", "predictions", "pronóstico", "pronósticos", "apuestas", "cuotas", "prognose",
     "wett-tipp", "wettquoten", "quoten", "pronostic", "pronostics", "cotes", "paris sportifs",
     "bookmaker", "bookmakers", "bet builder", "betbuilder", "acca", "accumulator", "free bet", "tips",
-    "quota", "fantacalcio", "fanta", "fantasy", "fpl", "comunio", "kickbase",
+    "quota", "promo code", "bonus code", "codice promo", "codice bonus", "kalshi", "free bets",
+    "betting offer", "sign-up offer", "fantacalcio", "fanta", "fantasy", "fpl", "comunio", "kickbase",
     "biwenger", "mon petit gazon", "dove vedere", "dove vederla", "dove vederlo", "dove seguire",
     "dove seguirla", "dove seguirlo", "orario e canale", "canale tv", "in chiaro", "dazn", "in tv", "streaming", "diretta tv", "where to watch",
     "how to watch", "tv channel", "live stream", "dónde ver", "cómo ver", "en directo", "en vivo",
@@ -515,9 +684,17 @@ EXCLUDE_TITLE_WORDS = [
 # Calciomercato (usate solo se INCLUDE_TRANSFER_NEWS = False)
 TRANSFER_WORDS = [
     "calciomercato", "mercato", "trattativa", "trattative", "offerta", "prestito", "cessione",
-    "clausola", "transfer", "transfers", "loan", "rumour", "rumours", "rumor", "rumors", "fichaje",
-    "fichajes", "traspaso", "cesión", "mercado", "transfert", "transferts", "wechsel", "leihe",
-    "gerücht", "gerüchte",
+    "clausola", "sul taccuino", "prepara l'assalto", "pronto all'assalto", "pronta all'assalto",
+    "assalto a gennaio",
+    "transfer", "transfers", "loan", "rumour", "rumours", "rumor", "rumors", "to sign", "lead race",
+    "leads race", "join race", "joins race", "race to sign", "asking price", "january exit",
+    "summer exit", "exit talks", "opening bid", "bid rejected", "swoop", "linked with",
+    "renew interest", "register interest", "set to join", "selling", "release clause",
+    "fichaje", "fichajes", "traspaso", "cesión", "mercado", "oferta", "ofertas", "cláusula",
+    "se fija en", "puja por", "pretendido por",
+    "transfert", "transferts", "une piste", "intéressé par",
+    "wechsel", "leihe", "gerücht", "gerüchte", "wintertransfers", "sommertransfers", "ablöse",
+    "im visier", "winterschlussverkauf",
 ]
 
 # Sezioni del sito (pezzi dell'indirizzo tra due "/") che indicano altri
@@ -552,6 +729,20 @@ BLOCKED_NEWS_DOMAINS = [
     "betway.com", "bwin.com", "williamhill.com", "bet365.com",
     "tuttocampo.it", "competition.dz", "fussballdaten.de",
 ]
+
+# =====================================================================
+# AVVISI DI SALUTE (nella chat privata col bot, al massimo uno al giorno per tipo)
+# =====================================================================
+# Il bot ti scrive in privato se si accorge che qualcosa non va:
+# - e' rimasto fermo piu' di HEALTH_GAP_MINUTES minuti (timer di cron-job.org
+#   fermo? token GitHub scaduto?)
+# - Google News non risponde da HEALTH_GOOGLE_FAILED_RUNS giri di fila
+# - in un giorno sono falliti HEALTH_GROQ_FAILURES riassunti (tetto gratuito
+#   di Groq esaurito?)
+HEALTH_NOTICES = True
+HEALTH_GAP_MINUTES = 45
+HEALTH_GOOGLE_FAILED_RUNS = 12
+HEALTH_GROQ_FAILURES = 25
 
 # --- File di stato ---
 # state.json: scritto SOLO dal workflow notizie (link gia' visti, limiti del giorno)

@@ -35,7 +35,14 @@ from config import (
     TELEGRAM_GROUP_ID,
     TOPICS,
 )
-from utils import TgResult, send_telegram_message, send_telegram_photo, telegram_api
+from utils import (
+    TgResult,
+    is_photo_fetch_error,
+    send_telegram_message,
+    send_telegram_photo,
+    send_telegram_photo_upload,
+    telegram_api,
+)
 
 # Errori di Telegram che vogliono dire "quell'argomento non esiste piu'"
 _THREAD_GONE = ("message thread not found", "thread not found", "topic_deleted", "topic deleted",
@@ -77,6 +84,11 @@ class Destination:
         self.verify = False
         self._recreated = set()
         self._lost_ids = set()
+        # dove e' finito l'ultimo messaggio mandato con send() (per poterlo ritrovare con un link)
+        self.last_message_id = None
+        self.last_chat_id = None
+        self.last_thread_id = None
+        self.photo_uploads = 0      # foto caricate dal bot perche' Telegram non riusciva a scaricarle
 
     # ------------------------------------------------------------------
     # Stato del collegamento
@@ -309,6 +321,15 @@ class Destination:
             # se il problema e' il gruppo (non la foto) e' inutile riprovare col testo
             if res or (thread_id and self._is_hard_group_error(res)):
                 return res
+            # Telegram non e' riuscito a scaricare la foto dal sito: la scarico io e gliela carico
+            if is_photo_fetch_error(res):
+                res = send_telegram_photo_upload(photo_url, caption, button_text, button_url,
+                                                 chat_id=chat_id, thread_id=thread_id)
+                if res:
+                    self.photo_uploads += 1
+                    return res
+                if thread_id and self._is_hard_group_error(res):
+                    return res
         return send_telegram_message(caption, disable_preview=True, button_text=button_text,
                                      button_url=button_url, chat_id=chat_id, thread_id=thread_id)
 
@@ -316,12 +337,16 @@ class Destination:
              button_text: str = "", button_url: str = "") -> bool:
         """
         Manda la notizia (foto con didascalia, o solo testo se la foto non va)
-        nell'argomento del suo campionato, o nella chat privata. True se e' arrivata.
+        nell'argomento del suo campionato, o nella chat privata. True se e' arrivata;
+        in quel caso last_message_id / last_chat_id / last_thread_id dicono dov'e'.
         """
+        self.last_message_id = self.last_chat_id = self.last_thread_id = None
         for _ in range(3):
             chat_id, thread_id = self._target(league)
             res = self._send_once(chat_id, thread_id, caption, photo_url, button_text, button_url)
             if res:
+                self.last_message_id = res.result.get("message_id") if isinstance(res.result, dict) else None
+                self.last_chat_id, self.last_thread_id = chat_id, thread_id
                 return True
             if not thread_id:
                 return False   # chat privata: come sempre, si riprova al prossimo giro

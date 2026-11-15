@@ -1,19 +1,27 @@
-# Bot Telegram – Notizie sui 5 campionati
+# Bot Telegram – Notizie e quote sui 5 campionati
 
-Sistema automatico (gratis) che ti manda su Telegram:
-- 🩹 Infortuni e 🟥 squalifiche (dati ufficiali, via API-Football)
-- 👔 Possibili cambi allenatore (esoneri, dimissioni, nuovi tecnici)
-- 🔄 Turnover / probabili formazioni / titolari in dubbio
+Sistema automatico (gratis) che manda su Telegram, in un gruppo con un argomento
+per campionato:
+- 🎙 le conferenze stampa e le parole degli allenatori
+- 🚑 infortuni, squalifiche, assenze e rientri
+- 📋 probabili formazioni, convocati, scelte di formazione
+- 👔 esoneri, dimissioni e nuovi allenatori
+- le notizie generali di tutte le squadre (niente calciomercato, serie minori,
+  giovanili, altri sport, cronache e pagelle delle partite già giocate)
+- 📈 gli avvisi sui movimenti delle quote (vedi «Bot quote» più sotto)
 
-Copre: Serie A, Premier League, La Liga, Bundesliga, Ligue 1.
-
-Gira da solo nel cloud tramite GitHub Actions, non serve tenere niente acceso.
+Copre: Serie A, Premier League, La Liga, Bundesliga, Ligue 1. Ogni notizia ha
+la foto, il titolo e un breve riassunto in italiano, e il pulsante per aprire
+l'articolo. Gira da solo nel cloud tramite GitHub Actions, ogni 5 minuti: non
+serve tenere niente acceso.
 
 ## Notizie divise per campionato e hashtag delle squadre
 
 - **Hashtag**: in fondo a ogni notizia ci sono gli hashtag delle squadre nominate
-  nel titolo (es. `#Inter #Juventus`). Toccandone uno, Telegram mostra tutte le
-  notizie di quella squadra.
+  nel titolo e, se la notizia è di un tipo riconosciuto, quello del tipo (es.
+  `#Inter #Juventus · #Infortuni`). Toccandone uno, Telegram mostra tutte le
+  notizie con quell'hashtag: `#Juventus` quelle della squadra (il tipo si legge
+  subito nella prima riga di ognuna), `#Infortuni` tutti gli infortuni.
 - **Gruppo con Argomenti**: crea un gruppo Telegram con dentro solo te e il bot,
   attiva gli *Argomenti* nelle impostazioni del gruppo e nomina il bot
   amministratore. Al giro successivo (entro 5 minuti) il bot trova il gruppo da
@@ -27,6 +35,46 @@ Gira da solo nel cloud tramite GitHub Actions, non serve tenere niente acceso.
 - Nomi e colori degli argomenti, hashtag delle squadre e pause tra un invio e
   l'altro si cambiano in `config.py` (sezioni "GRUPPO CON ARGOMENTI" e
   "HASHTAG DELLE SQUADRE"). La logica del gruppo è in `telegram_group.py`.
+
+## Tipi di notizia, limiti e controlli
+
+- **Tipo della notizia**: il bot lo riconosce dalle parole del titolo e lo
+  scrive in alto, accanto al campionato (`🇮🇹 Serie A · 🚑 Infortuni`), e in
+  fondo come hashtag. I tipi sono `🎙 #Conferenza` (conferenze stampa e
+  dichiarazioni dell'allenatore), `🚑 #Infortuni` (infortuni, squalifiche,
+  assenze, rientri), `📋 #Formazioni` (probabili formazioni, convocati,
+  ballottaggi) e `👔 #Allenatore` (esoneri, dimissioni, nuovi tecnici). Una
+  notizia può averne più d'uno; le notizie generali non ne hanno. Le parole
+  che fanno scattare ogni tipo sono in `config.py` (sezione «TIPO DI
+  NOTIZIA»), divise per lingua.
+- **Limiti per squadra, a finestra mobile**: per ogni squadra passano al
+  massimo 2 conferenze ogni 12 ore, 2 notizie su infortuni/formazioni/
+  allenatore ogni 6 ore e 1 notizia generale ogni 8 ore. Se la squadra gioca
+  entro 36 ore i limiti salgono (3, 3 e 2). La finestra scorre con l'orologio:
+  non si azzera a mezzanotte, quindi niente raffica di notte e spazio libero
+  la sera. Si cambiano in `config.py` (`TEAM_CAPS`, `MATCH_SOON_HOURS`).
+- **Formazioni ufficiali**: escono un'ora prima della partita, quando le
+  quote si muovono. Hanno un limite a parte (2 ogni 3 ore per squadra) e non
+  vengono scartate come doppioni delle «probabili formazioni» uscite prima:
+  passano sempre.
+- **Riassunti (Groq, piano gratuito)**: ogni riassunto è una chiamata. Il bot
+  conta chiamate e token; superate le 600 chiamate nelle ultime 24 ore
+  (`GROQ_GENERAL_DAILY_BUDGET`) le notizie generali italiane escono con il
+  testo del sito al posto del riassunto e quelle estere vengono saltate, così
+  i riassunti che restano vanno a conferenze, infortuni e formazioni.
+- **Foto**: se Telegram non riesce a scaricare la foto dal sito, la scarica il
+  bot e gliela carica; solo se non ci riesce nemmeno lui la notizia esce senza
+  foto.
+- **Pagine senza notizia**: titoli fatti solo dei nomi delle squadre, pagine
+  di statistiche, promozioni di scommesse e cronaca delle città che hanno il
+  nome di una squadra vengono scartati (`EXCLUDE_TITLE_WORDS` in `config.py`).
+- **Avvisi di salute** (nella chat privata col bot, al massimo uno al giorno
+  per tipo): il bot è rimasto fermo più di 45 minuti; Google News non risponde
+  da un'ora; più di 25 riassunti falliti in un giorno. Si spengono con
+  `HEALTH_NOTICES = False` in `config.py`.
+- **Registro**: le notizie inviate nelle ultime 48 ore (squadre, tipo, titolo,
+  fonte, posizione nel gruppo) e i contatori del giorno stanno in
+  `state/state.json` (`log`, `stats`, `stats_hist`).
 
 ## Bot quote (argomento «📈 Quote» del gruppo)
 
@@ -136,59 +184,56 @@ Conference League) con OddsPapi (piano gratuito, 250 chiamate al mese, secret
 
 ---
 
-## Passo 1 — Crea il bot Telegram
+## Come è montato
 
-1. Su Telegram cerca **@BotFather** e avvia una chat.
-2. Scrivi `/newbot`, dai un nome e uno username al bot (deve finire per "bot", es. `calcio_alert_bot`).
-3. BotFather ti darà un **token** tipo `123456789:AAExxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx`. Salvalo.
-4. Scrivi un messaggio qualsiasi al tuo nuovo bot (es. "ciao"), altrimenti non potrà scriverti.
-5. Per sapere il tuo **chat_id**, apri questo link nel browser sostituendo `<TOKEN>` con il tuo token:
-   `https://api.telegram.org/bot<TOKEN>/getUpdates`
-   Cerca nel risultato JSON il campo `"chat":{"id": ...}` — quel numero è il tuo `TELEGRAM_CHAT_ID`.
+1. **Bot Telegram**: creato con @BotFather. Il token è nel secret
+   `TELEGRAM_BOT_TOKEN`; `TELEGRAM_CHAT_ID` è l'id della chat privata col bot.
+2. **Chiavi** (GitHub → Settings → Secrets and variables → Actions). Stanno
+   solo lì, mai nel codice:
 
-## Passo 2 — Crea l'account API-Football (gratis)
+   | Nome | A cosa serve |
+   |---|---|
+   | `TELEGRAM_BOT_TOKEN` | il bot Telegram |
+   | `TELEGRAM_CHAT_ID` | la chat privata col bot (avvisi di servizio) |
+   | `GROQ_API_KEY` | riassunti in italiano (piano gratuito) |
+   | `FOOTBALL_DATA_API_KEY` | calendario e squadre (football-data.org, piano gratuito) |
+   | `ODDSPAPI_API_KEY` | quote (OddsPapi, piano gratuito: 250 chiamate al mese) |
+   | `TELEGRAM_GROUP_ID` | facoltativo: il bot trova il gruppo da solo |
 
-1. Vai su https://www.api-football.com/ (o https://dashboard.api-football.com/register) e registrati.
-2. Nella tua dashboard trovi la tua **API Key** (piano gratuito: 100 richieste/giorno, più che sufficiente per questo sistema).
-
-## Passo 3 — Crea il repository GitHub
-
-1. Crea un account su https://github.com se non ce l'hai già.
-2. Crea un nuovo repository (può essere privato), es. `calcio-alert-bot`.
-3. Carica tutti i file di questa cartella nel repository (puoi trascinarli dall'interfaccia web di GitHub, oppure con git).
-
-## Passo 4 — Inserisci le chiavi segrete
-
-Nel repository su GitHub: **Settings → Secrets and variables → Actions → New repository secret**.
-Crea questi 3 secret:
-
-| Nome | Valore |
-|---|---|
-| `TELEGRAM_BOT_TOKEN` | il token avuto da BotFather |
-| `TELEGRAM_CHAT_ID` | il chat_id trovato al Passo 1 |
-| `API_FOOTBALL_KEY` | la API key di API-Football |
-
-## Passo 5 — Attiva e testa
-
-1. Vai nella tab **Actions** del repository: dovresti vedere i due workflow ("Monitor infortuni e squalifiche" e "Monitor notizie").
-2. Selezionane uno e clicca **Run workflow** per testarlo subito (non serve aspettare l'orario schedulato).
-3. Se tutto è configurato bene, riceverai i messaggi su Telegram entro un minuto (se ci sono novità da segnalare).
-
-Da qui in poi il sistema gira da solo:
-- infortuni/squalifiche: controllo 2 volte al giorno
-- notizie allenatori/turnover: controllo ogni 3 ore
-
----
+3. **Workflow** (tab Actions del repository):
+   - «Monitor notizie squadre»: il giro ogni 5 minuti (prima le quote, poi le
+     notizie).
+   - «Aggiorna calendario partite e squadre»: 4 volte al giorno.
+   - «Prova bot quote»: solo a mano.
+4. **Chi fa partire il giro ogni 5 minuti**: cron-job.org (gratis), con una
+   richiesta `POST` a
+   `https://api.github.com/repos/10-DIEZ/DIEZ-News/actions/workflows/monitor-news.yml/dispatches`,
+   intestazioni `Authorization: Bearer <token GitHub>` e
+   `Accept: application/vnd.github+json`, corpo `{"ref":"main"}`. Il token è un
+   «fine-grained token» di GitHub con il permesso *Actions: read and write* su
+   questo repository. **Se ha una scadenza, quel giorno il giro si ferma**
+   (nella cronologia di cron-job.org compare l'errore 401): va rifatto il token
+   e incollato di nuovo. L'orario interno di GitHub resta come riserva, ma è
+   irregolare (anche ore di ritardo).
 
 ## Personalizzazioni facili
 
-Apri `config.py` per modificare:
-- `SEASON` — se cambia la stagione (es. da 2026 a 2027)
-- `COACH_CHANGE_KEYWORDS` / `LINEUP_RUMOR_KEYWORDS` — parole chiave usate per filtrare le notizie
-- gli orari dei controlli si cambiano nei file `.github/workflows/*.yml` (campo `cron`, orari in UTC)
+Tutto in `config.py`:
+- limiti per squadra (`TEAM_CAPS`), età massima delle notizie
+  (`NEWS_MAX_AGE_HOURS`), massimo di messaggi per giro (`MAX_MESSAGES_PER_RUN`)
+- parole che riconoscono i tipi di notizia e parole escluse
+- calciomercato: escluso; per riaverlo `INCLUDE_TRANSFER_NEWS = True`
+- nomi, alias e hashtag delle squadre; nomi e colori degli argomenti del gruppo
 
 ## Limiti da conoscere
 
-- Le notizie su "turnover/probabili formazioni" arrivano da ricerche Google News: potranno esserci **falsi positivi** (articoli non del tutto pertinenti) o qualche doppione nei titoli — è normale, il sistema impara a filtrare meglio nel tempo se affiniamo le parole chiave.
-- Il piano gratuito API-Football ha 100 richieste/giorno: con 2 esecuzioni al giorno per 5 campionati (10 chiamate) siamo ben sotto il limite, ma se in futuro aggiungi controlli più frequenti tienilo a mente.
-- Se un giorno l'API-Football cambia struttura di risposta, lo script `monitor_structured.py` andrà aggiornato di conseguenza — segnalamelo e lo sistemiamo.
+- Le notizie arrivano dai feed RSS delle testate e da ricerche su Google News:
+  può scappare qualche articolo poco pertinente o un tipo sbagliato. Si
+  corregge aggiungendo o togliendo parole nelle liste di `config.py`.
+- Google News a volte blocca le ricerche per qualche giro: il bot se ne
+  accorge dopo 6 ricerche fallite, salta il resto del giro e riprova al
+  successivo. Le notizie dei feed diretti continuano ad arrivare.
+- Piani gratuiti: Groq (riassunti) è l'unico vicino al tetto giornaliero nei
+  giorni pieni, per questo c'è la soglia delle 600 chiamate; football-data,
+  Telegram, cron-job.org e GitHub Actions (repository pubblico) hanno margine
+  ampio; OddsPapi usa circa 25-40 chiamate al mese su 250.

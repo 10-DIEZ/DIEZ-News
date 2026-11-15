@@ -16,14 +16,21 @@ Come funziona un giro:
    - niente resoconti con il risultato nel titolo, niente articoli su
      partite gia' giocate arrivati a distanza di ore/giorni
 3. PRIORITA' E LIMITI: conferenze stampa > infortuni/formazioni/allenatore
-   > notizie generali, con un massimo giornaliero per squadra
-   (TEAM_DAILY_CAPS) e scarto delle copie della stessa notizia.
+   > notizie generali, con un massimo per squadra in una finestra mobile di
+   ore (TEAM_CAPS: piu' alto per chi gioca entro MATCH_SOON_HOURS ore) e
+   scarto delle copie della stessa notizia.
 4. INVIO: link reale, immagine e data della pagina (se la pagina dice che
    l'articolo e' vecchio, si scarta), titolo e riassunto in italiano via
    Groq (con riserva di traduzione diretta), invio su Telegram con in fondo
-   l'hashtag delle squadre (#Inter #Juventus). Se c'e' il gruppo con gli
-   Argomenti (vedi telegram_group.py) ogni notizia va nell'argomento del suo
-   campionato, altrimenti nella chat privata col bot.
+   l'hashtag delle squadre e quello del tipo (#Inter #Juventus · #Infortuni;
+   il tipo e' scritto anche in alto, accanto al campionato). Se c'e' il
+   gruppo con gli Argomenti (vedi telegram_group.py) ogni notizia va
+   nell'argomento del suo campionato, altrimenti nella chat privata col bot.
+5. ARCHIVIO E SALUTE: ogni notizia inviata resta LOG_KEEP_HOURS ore nello
+   stato ("log": squadre, tipo, titolo, indirizzo del post); i contatori del
+   giorno ("stats": ricerche Google fallite, chiamate e token Groq, notizie
+   per tipo...) servono a tenere d'occhio i limiti dei servizi gratuiti, e se
+   qualcosa non va il bot lo scrive nella chat privata (HEALTH_* in config).
 
 Il primo giro dopo l'aggiornamento non manda nulla: registra le notizie gia'
 uscite, cosi' da quel momento arrivano solo quelle nuove (niente raffica).
@@ -49,43 +56,64 @@ from googlenewsdecoder import gnewsdecoder
 
 from config import (
     BLOCKED_NEWS_DOMAINS,
+    COACH_KEYWORDS,
     COACH_SURNAME_STOPLIST,
     DIRECT_RSS_FEEDS,
     DUPLICATE_SUPPRESS_HOURS,
     EXCLUDE_TITLE_WORDS,
     EXCLUDED_URL_PATTERNS,
     EXCLUDED_URL_SEGMENTS,
+    GOOGLE_BREAKER_FAILS,
     GOOGLE_MAX_ITEMS,
+    GOOGLE_TIMEOUT_SECONDS,
     GROQ_API_KEY,
+    GROQ_GENERAL_DAILY_BUDGET,
     HASHTAGS,
+    HEALTH_GAP_MINUTES,
+    HEALTH_GOOGLE_FAILED_RUNS,
+    HEALTH_GROQ_FAILURES,
+    HEALTH_NOTICES,
     INCLUDE_TRANSFER_NEWS,
-    KEY_KEYWORDS,
+    INJURY_KEYWORDS,
+    INJURY_KEYWORDS_BY_LANG,
+    INJURY_NOT_KEYWORDS,
+    INJURY_PLAYER_WORDS,
     LEAGUES,
+    LINEUP_KEYWORDS,
+    LINEUP_NOT_KEYWORDS,
+    LOG_KEEP_HOURS,
+    MATCH_SOON_HOURS,
     MAX_HASHTAGS,
     MAX_MESSAGES_PER_RUN,
+    MAX_TYPE_LABELS,
+    OFFICIAL_LINEUP_KEYWORDS,
     NEWS_MAX_AGE_HOURS,
     POST_MATCH_HOURS,
     PRESS_KEYWORDS,
+    PRESS_KEYWORDS_BY_LANG,
+    PRESS_NOT_KEYWORDS,
     PRESS_QUERY_TERMS,
     QUERY_CONTEXT,
     SEEN_KEEP_DAYS,
-    TEAM_DAILY_CAPS,
+    TEAM_CAPS,
     TEAM_HASHTAGS,
     TEAM_QUERY_INTERVAL_MINUTES,
     TEAMS,
     TRANSFER_URL_SEGMENTS,
     TRANSFER_WORDS,
+    TYPE_TAGS,
 )
 from telegram_group import Destination
-from utils import load_calendar, load_state, save_state
+from utils import load_calendar, load_state, save_state, send_telegram_message
 
 STATE_VERSION = 3
 ROME = ZoneInfo("Europe/Rome")
 
-# Il workflow parte ogni 5 minuti, ma GitHub a volte lo fa partire ore dopo:
-# un giro puo' durare fino a 7 minuti per smaltire tutto (il successivo
-# aspetta in coda, non si sovrappone).
-MAX_RUN_SECONDS = 420
+# Il giro parte ogni 5 minuti e prima delle notizie controlla le quote: non
+# deve durare troppo, altrimenti il controllo quote successivo slitta. Quello
+# che non entra in un giro parte al successivo (aspetta in coda, non si
+# sovrappone).
+MAX_RUN_SECONDS = 270
 PARALLEL_FETCH = 3          # ricerche/feed scaricati in parallelo
 PARALLEL_RESOLVE = 4        # link decodificati / pagine lette in parallelo
 PARALLEL_AI = 3             # riassunti Groq preparati in parallelo (con limite di frequenza)
@@ -98,9 +126,10 @@ PRESS_QUERY_CHUNK = 6       # squadre per ogni ricerca "conferenza stampa"
 # se un modello e' al limite, si passa al successivo.
 GROQ_MODELS = ["openai/gpt-oss-120b", "openai/gpt-oss-20b", "qwen/qwen3.8-27b"]
 GROQ_ENDPOINT = "https://api.groq.com/openai/v1/chat/completions"
-GROQ_MIN_INTERVAL = 2.0
+GROQ_MIN_INTERVAL = 3.0
 
-PRIORITY = {"press": 0, "key": 1, "general": 2}
+PRIORITY = {"official": 0, "press": 0, "key": 1, "general": 2}
+CLASSES = ("official", "press", "key", "general")
 
 HTTP_HEADERS = {
     "User-Agent": (
@@ -131,10 +160,48 @@ def words_regex(words) -> re.Pattern:
     return re.compile(r"(?<!\w)(?:" + "|".join(re.escape(p) for p in parts) + r")(?!\w)", re.IGNORECASE)
 
 
+def keyword_regex(words):
+    """Come words_regex, ma una voce che comincia con "~" e' un'espressione regolare. None se la lista e' vuota."""
+    plain = [w for w in words if w and not w.startswith("~")]
+    parts = [words_regex(plain).pattern] if plain else []
+    parts += [f"(?:{w[1:]})" for w in words if w.startswith("~")]
+    return re.compile("|".join(parts), re.IGNORECASE) if parts else None
+
+
+class Kind:
+    """Riconosce un tipo di notizia dalle parole del titolo (vedi le liste XXX_KEYWORDS in config)."""
+
+    def __init__(self, words, by_lang=None, not_words=None):
+        self.any = keyword_regex(words)
+        self.by_lang = {lang: keyword_regex(w) for lang, w in (by_lang or {}).items()}
+        self.skip = keyword_regex(not_words or [])
+
+    def clean(self, title: str) -> str:
+        """Il titolo senza i modi di dire che ingannano ("senza dubbio", "minuti di recupero")."""
+        return self.skip.sub(" ", title) if self.skip else title
+
+    def found(self, title: str, lang: str) -> bool:
+        text = self.clean(title)
+        if self.any and self.any.search(text):
+            return True
+        rx = self.by_lang.get(lang)
+        return bool(rx and rx.search(text))
+
+
 EXCLUDE_RE = words_regex(EXCLUDE_TITLE_WORDS + ["serie a1", "serie a2"])
 TRANSFER_RE = words_regex(TRANSFER_WORDS)
-PRESS_RE = words_regex(PRESS_KEYWORDS)
-KEY_RE = words_regex(KEY_KEYWORDS)
+KINDS = {
+    "press": Kind(PRESS_KEYWORDS, PRESS_KEYWORDS_BY_LANG, PRESS_NOT_KEYWORDS),
+    "coach": Kind(COACH_KEYWORDS),
+    "injury": Kind(INJURY_KEYWORDS, INJURY_KEYWORDS_BY_LANG, INJURY_NOT_KEYWORDS),
+    "lineup": Kind(LINEUP_KEYWORDS, None, LINEUP_NOT_KEYWORDS),
+}
+OFFICIAL_RE = keyword_regex(OFFICIAL_LINEUP_KEYWORDS)
+# "Bremer ko", "Bremer si ferma": parola valida solo dopo un nome che non e' una squadra
+PLAYER_WORD_RE = {
+    lang: re.compile(r"(?<!\w)([A-ZÀ-Þ][\w'’.-]*)\s+(?i:" + "|".join(re.escape(w) for w in words) + r")(?!\w)")
+    for lang, words in INJURY_PLAYER_WORDS.items() if words
+}
 
 # Risultato nel titolo (es. "Milan-Atalanta 2-1", "Bayern 3:0") = resoconto
 # di una partita gia' giocata. Non scambia per risultati i moduli (4-3-3),
@@ -525,31 +592,134 @@ class FixtureIndex:
                     return "partita gia' giocata"
         return None
 
+    def official_lineup_plausible(self, teams: list, now) -> bool:
+        """
+        Un titolo sulle "formazioni ufficiali" e' credibile? Se nomina due squadre
+        seguite, devono giocare davvero una contro l'altra adesso: altrimenti sono
+        le formazioni della Primavera o della femminile. Con una squadra sola non
+        si puo' verificare (coppe che non sono in calendario): si lascia passare.
+        """
+        if len(teams) < 2:
+            return True
+        named = set(teams)
+        first, last = now - timedelta(hours=1.5), now + timedelta(hours=3)
+        return any(home in named and away in named and first <= kickoff <= last
+                   for home, away, kickoff in self.pairs)
 
-def classify(title: str, spans: list) -> str:
-    """press = conferenza stampa, key = infortuni/formazioni/allenatore, general = il resto."""
-    if PRESS_RE.search(title):
-        return "press"
-    for _, end, _, is_coach in spans:
-        if is_coach and ":" in title[end:end + 3]:
-            return "press"   # es. "Conte: 'domani gioca...'"
-    if KEY_RE.search(title):
-        return "key"
-    return "general"
+    def playing_soon(self, now, hours: float) -> set:
+        """Squadre con una partita che comincia entro 'hours' ore."""
+        limit = now + timedelta(hours=hours)
+        out = set()
+        for home, away, kickoff in self.pairs:
+            if now < kickoff <= limit:
+                out.add(home)
+                out.add(away)
+        return out
+
+
+_QUOTES = "\"'«“”‘’„‹"
+_COLON_RE = re.compile(r"\s{0,2}:\s*")
+_LEADS_RE = re.compile(r"(?:[,;:|•»\"“”]|\s[-–—])\s*$")
+_FAR_QUOTE_RE = re.compile(r"[^:«»\"“”„]{1,40}:\s*[\"«“„]")
+
+
+def coach_speaks(title: str, start: int, end: int) -> bool:
+    """
+    Il titolo riporta le parole dell'allenatore? Il suo nome sta in title[start:end].
+    Si': "Conte: «Domani gioca...»", "Napoli, Conte: non sara' facile",
+         "Sarri si giustifica con le assenze: «10 infortunati»".
+    No:  "la panchina di Sarri: Kessie verso il recupero", "il post-Carrick: ...".
+    """
+    rest = title[end:]
+    m = _COLON_RE.match(rest)
+    if m and ":" in m.group(0):
+        if rest[m.end():m.end() + 1] in _QUOTES and rest[m.end():]:
+            return True
+        # senza virgolette vale solo se il nome apre il titolo o segue una virgola/un trattino
+        before = title[:start]
+        return not before.strip() or bool(_LEADS_RE.search(before))
+    return bool(_FAR_QUOTE_RE.match(rest))
+
+
+def player_stopped(title: str, spans: list, lang: str) -> bool:
+    """ "Bremer ko", "Bremer si ferma": infortunio. "Milan ko", "la Juve si ferma": no (e' una sconfitta)."""
+    rx = PLAYER_WORD_RE.get(lang)
+    if not rx:
+        return False
+    for m in rx.finditer(title):
+        s, e = m.start(1), m.end(1)
+        if not any(ts < e and s < te for ts, te, _, _ in spans):
+            return True
+    return False
+
+
+def classify(title: str, spans: list, lang: str = "") -> tuple:
+    """
+    Tipo della notizia, dal titolo. Ritorna (classe, tipi):
+    - classe: "official" (formazioni ufficiali), "press" (conferenza stampa),
+      "key" (infortuni, formazioni, allenatore) o "general" (il resto):
+      decide priorita' e limiti
+    - tipi: quelli riconosciuti tra press, coach, injury, lineup, nell'ordine
+      (diventano etichetta e hashtag: una notizia puo' averne piu' d'uno)
+    """
+    is_press = KINDS["press"].found(title, lang) or \
+        any(is_coach and coach_speaks(title, start, end) for start, end, _, is_coach in spans)
+    types = ["press"] if is_press else []
+    if KINDS["coach"].found(title, lang):
+        types.append("coach")
+    if KINDS["injury"].found(title, lang) or player_stopped(title, spans, lang):
+        types.append("injury")
+    official = bool(OFFICIAL_RE and OFFICIAL_RE.search(title))
+    if official or KINDS["lineup"].found(title, lang):
+        types.append("lineup")
+    return ("official" if official else "press" if is_press else "key" if types else "general"), types
+
+
+# Parole che, accanto ai nomi delle squadre, non fanno una notizia
+_BARE_FILLER = {
+    "contro", "gegen", "contra", "uefa", "champions", "europa", "conference", "league", "liga", "laliga",
+    "ligue", "serie", "bundesliga", "premier", "sports", "enilive", "fase", "giornata", "jornada",
+    "spieltag", "journée", "matchday", "fecha", "calcio", "football", "fútbol", "fussball", "fußball",
+    "partido", "partita", "match", "spiel",
+}
+_FIXTURE_ONLY_RE = re.compile(r"^[^:,;!?\"«“]{2,60}\s(?:[-–—/]|vs?\.?)\s[^:,;!?\"«“]{2,60}$", re.IGNORECASE)
+
+
+def is_bare_title(title: str, spans: list) -> bool:
+    """
+    Titolo fatto solo dei nomi delle squadre: "Lorient / Monaco", "SC Freiburg",
+    "1. FC Nürnberg - 1. FC Köln". Sono pagine di calendario o statistiche,
+    non notizie.
+    """
+    rest, pos = [], 0
+    for start, end, _, _ in spans:
+        rest.append(title[pos:start])
+        pos = max(pos, end)
+    rest.append(title[pos:])
+    words = [w for w in re.findall(r"[^\W\d_]{3,}", " ".join(rest)) if w.lower() not in _BARE_FILLER]
+    if not words:
+        return True
+    # "Squadra - Avversaria" e nient'altro (l'avversaria non e' tra le squadre seguite)
+    return len(words) <= 2 and all(w[0].isupper() for w in words) and bool(_FIXTURE_ONLY_RE.match(title.strip()))
 
 
 # =====================================================================
 # Raccolta: feed RSS e Google News
 # =====================================================================
 
-def fetch_feed(url: str):
+_feed_error = [""]      # motivo dell'ultima richiesta fallita (per il registro)
+
+
+def fetch_feed(url: str, timeout: float = HTTP_TIMEOUT):
     """Scarica un feed con timeout. Restituisce le voci, oppure None se la richiesta e' fallita."""
     try:
-        resp = requests.get(url, headers=HTTP_HEADERS, timeout=HTTP_TIMEOUT)
+        resp = requests.get(url, headers=HTTP_HEADERS, timeout=timeout)
         if resp.status_code != 200:
+            _feed_error[0] = f"risposta {resp.status_code}"
             return None
         return feedparser.parse(resp.content).entries or []
-    except requests.RequestException:
+    except requests.RequestException as e:
+        _feed_error[0] = e.__class__.__name__
         return None
 
 
@@ -628,9 +798,24 @@ def build_google_queries(team_index: TeamIndex, state: dict, now_ts: float) -> l
 def collect_google(queries: list, state: dict, now_ts: float, stats: Counter) -> list:
     queried = state.setdefault("team_queried", {})
     items = []
+    lock = threading.Lock()
+    tally = {"ok": 0, "fail": 0, "blocked": False}
 
     def job(q):
-        return q, fetch_feed(google_url(q["q"], q["lang"]))
+        # Interruttore: se Google sta rifiutando tutto (capita, a blocchi, dai
+        # computer di GitHub) e' inutile insistere: si salta il resto del giro.
+        if tally["blocked"]:
+            return q, None
+        entries = fetch_feed(google_url(q["q"], q["lang"]), timeout=GOOGLE_TIMEOUT_SECONDS)
+        with lock:
+            if entries is None:
+                tally["fail"] += 1
+                if (not tally["ok"] and tally["fail"] >= GOOGLE_BREAKER_FAILS) or \
+                        (tally["fail"] >= 2 * GOOGLE_BREAKER_FAILS and tally["fail"] > 2 * tally["ok"]):
+                    tally["blocked"] = True
+            else:
+                tally["ok"] += 1
+        return q, entries
 
     failed = 0
     with ThreadPoolExecutor(max_workers=PARALLEL_FETCH) as pool:
@@ -649,9 +834,13 @@ def collect_google(queries: list, state: dict, now_ts: float, stats: Counter) ->
                                   "source": domain_of(src_href) if src_href else src_title})
     stats["google_queries"] = len(queries)
     stats["google_failed"] = failed
+    stats["google_blocked"] = int(tally["blocked"])
     stats["google_items"] = len(items)
     if failed:
-        print(f"[WARN] {failed} ricerche Google News non riuscite su {len(queries)} (riprovo al prossimo giro)")
+        why = f": {_feed_error[0]}" if _feed_error[0] else ""
+        cut = " — Google rifiuta le richieste, resto del giro saltato" if tally["blocked"] else ""
+        print(f"[WARN] {failed} ricerche Google News non riuscite su {len(queries)}{why}{cut} "
+              f"(riprovo al prossimo giro)")
     return items
 
 
@@ -746,6 +935,7 @@ def fetch_article_meta(url: str) -> dict:
 
 
 _groq_lock = threading.Lock()
+_stats_lock = threading.Lock()
 _groq_next = [0.0]
 _groq_cooldown: dict = {}
 _TITLE_RE = re.compile(r"\**\s*TITOLO\s*\**\s*:\s*\**\s*(.+)", re.IGNORECASE)
@@ -812,13 +1002,16 @@ def summarize_with_ai(title: str, description: str, source_lang: str, stats: Cou
         except requests.RequestException as e:
             print(f"[WARN] chiamata Groq ({model}) fallita: {e}")
             continue
+        with _stats_lock:
+            stats["groq_calls"] += 1
         if resp.status_code == 429:
             try:
                 retry = float(resp.headers.get("retry-after", "30"))
             except ValueError:
                 retry = 30.0
             _groq_cooldown[model] = time.time() + min(max(retry, 5.0), 600.0)
-            stats["groq_429"] += 1
+            with _stats_lock:
+                stats["groq_429"] += 1
             continue
         if resp.status_code in (400, 404):
             # modello ritirato o parametro non supportato: non riprovarlo in questo giro
@@ -829,9 +1022,14 @@ def summarize_with_ai(title: str, description: str, source_lang: str, stats: Cou
             print(f"[WARN] Groq ({model}) ha risposto {resp.status_code}: {resp.text[:200]}")
             continue
         try:
-            choice = resp.json()["choices"][0]
-        except (ValueError, KeyError, IndexError):
+            data = resp.json()
+            choice = data["choices"][0]
+        except (ValueError, KeyError, IndexError, TypeError):
             continue
+        used = (data.get("usage") or {}).get("total_tokens")
+        if isinstance(used, int):
+            with _stats_lock:
+                stats["tok:" + model] += used     # consumo del giorno: tetto gratuito 200.000 per modello
         content = _THINK_RE.sub("", choice.get("message", {}).get("content") or "")
         title_match = _TITLE_RE.search(content)
         summary_match = _SUMMARY_RE.search(content)
@@ -884,17 +1082,25 @@ def clean_description(text: str, max_chars: int = 280) -> str:
 
 
 def build_caption(meta: dict, title: str, summary: str, url: str, league_name: str, flag: str,
-                  hashtags: str = "") -> str:
-    """Didascalia: bandierina + campionato, titolo in grassetto, riassunto, fonte, hashtag delle squadre."""
+                  hashtags: str = "", types=()) -> str:
+    """
+    Didascalia: bandierina + campionato (+ tipo di notizia), titolo in grassetto,
+    riassunto, fonte, hashtag delle squadre e del tipo.
+    """
     source = meta.get("site_name") or domain_of(url)
     body = summary or clean_description(meta.get("description", ""))
     if body and body.strip().lower() == title.strip().lower():
         body = ""
     esc = lambda text: html.escape(text, quote=False)
-    head = f"{flag} <b>{esc(league_name)}</b>\n\n<b>{esc(title)}</b>"
+    known = [t for t in types if t in TYPE_TAGS]
+    head = f"{flag} <b>{esc(league_name)}</b>"
+    if known:
+        head += " · " + " · ".join(f"{TYPE_TAGS[t][0]} {TYPE_TAGS[t][1]}" for t in known[:MAX_TYPE_LABELS])
+    head += f"\n\n<b>{esc(title)}</b>"
     tail = f"\n\n<i>Fonte: {esc(source)}</i>"
-    if hashtags:
-        tail += f"\n{esc(hashtags)}"
+    tags = " · ".join(t for t in (hashtags, " ".join("#" + TYPE_TAGS[t][1] for t in known)) if t)
+    if tags:
+        tail += f"\n{esc(tags)}"
     if body:
         room = 1000 - len(head) - len(tail) - 2
         if len(body) > room:
@@ -908,20 +1114,53 @@ def build_caption(meta: dict, title: str, summary: str, url: str, league_name: s
 # Stato
 # =====================================================================
 
+STATS_HISTORY_DAYS = 14     # contatori dei giorni passati tenuti nello stato
+
+
 def fresh_state() -> dict:
-    return {"version": STATE_VERSION, "seen": {}, "recent": [], "caps": {}, "team_queried": {}, "stats": {}}
+    return {"version": STATE_VERSION, "seen": {}, "recent": [], "log": [], "team_queried": {},
+            "stats": {}, "health": {}}
 
 
 def prune_state(state: dict, now: datetime, today: str) -> None:
-    keep_after = now.timestamp() - SEEN_KEEP_DAYS * 86400
+    now_ts = now.timestamp()
+    keep_after = now_ts - SEEN_KEEP_DAYS * 86400
     state["seen"] = {k: v for k, v in state.get("seen", {}).items() if v >= keep_after}
     cutoff = now - timedelta(hours=DUPLICATE_SUPPRESS_HOURS)
     state["recent"] = [r for r in state.get("recent", [])
                        if (parse_iso_date(r.get("ts", "")) or cutoff - timedelta(seconds=1)) >= cutoff]
-    if state.get("caps", {}).get("day") != today:
-        state["caps"] = {"day": today, "counts": {}}
-    if state.get("stats", {}).get("day") != today:
-        state["stats"] = {"day": today, "sent": 0, "groq_failures": 0}
+    # registro delle notizie inviate (limiti a finestra mobile, ultime notizie di una squadra)
+    log_after = now_ts - LOG_KEEP_HOURS * 3600
+    state["log"] = [e for e in state.get("log", []) if isinstance(e, dict) and e.get("t", 0) >= log_after]
+    state.pop("caps", None)     # vecchio limite "al giorno", sostituito dalla finestra mobile
+    # chiamate a Groq ora per ora (ultime 24 ore), per il tetto delle notizie generali
+    hour = int(now_ts // 3600)
+    hours = state.get("groq_hours") if isinstance(state.get("groq_hours"), dict) else {}
+    state["groq_hours"] = {h: n for h, n in hours.items() if str(h).isdigit() and hour - int(h) < 24}
+    # contatori del giorno: a mezzanotte quelli di ieri passano nello storico
+    stats = state.get("stats") if isinstance(state.get("stats"), dict) else {}
+    if stats.get("day") != today:
+        if stats.get("day"):
+            history = state.setdefault("stats_hist", [])
+            history.append(stats)
+            del history[:-STATS_HISTORY_DAYS]
+        stats = {"day": today}
+    state["stats"] = stats
+    if not isinstance(state.get("health"), dict):
+        state["health"] = {}
+
+
+def notify_owner(dest, health: dict, kind: str, today: str, text: str) -> None:
+    """Avviso di salute nella chat privata col bot: al massimo uno al giorno per tipo."""
+    notified = health.setdefault("notified", {})
+    if notified.get(kind) == today:
+        return
+    print(f"[SALUTE] {kind}: {re.sub(r'<[^>]+>', '', text).splitlines()[0]}")
+    if not HEALTH_NOTICES or not dest.private_chat:
+        notified[kind] = today
+        return
+    if send_telegram_message(text, disable_preview=True, chat_id=dest.private_chat):
+        notified[kind] = today
 
 
 # =====================================================================
@@ -948,12 +1187,28 @@ def run():
             state["telegram"] = telegram_cfg
     prune_state(state, now, today)
     seen = state["seen"]
-    caps = state["caps"]["counts"]
+    log = state["log"]
+    day_stats = state["stats"]
+    health = state["health"]
     stats = Counter()
 
     # Dove vanno le notizie: argomenti del gruppo, o chat privata (vedi telegram_group.py)
     dest = Destination(state)
     dest.prepare()
+
+    # Il giro precedente e' troppo lontano? Di solito parte ogni 5 minuti: se e'
+    # rimasto fermo a lungo, il timer esterno (cron-job.org) non sta funzionando.
+    last_run = health.get("last_run")
+    health["last_run"] = int(now_ts)
+    if not first_run and last_run and now_ts - last_run >= HEALTH_GAP_MINUTES * 60:
+        gap = int((now_ts - last_run) // 60)
+        was = datetime.fromtimestamp(last_run, ROME).strftime("%H:%M")
+        notify_owner(dest, health, "gap", today, (
+            f"⏱ <b>Bot notizie fermo per {gap} minuti</b>\n\n"
+            f"L'ultimo giro prima di questo era alle {was}. Di solito parte ogni 5 minuti.\n"
+            "Se succede spesso, guarda la cronologia del cronjob su cron-job.org: il codice 401 "
+            "vuol dire che il token di GitHub e' scaduto e va rifatto (e incollato di nuovo "
+            "nell'intestazione Authorization)."))
 
     def mark_seen(*links):
         for link in links:
@@ -966,8 +1221,9 @@ def run():
     calendar = load_calendar()
     team_index = TeamIndex(calendar.get("teams", []))
     fixtures = FixtureIndex(calendar.get("fixtures", []))
+    teams_soon = fixtures.playing_soon(now, MATCH_SOON_HOURS) & set(team_index.teams)
     print(f"Squadre seguite: {len(team_index.teams)} · partite in calendario (ultimi giorni + prossimi): "
-          f"{len(fixtures.pairs)}")
+          f"{len(fixtures.pairs)} · squadre che giocano entro {MATCH_SOON_HOURS} ore: {len(teams_soon)}")
 
     # ---------------- 1. Raccolta ----------------
     raw = collect_rss(stats)
@@ -1017,7 +1273,13 @@ def run():
         if has_score(title) or fixtures.stale_reason(set(teams), pub, now):
             stats["dopo_partita"] += 1
             continue
-        it.update(published=pub, teams=teams, category=classify(title, spans))
+        category, types = classify(title, spans, it["lang"])
+        if category == "official" and not fixtures.official_lineup_plausible(teams, now):
+            category = "key"    # "ufficiali" di una partita che in calendario non c'e': limiti normali
+        if not types and is_bare_title(title, spans):
+            stats["esclusi"] += 1
+            continue
+        it.update(published=pub, teams=teams, category=category, types=types)
         candidates.append(it)
 
     # Primo giro della nuova versione: registra tutto, non manda nulla
@@ -1031,9 +1293,41 @@ def run():
         return
 
     # ---------------- 3. Priorita', limiti per squadra, doppioni ----------------
+    # Limite a finestra mobile: quante notizie di quella classe ha gia' avuto la
+    # squadra nelle ultime ore (dal registro degli invii), piu' quelle scelte ora.
+    sent_times = {}
+    for e in log:
+        if e.get("tm"):
+            sent_times.setdefault((e["tm"][0], e.get("c")), []).append(e.get("t", 0))
+    pending = Counter()
+
+    def over_cap(team: str, category: str) -> bool:
+        max_n, hours = TEAM_CAPS[category]["match" if team in teams_soon else "normal"]
+        since_ts = now_ts - hours * 3600
+        already = sum(1 for t in sent_times.get((team, category), ()) if t >= since_ts)
+        return already + pending[(team, category)] >= max_n
+
+    def already_out(c, token_sets, pool) -> bool:
+        """Una notizia molto simile sulla stessa squadra e' gia' uscita (o e' gia' scelta in questo giro)?"""
+        official = c["category"] == "official"
+        teams = set(c["teams"])
+        for r in pool:
+            if official and not r.get("o"):
+                continue    # le formazioni ufficiali non sono un doppione delle "probabili" di prima
+            if teams & set(r["teams"]) and any(is_similar(tokens, set(r["tokens"])) for tokens in token_sets):
+                return True
+        return False
+
+    def remember(pool, c, tokens, ts=None) -> None:
+        entry = {"teams": c["teams"], "tokens": sorted(tokens)}
+        if ts:
+            entry["ts"] = ts
+        if c["category"] == "official":
+            entry["o"] = 1
+        pool.append(entry)
+
     candidates.sort(key=lambda c: (PRIORITY[c["category"]], -(c["published"] or now).timestamp()))
     recent = state["recent"]
-    pending = Counter()
     run_recent = list(recent)
     selected = []
     for c in candidates:
@@ -1041,19 +1335,20 @@ def run():
             stats["rimandati"] += 1
             continue   # non segnato come visto: riprova al prossimo giro
         team = c["teams"][0]
-        cap_key = f"{team}|{c['category']}"
-        if caps.get(cap_key, 0) + pending[cap_key] >= TEAM_DAILY_CAPS[c["category"]]:
+        cap_key = (team, c["category"])
+        if over_cap(team, c["category"]):
             mark_seen(c["link"])
             stats["limite_squadra"] += 1
+            stats["cap:" + c["category"]] += 1
             continue
         c["ignore"] = team_index.ignore_for(c["teams"])
         c["tokens"] = title_tokens(c["title"], c["ignore"])
-        if any(set(c["teams"]) & set(r["teams"]) and is_similar(c["tokens"], set(r["tokens"])) for r in run_recent):
+        if already_out(c, [c["tokens"]], run_recent):
             mark_seen(c["link"])
             stats["doppioni"] += 1
             continue
         pending[cap_key] += 1
-        run_recent.append({"teams": c["teams"], "tokens": sorted(c["tokens"])})
+        remember(run_recent, c, c["tokens"])
         c["cap_key"] = cap_key
         selected.append(c)
 
@@ -1099,21 +1394,34 @@ def run():
     # I riassunti si preparano in parallelo e ogni notizia parte appena e'
     # pronta (sempre in ordine cronologico): nel gruppo Telegram accetta un
     # messaggio ogni ~3 secondi, cosi' quell'attesa non si somma a quella di Groq.
+    groq_before = sum(state["groq_hours"].values())     # chiamate delle ultime 24 ore
+
     def prepare(c):
         if not budget_ok(margin=60):
-            return c, False
+            return c, "tempo"
         meta = c["meta"]
-        ai = summarize_with_ai(c["title"], meta.get("description", ""), c["lang"], stats)
+        use_ai = bool(GROQ_API_KEY)
+        # Tetto gratuito di Groq: superata la soglia nelle ultime 24 ore, le notizie
+        # generali lasciano i riassunti a conferenze, infortuni e formazioni.
+        if use_ai and c["category"] == "general" and \
+                groq_before + stats["groq_calls"] >= GROQ_GENERAL_DAILY_BUDGET:
+            if c["lang"] != "it":
+                return c, "tetto"       # estera: senza Groq non si traduce bene, si salta
+            use_ai = False
+            with _stats_lock:
+                stats["senza_groq"] += 1
+        ai = summarize_with_ai(c["title"], meta.get("description", ""), c["lang"], stats) if use_ai else None
         if ai:
             c["it_title"], c["summary"] = ai["title"], ai["summary"]
         else:
-            if GROQ_API_KEY:
-                stats["groq_falliti"] += 1
+            if use_ai:
+                with _stats_lock:
+                    stats["groq_falliti"] += 1
             c["it_title"] = translate_to_italian(c["title"], c["lang"])
             c["summary"] = ""
             if meta.get("description") and c["lang"] != "it":
                 meta["description"] = translate_to_italian(meta["description"], c["lang"])
-        return c, True
+        return c, "ok"
 
     # ---------------- 5. Invio ----------------
     def deliver(c):
@@ -1129,51 +1437,117 @@ def run():
         # stessa notizia gia' inviata in questo giro o uscita in un'altra lingua
         # (confronto anche sul titolo tradotto in italiano)
         tokens_it = title_tokens(c["it_title"], c["ignore"])
-        if any(set(c["teams"]) & set(r["teams"]) and
-               (is_similar(tokens_it, set(r["tokens"])) or is_similar(c["tokens"], set(r["tokens"])))
-               for r in recent):
+        if already_out(c, [tokens_it, c["tokens"]], recent):
             mark_seen(c["link"], c["url"])
             stats["doppioni"] += 1
             return
         info = team_index.teams[c["teams"][0]]
         meta = c["meta"]
         caption = build_caption(meta, c["it_title"], c["summary"], c["url"], info["league"], info["flag"],
-                                team_index.hashtags(c["teams"]))
+                                team_index.hashtags(c["teams"]), c["types"])
         if not dest.send(info["league"], caption, meta.get("image", ""), "🔗 Leggi l'articolo", c["url"]):
             stats["invio_fallito"] += 1
             return   # non segnato: riprova al prossimo giro
         where = "argomento del gruppo" if dest.in_group else "chat privata"
         mark_seen(c["link"], c["url"])
         ts = now.isoformat()
-        recent.append({"teams": c["teams"], "tokens": sorted(c["tokens"]), "ts": ts})
+        remember(recent, c, c["tokens"], ts)
         if tokens_it != c["tokens"]:
-            recent.append({"teams": c["teams"], "tokens": sorted(tokens_it), "ts": ts})
-        caps[c["cap_key"]] = caps.get(c["cap_key"], 0) + 1
+            remember(recent, c, tokens_it, ts)
+        # registro degli invii: serve ai limiti e a ritrovare le ultime notizie di una squadra
+        entry = {"t": int(time.time()), "tm": c["teams"], "c": c["category"], "y": c["types"],
+                 "ti": c["it_title"][:140], "s": (meta.get("site_name") or domain_of(c["url"]))[:40]}
+        if dest.last_message_id:
+            entry["m"] = dest.last_message_id          # con questo si costruisce il link al post
+            if dest.last_thread_id:
+                entry["th"] = dest.last_thread_id
+        else:
+            entry["u"] = c["url"]
+        log.append(entry)
         stats["inviati"] += 1
+        stats["sent:" + c["category"]] += 1
         print(f"  INVIATA [{info['league']} · {c['teams'][0]} · {c['category']} → {where}] {c['title'][:110]}")
         time.sleep(dest.send_delay)
 
     ready.sort(key=lambda c: (c["published"] or now))   # invio in ordine cronologico
     with ThreadPoolExecutor(max_workers=PARALLEL_AI) as pool:
-        for c, ok in pool.map(prepare, ready):
-            if ok:
+        for c, status in pool.map(prepare, ready):
+            if status == "ok":
                 deliver(c)
+            elif status == "tetto":
+                mark_seen(c["link"], c["url"])
+                stats["saltate_tetto"] += 1
             else:
                 stats["rimandati"] += 1
 
-    state["stats"]["sent"] = state["stats"].get("sent", 0) + stats["inviati"]
-    state["stats"]["groq_failures"] = state["stats"].get("groq_failures", 0) + stats["groq_falliti"]
+    # ---------------- 6. Contatori del giorno e controlli di salute ----------------
+    def add(key: str, amount: int) -> None:
+        if amount:
+            day_stats[key] = day_stats.get(key, 0) + amount
+
+    add("runs", 1)
+    add("sent", stats["inviati"])
+    if stats["groq_calls"]:
+        hour = str(int(now_ts // 3600))
+        state["groq_hours"][hour] = state["groq_hours"].get(hour, 0) + stats["groq_calls"]
+    for category in CLASSES:
+        add("sent_" + category, stats["sent:" + category])
+        add("capped_" + category, stats["cap:" + category])
+    add("dups", stats["doppioni"])
+    add("undecoded", stats["non_decodificati"])
+    add("tg_fail", stats["invio_fallito"])
+    add("photo_up", dest.photo_uploads)
+    add("g_q", stats["google_queries"])
+    add("g_fail", stats["google_failed"])
+    add("g_blocked", stats["google_blocked"])
+    add("groq_calls", stats["groq_calls"])
+    add("groq_429", stats["groq_429"])
+    add("groq_failures", stats["groq_falliti"])
+    add("no_ai", stats["senza_groq"])
+    add("skipped_budget", stats["saltate_tetto"])
+    tokens = day_stats.setdefault("tok", {})
+    for key, value in stats.items():
+        if key.startswith("tok:"):
+            tokens[key[4:]] = tokens.get(key[4:], 0) + value
+    day_stats.setdefault("sent", 0)
+    day_stats.setdefault("groq_failures", 0)
+
+    if stats["google_queries"]:
+        all_failed = stats["google_failed"] >= stats["google_queries"]
+        health["g_streak"] = health.get("g_streak", 0) + 1 if all_failed else 0
+        if health["g_streak"] >= HEALTH_GOOGLE_FAILED_RUNS:
+            notify_owner(dest, health, "google", today, (
+                "⚠️ <b>Google News non risponde</b>\n\n"
+                f"Da {health['g_streak']} giri di fila le ricerche del bot su Google News falliscono tutte. "
+                "Le notizie dai feed diretti delle testate continuano ad arrivare e il bot riprova a ogni giro. "
+                "Di solito si sblocca da solo; se dura piu' di un giorno va controllato."))
+    if day_stats["groq_failures"] >= HEALTH_GROQ_FAILURES:
+        notify_owner(dest, health, "groq", today, (
+            "⚠️ <b>Riassunti non riusciti</b>\n\n"
+            f"Oggi {day_stats['groq_failures']} riassunti non sono riusciti: probabilmente e' finito il tetto "
+            "gratuito giornaliero di Groq. Le notizie continuano ad arrivare, ma senza riassunto "
+            "(testo del sito o traduzione automatica) fino a domani."))
+
     save_state(state)
     print(
         f"Riepilogo: {stats['trovati']} articoli trovati → {stats['gia_visti']} gia' visti, "
         f"{stats['vecchi']} troppo vecchi, {stats['esclusi']} esclusi (serie minori/altri sport/live/"
         f"scommesse/mercato), {stats['altre_squadre']} non riguardano le squadre seguite, "
         f"{stats['dopo_partita']} su partite gia' giocate, {stats['limite_squadra']} oltre il limite "
-        f"giornaliero, {stats['doppioni']} doppioni, {stats['non_decodificati']} link non decodificati, "
-        f"{stats['rimandati']} rimandati, {stats['invio_fallito']} invii non riusciti → "
+        f"per squadra, {stats['doppioni']} doppioni, {stats['non_decodificati']} link non decodificati, "
+        f"{stats['rimandati']} rimandati, {stats['saltate_tetto']} estere saltate per il tetto Groq, "
+        f"{stats['invio_fallito']} invii non riusciti → "
         f"{stats['inviati']} inviati in {dest.describe()} "
-        f"(oggi in tutto: {state['stats']['sent']}; riassunti Groq falliti: {stats['groq_falliti']}, "
+        f"(oggi in tutto: {day_stats['sent']}; riassunti Groq falliti: {stats['groq_falliti']}, "
         f"limiti Groq raggiunti: {stats['groq_429']}) in {time.time() - start:.0f}s"
+    )
+    print(
+        f"Oggi finora: formazioni ufficiali {day_stats.get('sent_official', 0)}, conferenze "
+        f"{day_stats.get('sent_press', 0)}, infortuni/formazioni/allenatore {day_stats.get('sent_key', 0)}, "
+        f"generali {day_stats.get('sent_general', 0)} · Groq: {sum(state['groq_hours'].values())} chiamate "
+        f"nelle ultime 24 ore (tetto per le generali {GROQ_GENERAL_DAILY_BUDGET}), token di oggi per modello "
+        f"{day_stats.get('tok', {})} · Google: {day_stats.get('g_fail', 0)} ricerche fallite su "
+        f"{day_stats.get('g_q', 0)}"
     )
 
 
