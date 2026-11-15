@@ -1257,7 +1257,7 @@ def run():
             stats["vecchi"] += 1
             continue
         title = it["title"]
-        if EXCLUDE_RE.search(title) or (not INCLUDE_TRANSFER_NEWS and TRANSFER_RE.search(title)):
+        if EXCLUDE_RE.search(title):
             stats["esclusi"] += 1
             continue
         if it["origin"] == "rss" and url_problem(link, today_rome):
@@ -1276,7 +1276,9 @@ def run():
         category, types = classify(title, spans, it["lang"])
         if category == "official" and not fixtures.official_lineup_plausible(teams, now):
             category = "key"    # "ufficiali" di una partita che in calendario non c'e': limiti normali
-        if not types and is_bare_title(title, spans):
+        # mercato e titoli fatti solo dei nomi delle squadre: fuori, ma solo se la
+        # notizia non e' una conferenza o un aggiornamento su infortuni/formazioni
+        if not types and ((not INCLUDE_TRANSFER_NEWS and TRANSFER_RE.search(title)) or is_bare_title(title, spans)):
             stats["esclusi"] += 1
             continue
         it.update(published=pub, teams=teams, category=category, types=types)
@@ -1430,7 +1432,8 @@ def run():
             return
         # il titolo in italiano scritto da Groq a volte rivela cio' che l'originale
         # non diceva (es. "mercato" in un articolo spagnolo): stessi filtri del titolo
-        if EXCLUDE_RE.search(c["it_title"]) or (not INCLUDE_TRANSFER_NEWS and TRANSFER_RE.search(c["it_title"])):
+        if EXCLUDE_RE.search(c["it_title"]) or \
+                (not INCLUDE_TRANSFER_NEWS and not c["types"] and TRANSFER_RE.search(c["it_title"])):
             mark_seen(c["link"], c["url"])
             stats["esclusi"] += 1
             return

@@ -205,7 +205,10 @@ MAX_MESSAGES_PER_RUN = 45
 # restano vanno a conferenze, infortuni, formazioni e allenatore.
 GROQ_GENERAL_DAILY_BUDGET = 600
 
-# Calciomercato (trattative, offerte, voci): escluso. Metti True per riaverlo.
+# Calciomercato (trattative, offerte, voci, rinnovi): escluso. Metti True per riaverlo.
+# Le parole del mercato (TRANSFER_WORDS) scartano solo le notizie GENERALI: una
+# conferenza stampa o una notizia su infortuni/formazioni che nomina anche il
+# mercato ("Spalletti: «Mercato? Penso alla Lazio. Bremer out»") passa.
 INCLUDE_TRANSFER_NEWS = False
 
 # =====================================================================
@@ -685,16 +688,18 @@ EXCLUDE_TITLE_WORDS = [
 TRANSFER_WORDS = [
     "calciomercato", "mercato", "trattativa", "trattative", "offerta", "prestito", "cessione",
     "clausola", "sul taccuino", "prepara l'assalto", "pronto all'assalto", "pronta all'assalto",
-    "assalto a gennaio",
+    "assalto a gennaio", "occhi su", "occhi in casa", "sondaggio per", "rinnovo", "rinnovi", "rinnova",
+    "rinnovare",
     "transfer", "transfers", "loan", "rumour", "rumours", "rumor", "rumors", "to sign", "lead race",
     "leads race", "join race", "joins race", "race to sign", "asking price", "january exit",
     "summer exit", "exit talks", "opening bid", "bid rejected", "swoop", "linked with",
-    "renew interest", "register interest", "set to join", "selling", "release clause",
+    "renew interest", "register interest", "set to join", "selling", "release clause", "eyeing move",
+    "eyeing a move", "eye move", "eyes move", "contract talks", "new contract", "contract extension",
     "fichaje", "fichajes", "traspaso", "cesión", "mercado", "oferta", "ofertas", "cláusula",
-    "se fija en", "puja por", "pretendido por",
-    "transfert", "transferts", "une piste", "intéressé par",
+    "se fija en", "puja por", "pretendido por", "fichar", "renovación", "renueva", "renovar",
+    "transfert", "transferts", "une piste", "intéressé par", "recrutement",
     "wechsel", "leihe", "gerücht", "gerüchte", "wintertransfers", "sommertransfers", "ablöse",
-    "im visier", "winterschlussverkauf",
+    "im visier", "winterschlussverkauf", "vertragsverlängerung", "interesse an", "an der angel", "buhlt um",
 ]
 
 # Sezioni del sito (pezzi dell'indirizzo tra due "/") che indicano altri
