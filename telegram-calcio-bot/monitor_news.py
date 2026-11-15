@@ -87,6 +87,7 @@ from config import (
     MAX_MESSAGES_PER_RUN,
     MAX_TYPE_LABELS,
     OFFICIAL_LINEUP_KEYWORDS,
+    OTHER_SPORT_SITE_WORDS,
     NEWS_MAX_AGE_HOURS,
     POST_MATCH_HOURS,
     PRESS_KEYWORDS,
@@ -312,6 +313,12 @@ def is_blocked_domain(url_or_domain: str) -> bool:
     if not domain:
         return True
     return any(domain == b or domain.endswith("." + b) for b in BLOCKED_NEWS_DOMAINS)
+
+
+def other_sport_site(*names) -> bool:
+    """True se il sito (nome o indirizzo) e' di un altro sport: basket, volley, rugby... (OTHER_SPORT_SITE_WORDS)."""
+    joined = " ".join(str(n).lower() for n in names if n)
+    return any(w in joined for w in OTHER_SPORT_SITE_WORDS)
 
 
 def url_problem(url: str, today_rome) -> str | None:
@@ -859,7 +866,8 @@ def collect_google(queries: list, state: dict, now_ts: float, stats: Counter) ->
                 if link and title:
                     items.append({"title": html.unescape(title), "link": link, "published": entry_published(e),
                                   "lang": q["lang"], "origin": "google",
-                                  "source": domain_of(src_href) if src_href else src_title})
+                                  "source": domain_of(src_href) if src_href else src_title,
+                                  "source_name": src_title})
     stats["google_queries"] = len(queries)
     stats["google_failed"] = failed
     stats["google_blocked"] = int(tally["blocked"])
@@ -1291,7 +1299,8 @@ def run():
         if it["origin"] == "rss" and url_problem(link, today_rome):
             stats["esclusi"] += 1
             continue
-        if it["origin"] == "google" and it["source"] and is_blocked_domain(it["source"]):
+        if it["origin"] == "google" and it["source"] and \
+                (is_blocked_domain(it["source"]) or other_sport_site(it["source"], it.get("source_name"))):
             stats["esclusi"] += 1
             continue
         teams, spans = team_index.find(title, it["lang"])
@@ -1399,6 +1408,8 @@ def run():
         meta = fetch_article_meta(url)
         if meta["published"] and meta["published"] < page_cutoff:
             return "pagina_vecchia", c
+        if other_sport_site(domain_of(url), meta.get("site_name")):
+            return "url", c         # sito di basket, volley...: non e' calcio
         c["meta"] = meta
         return "ok", c
 

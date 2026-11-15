@@ -726,6 +726,14 @@ EXCLUDED_URL_PATTERNS = [
     "/live-blog/", "/match-centre/", "/matchcentre/", "/box-score/",
 ]
 
+# Siti di altri sport: se il nome del sito o il suo indirizzo contiene una di
+# queste parole (anche attaccata: pallacanestrotrieste.it) la notizia e' scartata.
+# Es. "La conferenza stampa dopo la gara a Napoli" di una squadra di basket.
+OTHER_SPORT_SITE_WORDS = [
+    "basket", "pallacanestro", "baloncesto", "volley", "pallavolo", "voleibol", "rugby", "hockey", "futsal",
+    "pallanuoto", "pallamano", "balonmano", "handball", "eurolega", "euroleague",
+]
+
 # Siti bloccati del tutto (social, scommesse, calcio dilettantistico, ecc.)
 BLOCKED_NEWS_DOMAINS = [
     "reddit.com", "pinterest.com", "facebook.com", "twitter.com", "x.com",
