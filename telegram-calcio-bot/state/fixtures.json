@@ -431,6 +431,87 @@
       "away": "Elche CF",
       "kickoff": "2026-11-23T20:00:00Z",
       "status": "TIMED"
+    },
+    {
+      "competition": "CL",
+      "league": "CL",
+      "flag": "",
+      "home": "Galatasaray SK",
+      "away": "Aston Villa FC",
+      "kickoff": "2026-11-24T17:45:00Z",
+      "status": "TIMED"
+    },
+    {
+      "competition": "CL",
+      "league": "CL",
+      "flag": "",
+      "home": "FK Bodø/Glimt",
+      "away": "LASK Linz",
+      "kickoff": "2026-11-24T17:45:00Z",
+      "status": "TIMED"
+    },
+    {
+      "competition": "CL",
+      "league": "CL",
+      "flag": "",
+      "home": "Real Madrid CF",
+      "away": "PSV",
+      "kickoff": "2026-11-24T20:00:00Z",
+      "status": "TIMED"
+    },
+    {
+      "competition": "CL",
+      "league": "CL",
+      "flag": "",
+      "home": "Manchester City FC",
+      "away": "SSC Napoli",
+      "kickoff": "2026-11-24T20:00:00Z",
+      "status": "TIMED"
+    },
+    {
+      "competition": "CL",
+      "league": "CL",
+      "flag": "",
+      "home": "Arsenal FC",
+      "away": "Borussia Dortmund",
+      "kickoff": "2026-11-24T20:00:00Z",
+      "status": "TIMED"
+    },
+    {
+      "competition": "CL",
+      "league": "CL",
+      "flag": "",
+      "home": "Feyenoord Rotterdam",
+      "away": "FC Porto",
+      "kickoff": "2026-11-24T20:00:00Z",
+      "status": "TIMED"
+    },
+    {
+      "competition": "CL",
+      "league": "CL",
+      "flag": "",
+      "home": "ŠK Slovan Bratislava",
+      "away": "Real Betis Balompié",
+      "kickoff": "2026-11-24T20:00:00Z",
+      "status": "TIMED"
+    },
+    {
+      "competition": "CL",
+      "league": "CL",
+      "flag": "",
+      "home": "RB Leipzig",
+      "away": "Racing Club de Lens",
+      "kickoff": "2026-11-24T20:00:00Z",
+      "status": "TIMED"
+    },
+    {
+      "competition": "CL",
+      "league": "CL",
+      "flag": "",
+      "home": "Como 1907",
+      "away": "PAE AEK",
+      "kickoff": "2026-11-24T20:00:00Z",
+      "status": "TIMED"
     }
   ],
   "teams": [
