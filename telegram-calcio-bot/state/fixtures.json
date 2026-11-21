@@ -34,7 +34,7 @@
       "home": "Manchester City FC",
       "away": "Fulham FC",
       "kickoff": "2026-11-21T12:30:00Z",
-      "status": "IN_PLAY"
+      "status": "FINISHED"
     },
     {
       "competition": "PD",
@@ -43,7 +43,7 @@
       "home": "Deportivo Alavés",
       "away": "RC Deportivo La Coruña",
       "kickoff": "2026-11-21T13:00:00Z",
-      "status": "IN_PLAY"
+      "status": "TIMED"
     },
     {
       "competition": "SA",
@@ -52,7 +52,7 @@
       "home": "Como 1907",
       "away": "Cagliari Calcio",
       "kickoff": "2026-11-21T14:00:00Z",
-      "status": "TIMED"
+      "status": "FINISHED"
     },
     {
       "competition": "SA",
@@ -61,7 +61,7 @@
       "home": "SS Lazio",
       "away": "US Lecce",
       "kickoff": "2026-11-21T14:00:00Z",
-      "status": "TIMED"
+      "status": "FINISHED"
     },
     {
       "competition": "BL1",
@@ -70,7 +70,7 @@
       "home": "Bayer 04 Leverkusen",
       "away": "SC Paderborn 07",
       "kickoff": "2026-11-21T14:30:00Z",
-      "status": "TIMED"
+      "status": "FINISHED"
     },
     {
       "competition": "BL1",
@@ -79,7 +79,7 @@
       "home": "1. FC Union Berlin",
       "away": "RB Leipzig",
       "kickoff": "2026-11-21T14:30:00Z",
-      "status": "TIMED"
+      "status": "FINISHED"
     },
     {
       "competition": "BL1",
@@ -88,7 +88,7 @@
       "home": "SV 07 Elversberg",
       "away": "SC Freiburg",
       "kickoff": "2026-11-21T14:30:00Z",
-      "status": "TIMED"
+      "status": "FINISHED"
     },
     {
       "competition": "BL1",
@@ -97,7 +97,7 @@
       "home": "Borussia Mönchengladbach",
       "away": "Borussia Dortmund",
       "kickoff": "2026-11-21T14:30:00Z",
-      "status": "TIMED"
+      "status": "FINISHED"
     },
     {
       "competition": "BL1",
@@ -106,7 +106,7 @@
       "home": "Eintracht Frankfurt",
       "away": "TSG 1899 Hoffenheim",
       "kickoff": "2026-11-21T14:30:00Z",
-      "status": "TIMED"
+      "status": "FINISHED"
     },
     {
       "competition": "PL",
@@ -115,7 +115,7 @@
       "home": "Chelsea FC",
       "away": "Leeds United FC",
       "kickoff": "2026-11-21T15:00:00Z",
-      "status": "TIMED"
+      "status": "FINISHED"
     },
     {
       "competition": "PL",
@@ -124,7 +124,7 @@
       "home": "Aston Villa FC",
       "away": "Sunderland AFC",
       "kickoff": "2026-11-21T15:00:00Z",
-      "status": "TIMED"
+      "status": "FINISHED"
     },
     {
       "competition": "PL",
@@ -133,7 +133,7 @@
       "home": "AFC Bournemouth",
       "away": "Nottingham Forest FC",
       "kickoff": "2026-11-21T15:00:00Z",
-      "status": "TIMED"
+      "status": "FINISHED"
     },
     {
       "competition": "PL",
@@ -142,7 +142,7 @@
       "home": "Tottenham Hotspur FC",
       "away": "Ipswich Town FC",
       "kickoff": "2026-11-21T15:00:00Z",
-      "status": "TIMED"
+      "status": "FINISHED"
     },
     {
       "competition": "PL",
@@ -151,7 +151,7 @@
       "home": "Coventry City FC",
       "away": "Crystal Palace FC",
       "kickoff": "2026-11-21T15:00:00Z",
-      "status": "TIMED"
+      "status": "FINISHED"
     },
     {
       "competition": "PD",
@@ -169,7 +169,7 @@
       "home": "OGC Nice",
       "away": "Paris Saint-Germain FC",
       "kickoff": "2026-11-21T16:15:00Z",
-      "status": "TIMED"
+      "status": "FINISHED"
     },
     {
       "competition": "SA",
@@ -178,7 +178,7 @@
       "home": "Parma Calcio 1913",
       "away": "AS Roma",
       "kickoff": "2026-11-21T17:00:00Z",
-      "status": "TIMED"
+      "status": "FINISHED"
     },
     {
       "competition": "PL",
@@ -187,7 +187,7 @@
       "home": "Newcastle United FC",
       "away": "Arsenal FC",
       "kickoff": "2026-11-21T17:30:00Z",
-      "status": "TIMED"
+      "status": "FINISHED"
     },
     {
       "competition": "PD",
@@ -205,7 +205,7 @@
       "home": "FC Schalke 04",
       "away": "VfB Stuttgart",
       "kickoff": "2026-11-21T17:30:00Z",
-      "status": "TIMED"
+      "status": "FINISHED"
     },
     {
       "competition": "SA",
@@ -214,7 +214,7 @@
       "home": "SSC Napoli",
       "away": "Torino FC",
       "kickoff": "2026-11-21T19:45:00Z",
-      "status": "TIMED"
+      "status": "FINISHED"
     },
     {
       "competition": "FL1",
@@ -223,7 +223,7 @@
       "home": "AS Monaco FC",
       "away": "AJ Auxerre",
       "kickoff": "2026-11-21T19:45:00Z",
-      "status": "TIMED"
+      "status": "FINISHED"
     },
     {
       "competition": "FL1",
@@ -232,7 +232,7 @@
       "home": "Racing Club de Lens",
       "away": "Toulouse FC",
       "kickoff": "2026-11-21T19:45:00Z",
-      "status": "TIMED"
+      "status": "FINISHED"
     },
     {
       "competition": "FL1",
@@ -241,7 +241,7 @@
       "home": "Lille OSC",
       "away": "Olympique Lyonnais",
       "kickoff": "2026-11-21T19:45:00Z",
-      "status": "TIMED"
+      "status": "FINISHED"
     },
     {
       "competition": "FL1",
@@ -250,7 +250,7 @@
       "home": "RC Strasbourg Alsace",
       "away": "Stade Brestois 29",
       "kickoff": "2026-11-21T19:45:00Z",
-      "status": "TIMED"
+      "status": "FINISHED"
     },
     {
       "competition": "PD",
