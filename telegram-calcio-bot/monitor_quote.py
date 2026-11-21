@@ -2920,9 +2920,12 @@ def do_ridosso(st: dict, topic: QuoteTopic, key: str | None, group: dict | None,
             print(f"Quote di adesso non lette dopo {LIVE_TRIES} tentativi: lo dico a finestra chiusa")
             return 0
         if not live_read(st, todo, f"{RIDOSSO_MINUTES} minuti", force=force):
-            tries[tk] = tries.get(tk, 0) + 1
+            if key:
+                tries[tk] = tries.get(tk, 0) + 1
             st["log"].append(f"{now_utc().isoformat(timespec='minutes')} quote di adesso non lette "
-                             f"({len(todo)} partite, tentativo {tries[tk]})")
+                             f"({len(todo)} partite, tentativo {tries.get(tk, 1)})")
+            if manual:
+                topic.send("🔎 Controllo a mano: quote di adesso non lette (OddsPapi non risponde), riprova tra poco.")
             return 0
         tries.pop(tk, None)
     sent = checked = 0
