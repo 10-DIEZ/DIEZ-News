@@ -8,10 +8,12 @@ COSA FA
   confronta (dal 20/11/2026 OddsPapi da' lo storico gratis solo per le partite
   FINITE: il bot si costruisce lo storico da se', state/quote_live.json, con
   ogni lettura: apertura, ogni orario d'inizio, riletture):
-      APERTURA = le quote del venerdi' alle 15:00 per le partite del weekend
-                 (venerdi'-lunedi'), del martedi' alle 15:00 per i turni
-                 infrasettimanali: lo stesso momento delle quote di apertura
-                 usate nello studio del foglio Mercato del Pace Index;
+      APERTURA = le quote delle 15:00 di DUE GIORNI PRIMA di ogni partita
+                 (mercoledi' per il venerdi', giovedi' per il sabato,
+                 venerdi' per la domenica, sabato per il lunedi'; coppe allo
+                 stesso modo): stessa finestra (45-54 ore) per tutte. Prima
+                 del 21/11/2026 era il venerdi' alle 15 per tutto il weekend
+                 (il venerdi' sera aveva solo 6 ore, il lunedi' quasi 80);
       ADESSO   = le quote a ridosso, con le formazioni uscite.
 - Ogni movimento (handicap asiatico, linea gol, Goal/No Goal) ha una FORZA da
   1 a 10 = 2 x quanto si e' mosso + book (con il solo Pinnacle +1, come 3 book
@@ -47,19 +49,24 @@ COSA FA
 - FILE PER IL PACE INDEX: state/mercato.csv, una riga per partita controllata
   (giudizio e colore per la riga Mercato, forza, quote di apertura e di adesso,
   gol e corner attesi). I file Excel lo leggono con Power Query.
+- SEGNALI FORTI (da FORZA_FORTE, 7/10): confronto con SBOBET e SINGBET (le loro
+  quote si leggono a inizio turno e, a 40 minuti, solo per quelle partite:
+  una chiamata per partita, o due per competizione se i forti sono tanti).
+  «3 book su 3» = d'accordo; ogni book che non conferma toglie un punto.
+  Sono chiamate "in piu'": saltano se il mese e' stretto (optional_ok).
 - La legenda la manda la prima volta e quando cambia (LEGEND_VERSION).
-- Il venerdi' alle 15 (e il martedi', se c'e' il turno infrasettimanale)
-  aggiorna l'elenco delle partite e te lo dice con un messaggio breve.
+- Alle 15 legge le quote d'apertura delle partite di fra due giorni (una
+  lettura per i 5 campionati, una per le coppe; se c'e' una lettura dei 40
+  minuti da meno di 45 minuti vale quella) e a inizio turno lo dice con un
+  messaggio breve.
 - COPPE (Champions, Europa e Conference League): le partite arrivano
-  dall'elenco OddsPapi, letto il LUNEDI' alle 15 (una chiamata, a parte da
-  quella dei campionati). Il lunedi' alle 15 e' anche la loro APERTURA (dopo il
-  turno di campionato). L'elenco viene RILETTO alle 11 nei giorni con partite
-  di coppa nelle 36 ore dopo (martedi', mercoledi', giovedi': 1 chiamata, senza
-  messaggi): prende le partite pubblicate dopo il lunedi' e gli orari cambiati.
-  Tutte le partite, tranne a luglio e agosto (preliminari): li' solo quelle con
-  almeno una squadra dei 5 campionati (CUPS_ONLY_TOP5 / CUPS_TOP5_MONTHS). Le
-  squadre dei 5 campionati hanno gli stessi nomi italiani e hashtag del
-  campionato.
+  dall'elenco OddsPapi, letto ogni DOMENICA alle 15 (scopre le partite della
+  settimana ed e' l'apertura di quelle del martedi'), poi lunedi' e martedi'
+  alle 15 (apertura di mercoledi' e giovedi'). Champions tutte le partite;
+  Europa e Conference (dal 21/11/2026) solo quelle con almeno una squadra dei
+  5 campionati (CUPS_TOP5_ONLY), come tutte le coppe a luglio e agosto
+  (CUPS_TOP5_MONTHS). Le squadre dei 5 campionati hanno gli stessi nomi
+  italiani e hashtag del campionato.
 - Il RIEPILOGO delle 19 (partite di domani) e' SPENTO dal 14/11/2026
   (RIEPILOGO_AUTO); a mano resta: --mode riepilogo.
 - Ogni partita controllata lascia i suoi numeri nello stato ("stats"): servono
@@ -68,8 +75,9 @@ COSA FA
 
 QUANTO CONSUMA: ogni lettura delle quote di adesso e' 1 chiamata delle 250 al
 mese: circa 22 orari d'inizio per weekend di campionato, 6-7 per settimana di
-coppe, le aperture (venerdi', lunedi', martedi'), le riletture delle coppe e
-gli ultimi minuti dei segnali forti: 130-180 chiamate al mese. Le chiamate "in
+coppe, le aperture delle 15 (3-4 a settimana), Sbobet e Singbet (2 a inizio
+turno e 1 per segnale forte) e gli ultimi minuti dei segnali forti: circa
+200-210 chiamate al mese. Le chiamate "in
 piu'" (ultimi minuti, riletture) partono solo se ne restano OPTIONAL_PER_DAY
 per ogni giorno che manca a fine mese; un contatore (allineato a quello
 dell'account) non fa mai superare il limite. Lo storico gratis delle partite
@@ -163,13 +171,17 @@ CUPS_Q = {
 COMPS_Q = {**LEAGUES_Q, **CUPS_Q}
 CUPS_ONLY_TOP5 = False          # coppe: True = solo le partite con almeno una squadra dei 5 campionati; False = tutte...
 CUPS_TOP5_MONTHS = (7, 8)       # ...ma a luglio e agosto (preliminari: anche 80-90 partite il giovedi') solo quelle
-CUP_APERTURA_DAY = 0            # coppe: quote di riferimento del lunedi' alle 15:00 (dopo il turno di campionato)
-CUP_REREAD_HOUR = 11            # coppe: elenco riletto alle 11 se ci sono partite di coppa nelle prossime...
-CUP_REREAD_AHEAD_HOURS = 36     # ...36 ore (martedi', mercoledi' e giovedi' delle settimane di coppa: 1 chiamata)
+CUPS_TOP5_ONLY = ("EL", "ECL")  # Europa e Conference League (dal 21/11/2026): solo le partite con almeno una squadra
+                                # dei 5 campionati, tutto l'anno; la Champions tutta
+CUP_DISCOVERY_DAY = 6           # domenica alle 15: si leggono sempre le coppe (scopre le partite della settimana)
+CUP_REREAD = False              # rilettura delle 11 (spenta dal 21/11/2026: le letture delle 15 e dei 40 minuti
+CUP_REREAD_HOUR = 11            #  aggiornano gia' l'elenco)
+CUP_REREAD_AHEAD_HOURS = 36
 TOP5_KEEP_DAYS = 120            # squadre dei 5 campionati ricordate (per il filtro delle coppe) fino a 120 giorni
 
-APERTURA_DAYS = (1, 4)          # quote di riferimento dei campionati: martedi' (1) e venerdi' (4)...
-APERTURA_HOUR = 15              # ...alle 15:00
+APERTURA_DAYS_BEFORE = 2        # apertura di OGNI partita: alle 15 di due giorni prima (finestra uguale per tutte,
+APERTURA_HOUR = 15              # 45-54 ore): mercoledi' per il venerdi', giovedi' per il sabato e cosi' via
+APERTURA_REUSE_MINUTES = 45     # una lettura fatta fino a 45 minuti prima delle 15 vale come apertura (niente chiamata)
 APERTURA_WINDOW_HOURS = 3       # giro delle 15 (aggiornamento elenco): va bene fino alle 18
 LOOKAHEAD_DAYS = 6              # partite tenute nell'elenco
 RIDOSSO_MINUTES = 40            # minuti prima del fischio d'inizio
@@ -189,6 +201,8 @@ LIVE_KEEP_HOURS = 6             # ...e fino a 6 ore dopo il fischio
 LIVE_ACC = 1                    # solo Pinnacle: punti "book" come 3 book d'accordo (con 3 book succedeva 9 volte su 10)
 LIVE_FRESH_MINUTES = 8          # una lettura di meno di 8 minuti fa vale ancora (niente seconda chiamata)
 LIVE_TRIES = 3                  # quote di un orario non lette: al massimo 3 tentativi (una chiamata ciascuno)
+OTHER_BOOKS = ["sbobet", "singbet"]     # confronto sui segnali forti (da FORZA_FORTE): le loro quote si leggono a
+OTHER_DAYS = 6                  # inizio turno (base, 1 chiamata per book) e a 40 minuti solo per quelle partite
 OPTIONAL_PER_DAY = 6            # chiamate "in piu'" solo se ne restano 6 per ogni giorno che manca a fine mese
 FINISHED_AFTER_HOURS = 2.5      # 2 ore e mezza dopo il fischio la partita e' finita: c'e' lo storico gratis
 RUN_BUDGET_SECONDS = 170        # tempo massimo per giro (il giro ogni 5 minuti deve poi controllare le notizie)
@@ -239,7 +253,7 @@ NOTIZIE_PER_SQUADRA = 4         # ...al massimo 4 per squadra (conferenze, infor
 TOPIC_NAME = "📈 Quote"
 TOPIC_COLOR = 9367192           # verde
 KEEP_DAYS = 8                   # partite finite tenute nello stato una settimana (per "rivedi")
-LEGEND_VERSION = 6              # se cambia, la legenda viene rimandata una volta (4 = tabella unica e grafico;
+LEGEND_VERSION = 7              # se cambia, la legenda viene rimandata una volta (4 = tabella unica e grafico;
                                 # 5 = gol e corner attesi, ultimi minuti, soglia Europa/Conference, niente riepilogo)
 APERTURA_TRIES = 3              # elenco partite non letto all'apertura: si riprova al giro dopo, al massimo 3 volte
 MARKETS_VERSION = 4             # se cambia, l'elenco dei mercati viene riletto subito (3-4 = corner, gol e tiri di squadra)
@@ -338,8 +352,8 @@ def calendar_matches(st: dict | None = None, finished: bool = False) -> list:
 
 def cup_matches(st: dict, lo: datetime | None = None, hi: datetime | None = None) -> tuple:
     """Partite delle coppe dall'elenco OddsPapi tenuto nello stato: (partite, quante lasciate fuori dal filtro).
-    Tutte; solo quelle con almeno una squadra dei 5 campionati con CUPS_ONLY_TOP5 o nei mesi CUPS_TOP5_MONTHS
-    (preliminari d'estate)."""
+    Champions tutte; Europa e Conference (CUPS_TOP5_ONLY), e tutte nei mesi CUPS_TOP5_MONTHS (preliminari d'estate),
+    solo quelle con almeno una squadra dei 5 campionati."""
     top5 = st.get("top5") or {}
     out, skipped = [], 0
     for fid, rec in st["fixtures"].items():
@@ -349,7 +363,7 @@ def cup_matches(st: dict, lo: datetime | None = None, hi: datetime | None = None
         if not ko or (lo and ko < lo) or (hi and ko > hi):
             continue
         p1, p2 = str(rec.get("p1")), str(rec.get("p2"))
-        only5 = CUPS_ONLY_TOP5 or ko.astimezone(ROME).month in CUPS_TOP5_MONTHS
+        only5 = CUPS_ONLY_TOP5 or rec["code"] in CUPS_TOP5_ONLY or ko.astimezone(ROME).month in CUPS_TOP5_MONTHS
         if only5 and p1 not in top5 and p2 not in top5:
             skipped += 1
             continue
@@ -363,17 +377,10 @@ def cup_matches(st: dict, lo: datetime | None = None, hi: datetime | None = None
 
 
 def apertura_time(ko: datetime, code: str = "") -> datetime:
-    """Momento delle quote di riferimento: per i campionati l'ultimo martedi' o venerdi' alle 15:00 almeno 2 ore prima
-    del fischio, per le coppe l'ultimo lunedi' alle 15:00."""
-    days = (CUP_APERTURA_DAY,) if code in CUPS_Q else APERTURA_DAYS
-    limit = (ko - timedelta(hours=2)).astimezone(ROME)
-    for back in range(0, 8):
-        d = (limit - timedelta(days=back)).date()
-        if d.weekday() in days:
-            t = datetime(d.year, d.month, d.day, APERTURA_HOUR, tzinfo=ROME)
-            if t <= limit:
-                return t.astimezone(timezone.utc)
-    return (limit - timedelta(days=3)).astimezone(timezone.utc)
+    """Momento delle quote di riferimento: alle 15 (ora di Roma) di due giorni prima della partita, per tutte le
+    competizioni: cosi' ogni partita ha la stessa finestra (45-54 ore)."""
+    d = ko.astimezone(ROME).date() - timedelta(days=APERTURA_DAYS_BEFORE)
+    return datetime(d.year, d.month, d.day, APERTURA_HOUR, tzinfo=ROME).astimezone(timezone.utc)
 
 
 # =====================================================================
@@ -671,7 +678,8 @@ def ensure_participants(st: dict, ids: set) -> dict:
 _SNAPSHOT = {}          # ultimo elenco letto (solo per la prova: confronto con lo storico)
 
 
-def refresh_fixtures(st: dict, force: bool = False, which: str = "campionati", days: int | None = None) -> int:
+def refresh_fixtures(st: dict, force: bool = False, which: str = "campionati", days: int | None = None,
+                     book: str = LIVE_BOOK) -> int:
     """Elenco delle partite con il loro id OddsPapi (Pinnacle): UNA chiamata per i 5 campionati e UNA per le coppe
     (l'elenco ammette poche competizioni per chiamata). which: 'campionati', 'coppe' o 'tutto'."""
     tour = ensure_tournaments(st)
@@ -689,7 +697,7 @@ def refresh_fixtures(st: dict, force: bool = False, which: str = "campionati", d
             continue
         try:
             data = api_get("/odds-by-tournaments", {"tournamentIds": ",".join(str(tour[c]) for c in codes),
-                                                    "bookmaker": "pinnacle"}, st, force=force)
+                                                    "bookmaker": book}, st, force=force)
         except QuotaExhausted:
             raise
         except Exception as e:      # noqa: BLE001
@@ -697,6 +705,8 @@ def refresh_fixtures(st: dict, force: bool = False, which: str = "campionati", d
             errors.append(e)
             continue
         obs = now_utc()
+        if book == LIVE_BOOK:
+            st.setdefault("reads", {})[label] = obs.isoformat(timespec="seconds")
         for fx in as_list(data):
             try:
                 fid = str(fx["fixtureId"])
@@ -708,18 +718,22 @@ def refresh_fixtures(st: dict, force: bool = False, which: str = "campionati", d
             code = code_by_tid.get(str(fx.get("tournamentId")), (st["fixtures"].get(fid) or {}).get("code", ""))
             if not start or start > horizon or code not in codes:
                 continue
+            live_n += live_record(fid, fx, meta, obs, book)
+            if book != LIVE_BOOK:               # altri book: solo le quote (l'elenco e' quello di Pinnacle)
+                continue
             _SNAPSHOT[fid] = fx
-            live_n += live_record(fid, fx, meta, obs)
             rec = st["fixtures"].setdefault(fid, {})
             rec.update(code=code, p1=fx.get("participant1Id"), p2=fx.get("participant2Id"), start=start.isoformat())
             counts[code] = counts.get(code, 0) + 1
             n += 1
-        if label == "campionati":
+        if label == "campionati" and book == LIVE_BOOK:
             st["refresh_at"] = now_utc().isoformat(timespec="seconds")
     if errors and len(errors) == len([g for g in groups if g[1]]):
         raise errors[0]
-    ensure_participants(st, {r.get("p1") for r in st["fixtures"].values()} | {r.get("p2") for r in st["fixtures"].values()})
-    print(f"Elenco partite aggiornato ({which}): {n} partite {counts}, quote Pinnacle lette per {live_n} "
+    if book == LIVE_BOOK:
+        ensure_participants(st, {r.get("p1") for r in st["fixtures"].values()} |
+                            {r.get("p2") for r in st["fixtures"].values()})
+    print(f"Elenco partite aggiornato ({which}): {n} partite {counts}, quote {BOOK_LABEL.get(book, book)} lette per {live_n} "
           f"(nell'elenco per id: {raw}; chiamate del mese {st['calls']}/{MONTH_LIMIT})")
     live_save()
     return n
@@ -955,29 +969,34 @@ def live_save() -> None:
         print(f"[WARN] quote lette non salvate: {e}")
 
 
-def live_record(fid: str, fx: dict, meta: dict, obs: datetime) -> bool:
-    """Quote di adesso di Pinnacle (dall'elenco OddsPapi) nello storico fatto in casa: per ogni esito un prezzo
-    nuovo solo se e' cambiato, con l'ora del cambio (changedAt); un esito sparito (linea tolta) viene chiuso.
-    Tempi in minuti dal fischio. True se la partita aveva quote."""
+def live_record(fid: str, fx: dict, meta: dict, obs: datetime, book: str = LIVE_BOOK) -> bool:
+    """Quote di adesso di un book (dall'elenco o dalla partita OddsPapi) nello storico fatto in casa: per ogni esito
+    un prezzo nuovo solo se e' cambiato, con l'ora del cambio (changedAt); un esito sparito (linea tolta) viene
+    chiuso. Tempi in minuti dal fischio. Pinnacle in "m"/"t", gli altri book in "x". True se c'erano quote."""
     start = parse_time(fx.get("startTime"))
-    if not start or not (obs < start <= obs + timedelta(days=LIVE_DAYS)):
+    days = LIVE_DAYS if book == LIVE_BOOK else OTHER_DAYS
+    if not start or not (obs < start <= obs + timedelta(days=days)):
         return False
     try:
-        markets = fx["bookmakerOdds"][LIVE_BOOK]["markets"]
+        markets = fx["bookmakerOdds"][book]["markets"]
     except (KeyError, TypeError):
         return False
     if not isinstance(markets, dict) or not markets:
         return False
     rec = live_store()["fx"].setdefault(fid, {"s": start.isoformat(), "t": [], "m": {}})
+    rec.setdefault("t", [])
+    rec.setdefault("m", {})
     old = parse_time(rec.get("s"))
     if old and old != start:                    # orario cambiato: i minuti si contano dal nuovo fischio
         shift = int((old - start).total_seconds() // 60)
-        rec["t"] = [t + shift for t in rec.get("t", [])]
-        for outs in rec["m"].values():
-            for ser in outs.values():
-                for e in ser:
-                    e[0] += shift
+        for tgt in [rec] + list((rec.get("x") or {}).values()):
+            tgt["t"] = [t + shift for t in tgt.get("t", [])]
+            for outs in tgt.get("m", {}).values():
+                for ser in outs.values():
+                    for e in ser:
+                        e[0] += shift
     rec["s"] = start.isoformat()
+    tgt = rec if book == LIVE_BOOK else rec.setdefault("x", {}).setdefault(book, {"t": [], "m": {}})
 
     def rel(t: datetime) -> int:
         return int((t - start).total_seconds() // 60)
@@ -1002,7 +1021,7 @@ def live_record(fid: str, fx: dict, meta: dict, obs: datetime) -> bool:
             if price <= 1.0:
                 continue
             seen.add((str(mid), str(oid)))
-            ser = rec["m"].setdefault(str(mid), {}).setdefault(str(oid), [])
+            ser = tgt["m"].setdefault(str(mid), {}).setdefault(str(oid), [])
             if ser and ser[-1][1] == price:
                 continue
             ch = parse_time(pl.get("changedAt") or pl.get("bookmakerChangedAt"))
@@ -1010,13 +1029,33 @@ def live_record(fid: str, fx: dict, meta: dict, obs: datetime) -> bool:
             if ser:
                 t = max(t, ser[-1][0])
             ser.append([t, price])
-    for mid, outs in rec["m"].items():          # esiti spariti dall'elenco: prezzo chiuso da adesso
+    for mid, outs in tgt["m"].items():          # esiti spariti dall'elenco: prezzo chiuso da adesso
         for oid, ser in outs.items():
             if (mid, oid) not in seen and ser and ser[-1][1] != 0:
                 ser.append([max(o, ser[-1][0]), 0])
-    rec["t"].append(o)
+    tgt["t"].append(o)
     _LIVE_DIRTY[0] = True
     return bool(seen)
+
+
+def other_raw(fid: str, book: str) -> dict:
+    """Storico fatto in casa di un altro book (Sbobet, Singbet) nel formato dello storico OddsPapi."""
+    rec = live_store()["fx"].get(fid) or {}
+    start = parse_time(rec.get("s"))
+    tgt = (rec.get("x") or {}).get(book) or {}
+    if not start or not tgt.get("m"):
+        return {}
+    return {"markets": {mid: {"outcomes": {oid: {"players": {"0": [
+        {"createdAt": (start + timedelta(minutes=t)).isoformat(), "price": pr} if pr else
+        {"createdAt": (start + timedelta(minutes=t)).isoformat(), "price": 0, "active": False}
+        for t, pr in ser]}} for oid, ser in outs.items()}} for mid, outs in tgt["m"].items()}}
+
+
+def other_obs(fid: str | None, book: str) -> list:
+    rec = live_store()["fx"].get(fid) or {} if fid else {}
+    start = parse_time(rec.get("s"))
+    tgt = (rec.get("x") or {}).get(book) or {}
+    return [start + timedelta(minutes=t) for t in tgt.get("t", [])] if start else []
 
 
 def live_obs(fid: str) -> list:
@@ -1123,9 +1162,9 @@ def sample_books(bk: dict, times: list) -> dict:
 
 def sim_reads(m: dict, everything: list) -> tuple:
     """Per le prove sulle partite finite: (momenti in cui il bot di adesso avrebbe letto le quote di questa partita,
-    momento del suo controllo dei 40 minuti). Letture: l'apertura, ogni controllo dei 40 minuti della stessa famiglia
-    (i 5 campionati si leggono insieme, le 3 coppe insieme), le riletture delle coppe alle 11 e, per gli ultimi
-    minuti, 10 minuti prima del suo orario."""
+    momento del suo controllo dei 40 minuti). Letture: la sua apertura (alle 15 di due giorni prima), le aperture
+    delle 15 dei giorni dopo e ogni controllo dei 40 minuti della stessa famiglia (i 5 campionati si leggono
+    insieme, le 3 coppe insieme) e, per gli ultimi minuti, 10 minuti prima del suo orario."""
     cup = m["code"] in CUPS_Q
     fam = sorted((x for x in everything if (x["code"] in CUPS_Q) == cup), key=lambda x: x["ko"])
     ap = apertura_time(m["ko"], m["code"]) + timedelta(minutes=1)
@@ -1138,14 +1177,28 @@ def sim_reads(m: dict, everything: list) -> tuple:
         t = g["first"] - timedelta(minutes=RIDOSSO_MINUTES)
         if ap < t < t40:
             times.add(t)
-    if cup:
-        d = ap.astimezone(ROME).date() + timedelta(days=1)
-        while d <= t40.astimezone(ROME).date():
-            t = datetime(d.year, d.month, d.day, CUP_REREAD_HOUR, tzinfo=ROME).astimezone(timezone.utc)
-            if ap < t < t40:
-                times.add(t)
-            d += timedelta(days=1)
+    days = {x["ko"].astimezone(ROME).date() for x in fam}
+    d = ap.astimezone(ROME).date() + timedelta(days=1)
+    while d <= t40.astimezone(ROME).date():
+        t = datetime(d.year, d.month, d.day, APERTURA_HOUR, tzinfo=ROME).astimezone(timezone.utc)
+        if ap < t < t40 and ((d + timedelta(days=APERTURA_DAYS_BEFORE)) in days or
+                             (cup and d.weekday() == CUP_DISCOVERY_DAY)):
+            times.add(t)
+        d += timedelta(days=1)
     return sorted(times), t40
+
+
+def sim_turn(m: dict, everything: list) -> datetime:
+    """Per le prove: quando il bot avrebbe letto Sbobet e Singbet per questa partita (inizio del turno: l'apertura del
+    primo giorno di una serie di giorni con partite della stessa famiglia, se non piu' di OTHER_DAYS prima)."""
+    cup = m["code"] in CUPS_Q
+    days = {x["ko"].astimezone(ROME).date() for x in everything if (x["code"] in CUPS_Q) == cup}
+    d = m["ko"].astimezone(ROME).date()
+    while (d - timedelta(days=1)) in days:
+        d -= timedelta(days=1)
+    t = datetime(d.year, d.month, d.day, APERTURA_HOUR, tzinfo=ROME).astimezone(timezone.utc) - \
+        timedelta(days=APERTURA_DAYS_BEFORE)
+    return t if m["ko"] - t <= timedelta(days=OTHER_DAYS) else apertura_time(m["ko"], m["code"])
 
 
 _HIST_LAST = [None, None]       # ultimo storico letto (rivedi lo usa due volte: come prima e come adesso)
@@ -1185,7 +1238,7 @@ def read_history(st: dict, fid: str, ap_at: datetime, at: datetime | None = None
         live, obs = True, sorted(t for t in sim if not at or t <= at)
     late_start = False
     if live:                                    # base = la lettura dell'apertura (o la prima lettura, se dopo)
-        near = [t for t in obs if ap_at - timedelta(minutes=15) <= t <= ap_at + timedelta(hours=6)]
+        near = [t for t in obs if ap_at - timedelta(minutes=APERTURA_REUSE_MINUTES) <= t <= ap_at + timedelta(hours=6)]
         if near:
             ap_at = max(ap_at, near[0])
         elif obs and obs[0] > ap_at:
@@ -2482,12 +2535,13 @@ LEGEND = ("📖 <b>Come leggere i messaggi delle quote</b>\n\n"
           "niente, non c'era nessun segnale\n"
           "• le quote sono di <b>Pinnacle</b>, lette all'apertura e a ogni orario d'inizio (OddsPapi non dà più "
           "gratis lo storico delle partite da giocare): il grafico ha un punto per ogni lettura\n"
-          "• venerdì alle 15 (martedì se c'è il turno infrasettimanale): <b>apertura</b>, le quote di riferimento\n"
-          f"• lunedì alle 15: <b>apertura delle coppe</b> ({CUPS_Q['CL']['flag']} Champions, {CUPS_Q['EL']['flag']} "
-          f"Europa e {CUPS_Q['ECL']['flag']} Conference League"
-          + (": solo le partite con almeno una squadra dei 5 campionati" if CUPS_ONLY_TOP5 else
-             ": tutte le partite; a luglio e agosto, nei preliminari, solo quelle con squadre dei 5 campionati")
-          + ")\n\n"
+          f"• <b>apertura</b>: per ogni partita le quote delle {APERTURA_HOUR} di <b>due giorni prima</b> (mercoledì "
+          "per il venerdì, giovedì per il sabato, venerdì per la domenica, sabato per il lunedì; coppe allo stesso "
+          "modo): stessa finestra per tutte. A inizio turno un messaggio breve con le partite\n"
+          f"• coppe: {CUPS_Q['CL']['flag']} Champions tutte le partite, {CUPS_Q['EL']['flag']} Europa e "
+          f"{CUPS_Q['ECL']['flag']} Conference solo quelle con squadre dei 5 campionati\n"
+          f"• segnali forti ({FORZA_FORTE}/10 o più): confronto con <b>Sbobet e Singbet</b>. «3 book su 3» = tutti "
+          "d'accordo; se uno non conferma la forza scende di 1, se nessuno di 2\n\n"
           "<b>Forza del segnale (1-10)</b>\n"
           "quanto si è mosso (linea asiatica o linea gol spostata = tanto) + se ha tenuto o è tornato indietro + "
           "se un altro mercato dice la stessa cosa\n"
@@ -2598,8 +2652,7 @@ def kickoff_groups(cal: list) -> list:
 
 
 def apertura_matches(cal: list, now: datetime) -> list:
-    """Partite che hanno come apertura le 15:00 di oggi (venerdi': weekend; martedi': turno infrasettimanale;
-    lunedi': coppe)."""
+    """Partite che hanno come apertura le 15:00 di oggi (quelle che giocano fra due giorni)."""
     loc = now.astimezone(ROME)
     ap = datetime(loc.year, loc.month, loc.day, APERTURA_HOUR, tzinfo=ROME).astimezone(timezone.utc)
     return [m for m in cal if m["ko"] > now and apertura_time(m["ko"], m["code"]) == ap]
@@ -2612,11 +2665,9 @@ def due_apertura(st: dict, cal: list, now: datetime) -> str | None:
     key = f"A|{loc:%Y-%m-%d}T{APERTURA_HOUR:02d}"
     if key in st["done"]:
         return None
-    if loc.weekday() == CUP_APERTURA_DAY:
-        return key              # coppe: l'elenco si legge comunque (le partite delle coppe arrivano da li')
-    if loc.weekday() not in APERTURA_DAYS or not apertura_matches(cal, now):
-        return None             # martedi' senza turno infrasettimanale
-    return key
+    if loc.weekday() == CUP_DISCOVERY_DAY or apertura_matches(cal, now):
+        return key              # partite fra due giorni (o domenica: le coppe si leggono comunque)
+    return None
 
 
 def due_riepilogo(st: dict, cal: list, now: datetime):
@@ -2683,7 +2734,7 @@ def due_cups(st: dict, now: datetime) -> str | None:
     CUP_REREAD_AHEAD_HOURS ore (non il giorno dell'apertura, che lo legge gia' alle 15): prende le partite che
     Pinnacle ha pubblicato dopo il lunedi' e gli orari cambiati."""
     loc = now.astimezone(ROME)
-    if loc.weekday() == CUP_APERTURA_DAY or not (CUP_REREAD_HOUR <= loc.hour < CUP_REREAD_HOUR + APERTURA_WINDOW_HOURS):
+    if not CUP_REREAD or not (CUP_REREAD_HOUR <= loc.hour < CUP_REREAD_HOUR + APERTURA_WINDOW_HOURS):
         return None
     key = f"C|{loc:%Y-%m-%d}T{CUP_REREAD_HOUR:02d}"
     if key in st["done"]:
@@ -2705,16 +2756,21 @@ def apertura_text(st: dict, soon: list, when: datetime, n: int, kind: str) -> st
         per[m["code"]] = per.get(m["code"], 0) + 1
     detail = " · ".join(f"{COMPS_Q[c]['flag']} {per[c]}" for c in COMPS_Q if c in per)
     last = max(m["ko"] for m in soon)
+    wd = ["lunedì", "martedì", "mercoledì", "giovedì", "venerdì", "sabato", "domenica"]
     if kind == "mano":
         head = (f"📸 <b>Elenco partite aggiornato a mano</b> ({when_text(when)}): {len(soon)} partite nei prossimi "
                 f"4 giorni")
     else:
-        head = (f"📸 <b>Apertura {'delle coppe' if kind == 'coppe' else 'delle quote'}</b> ({when_text(when)}): "
-                f"riferimento fissato per {len(soon)} partite fino a {when_text(last).split()[0]}")
+        days = sorted({m["ko"].astimezone(ROME).date() for m in soon})
+        pairs = " · ".join(f"{wd[d.weekday()]} ← {wd[(d - timedelta(days=APERTURA_DAYS_BEFORE)).weekday()]}"
+                           for d in days)
+        head = (f"📸 <b>Apertura {'delle coppe' if kind == 'coppe' else 'del turno'}</b> ({when_text(when)}): "
+                f"{len(soon)} partite fino a {when_text(last).split()[0]}, ognuna dalle quote delle {APERTURA_HOUR} "
+                f"di due giorni prima ({pairs})")
     cups, left = "", cup_matches(st, when, last)[1]
     if left:
-        cups = (f"Coppe: solo le partite con almeno una squadra dei 5 campionati"
-                f"{'' if CUPS_ONLY_TOP5 else ' (preliminari)'}, {left} lasciate fuori · ")
+        cups = (f"{CUPS_Q['EL']['flag']} Europa e {CUPS_Q['ECL']['flag']} Conference: solo partite con squadre dei 5 "
+                f"campionati, {left} lasciate fuori · ")
     busy = sorted({m["ko"].astimezone(ROME).date() for m in soon if alert_floor(m, soon) == FORZA_MIN_BUSY})
     strict = (f" ({CUPS_Q['EL']['flag']} Europa e {CUPS_Q['ECL']['flag']} Conference da {FORZA_MIN_BUSY}/10"
               + (" " + " e ".join(day_text(datetime(d.year, d.month, d.day, 12, tzinfo=ROME)) for d in busy)
@@ -2726,41 +2782,77 @@ def apertura_text(st: dict, soon: list, when: datetime, n: int, kind: str) -> st
         warn = ("\n⚠️ Non ancora nell'elenco di OddsPapi: " + ", ".join(match_title(team_names(m)) for m in lost[:6])
                 + (f" e altre {len(lost) - 6}" if len(lost) > 6 else "") + f" (riprovo {RIDOSSO_MINUTES} minuti prima)")
     return (f"{head} · {detail}{warn}\n"
-            f"<i>{cups}{riep}Avvisi {RIDOSSO_MINUTES} minuti prima da forza {FORZA_MIN_AVVISO}/10{strict}, poi a 10 "
-            f"minuti solo i casi forti · elenco OddsPapi {n} partite · chiamate usate {st['calls']}/"
+            f"<i>{cups}{riep}Avvisi {RIDOSSO_MINUTES} minuti prima da forza {FORZA_MIN_AVVISO}/10{strict}; i "
+            f"segnali forti confrontati con Sbobet e Singbet, poi a 10 minuti · chiamate usate {st['calls']}/"
             f"{st.get('limit', MONTH_LIMIT)}</i>")
 
 
 def do_apertura(st: dict, topic: QuoteTopic, key: str | None, cal: list, force: bool = False) -> list:
-    """Aggiorna l'elenco delle partite (lunedi' le coppe, martedi' e venerdi' i campionati, a mano tutto) e lo dice
-    con un messaggio breve. Se l'elenco non arriva si riprova al giro dopo (al massimo APERTURA_TRIES volte).
-    Ritorna il calendario aggiornato."""
+    """APERTURA (alle 15): quote di riferimento delle partite che giocano fra due giorni. Una lettura per famiglia
+    (i 5 campionati insieme, le 3 coppe insieme), saltata se c'e' gia' una lettura degli ultimi
+    APERTURA_REUSE_MINUTES minuti; la domenica si leggono sempre le coppe (scopre le partite della settimana). A
+    inizio turno anche Sbobet e Singbet (la base del confronto sui segnali forti, se le chiamate del mese lo
+    permettono) e un messaggio breve con le partite del turno. A mano: tutto, subito. Se una lettura non arriva si
+    riprova al giro dopo (al massimo APERTURA_TRIES volte). Ritorna il calendario aggiornato."""
     now = now_utc()
-    cups_day = bool(key) and now.astimezone(ROME).weekday() == CUP_APERTURA_DAY
-    which = "coppe" if cups_day else "campionati" if key else "tutto"
-    try:
-        n = refresh_fixtures(st, force=force, which=which)
-    except QuotaExhausted:
-        raise
-    except Exception as e:      # noqa: BLE001
-        if not key:
-            raise
-        tries = st["ap_tries"] = {key: (st.get("ap_tries") or {}).get(key, 0) + 1}
-        print(f"[WARN] elenco partite non letto ({e}): tentativo {tries[key]} di {APERTURA_TRIES}")
-        if tries[key] >= APERTURA_TRIES:
-            st["done"].append(key)
-            topic.send(f"⚠️ Bot quote: elenco delle partite non aggiornato ({esc(str(e)[:150])}).")
+    if not key:                                 # a mano: campionati e coppe, subito
+        n = refresh_fixtures(st, force=force, which="tutto")
+        learn_teams(st)
+        cal = calendar_matches(st)
+        soon = [m for m in cal if now < m["ko"] <= now + timedelta(days=4)]
+        if soon:
+            topic.send(apertura_text(st, soon, now, n, "mano"))
         return cal
+    loc = now.astimezone(ROME)
+    today = apertura_matches(cal, now)
+    fams = [f for f, codes in (("campionati", LEAGUES_Q), ("coppe", CUPS_Q))
+            if any(m["code"] in codes for m in today) or (f == "coppe" and loc.weekday() == CUP_DISCOVERY_DAY)]
+    n = 0
+    for fam in fams:
+        last = parse_time((st.get("reads") or {}).get(fam))
+        if last and now - last <= timedelta(minutes=APERTURA_REUSE_MINUTES):
+            print(f"Apertura {fam}: vale la lettura delle {last.astimezone(ROME):%H:%M} (niente chiamata)")
+            continue
+        try:
+            n += refresh_fixtures(st, force=force, which=fam)
+        except QuotaExhausted:
+            raise
+        except Exception as e:      # noqa: BLE001
+            tries = st["ap_tries"] = {key: (st.get("ap_tries") or {}).get(key, 0) + 1}
+            print(f"[WARN] apertura {fam} non letta ({e}): tentativo {tries[key]} di {APERTURA_TRIES}")
+            if tries[key] >= APERTURA_TRIES:
+                st["done"].append(key)
+                topic.send(f"⚠️ Bot quote: quote d'apertura non lette ({esc(str(e)[:150])}).")
+            return cal
     st.pop("ap_tries", None)
-    if key:
-        st["done"].append(key)
+    st["done"].append(key)
     learn_teams(st)
     cal = calendar_matches(st)
-    soon = apertura_matches(cal, now) if key else [m for m in cal if now < m["ko"] <= now + timedelta(days=4)]
-    if not soon:
-        print("Apertura: nessuna partita da segnalare")
-        return cal
-    topic.send(apertura_text(st, soon, now, n, "coppe" if cups_day else "quote" if key else "mano"))
+    today_ap = datetime(loc.year, loc.month, loc.day, APERTURA_HOUR, tzinfo=ROME).astimezone(timezone.utc)
+    for fam in fams:
+        codes = LEAGUES_Q if fam == "campionati" else CUPS_Q
+        turn = [m for m in cal if m["code"] in codes and now < m["ko"] <= now + timedelta(days=OTHER_DAYS)
+                and apertura_time(m["ko"], m["code"]) >= today_ap]
+        if not turn:
+            continue
+        reads = st.setdefault("reads", {})
+        last_o = parse_time(reads.get(f"{fam}|altri"))
+        need = [m for m in turn if not other_obs(find_fixture(st, m), OTHER_BOOKS[0])]
+        if need and (not last_o or now - last_o > timedelta(hours=36)) and optional_ok(st, len(OTHER_BOOKS)):
+            for b in OTHER_BOOKS:               # base di Sbobet e Singbet per il confronto sui segnali forti
+                try:
+                    refresh_fixtures(st, force=force, which=fam, book=b)
+                except QuotaExhausted:
+                    raise
+                except Exception as e:      # noqa: BLE001
+                    print(f"[WARN] quote {BOOK_LABEL.get(b, b)} non lette: {e}")
+            reads[f"{fam}|altri"] = now.isoformat(timespec="seconds")
+        announced = set(st.get("ap_msg") or [])
+        if any(match_key(m) not in announced for m in turn if apertura_time(m["ko"], m["code"]) == today_ap):
+            block = [m for m in turn if match_key(m) not in announced
+                     and apertura_time(m["ko"], m["code"]) <= today_ap + timedelta(days=3)]
+            topic.send(apertura_text(st, block, now, n, "coppe" if fam == "coppe" else "quote"))
+            st["ap_msg"] = sorted(announced | {match_key(m) for m in block})
     return cal
 
 
@@ -2809,6 +2901,73 @@ def add_sot(st: dict, fid: str, m: dict, R: dict, an: dict, force: bool = False)
     if (R2["now"].get(SOT_BOOK) or {}).get("ts"):
         sot["hits"] = sot.get("hits", 0) + 1
         return analyze(R, m["ko"], extra=R2)
+    return an
+
+
+def apply_books(st: dict, an: dict, R: dict, raws: dict, at: datetime | None = None, fid: str | None = None) -> dict:
+    """Confronto con gli altri book (Sbobet, Singbet) di un segnale letto su Pinnacle: per ogni book, la sua quota
+    di partenza (la lettura d'inizio turno) contro adesso; un book con i dati che NON va nella stessa direzione di
+    Pinnacle toglie un punto di forza (come con i 3 book di prima: 3 d'accordo +1, 2 0, 1 -1). Un book senza dati,
+    o letto per la prima volta solo adesso, non conta."""
+    meta = ensure_markets(st)
+    others = {}
+    for b, raw in raws.items():
+        if not raw:
+            continue
+        if fid and at is None:                  # dal vivo: il book dev'essere stato letto adesso
+            obs = other_obs(fid, b)
+            if not obs or now_utc() - obs[-1] > timedelta(minutes=LIVE_FRESH_MINUTES):
+                continue
+        h = BookHist(b, raw, meta)
+        first = h.first_time({"main"})
+        if not first or first > (at or now_utc()) - timedelta(hours=6):
+            continue                            # nessuna quota di partenza vera
+        base = h.snapshot(R["base_at"])
+        if not has_data(base):
+            base = first_quotes(h)
+        now = h.snapshot(at)
+        if has_data(base) and has_data(now):
+            others[b] = (base, now)
+    if not others:
+        return an
+    for sg in an["sigs"]:
+        agree = [an["ref"]]
+        for b, (ba, nw) in others.items():
+            mv = MOVE_FN[sg["fam"]](ba, nw)
+            if mv and mv["dir"] == sg["dir"] and abs(mv["meas"]) >= MIN_BOOK_PTS:
+                agree.append(b)
+        disagree = len(others) - (len(agree) - 1)
+        forza, acc, ten = forza_of(sg["lvl"], 3 - disagree, sg["ratio"], sg["coe"])
+        sg.update(forza=forza, acc=acc, books=agree, n=1 + len(others))
+    an["shown"] = [sg for sg in an["sigs"] if sg["forza"] >= FORZA_MIN_AVVISO]
+    an["forza"] = max((sg["forza"] for sg in an["sigs"]), default=0)
+    an["others"] = sorted(others)
+    return an
+
+
+def confirm_books(st: dict, fid: str, an: dict, R: dict, force: bool = False) -> dict:
+    """Segnale forte letto su Pinnacle: le quote di adesso di Sbobet e Singbet (UNA chiamata, /odds della partita)
+    e il confronto con la loro quota di partenza (apply_books). Chiamata "in piu'": solo se il mese lo permette."""
+    if not OTHER_BOOKS or not optional_ok(st, 1):
+        print("  confronto con Sbobet e Singbet saltato (chiamate del mese)")
+        return an
+    try:
+        data = api_get("/odds", {"fixtureId": fid, "bookmakers": ",".join(OTHER_BOOKS)}, st, force=force)
+    except QuotaExhausted:
+        raise
+    except Exception as e:      # noqa: BLE001
+        print(f"  Sbobet e Singbet non letti: {e}")
+        return an
+    fx = data if isinstance(data, dict) and "bookmakerOdds" in data else next(
+        (x for x in as_list(data) if isinstance(x, dict) and str(x.get("fixtureId")) == fid), {})
+    meta, obs = ensure_markets(st), now_utc()
+    fx = dict(fx, startTime=fx.get("startTime") or (st["fixtures"].get(fid) or {}).get("start"))
+    for b in OTHER_BOOKS:
+        live_record(fid, fx, meta, obs, b)
+    live_save()
+    before = an["forza"]
+    an = apply_books(st, an, R, {b: other_raw(fid, b) for b in OTHER_BOOKS}, fid=fid)
+    print(f"  confronto con {', '.join(an.get('others') or []) or 'nessun altro book'}: forza {before} -> {an['forza']}")
     return an
 
 
@@ -2930,7 +3089,7 @@ def do_ridosso(st: dict, topic: QuoteTopic, key: str | None, group: dict | None,
         tries.pop(tk, None)
     sent = checked = 0
     unfinished = False
-    alerts, notfound, noodds, nobase = [], [], [], []
+    alerts, notfound, noodds, nobase, rows = [], [], [], [], []
 
     def mark(m):
         if not manual:
@@ -2967,7 +3126,27 @@ def do_ridosso(st: dict, topic: QuoteTopic, key: str | None, group: dict | None,
             nobase.append(names)
             mark(m)
             continue
-        an = analyze(R, m["ko"])
+        rows.append([m, names, fid, R, analyze(R, m["ko"])])
+    strong = [r for r in rows if r[3].get("live") and r[4]["forza"] >= FORZA_FORTE]
+    if len(strong) > len(OTHER_BOOKS) and optional_ok(st, len(OTHER_BOOKS)):
+        fams = {("coppe" if r[0]["code"] in CUPS_Q else "campionati") for r in strong}
+        which = next(iter(fams)) if len(fams) == 1 else "tutto"
+        for b in OTHER_BOOKS:                   # tanti segnali forti: Sbobet e Singbet per competizione (2 chiamate)
+            try:
+                refresh_fixtures(st, force=force, which=which, book=b)
+            except QuotaExhausted:
+                raise
+            except Exception as e:      # noqa: BLE001
+                print(f"[WARN] quote {BOOK_LABEL.get(b, b)} non lette: {e}")
+        for r in strong:
+            before = r[4]["forza"]
+            r[4] = apply_books(st, r[4], r[3], {b: other_raw(r[2], b) for b in OTHER_BOOKS}, fid=r[2])
+            print(f"  {r[1]['home']} - {r[1]['away']}: confronto con {', '.join(r[4].get('others') or []) or 'nessun altro book'}"
+                  f": forza {before} -> {r[4]['forza']}")
+    else:
+        for r in strong:                        # pochi: una chiamata per partita (/odds)
+            r[4] = confirm_books(st, r[2], r[4], r[3], force=force)
+    for m, names, fid, R, an in rows:
         floor = alert_floor(m, cal)
         alert = an["forza"] >= floor
         if alert:
@@ -3586,7 +3765,7 @@ def do_finestre(st: dict, topic: QuoteTopic) -> None:
     fischio: avvisi (forza da 4) e movimento di Pinnacle (punti del lato e dei gol) per giorno della partita."""
     ensure_markets(st)
     learn_teams(st)
-    opts = (("ven 15", None), ("24 ore", 24), ("48 ore", 48), ("72 ore", 72))
+    opts = (("apertura", None), ("24 ore", 24), ("48 ore", 48), ("72 ore", 72))
     rows, start = [], time.monotonic()
     for m in archive_matches(st):
         if time.monotonic() - start > RIVEDI_BUDGET_SECONDS:
@@ -3625,7 +3804,7 @@ def do_finestre(st: dict, topic: QuoteTopic) -> None:
         if not sel:
             continue
         hrs = sorted(r[0][3] for r in sel)
-        lines.append(f"<b>{day}</b> ({len(sel)} partite, venerdì 15 = {hrs[0]:.0f}-{hrs[-1]:.0f} ore prima)")
+        lines.append(f"<b>{day}</b> ({len(sel)} partite, apertura = {hrs[0]:.0f}-{hrs[-1]:.0f} ore prima)")
         for i, (lab, _) in enumerate(opts):
             lines.append(f"  base {lab}: avvisi {sum(1 for r in sel if r[i][0] >= FORZA_MIN_AVVISO)} · lato "
                          f"{med(r[i][1] for r in sel)} punti · gol {med(r[i][2] for r in sel)} punti")
@@ -3673,7 +3852,12 @@ def do_rivedi(st: dict, topic: QuoteTopic, query: str = "") -> None:
             print(f"  {names['home']} - {names['away']}: storico non letto ({e})")
             continue
         an0 = analyze(R0, m["ko"])          # come prima: 3 book, storico completo
-        an = analyze(R, m["ko"])            # come adesso: solo Pinnacle, visto nelle letture del bot
+        an = analyze(R, m["ko"])            # come adesso: Pinnacle visto nelle letture del bot...
+        if an["forza"] >= FORZA_FORTE:      # ...e sui segnali forti Sbobet e Singbet (inizio turno e 40 minuti)
+            full = fetch_history(st, m["fid"], BOOKMAKERS, force=True)
+            turn = sim_turn(m, everything)
+            an = apply_books(st, an, R, {b: sample_books(full[b], [turn, t40]) for b in OTHER_BOOKS if b in full},
+                             at=t40)
         floor = alert_floor(m, everything)
         an["alert"] = an["forza"] >= floor
         old_alerts[match_key(m)] = (an0["forza"], an0["forza"] >= floor)
@@ -3926,6 +4110,7 @@ def cleanup(st: dict) -> None:
     st["pace"] = {k: r for k, r in (st.get("pace") or {}).items() if r.get("_ko", "") >= old}
     st["news_at"] = {k: v for k, v in (st.get("news_at") or {}).items() if k.split("|")[1:2] >= [keep]}
     st["live_tries"] = {k: v for k, v in (st.get("live_tries") or {}).items() if k.split("|", 1)[-1] >= keep}
+    st["ap_msg"] = [k for k in (st.get("ap_msg") or []) if k.split("|")[1:2] >= [keep]]
 
 
 _START = time.monotonic()

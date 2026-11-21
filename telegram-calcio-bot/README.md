@@ -90,32 +90,35 @@ Conference League) con OddsPapi (piano gratuito, 250 chiamate al mese, secret
 > cambiati con la loro ora. Lo storico gratis delle partite finite serve
 > ancora per «rivedi» ed «esempio».
 
-- **Apertura**: le quote del venerdì alle 15:00 per le partite del weekend
-  (venerdì-lunedì), del martedì alle 15:00 per i turni infrasettimanali: lo
-  stesso momento delle quote d'apertura usate nello studio del foglio Mercato
-  del Pace Index. A quell'ora il bot legge le quote di Pinnacle di tutte le
-  partite (una chiamata per i 5 campionati) e le tiene come riferimento; lo
+- **Apertura**: per ogni partita le quote delle 15:00 di **due giorni prima**
+  (mercoledì per il venerdì, giovedì per il sabato, venerdì per la domenica,
+  sabato per il lunedì; coppe allo stesso modo), così tutte hanno la stessa
+  finestra (45-54 ore). Prima del 21/11/2026 era il venerdì alle 15 per tutto
+  il weekend: sulle partite del 6-8 novembre per sabato e domenica cambiava
+  poco, ma il venerdì sera aveva solo 6 ore di finestra (movimento mediano di
+  Pinnacle 0,2 punti contro 2,7 con 48 ore). Alle 15 il bot legge le quote di
+  Pinnacle (una chiamata per i 5 campionati, una per le coppe; se c'è una
+  lettura dei 40 minuti da meno di 45 minuti vale quella) e a inizio turno lo
   dice con un messaggio breve. Una partita letta per la prima volta dopo
   l'apertura parte dalla sua prima lettura.
 - **Coppe europee** (⭐ Champions, 🟠 Europa e 🟢 Conference League): le
-  partite arrivano dall'elenco OddsPapi, letto il **lunedì alle 15** con una
-  chiamata a parte; il lunedì alle 15 è anche la loro apertura (dopo il turno
-  di campionato). Tutte le partite; a luglio e agosto (preliminari, anche
-  80-90 partite il giovedì) solo quelle con almeno una squadra dei 5
-  campionati (`CUPS_ONLY_TOP5` e `CUPS_TOP5_MONTHS` in cima a
-  `monitor_quote.py`). Le squadre dei 5 campionati hanno gli stessi nomi
+  partite arrivano dall'elenco OddsPapi, letto ogni **domenica alle 15** (scopre
+  le partite della settimana ed è l'apertura del martedì), poi lunedì e
+  martedì alle 15 (apertura di mercoledì e giovedì). Champions tutte le
+  partite; Europa e Conference (dal 21/11/2026) solo quelle con almeno una
+  squadra dei 5 campionati (`CUPS_TOP5_ONLY`), come tutte le coppe a luglio e
+  agosto (`CUPS_TOP5_MONTHS`). Le squadre dei 5 campionati hanno gli stessi nomi
   italiani e hashtag del campionato: il bot li impara dalle partite di
-  campionato, senza chiamate. L'elenco viene **riletto alle 11** nei giorni con
-  partite di coppa nelle 36 ore dopo (martedì, mercoledì, giovedì: una
-  chiamata, nessun messaggio): così entrano le partite che Pinnacle pubblica
-  dopo il lunedì e gli orari cambiati.
+  campionato, senza chiamate. (La rilettura delle 11 è spenta dal 21/11/2026:
+  le letture delle 15 e dei 40 minuti aggiornano già l'elenco.)
 - **Riepilogo delle 19**: spento dal 14/11/2026 (`RIEPILOGO_AUTO` in cima a
   `monitor_quote.py`). A mano resta: «Prova bot quote» → riepilogo.
 - **Forza del segnale (1-10)** = 2 × ampiezza (1-5: punti di probabilità
   senza margine misurati sulla linea dell'apertura, così un cambio di linea
   "di confine" non conta come un movimento grande; asiatico 3 / 4,5 / 6 / 8 /
-  10 punti) + book (+1: si legge solo Pinnacle, contato come i 3 book
-  d'accordo di prima, `LIVE_ACC`) + tenuta (ha
+  10 punti) + book (+1 con il solo Pinnacle, come i 3 book d'accordo di
+  prima, `LIVE_ACC`; sui segnali forti il confronto vero con Sbobet e
+  Singbet) + tenuta (ha
   tenuto 0, tornato un po' indietro −1, rientrato −2) + altro mercato che dice
   la stessa cosa (asiatico e 1X2, linea gol e GG o gol di squadra: +1). Da 7
   forte, 4-6 medio (da farsi domande), sotto 4 rumore. Le soglie sono in cima
@@ -157,6 +160,14 @@ Conference League) con OddsPapi (piano gratuito, 250 chiamate al mese, secret
   dopo un messaggio degli ultimi minuti arrivano solo le notizie nuove. Si
   regola in cima a `monitor_quote.py` (`NOTIZIE_SOTTO_AVVISO`, `NOTIZIE_ORE`,
   `NOTIZIE_PER_SQUADRA`); il codice è in `notizie_partita.py`.
+- **Segnali forti (da 7/10): confronto con Sbobet e Singbet**. Le loro quote
+  si leggono a inizio turno (base) e, a 40 minuti, solo per le partite con un
+  segnale forte: una chiamata per partita (`/odds`), o due per competizione se
+  i forti sono più di due. «3 book su 3» = tutti d'accordo; ogni book che non
+  conferma toglie un punto (come prima: un forte può scendere a 5-6). Un book
+  senza quote di partenza non conta. Sono chiamate «in più»: saltano se il
+  mese è stretto. Sulle 48 partite del 6-8 novembre, quando Pinnacle si
+  muoveva, Sbobet e Singbet andavano nella stessa direzione 40 volte su 44.
 - **Ultimi minuti**: da 12 a 3 minuti prima del fischio, **solo se a 40
   minuti è partito un avviso forte** (7/10 o più) e se le chiamate del mese lo
   permettono, il bot rilegge le quote (una chiamata) e scrive: ⚠️
@@ -185,12 +196,15 @@ Conference League) con OddsPapi (piano gratuito, 250 chiamate al mese, secret
   pezzi in `state/quote_state.json` (`stats`).
 - **Consumo**: ogni lettura delle quote di adesso è una chiamata delle 250:
   circa 22 orari d'inizio per weekend di campionato, 6-7 per settimana di
-  coppe, le aperture (venerdì, lunedì, martedì), le riletture delle coppe e
-  gli ultimi minuti dei segnali forti, più i nomi delle squadre nuove e
-  l'elenco dei mercati: **130-180 chiamate al mese**. Le chiamate «in più»
-  (ultimi minuti, riletture delle coppe) partono solo se a fine mese ne
-  restano almeno 6 per ogni giorno che manca (`OPTIONAL_PER_DAY`): le letture
-  dei 40 minuti hanno sempre la precedenza. Il contatore si allinea a quello
+  coppe, le aperture delle 15 (3-4 a settimana), Sbobet e Singbet (2 a inizio
+  turno, 1 per segnale forte) e gli ultimi minuti dei segnali forti, più i
+  nomi delle squadre nuove e l'elenco dei mercati: **circa 200-210 chiamate al
+  mese**. Le chiamate «in più» (Sbobet e Singbet, ultimi minuti) partono solo
+  se a fine mese ne restano almeno 6 per ogni giorno che manca
+  (`OPTIONAL_PER_DAY`): le letture dei 40 minuti hanno sempre la precedenza.
+  Togliere partite di Europa e Conference fa risparmiare poco: si paga per
+  orario d'inizio, non per partita. Il piano a pagamento con i 3 book
+  (Pinnacle, Sbobet, Singbet, calcio) costa 95 $ al mese (21/11/2026). Il contatore si allinea a quello
   dell'account e non fa mai superare il limite.
 - **Come parte**: lo lancia il giro ogni 5 minuti del bot notizie (passo «Bot
   quote» in `monitor-news.yml`); quasi sempre esce subito. Ogni giro lavora al
