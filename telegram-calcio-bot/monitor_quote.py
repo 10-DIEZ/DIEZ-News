@@ -3,17 +3,20 @@ Bot QUOTE: come si muovono le quote dei 5 campionati e delle coppe europee (Odds
 
 COSA FA
 - 40 minuti prima di ogni orario d'inizio (le formazioni ufficiali escono circa
-  un'ora prima) legge lo STORICO delle quote di ogni partita su 3 book
-  (Pinnacle, Sbobet, Singbet) e confronta:
+  un'ora prima) legge le quote di ADESSO di Pinnacle per tutte le partite di
+  quell'orario (UNA chiamata per i 5 campionati insieme, una per le 3 coppe) e
+  confronta (dal 20/11/2026 OddsPapi da' lo storico gratis solo per le partite
+  FINITE: il bot si costruisce lo storico da se', state/quote_live.json, con
+  ogni lettura: apertura, ogni orario d'inizio, riletture):
       APERTURA = le quote del venerdi' alle 15:00 per le partite del weekend
                  (venerdi'-lunedi'), del martedi' alle 15:00 per i turni
                  infrasettimanali: lo stesso momento delle quote di apertura
                  usate nello studio del foglio Mercato del Pace Index;
       ADESSO   = le quote a ridosso, con le formazioni uscite.
 - Ogni movimento (handicap asiatico, linea gol, Goal/No Goal) ha una FORZA da
-  1 a 10 = quanto si e' mosso (1-5) + quanti book sono d'accordo (0-2) + se ha
-  tenuto o e' tornato indietro (0-2) + se un altro mercato dice la stessa cosa
-  (0-1). Ti scrive SOLO da FORZA_MIN_AVVISO (4/10) in su: 7-10 forte, 4-6
+  1 a 10 = 2 x quanto si e' mosso + book (con il solo Pinnacle +1, come 3 book
+  d'accordo: LIVE_ACC) + se ha tenuto o e' tornato indietro (0/-1/-2) + se un
+  altro mercato dice la stessa cosa (+1). Ti scrive SOLO da FORZA_MIN_AVVISO (4/10) in su: 7-10 forte, 4-6
   medio (da farsi domande), sotto 4 rumore. Per EUROPA e CONFERENCE LEAGUE,
   nelle sere in cui insieme hanno piu' di CUP_BUSY_MATCHES (8) partite, solo da
   FORZA_MIN_BUSY (6/10): forti e medio-forti. Gli avvisi della stessa ora
@@ -26,10 +29,11 @@ COSA FA
   dal suo punto estremo), QUANDO si e' mossa, "Si muovono anche" (gli altri
   movimenti buoni), LETTURA (cosa puo' voler dire, come domanda), colore per la
   riga "Mercato" della Direzione generale e pronostico dalle quote.
-- ULTIMI MINUTI: da 12 a 3 minuti prima del fischio rilegge le partite e scrive
-  SOLO per i casi forti: 🚨 un movimento da FORZA_FORTE (7/10) in su nato dopo
-  il controllo dei 40 minuti (misurato solo su quel tratto), o ⚠️ RIBALTONE (un
-  segnale forte gia' mandato che dall'apertura non arriva piu' a 4/10).
+- ULTIMI MINUTI: da 12 a 3 minuti prima del fischio, SOLO se a 40 minuti e'
+  partito un avviso forte (FORZA_FORTE, 7/10) e se le chiamate del mese lo
+  permettono (optional_ok), rilegge le quote (1 chiamata) e scrive: ⚠️
+  RIBALTONE (il segnale forte non arriva piu' a 4/10) o 🚨 un altro movimento
+  da 7/10 nato dopo il controllo dei 40 minuti.
 - NOTIZIE SOTTO L'AVVISO: subito dopo ogni avviso (40 minuti e ultimi minuti),
   in risposta, un messaggio 📰 con le notizie delle due squadre delle ultime
   NOTIZIE_ORE (36) ore: conferenze stampa, infortuni, formazioni, allenatore,
@@ -62,19 +66,21 @@ COSA FA
   a tarare le soglie.
 - Tutto nell'argomento "📈 Quote" del gruppo (lo crea il bot).
 
-QUANTO CONSUMA: lo storico delle quote NON conta nelle 250 chiamate al mese
-del piano gratuito (verificato con il contatore dell'account il 6/11/2026).
-Contano solo gli aggiornamenti dell'elenco partite (venerdi' i campionati,
-lunedi' le coppe, a volte il martedi'; le riletture delle coppe: fino a 3 per
-settimana di coppe), i nomi delle squadre nuove e l'elenco dei mercati (1 al
-mese): 25-40 chiamate al mese. Un contatore (allineato a quello dell'account)
-non fa mai superare il limite.
+QUANTO CONSUMA: ogni lettura delle quote di adesso e' 1 chiamata delle 250 al
+mese: circa 22 orari d'inizio per weekend di campionato, 6-7 per settimana di
+coppe, le aperture (venerdi', lunedi', martedi'), le riletture delle coppe e
+gli ultimi minuti dei segnali forti: 130-180 chiamate al mese. Le chiamate "in
+piu'" (ultimi minuti, riletture) partono solo se ne restano OPTIONAL_PER_DAY
+per ogni giorno che manca a fine mese; un contatore (allineato a quello
+dell'account) non fa mai superare il limite. Lo storico gratis delle partite
+finite serve ancora per «rivedi» ed «esempio».
 
 COME PARTE: lo lancia il giro ogni 5 minuti del bot notizie (monitor-news.yml,
 avviato da cron-job.org). Quasi sempre controlla l'ora ed esce subito.
 Prove a mano: workflow "Prova bot quote".
 
-STATO: state/quote_state.json e state/mercato.csv (solo questi file; lo stato
+STATO: state/quote_state.json, state/quote_live.json (le quote lette dal bot)
+e state/mercato.csv (solo questi file; lo stato
 delle notizie lo legge e basta, per sapere qual e' il gruppo Telegram e per le
 notizie sotto l'avviso).
 
@@ -100,6 +106,7 @@ Uso: python monitor_quote.py                   giro normale
 
 import argparse
 import bisect
+import calendar as _calmod
 import html
 import json
 import math
@@ -125,6 +132,7 @@ API_BASE = "https://api.oddspapi.io/v4"
 API_KEY = os.environ.get("ODDSPAPI_API_KEY", "").strip()
 QUOTE_STATE_FILE = os.path.join(os.path.dirname(__file__), "state", "quote_state.json")
 PACE_FILE = os.path.join(os.path.dirname(__file__), "state", "mercato.csv")     # letto dai file Excel Pace Index
+LIVE_FILE = os.path.join(os.path.dirname(__file__), "state", "quote_live.json")  # quote Pinnacle lette dal bot
 
 # I 3 book confrontati (lo storico ne accetta al massimo 3 per chiamata): Pinnacle e' il riferimento
 BOOKMAKERS = ["pinnacle", "sbobet", "singbet"]
@@ -171,6 +179,17 @@ HIST_PAUSE = 5.3                # lo storico vuole 5 secondi tra una chiamata e 
 API_PAUSE = 1.2                 # le altre: 1 secondo tra due chiamate allo stesso indirizzo (una rifiutata conta lo stesso)
 MONTH_LIMIT = 250               # chiamate al mese del piano gratuito
 MONTH_RESERVE = 12              # tenute da parte per le prove a mano
+# Dal 20/11/2026 OddsPapi da' lo storico gratis SOLO per le partite finite: prima del fischio il bot legge le quote
+# di ADESSO di Pinnacle (una chiamata per ogni orario d'inizio, per tutti e 5 i campionati insieme o per le 3 coppe
+# insieme) e si costruisce lo storico da se' con le sue letture (apertura, ogni orario, rilettura delle coppe).
+LIVE_BOOK = "pinnacle"
+LIVE_DAYS = 4                   # quote tenute per le partite dei prossimi 4 giorni (dall'apertura al fischio)...
+LIVE_KEEP_HOURS = 6             # ...e fino a 6 ore dopo il fischio
+LIVE_ACC = 1                    # solo Pinnacle: punti "book" come 3 book d'accordo (con 3 book succedeva 9 volte su 10)
+LIVE_FRESH_MINUTES = 8          # una lettura di meno di 8 minuti fa vale ancora (niente seconda chiamata)
+LIVE_TRIES = 3                  # quote di un orario non lette: al massimo 3 tentativi (una chiamata ciascuno)
+OPTIONAL_PER_DAY = 6            # chiamate "in piu'" solo se ne restano 6 per ogni giorno che manca a fine mese
+FINISHED_AFTER_HOURS = 2.5      # 2 ore e mezza dopo il fischio la partita e' finita: c'e' lo storico gratis
 RUN_BUDGET_SECONDS = 170        # tempo massimo per giro (il giro ogni 5 minuti deve poi controllare le notizie)
 RIEPILOGO_AUTO = False          # riepilogo automatico delle 19 spento (14/11/2026); a mano resta: --mode riepilogo
 RIEPILOGO_HOUR = 19             # riepilogo delle partite di domani alle 19 (fino alle 23 se il giro e' in ritardo)
@@ -219,7 +238,7 @@ NOTIZIE_PER_SQUADRA = 4         # ...al massimo 4 per squadra (conferenze, infor
 TOPIC_NAME = "📈 Quote"
 TOPIC_COLOR = 9367192           # verde
 KEEP_DAYS = 8                   # partite finite tenute nello stato una settimana (per "rivedi")
-LEGEND_VERSION = 5              # se cambia, la legenda viene rimandata una volta (4 = tabella unica e grafico;
+LEGEND_VERSION = 6              # se cambia, la legenda viene rimandata una volta (4 = tabella unica e grafico;
                                 # 5 = gol e corner attesi, ultimi minuti, soglia Europa/Conference, niente riepilogo)
 APERTURA_TRIES = 3              # elenco partite non letto all'apertura: si riprova al giro dopo, al massimo 3 volte
 MARKETS_VERSION = 4             # se cambia, l'elenco dei mercati viene riletto subito (3-4 = corner, gol e tiri di squadra)
@@ -266,6 +285,7 @@ def load_qstate() -> dict:
 
 
 def save_qstate(st: dict) -> None:
+    live_save()
     os.makedirs(os.path.dirname(QUOTE_STATE_FILE), exist_ok=True)
     tmp = QUOTE_STATE_FILE + ".tmp"
     with open(tmp, "w", encoding="utf-8") as f:
@@ -661,7 +681,8 @@ def refresh_fixtures(st: dict, force: bool = False, which: str = "campionati", d
     if which in ("coppe", "tutto"):
         groups.append(("coppe", [c for c in CUPS_Q if c in tour]))
     horizon = now_utc() + timedelta(days=days or LOOKAHEAD_DAYS + 2)
-    n, counts, errors, raw = 0, {}, [], {}
+    meta = ensure_markets(st)
+    n, counts, errors, raw, live_n = 0, {}, [], {}, 0
     for label, codes in groups:
         if not codes:
             continue
@@ -674,6 +695,7 @@ def refresh_fixtures(st: dict, force: bool = False, which: str = "campionati", d
             print(f"[WARN] elenco {label} non letto: {e}")
             errors.append(e)
             continue
+        obs = now_utc()
         for fx in as_list(data):
             try:
                 fid = str(fx["fixtureId"])
@@ -686,6 +708,7 @@ def refresh_fixtures(st: dict, force: bool = False, which: str = "campionati", d
             if not start or start > horizon or code not in codes:
                 continue
             _SNAPSHOT[fid] = fx
+            live_n += live_record(fid, fx, meta, obs)
             rec = st["fixtures"].setdefault(fid, {})
             rec.update(code=code, p1=fx.get("participant1Id"), p2=fx.get("participant2Id"), start=start.isoformat())
             counts[code] = counts.get(code, 0) + 1
@@ -695,8 +718,9 @@ def refresh_fixtures(st: dict, force: bool = False, which: str = "campionati", d
     if errors and len(errors) == len([g for g in groups if g[1]]):
         raise errors[0]
     ensure_participants(st, {r.get("p1") for r in st["fixtures"].values()} | {r.get("p2") for r in st["fixtures"].values()})
-    print(f"Elenco partite aggiornato ({which}): {n} partite {counts} (nell'elenco per id: {raw}; chiamate del mese "
-          f"{st['calls']}/{MONTH_LIMIT})")
+    print(f"Elenco partite aggiornato ({which}): {n} partite {counts}, quote Pinnacle lette per {live_n} "
+          f"(nell'elenco per id: {raw}; chiamate del mese {st['calls']}/{MONTH_LIMIT})")
+    live_save()
     return n
 
 
@@ -894,8 +918,172 @@ _HIST_INFO = {}         # per la prova: mercati trovati nello storico per ogni b
 _HIST_UNKNOWN = {}      # per la prova: id dei mercati dello storico che il bot non usa (per scoprire corner e simili)
 
 
+# ---------------------------------------------------------------------
+# Storico fatto in casa (Pinnacle): ogni lettura delle quote di adesso lascia i prezzi cambiati
+# ---------------------------------------------------------------------
+_LIVE = {}
+_LIVE_DIRTY = [False]
+_SOURCE = ["storico"]
+
+
+def live_store() -> dict:
+    if not _LIVE:
+        d = load_json(LIVE_FILE, {})
+        _LIVE.update(d if isinstance(d, dict) and isinstance(d.get("fx"), dict) else {"v": 1, "fx": {}})
+    return _LIVE
+
+
+def live_save() -> None:
+    """Salva lo storico fatto in casa (una riga per partita); toglie le partite finite da piu' di LIVE_KEEP_HOURS."""
+    if not _LIVE or not _LIVE_DIRTY[0]:
+        return
+    limit = now_utc() - timedelta(hours=LIVE_KEEP_HOURS)
+    fx = {k: v for k, v in _LIVE["fx"].items() if (parse_time(v.get("s")) or limit) > limit}
+    _LIVE["fx"] = fx
+    rows = sorted(fx.items(), key=lambda kv: (kv[1].get("s", ""), kv[0]))
+    text = ('{"v":1,"fx":{\n' + ",\n".join(f"{json.dumps(k)}:{json.dumps(v, separators=(',', ':'))}" for k, v in rows)
+            + "\n}}\n")
+    try:
+        os.makedirs(os.path.dirname(LIVE_FILE), exist_ok=True)
+        tmp = LIVE_FILE + ".tmp"
+        with open(tmp, "w", encoding="utf-8") as f:
+            f.write(text)
+        os.replace(tmp, LIVE_FILE)
+        _LIVE_DIRTY[0] = False
+    except OSError as e:
+        print(f"[WARN] quote lette non salvate: {e}")
+
+
+def live_record(fid: str, fx: dict, meta: dict, obs: datetime) -> bool:
+    """Quote di adesso di Pinnacle (dall'elenco OddsPapi) nello storico fatto in casa: per ogni esito un prezzo
+    nuovo solo se e' cambiato, con l'ora del cambio (changedAt); un esito sparito (linea tolta) viene chiuso.
+    Tempi in minuti dal fischio. True se la partita aveva quote."""
+    start = parse_time(fx.get("startTime"))
+    if not start or not (obs < start <= obs + timedelta(days=LIVE_DAYS)):
+        return False
+    try:
+        markets = fx["bookmakerOdds"][LIVE_BOOK]["markets"]
+    except (KeyError, TypeError):
+        return False
+    if not isinstance(markets, dict) or not markets:
+        return False
+    rec = live_store()["fx"].setdefault(fid, {"s": start.isoformat(), "t": [], "m": {}})
+    old = parse_time(rec.get("s"))
+    if old and old != start:                    # orario cambiato: i minuti si contano dal nuovo fischio
+        shift = int((old - start).total_seconds() // 60)
+        rec["t"] = [t + shift for t in rec.get("t", [])]
+        for outs in rec["m"].values():
+            for ser in outs.values():
+                for e in ser:
+                    e[0] += shift
+    rec["s"] = start.isoformat()
+
+    def rel(t: datetime) -> int:
+        return int((t - start).total_seconds() // 60)
+    o = rel(obs)
+    seen = set()
+    for mid, mk in markets.items():
+        info = meta.get(str(mid))
+        if not info or len(info) < 4 or info[2] not in ("fulltime", "result", "") or not isinstance(mk, dict):
+            continue
+        if mk.get("marketActive") is False:
+            continue
+        outs = mk.get("outcomes") or {}
+        for oid in info[3]:
+            pls = (outs.get(str(oid)) or {}).get("players") or {}
+            pl = next(iter(pls.values()), None) if isinstance(pls, dict) and pls else None
+            if not isinstance(pl, dict) or pl.get("active") is False:
+                continue
+            try:
+                price = round(float(pl.get("price")), 3)
+            except (TypeError, ValueError):
+                continue
+            if price <= 1.0:
+                continue
+            seen.add((str(mid), str(oid)))
+            ser = rec["m"].setdefault(str(mid), {}).setdefault(str(oid), [])
+            if ser and ser[-1][1] == price:
+                continue
+            ch = parse_time(pl.get("changedAt") or pl.get("bookmakerChangedAt"))
+            t = min(rel(ch), o) if ch else o
+            if ser:
+                t = max(t, ser[-1][0])
+            ser.append([t, price])
+    for mid, outs in rec["m"].items():          # esiti spariti dall'elenco: prezzo chiuso da adesso
+        for oid, ser in outs.items():
+            if (mid, oid) not in seen and ser and ser[-1][1] != 0:
+                ser.append([max(o, ser[-1][0]), 0])
+    rec["t"].append(o)
+    _LIVE_DIRTY[0] = True
+    return bool(seen)
+
+
+def live_obs(fid: str) -> list:
+    """Momenti delle letture di una partita (storico fatto in casa)."""
+    rec = live_store()["fx"].get(fid) or {}
+    start = parse_time(rec.get("s"))
+    return [start + timedelta(minutes=t) for t in rec.get("t", [])] if start else []
+
+
+def live_fresh(fid: str | None, minutes: int = LIVE_FRESH_MINUTES) -> bool:
+    obs = live_obs(fid) if fid else []
+    return bool(obs) and now_utc() - obs[-1] <= timedelta(minutes=minutes)
+
+
+def live_books(fid: str) -> dict:
+    """Lo storico fatto in casa nel formato dello storico OddsPapi: {LIVE_BOOK: {"markets": ...}}."""
+    rec = live_store()["fx"].get(fid) or {}
+    start = parse_time(rec.get("s"))
+    if not start or not rec.get("m"):
+        return {}
+    markets = {}
+    for mid, outs in rec["m"].items():
+        markets[mid] = {"outcomes": {oid: {"players": {"0": [
+            {"createdAt": (start + timedelta(minutes=t)).isoformat(), "price": pr} if pr else
+            {"createdAt": (start + timedelta(minutes=t)).isoformat(), "price": 0, "active": False}
+            for t, pr in ser]}} for oid, ser in outs.items()}}
+    return {LIVE_BOOK: {"markets": markets}}
+
+
+def live_finished(st: dict, fid: str) -> bool:
+    """Partita finita (c'e' lo storico gratis di OddsPapi)? Se non si sa quando gioca: si'."""
+    start = parse_time((st["fixtures"].get(fid) or {}).get("start")) or \
+        parse_time((live_store()["fx"].get(fid) or {}).get("s"))
+    return not start or now_utc() > start + timedelta(hours=FINISHED_AFTER_HOURS)
+
+
+def optional_ok(st: dict, need: int = 1) -> bool:
+    """Chiamate "in piu'" (ultimi minuti, rilettura delle coppe) solo se a fine mese ne restano comunque
+    OPTIONAL_PER_DAY per ogni giorno che manca: le letture dei 40 minuti hanno sempre la precedenza."""
+    loc = now_utc().astimezone(ROME)
+    days = _calmod.monthrange(loc.year, loc.month)[1] - loc.day + 1
+    limit = min(int(st.get("limit") or MONTH_LIMIT), MONTH_LIMIT) - MONTH_RESERVE
+    return st["calls"] + need + OPTIONAL_PER_DAY * days <= limit
+
+
+def live_read(st: dict, matches: list, why: str, force: bool = False) -> bool:
+    """Quote di ADESSO per un gruppo di partite: UNA chiamata per i 5 campionati insieme (e/o UNA per le 3 coppe),
+    che aggiorna anche le altre partite di quelle competizioni (piu' punti per il grafico). False se non riuscita."""
+    leagues = any(m["code"] in LEAGUES_Q for m in matches)
+    cups = any(m["code"] in CUPS_Q for m in matches)
+    which = "tutto" if leagues and cups else "coppe" if cups else "campionati"
+    try:
+        refresh_fixtures(st, force=force, which=which)
+    except QuotaExhausted:
+        raise
+    except Exception as e:      # noqa: BLE001
+        print(f"[WARN] quote di adesso non lette ({why}): {e}")
+        return False
+    return True
+
+
 def fetch_history(st: dict, fid: str, books: list, force: bool = False) -> dict:
-    """Storico grezzo di una partita sui book scelti (NON consuma chiamate): {book: {...}}."""
+    """Storico grezzo di una partita sui book scelti (NON consuma chiamate): {book: {...}}. Dal 20/11/2026 OddsPapi
+    lo da' gratis solo per le partite FINITE: per quelle da giocare c'e' lo storico fatto in casa (solo Pinnacle)."""
+    if not live_finished(st, fid):
+        _SOURCE[0] = "live"
+        return {s: v for s, v in live_books(fid).items() if s in books}
+    _SOURCE[0] = "storico"
     hist = api_get("/historical-odds", {"fixtureId": fid, "bookmakers": ",".join(books)}, st,
                    counts=False, force=force)
     if isinstance(hist, dict) and fid in hist and isinstance(hist[fid], dict):
@@ -911,6 +1099,15 @@ def read_history(st: dict, fid: str, ap_at: datetime, at: datetime | None = None
     pubblicati dopo l'apertura partono dalla loro prima quota."""
     meta = ensure_markets(st)
     bks = fetch_history(st, fid, books or BOOKMAKERS, force=force)
+    live = _SOURCE[0] == "live"
+    late_start = False
+    if live:                                    # base = la lettura dell'apertura (o la prima lettura, se dopo)
+        obs = live_obs(fid)
+        near = [t for t in obs if ap_at - timedelta(minutes=15) <= t <= ap_at + timedelta(hours=6)]
+        if near:
+            ap_at = max(ap_at, near[0])
+        elif obs and obs[0] > ap_at:
+            ap_at, late_start = obs[0], True
     _HIST_INFO.clear()
     for slug, bk in bks.items():
         mk = (bk or {}).get("markets") or {}
@@ -949,7 +1146,8 @@ def read_history(st: dict, fid: str, ap_at: datetime, at: datetime | None = None
                     if side in snap.get(g, {}):
                         b.setdefault(g, {})[side] = snap[g][side]
                         b.setdefault("ev_lines", {})[f"{g}|{side}"] = snap["ev_lines"].get(f"{g}|{side}", {})
-    return {"base": base, "now": now, "base_at": base_at, "first": first, "bh": bh, "at": at}
+    return {"base": base, "now": now, "base_at": base_at, "first": first or late_start, "bh": bh, "at": at,
+            "live": live}
 
 
 # =====================================================================
@@ -1098,7 +1296,7 @@ LINE_KEY = {"side": "ah", "gol": "ou"}
 PATH_POINTS = 150               # andamento: al massimo 150 momenti per book (basta e non rallenta il giro)
 
 
-def combine(fam: str, moves: dict) -> dict | None:
+def combine(fam: str, moves: dict, live: bool = False) -> dict | None:
     """Segnale di un mercato: almeno 2 book mossi nella stessa direzione; l'ampiezza e' la seconda piu' alta (cioe'
     confermata da 2 book). Con un solo book con le quote serve ampiezza 2 (e i book contano -1 nella forza)."""
     valid = {s: m for s, m in moves.items() if m}
@@ -1107,15 +1305,17 @@ def combine(fam: str, moves: dict) -> dict | None:
         agree = [s for s in BOOKMAKERS if s in valid and valid[s]["dir"] == d and abs(valid[s]["meas"]) >= MIN_BOOK_PTS]
         if len(lv) >= 2:
             return {"fam": fam, "dir": d, "lvl": lv[1], "books": agree, "n": len(valid)}
-        if len(valid) == 1 and lv and lv[0] >= 2:
+        if len(valid) == 1 and lv and lv[0] >= (1 if live else 2):
             return {"fam": fam, "dir": d, "lvl": lv[0], "books": agree, "n": 1}
     return None
 
 
-def forza_of(lvl: int, nbooks: int, ratio: float, coe: int) -> tuple:
+def forza_of(lvl: int, nbooks: int, ratio: float, coe: int, live: bool = False) -> tuple:
     """Forza 1-10 = 2 x ampiezza + book (3 d'accordo +1, 2 0, uno solo -1) + tenuta (ha tenuto 0, tornato un po'
     indietro -1, rientrato -2) + altro mercato (+1). Ritorna (forza, punti book, punti tenuta)."""
     acc = 1 if nbooks >= 3 else 0 if nbooks == 2 else -1
+    if live:                                    # solo Pinnacle (quote di adesso): LIVE_ACC
+        acc = LIVE_ACC if nbooks >= 1 else 0
     ten = 0 if ratio >= TENUTA_OK else -1 if ratio >= TENUTA_MEZZA else -2
     return max(1, min(10, 2 * lvl + acc + ten + coe)), acc, ten
 
@@ -1374,14 +1574,14 @@ def analyze(R: dict, ko: datetime | None = None, extra: dict | None = None) -> d
     sigs = []
     for fam in ("side", "gol", "gg"):
         moves = {s: MOVE_FN[fam](base[s], now[s]) for s in books}
-        sig = combine(fam, moves)
+        sig = combine(fam, moves, bool(R.get("live")))
         if not sig:
             continue
         sref = ref if ref in sig["books"] else (sig["books"][0] if sig["books"] else ref)
         pth = move_path(R, sref, fam, at_eff)
         ratio = tenuta(pth, sig["dir"])
         coe = coerenza(fam, sig["dir"], base.get(sref) or {}, now.get(sref) or {}, evdir)
-        forza, acc, ten = forza_of(sig["lvl"], len(sig["books"]), ratio, coe)
+        forza, acc, ten = forza_of(sig["lvl"], len(sig["books"]), ratio, coe, bool(R.get("live")))
         sig.update(moves=moves, ref=sref, path=pth, acc=acc, ten=ten, ratio=ratio, coe=coe, forza=forza)
         if fam == "side":
             sig["force"] = line_force(moves, sig["books"], sig["dir"])
@@ -1853,7 +2053,8 @@ def signal_head(an: dict, s: dict, names: dict, short: bool = False) -> str:
         head = "⚽ <b>GG più probabile</b>" if s["dir"] > 0 else "⚽ <b>NG più probabile</b>"
     head += f" · forza <b>{s['forza']}/10</b>"
     if not short:
-        head += f" · {len(s['books'])} book su {s['n']}"
+        if s["n"] > 1:
+            head += f" · {len(s['books'])} book su {s['n']}"
         if "pinnacle" not in s["books"]:
             head += " · ⚠️ senza Pinnacle"
     return head
@@ -2192,11 +2393,13 @@ LEGEND = ("📖 <b>Come leggere i messaggi delle quote</b>\n\n"
           f"<b>forza {FORZA_MIN_AVVISO}/10 o più</b>. Per {CUPS_Q['EL']['flag']} Europa e {CUPS_Q['ECL']['flag']} "
           f"Conference League, nelle sere con più di {CUP_BUSY_MATCHES} partite, solo <b>da {FORZA_MIN_BUSY}/10</b>. "
           "Gli avvisi della stessa ora arrivano dal più forte\n"
-          f"• circa 10 minuti prima, <b>solo per i casi forti</b>: 🚨 un movimento da {FORZA_FORTE}/10 in su nato "
-          f"nell'ultima mezz'ora (dopo il controllo dei {RIDOSSO_MINUTES} minuti) · ⚠️ ribaltone, cioè un segnale "
-          "forte che ti avevo mandato e adesso non c'è più\n"
+          f"• circa 10 minuti prima, <b>solo dove a {RIDOSSO_MINUTES} minuti c'era un segnale forte</b> "
+          f"({FORZA_FORTE}/10 o più): ⚠️ ribaltone se adesso non c'è più · 🚨 se alla stessa ora nasce un altro "
+          "movimento forte\n"
           "• ⚠️ «Non controllate»: se non riesco a leggere le quote di una partita te lo scrivo. Se non scrivo "
           "niente, non c'era nessun segnale\n"
+          "• le quote sono di <b>Pinnacle</b>, lette all'apertura e a ogni orario d'inizio (OddsPapi non dà più "
+          "gratis lo storico delle partite da giocare): il grafico ha un punto per ogni lettura\n"
           "• venerdì alle 15 (martedì se c'è il turno infrasettimanale): <b>apertura</b>, le quote di riferimento\n"
           f"• lunedì alle 15: <b>apertura delle coppe</b> ({CUPS_Q['CL']['flag']} Champions, {CUPS_Q['EL']['flag']} "
           f"Europa e {CUPS_Q['ECL']['flag']} Conference League"
@@ -2204,13 +2407,12 @@ LEGEND = ("📖 <b>Come leggere i messaggi delle quote</b>\n\n"
              ": tutte le partite; a luglio e agosto, nei preliminari, solo quelle con squadre dei 5 campionati")
           + ")\n\n"
           "<b>Forza del segnale (1-10)</b>\n"
-          "quanto si è mosso (linea asiatica o linea gol spostata = tanto) + quanti book sono d'accordo + se ha "
-          "tenuto o è tornato indietro + se un altro mercato dice la stessa cosa\n"
+          "quanto si è mosso (linea asiatica o linea gol spostata = tanto) + se ha tenuto o è tornato indietro + "
+          "se un altro mercato dice la stessa cosa\n"
           f"{FORZA_FORTE}-10 forte · {FORZA_MIN_AVVISO}-{FORZA_FORTE - 1} medio, da farsi domande · sotto "
           f"{FORZA_MIN_AVVISO} rumore: a {RIDOSSO_MINUTES} minuti non arriva\n\n"
           f"<b>Avviso {RIDOSSO_MINUTES} minuti prima</b>\n"
-          "In alto il segnale principale, con la forza e quanti book sono d'accordo (⚠️ senza Pinnacle = Pinnacle "
-          "non si è mosso)\n"
+          "In alto il segnale principale, con la forza\n"
           "<b>Tabella</b> (Pinnacle, apertura e adesso): 1X2 · AH = handicap asiatico della squadra di casa "
           "(▼ = casa più favorita) · Linea gol (▲ = più gol attesi) · Over 2,5 · GG; sotto, <b>gol attesi</b> e "
           "<b>corner attesi</b> di ogni squadra: quanti se ne aspetta il mercato, ricavati dalle quote (▲ = di più; "
@@ -2630,14 +2832,20 @@ def do_ridosso(st: dict, topic: QuoteTopic, key: str | None, group: dict | None,
             return 0
         group = groups[0]
     todo = [m for m in group["matches"] if manual or match_key(m) not in st["done"]]
-    missing = [m for m in todo if not find_fixture(st, m)]
-    last = parse_time(st.get("refresh_at"))
-    if missing and (force or not last or now_utc() - last > timedelta(hours=REFRESH_MIN_HOURS)):
-        print(f"{len(missing)} partite senza id OddsPapi: aggiorno l'elenco")
-        refresh_fixtures(st, force=force)
+    if todo and not all(live_fresh(find_fixture(st, m)) for m in todo):
+        tries, tk = st.setdefault("live_tries", {}), key or "mano"
+        if key and tries.get(tk, 0) >= LIVE_TRIES:
+            print(f"Quote di adesso non lette dopo {LIVE_TRIES} tentativi: lo dico a finestra chiusa")
+            return 0
+        if not live_read(st, todo, f"{RIDOSSO_MINUTES} minuti", force=force):
+            tries[tk] = tries.get(tk, 0) + 1
+            st["log"].append(f"{now_utc().isoformat(timespec='minutes')} quote di adesso non lette "
+                             f"({len(todo)} partite, tentativo {tries[tk]})")
+            return 0
+        tries.pop(tk, None)
     sent = checked = 0
     unfinished = False
-    alerts, notfound = [], []
+    alerts, notfound, noodds, nobase = [], [], [], []
 
     def mark(m):
         if not manual:
@@ -2655,6 +2863,11 @@ def do_ridosso(st: dict, topic: QuoteTopic, key: str | None, group: dict | None,
             notfound.append(names)
             mark(m)
             continue
+        if not live_finished(st, fid) and not live_fresh(fid):
+            print(f"  {names['home']} - {names['away']}: Pinnacle adesso non la quota")
+            noodds.append(names)
+            mark(m)
+            continue
         try:
             R = read_history(st, fid, apertura_time(m["ko"], m["code"]), force=force)
             checked += 1
@@ -2663,6 +2876,11 @@ def do_ridosso(st: dict, topic: QuoteTopic, key: str | None, group: dict | None,
         except Exception as e:      # noqa: BLE001
             print(f"  {names['home']} - {names['away']}: storico non letto ({e}): riprovo al prossimo giro")
             unfinished = True
+            continue
+        if R.get("live") and (not R["base"] or len(live_obs(fid)) < 2):
+            print(f"  {names['home']} - {names['away']}: prima lettura adesso, manca la quota di partenza")
+            nobase.append(names)
+            mark(m)
             continue
         an = analyze(R, m["ko"])
         floor = alert_floor(m, cal)
@@ -2689,8 +2907,10 @@ def do_ridosso(st: dict, topic: QuoteTopic, key: str | None, group: dict | None,
         else:
             print(f"  {names['home']} - {names['away']}: SEGNALE, ma Telegram non ha accettato: riprovo")
             unfinished = True
-    if notfound and not manual:
-        topic.send(missed_text(group["first"], notfound, "non sono nell'elenco di OddsPapi"))
+    parts = [(notfound, "non sono nell'elenco di OddsPapi"), (noodds, "Pinnacle adesso non le quota"),
+             (nobase, "OddsPapi le ha pubblicate solo adesso: manca la quota di partenza")]
+    if any(p[0] for p in parts) and not manual:
+        topic.send(missed_text(group["first"], [], "", parts))
     if key and not unfinished:
         st["done"].append(key)
     if manual and sent == 0:
@@ -2701,10 +2921,11 @@ def do_ridosso(st: dict, topic: QuoteTopic, key: str | None, group: dict | None,
     return sent
 
 
-def missed_text(first: datetime, names_list: list, why: str) -> str:
+def missed_text(first: datetime, names_list: list, why: str, parts: list | None = None) -> str:
+    parts = [(n, w) for n, w in (parts or [(names_list, why)]) if n]
     return (f"⚠️ <b>Non controllate</b> · partite delle {first.astimezone(ROME):%H:%M}: "
-            + ", ".join(match_title(n) for n in names_list)
-            + f" ({why}). Per queste il silenzio non vuol dire «nessun segnale».")
+            + "; ".join(", ".join(match_title(x) for x in n) + f" ({w})" for n, w in parts)
+            + ". Per queste il silenzio non vuol dire «nessun segnale».")
 
 
 def do_missed(st: dict, topic: QuoteTopic, key: str, group: dict) -> None:
@@ -2722,6 +2943,10 @@ def do_missed(st: dict, topic: QuoteTopic, key: str, group: dict) -> None:
 def do_cups(st: dict, key: str, cal: list) -> list:
     """Rilegge l'elenco delle coppe (1 chiamata, senza messaggi): partite pubblicate dopo il lunedi', orari cambiati.
     Se non arriva si riprova al giro dopo, al massimo APERTURA_TRIES volte. Ritorna il calendario aggiornato."""
+    if not optional_ok(st):
+        print("Rilettura delle coppe saltata: chiamate del mese da tenere per i 40 minuti")
+        st["done"].append(key)
+        return cal
     before = {fid for fid, rec in st["fixtures"].items() if rec.get("code") in CUPS_Q}
     try:
         refresh_fixtures(st, which="coppe")
@@ -2864,11 +3089,39 @@ def last_message(m: dict, names: dict, an: dict, an2: dict | None, R2: dict, pre
     return "\n\n".join("\n".join(r for r in bl if r) for bl in (top, [table], end) if any(bl))
 
 
+def pace_strong(st: dict, m: dict) -> bool:
+    """A 40 minuti e' partito un avviso forte per questa partita?"""
+    row = (st.get("pace") or {}).get(match_key(m)) or {}
+    try:
+        f = int(float(row.get("forza") or 0))
+    except (TypeError, ValueError):
+        f = 0
+    return row.get("avviso") == "SI" and row.get("quando") == PACE_RIDOSSO and f >= FORZA_FORTE
+
+
 def do_last(st: dict, topic: QuoteTopic, key: str, group: dict, cal: list) -> int:
     """ULTIMI MINUTI (circa 10 prima del fischio): rilegge le partite del gruppo e scrive SOLO per i casi forti:
     un movimento da FORZA_FORTE in su nato dopo il controllo dei 40 minuti (misurato solo su quel tratto), o un
     segnale forte gia' mandato che non c'e' piu' (ribaltone). Dal piu' forte; niente doppioni; se il tempo finisce
-    si riprende al giro dopo, finche' la finestra e' aperta."""
+    si riprende al giro dopo, finche' la finestra e' aperta. Le quote di adesso costano una chiamata: si leggono
+    solo se a 40 minuti era partito un avviso forte (FORZA_FORTE) e se le chiamate del mese lo permettono."""
+    strong = [m for m in group["matches"] if pace_strong(st, m)]
+    stamp = now_utc().isoformat(timespec="minutes")
+    if not strong or not optional_ok(st):
+        why = (f"nessun segnale forte a {RIDOSSO_MINUTES} minuti" if not strong else
+               "chiamate del mese da tenere per i 40 minuti")
+        print(f"Ultimi minuti: {why}, niente lettura")
+        st["done"].append(key)
+        st["log"].append(f"{stamp} ultimi minuti saltati: {why}")
+        return 0
+    if not all(live_fresh(find_fixture(st, m)) for m in group["matches"] if find_fixture(st, m)):
+        tries = st.setdefault("live_tries", {})
+        if tries.get(key, 0) >= LIVE_TRIES or not live_read(st, group["matches"], "ultimi minuti"):
+            tries[key] = tries.get(key, 0) + 1
+            if tries[key] > LIVE_TRIES:
+                st["done"].append(key)
+            st["log"].append(f"{stamp} ultimi minuti: quote di adesso non lette")
+            return 0
     found, unfinished, checked = [], False, 0
     for m in group["matches"]:
         lk = "L" + match_key(m)
@@ -2880,7 +3133,7 @@ def do_last(st: dict, topic: QuoteTopic, key: str, group: dict, cal: list) -> in
             break
         names = team_names(m)
         fid = find_fixture(st, m)
-        if not fid:
+        if not fid or not live_fresh(fid):
             st["done"].append(lk)
             continue
         try:
@@ -3488,6 +3741,7 @@ def cleanup(st: dict) -> None:
     old = (now_utc() - timedelta(days=PACE_KEEP_DAYS)).isoformat()
     st["pace"] = {k: r for k, r in (st.get("pace") or {}).items() if r.get("_ko", "") >= old}
     st["news_at"] = {k: v for k, v in (st.get("news_at") or {}).items() if k.split("|")[1:2] >= [keep]}
+    st["live_tries"] = {k: v for k, v in (st.get("live_tries") or {}).items() if k.split("|", 1)[-1] >= keep}
 
 
 _START = time.monotonic()

@@ -93,6 +93,13 @@ jobs:
             cp "$PACE" "$RUNNER_TEMP/mercato.csv"
             SAVE_PACE=1
           fi
+          # quote Pinnacle lette dal bot (storico fatto in casa): solo se questa prova le ha lette
+          LIVE=telegram-calcio-bot/state/quote_live.json
+          SAVE_LIVE=0
+          if [ -f "$LIVE" ] && { ! git ls-files --error-unmatch "$LIVE" >/dev/null 2>&1 || ! git diff --quiet -- "$LIVE"; }; then
+            cp "$LIVE" "$RUNNER_TEMP/quote_live.json"
+            SAVE_LIVE=1
+          fi
           for i in 1 2 3 4 5; do
             git fetch --quiet origin +refs/heads/main:refs/remotes/origin/main
             git reset --quiet --hard refs/remotes/origin/main
@@ -101,6 +108,10 @@ jobs:
             if [ "$SAVE_PACE" = 1 ]; then
               cp "$RUNNER_TEMP/mercato.csv" "$PACE"
               git add "$PACE"
+            fi
+            if [ "$SAVE_LIVE" = 1 ]; then
+              cp "$RUNNER_TEMP/quote_live.json" "$LIVE"
+              git add "$LIVE"
             fi
             if git diff --staged --quiet; then
               echo "Stato invariato, niente da salvare."
