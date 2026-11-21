@@ -2908,7 +2908,7 @@ def do_ridosso(st: dict, topic: QuoteTopic, key: str | None, group: dict | None,
             print(f"  {names['home']} - {names['away']}: SEGNALE, ma Telegram non ha accettato: riprovo")
             unfinished = True
     parts = [(notfound, "non sono nell'elenco di OddsPapi"), (noodds, "Pinnacle adesso non le quota"),
-             (nobase, "OddsPapi le ha pubblicate solo adesso: manca la quota di partenza")]
+             (nobase, "lette per la prima volta adesso: manca la quota di partenza")]
     if any(p[0] for p in parts) and not manual:
         topic.send(missed_text(group["first"], [], "", parts))
     if key and not unfinished:

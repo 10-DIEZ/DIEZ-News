@@ -80,14 +80,23 @@ serve tenere niente acceso.
 
 Segue le quote dei 5 campionati e delle coppe europee (Champions, Europa e
 Conference League) con OddsPapi (piano gratuito, 250 chiamate al mese, secret
-`ODDSPAPI_API_KEY`), sui book Pinnacle (il riferimento), Sbobet e Singbet.
+`ODDSPAPI_API_KEY`), con le quote di **Pinnacle** (il riferimento).
+
+> Dal 20/11/2026 OddsPapi dà lo storico gratis **solo per le partite finite**
+> (per quelle da giocare risponde «Restricted access to historical odds»).
+> Per questo il bot legge le quote di **adesso** (una chiamata per orario
+> d'inizio) e si costruisce lo storico da sé in `state/quote_live.json`: ogni
+> lettura (apertura, ogni orario, riletture delle coppe) lascia i prezzi
+> cambiati con la loro ora. Lo storico gratis delle partite finite serve
+> ancora per «rivedi» ed «esempio».
 
 - **Apertura**: le quote del venerdì alle 15:00 per le partite del weekend
   (venerdì-lunedì), del martedì alle 15:00 per i turni infrasettimanali: lo
   stesso momento delle quote d'apertura usate nello studio del foglio Mercato
-  del Pace Index. Il bot le legge dallo **storico** delle quote, quindi non
-  deve fotografarle: a quell'ora aggiorna solo l'elenco delle partite e lo dice
-  con un messaggio breve.
+  del Pace Index. A quell'ora il bot legge le quote di Pinnacle di tutte le
+  partite (una chiamata per i 5 campionati) e le tiene come riferimento; lo
+  dice con un messaggio breve. Una partita letta per la prima volta dopo
+  l'apertura parte dalla sua prima lettura.
 - **Coppe europee** (⭐ Champions, 🟠 Europa e 🟢 Conference League): le
   partite arrivano dall'elenco OddsPapi, letto il **lunedì alle 15** con una
   chiamata a parte; il lunedì alle 15 è anche la loro apertura (dopo il turno
@@ -105,20 +114,23 @@ Conference League) con OddsPapi (piano gratuito, 250 chiamate al mese, secret
 - **Forza del segnale (1-10)** = 2 × ampiezza (1-5: punti di probabilità
   senza margine misurati sulla linea dell'apertura, così un cambio di linea
   "di confine" non conta come un movimento grande; asiatico 3 / 4,5 / 6 / 8 /
-  10 punti) + book (3 su 3 d'accordo +1, 2 su 3 0, uno solo −1) + tenuta (ha
+  10 punti) + book (+1: si legge solo Pinnacle, contato come i 3 book
+  d'accordo di prima, `LIVE_ACC`) + tenuta (ha
   tenuto 0, tornato un po' indietro −1, rientrato −2) + altro mercato che dice
   la stessa cosa (asiatico e 1X2, linea gol e GG o gol di squadra: +1). Da 7
   forte, 4-6 medio (da farsi domande), sotto 4 rumore. Le soglie sono in cima
   a `monitor_quote.py` (`FORZA_MIN_AVVISO`, `FORZA_FORTE`, `LEV_SIDE`,
   `LEV_GOL`, `LEV_GG`).
 - **A ridosso**: 40 minuti prima di ogni orario d'inizio (formazioni già
-  uscite) legge lo storico di ogni partita e confronta adesso con l'apertura.
+  uscite) legge le quote di adesso di Pinnacle di tutte le partite di
+  quell'orario con **una chiamata** (i 5 campionati insieme, o le 3 coppe
+  insieme) e confronta adesso con l'apertura.
   Arriva un messaggio **solo** se un movimento ha forza 4/10 o più; per
   🟠 Europa e 🟢 Conference League, nelle sere in cui insieme hanno più di 8
   partite, **solo da 6/10** (`CUP_BUSY_MATCHES`, `FORZA_MIN_BUSY`). Gli avvisi
   della stessa ora partono **dal più forte**. Il
-  messaggio ha, in quest'ordine: il segnale principale con la forza e quanti
-  book sono d'accordo (⚠️ se manca Pinnacle); una **tabella unica**
+  messaggio ha, in quest'ordine: il segnale principale con la forza; una
+  **tabella unica**
   apertura/adesso (Pinnacle) con 1X2, asiatico, linea gol, Over 2,5, GG e,
   sotto, **gol attesi** e **corner attesi** di ogni squadra (quanti se ne
   aspetta il mercato: ricavati da linea e quote dei gol e dei corner di
@@ -126,7 +138,8 @@ Conference League) con OddsPapi (piano gratuito, 250 chiamate al mese, secret
   altro book) e i tiri in porta se quotati;
   il **📊 grafico** della direzione della partita, cioè la quota della
   favorita (o della squadra su cui si muove il mercato) dall'apertura ad
-  adesso in 22 barre a tempi uguali (barra alta = quota alta), con sotto **⏱**
+  adesso in 22 barre a tempi uguali (barra alta = quota alta; un punto per
+  ogni lettura del bot), con sotto **⏱**
   quando si è mossa (di colpo o piano piano, con il pezzo più grosso e le
   quote), cosa è successo dopo le formazioni e **↩️** se è tornata indietro
   di almeno un quinto (fin dove era arrivata e quando: forza −1, oltre metà
@@ -144,15 +157,18 @@ Conference League) con OddsPapi (piano gratuito, 250 chiamate al mese, secret
   dopo un messaggio degli ultimi minuti arrivano solo le notizie nuove. Si
   regola in cima a `monitor_quote.py` (`NOTIZIE_SOTTO_AVVISO`, `NOTIZIE_ORE`,
   `NOTIZIE_PER_SQUADRA`); il codice è in `notizie_partita.py`.
-- **Ultimi minuti**: da 12 a 3 minuti prima del fischio il bot rilegge le
-  partite e scrive **solo per i casi forti**: 🚨 un movimento da 7/10 in su
-  nato dopo il controllo dei 40 minuti (misurato solo su quel tratto) oppure
-  ⚠️ **ribaltone**, cioè un segnale forte già mandato che dall'apertura non
-  arriva più a 4/10. Tabellina «ora del controllo / adesso», come sta
-  dall'apertura e il colore aggiornato per la riga «Mercato».
-- **Non controllate**: se una partita non è nell'elenco di OddsPapi, o le sue
-  quote non si riescono a leggere entro 12 minuti dal fischio, il bot lo
-  scrive. Così il silenzio vuol dire davvero «nessun segnale».
+- **Ultimi minuti**: da 12 a 3 minuti prima del fischio, **solo se a 40
+  minuti è partito un avviso forte** (7/10 o più) e se le chiamate del mese lo
+  permettono, il bot rilegge le quote (una chiamata) e scrive: ⚠️
+  **ribaltone**, cioè il segnale forte dall'apertura non arriva più a 4/10,
+  oppure 🚨 un altro movimento da 7/10 in su nato dopo il controllo dei 40
+  minuti. Tabellina «ora del controllo / adesso», come sta dall'apertura e il
+  colore aggiornato per la riga «Mercato».
+- **Non controllate**: se una partita non è nell'elenco di OddsPapi, se
+  Pinnacle adesso non la quota, se manca una quota di partenza (letta per la
+  prima volta a 40 minuti) o se le quote non si riescono a leggere entro 12
+  minuti dal fischio (al massimo 3 tentativi), il bot lo scrive. Così il
+  silenzio vuol dire davvero «nessun segnale».
 - **File per i Pace Index**: `state/mercato.csv`, una riga per partita
   controllata (separatore `;`, numeri con il punto): competizione, data, ora,
   squadre, quando (40 minuti, 10 minuti, a mano), forza, avviso SI/NO, colore
@@ -167,13 +183,15 @@ Conference League) con OddsPapi (piano gratuito, 250 chiamate al mese, secret
   cambia.
 - **Numeri per tarare**: ogni partita controllata lascia la forza e i suoi
   pezzi in `state/quote_state.json` (`stats`).
-- **Consumo**: lo storico delle quote non conta nelle 250 chiamate (verificato
-  sul contatore dell'account); contano solo gli aggiornamenti dell'elenco
-  partite (venerdì i campionati, lunedì le coppe, il martedì se c'è il turno
-  infrasettimanale, le riletture delle coppe: fino a 3 per settimana di
-  coppe), i nomi delle squadre nuove e l'elenco dei mercati (una
-  volta al mese): circa 25-40 chiamate al mese. Il contatore si allinea a
-  quello dell'account e non fa mai superare il limite.
+- **Consumo**: ogni lettura delle quote di adesso è una chiamata delle 250:
+  circa 22 orari d'inizio per weekend di campionato, 6-7 per settimana di
+  coppe, le aperture (venerdì, lunedì, martedì), le riletture delle coppe e
+  gli ultimi minuti dei segnali forti, più i nomi delle squadre nuove e
+  l'elenco dei mercati: **130-180 chiamate al mese**. Le chiamate «in più»
+  (ultimi minuti, riletture delle coppe) partono solo se a fine mese ne
+  restano almeno 6 per ogni giorno che manca (`OPTIONAL_PER_DAY`): le letture
+  dei 40 minuti hanno sempre la precedenza. Il contatore si allinea a quello
+  dell'account e non fa mai superare il limite.
 - **Come parte**: lo lancia il giro ogni 5 minuti del bot notizie (passo «Bot
   quote» in `monitor-news.yml`); quasi sempre esce subito. Ogni giro lavora al
   massimo 3 minuti: se le partite sono tante, finisce al giro dopo, senza
@@ -192,7 +210,8 @@ Conference League) con OddsPapi (piano gratuito, 250 chiamate al mese, secret
   ora e riepilogo, e accetta una competizione: SA, PL, PD, BL1, FL1, CL, EL,
   ECL o «coppe» (con rivedi fa il conto di quella competizione).
 - Codice in `monitor_quote.py` (orari, soglie e book in cima al file), stato in
-  `state/quote_state.json`, file per i Pace Index in `state/mercato.csv`.
+  `state/quote_state.json`, quote lette in `state/quote_live.json`, file per i
+  Pace Index in `state/mercato.csv`.
 
 ---
 
