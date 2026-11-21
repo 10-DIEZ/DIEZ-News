@@ -3580,12 +3580,70 @@ def archive_matches(st: dict) -> list:
     return sorted(out, key=lambda m: m["ko"])
 
 
+def do_finestre(st: dict, topic: QuoteTopic) -> None:
+    """Prova (nessuna chiamata): quanto conta la distanza dell'apertura dal fischio. Le partite dell'archivio rilette
+    con lo storico completo (3 book) 40 minuti prima, con la base a venerdi' 15 (come adesso) o a 24, 48, 72 ore dal
+    fischio: avvisi (forza da 4) e movimento di Pinnacle (punti del lato e dei gol) per giorno della partita."""
+    ensure_markets(st)
+    learn_teams(st)
+    opts = (("ven 15", None), ("24 ore", 24), ("48 ore", 48), ("72 ore", 72))
+    rows, start = [], time.monotonic()
+    for m in archive_matches(st):
+        if time.monotonic() - start > RIVEDI_BUDGET_SECONDS:
+            print("Finestre: tempo finito")
+            break
+        try:
+            R = read_history(st, m["fid"], apertura_time(m["ko"], m["code"]),
+                             at=m["ko"] - timedelta(minutes=RIDOSSO_MINUTES), force=True)
+        except QuotaExhausted:
+            raise
+        except Exception as e:      # noqa: BLE001
+            print(f"  {m['home_short']}-{m['away_short']}: storico non letto ({e})")
+            continue
+        b = R["now"].get("pinnacle") or {}
+        res = []
+        for lab, hours in opts:
+            tb = apertura_time(m["ko"], m["code"]) if hours is None else m["ko"] - timedelta(hours=hours)
+            Rb = rebase(R, tb)
+            an = analyze(Rb, m["ko"])
+            a = Rb["base"].get("pinnacle") or {}
+            sm = side_move(a, b) if a and b else None
+            gm = gol_move(a, b) if a and b else None
+            res.append((an["forza"], abs(sm["meas"]) if sm else None, abs(gm["meas"]) if gm else None,
+                        (m["ko"] - tb).total_seconds() / 3600))
+        rows.append((m, res))
+        print(f"  {m['home_short']}-{m['away_short']} ({when_text(m['ko'])}): " + " | ".join(
+            f"{lab} ({r[3]:.0f}h) forza {r[0]} lato {r[1] if r[1] is None else round(r[1], 1)} gol "
+            f"{r[2] if r[2] is None else round(r[2], 1)}" for (lab, _), r in zip(opts, res)))
+
+    def med(v):
+        v = sorted(x for x in v if x is not None)
+        return f"{v[len(v) // 2]:.1f}" if v else "-"
+    lines = []
+    for day in ("ven", "sab", "dom", "lun"):
+        sel = [r for m, r in rows if when_text(m["ko"]).startswith(day)]
+        if not sel:
+            continue
+        hrs = sorted(r[0][3] for r in sel)
+        lines.append(f"<b>{day}</b> ({len(sel)} partite, venerdì 15 = {hrs[0]:.0f}-{hrs[-1]:.0f} ore prima)")
+        for i, (lab, _) in enumerate(opts):
+            lines.append(f"  base {lab}: avvisi {sum(1 for r in sel if r[i][0] >= FORZA_MIN_AVVISO)} · lato "
+                         f"{med(r[i][1] for r in sel)} punti · gol {med(r[i][2] for r in sel)} punti")
+    tot = [f"base {lab}: {sum(1 for _, r in rows if r[i][0] >= FORZA_MIN_AVVISO)}" for i, (lab, _) in enumerate(opts)]
+    topic.send(f"🧪 <b>Finestre</b>: {len(rows)} partite (6-8 novembre), 3 book, storico completo, 40 minuti prima. "
+               f"Avvisi da {FORZA_MIN_AVVISO}/10 e movimento mediano di Pinnacle per base\n" + "\n".join(lines)
+               + "\n<b>Totale avvisi</b> · " + " · ".join(tot))
+
+
 def do_rivedi(st: dict, topic: QuoteTopic, query: str = "") -> None:
     """Rilegge le partite gia' giocate come 40 minuti prima del fischio, con le regole di adesso (storico, gratis).
     Con una squadra (es. "Roma") manda il messaggio di quelle partite; senza, o con una competizione (es. "CL",
     "coppe"), il conto forti/medi/rumore e le RIVEDI_TOP piu' forti come sarebbero arrivate."""
     ensure_markets(st, force=st.get("markets_v") != MARKETS_VERSION)     # prova a mano: mercati nuovi subito
     learn_teams(st)
+    if norm(query) == "finestre":
+        do_finestre(st, topic)
+        return
     if norm(query) == "archivio":
         everything, query = archive_matches(st), ""
         print(f"Rivedi archivio: {len(everything)} partite da {ARCHIVE_FILE}")
