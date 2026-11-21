@@ -133,6 +133,7 @@ API_KEY = os.environ.get("ODDSPAPI_API_KEY", "").strip()
 QUOTE_STATE_FILE = os.path.join(os.path.dirname(__file__), "state", "quote_state.json")
 PACE_FILE = os.path.join(os.path.dirname(__file__), "state", "mercato.csv")     # letto dai file Excel Pace Index
 LIVE_FILE = os.path.join(os.path.dirname(__file__), "state", "quote_live.json")  # quote Pinnacle lette dal bot
+ARCHIVE_FILE = os.path.join(os.path.dirname(__file__), "state", "rivedi_archivio.json")  # partite vecchie per rivedi
 
 # I 3 book confrontati (lo storico ne accetta al massimo 3 per chiamata): Pinnacle e' il riferimento
 BOOKMAKERS = ["pinnacle", "sbobet", "singbet"]
@@ -1077,6 +1078,79 @@ def live_read(st: dict, matches: list, why: str, force: bool = False) -> bool:
     return True
 
 
+def sample_books(bk: dict, times: list) -> dict:
+    """Per le prove sulle partite finite: lo storico vero di un book visto SOLO nei momenti 'times', come se il bot
+    l'avesse letto solo allora (quote di adesso): per ogni esito un prezzo nuovo solo se a quella lettura era
+    cambiato, con l'ora del cambio. Stesso formato dello storico."""
+    times = sorted(times)
+    out = {}
+    for mid, mk in ((bk or {}).get("markets") or {}).items():
+        outs = {}
+        for oid, oc in ((mk or {}).get("outcomes") or {}).items():
+            pls = (oc or {}).get("players") or {}
+            entries = next(iter(pls.values()), []) if isinstance(pls, dict) and pls else []
+            rows = []
+            for e in entries if isinstance(entries, list) else []:
+                t = parse_time(e.get("createdAt")) if isinstance(e, dict) else None
+                if t:
+                    rows.append((t, e))
+            rows.sort(key=lambda r: r[0])
+            ts = [r[0] for r in rows]
+            ser, last_p, last_t = [], None, None
+            for T in times:
+                i = bisect.bisect_right(ts, T) - 1
+                if i < 0:
+                    continue
+                t_e, e = rows[i]
+                try:
+                    pr = 0.0 if e.get("active") is False else float(e.get("price") or 0)
+                except (TypeError, ValueError):
+                    pr = 0.0
+                if pr == last_p:
+                    continue
+                t = t_e if last_t is None else max(t_e, last_t)
+                item = {"createdAt": t.isoformat(), "price": pr}
+                if not pr:
+                    item["active"] = False
+                ser.append(item)
+                last_p, last_t = pr, t
+            if ser:
+                outs[oid] = {"players": {"0": ser}}
+        if outs:
+            out[mid] = {"outcomes": outs}
+    return {"markets": out}
+
+
+def sim_reads(m: dict, everything: list) -> tuple:
+    """Per le prove sulle partite finite: (momenti in cui il bot di adesso avrebbe letto le quote di questa partita,
+    momento del suo controllo dei 40 minuti). Letture: l'apertura, ogni controllo dei 40 minuti della stessa famiglia
+    (i 5 campionati si leggono insieme, le 3 coppe insieme), le riletture delle coppe alle 11 e, per gli ultimi
+    minuti, 10 minuti prima del suo orario."""
+    cup = m["code"] in CUPS_Q
+    fam = sorted((x for x in everything if (x["code"] in CUPS_Q) == cup), key=lambda x: x["ko"])
+    ap = apertura_time(m["ko"], m["code"]) + timedelta(minutes=1)
+    mine = next((g for g in kickoff_groups(fam) if any(x is m or match_key(x) == match_key(m) for x in g["matches"])),
+                None)
+    first = mine["first"] if mine else m["ko"]
+    t40 = first - timedelta(minutes=RIDOSSO_MINUTES)
+    times = {ap, t40, first - timedelta(minutes=10)}
+    for g in kickoff_groups(fam):
+        t = g["first"] - timedelta(minutes=RIDOSSO_MINUTES)
+        if ap < t < t40:
+            times.add(t)
+    if cup:
+        d = ap.astimezone(ROME).date() + timedelta(days=1)
+        while d <= t40.astimezone(ROME).date():
+            t = datetime(d.year, d.month, d.day, CUP_REREAD_HOUR, tzinfo=ROME).astimezone(timezone.utc)
+            if ap < t < t40:
+                times.add(t)
+            d += timedelta(days=1)
+    return sorted(times), t40
+
+
+_HIST_LAST = [None, None]       # ultimo storico letto (rivedi lo usa due volte: come prima e come adesso)
+
+
 def fetch_history(st: dict, fid: str, books: list, force: bool = False) -> dict:
     """Storico grezzo di una partita sui book scelti (NON consuma chiamate): {book: {...}}. Dal 20/11/2026 OddsPapi
     lo da' gratis solo per le partite FINITE: per quelle da giocare c'e' lo storico fatto in casa (solo Pinnacle)."""
@@ -1084,25 +1158,33 @@ def fetch_history(st: dict, fid: str, books: list, force: bool = False) -> dict:
         _SOURCE[0] = "live"
         return {s: v for s, v in live_books(fid).items() if s in books}
     _SOURCE[0] = "storico"
+    key = (fid, tuple(sorted(books)))
+    if _HIST_LAST[0] == key:
+        return _HIST_LAST[1]
     hist = api_get("/historical-odds", {"fixtureId": fid, "bookmakers": ",".join(books)}, st,
                    counts=False, force=force)
     if isinstance(hist, dict) and fid in hist and isinstance(hist[fid], dict):
         hist = hist[fid]
     bks = hist.get("bookmakers") if isinstance(hist, dict) else None
-    return bks if isinstance(bks, dict) else {}
+    bks = bks if isinstance(bks, dict) else {}
+    _HIST_LAST[:] = [key, bks]
+    return bks
 
 
 def read_history(st: dict, fid: str, ap_at: datetime, at: datetime | None = None, force: bool = False,
-                 books: list | None = None) -> dict:
+                 books: list | None = None, sim: list | None = None) -> dict:
     """Storico della partita: quote all'apertura (base) e al momento 'at' (None = adesso) su ogni book.
     Se la partita e' stata pubblicata dopo l'apertura si parte dalla prima quota; corner, gol e tiri di squadra
     pubblicati dopo l'apertura partono dalla loro prima quota."""
     meta = ensure_markets(st)
     bks = fetch_history(st, fid, books or BOOKMAKERS, force=force)
     live = _SOURCE[0] == "live"
+    obs = live_obs(fid) if live else []
+    if sim:                                     # prova: lo storico vero di Pinnacle visto solo nelle letture del bot
+        bks = {s: sample_books(v, sim) for s, v in bks.items() if s == LIVE_BOOK}
+        live, obs = True, sorted(t for t in sim if not at or t <= at)
     late_start = False
     if live:                                    # base = la lettura dell'apertura (o la prima lettura, se dopo)
-        obs = live_obs(fid)
         near = [t for t in obs if ap_at - timedelta(minutes=15) <= t <= ap_at + timedelta(hours=6)]
         if near:
             ap_at = max(ap_at, near[0])
@@ -3470,13 +3552,42 @@ def finished_matches(st: dict, days: int = RIVEDI_DAYS) -> list:
     return sorted(out, key=lambda m: m["ko"])
 
 
+def archive_matches(st: dict) -> list:
+    """«rivedi archivio»: partite gia' giocate salvate in ARCHIVE_FILE (id OddsPapi, competizione, orario, squadre),
+    per tarare le soglie su piu' partite di quelle degli ultimi giorni. Lo storico delle partite finite e' gratis."""
+    arc = load_json(ARCHIVE_FILE, {})
+    for pid, name in (arc.get("participants") or {}).items():
+        if name:
+            st["participants"].setdefault(str(pid), name)
+    known = list(HASHTAGS)
+    out = []
+    for fid, rec in (arc.get("fixtures") or {}).items():
+        ko = parse_time(rec.get("start"))
+        p1, p2 = str(rec.get("p1")), str(rec.get("p2"))
+        n1, n2 = st["participants"].get(p1, ""), st["participants"].get(p2, "")
+        if not ko or not n1 or not n2 or rec.get("code") not in COMPS_Q or ko > now_utc() - timedelta(hours=3):
+            continue
+        names = []
+        for pid, n in ((p1, n1), (p2, n2)):
+            best = fd_team_name(st, pid) or max(known, key=lambda k: _similar(n, k), default="")
+            names.append(best if best and (fd_team_name(st, pid) or _similar(n, best) >= 0.5) else n)
+        st["fixtures"].setdefault(fid, dict(rec))       # (la pulizia a fine giro le toglie)
+        out.append({"code": rec["code"], "home": names[0], "away": names[1], "ko": ko, "home_short": names[0],
+                    "away_short": names[1], "fid": fid})
+    return sorted(out, key=lambda m: m["ko"])
+
+
 def do_rivedi(st: dict, topic: QuoteTopic, query: str = "") -> None:
     """Rilegge le partite gia' giocate come 40 minuti prima del fischio, con le regole di adesso (storico, gratis).
     Con una squadra (es. "Roma") manda il messaggio di quelle partite; senza, o con una competizione (es. "CL",
     "coppe"), il conto forti/medi/rumore e le RIVEDI_TOP piu' forti come sarebbero arrivate."""
     ensure_markets(st, force=st.get("markets_v") != MARKETS_VERSION)     # prova a mano: mercati nuovi subito
     learn_teams(st)
-    everything = finished_matches(st)
+    if norm(query) == "archivio":
+        everything, query = archive_matches(st), ""
+        print(f"Rivedi archivio: {len(everything)} partite da {ARCHIVE_FILE}")
+    else:
+        everything = finished_matches(st)
     matches = filter_matches(everything, query)
     team_query = bool(query) and not query_codes(query)
     print(f"Rivedi: {len(matches)} partite da rileggere" + (f" con «{query}»" if query else ""))
@@ -3484,29 +3595,34 @@ def do_rivedi(st: dict, topic: QuoteTopic, query: str = "") -> None:
         topic.send(f"🧪 Rivedi: nessuna partita giocata negli ultimi {RIVEDI_DAYS} giorni"
                    f"{' con «' + esc(query) + '»' if query else ''} nell'elenco del bot.")
         return
-    results, start = [], time.monotonic()
+    results, start, old_alerts = [], time.monotonic(), {}
     for m in matches:
         if time.monotonic() - start > RIVEDI_BUDGET_SECONDS:
             print("Rivedi: tempo finito, mi fermo qui")
             break
         names = team_names(m)
+        sim, t40 = sim_reads(m, everything)
         try:
-            R = read_history(st, m["fid"], apertura_time(m["ko"], m["code"]),
-                             at=m["ko"] - timedelta(minutes=RIDOSSO_MINUTES), force=True)
+            R0 = read_history(st, m["fid"], apertura_time(m["ko"], m["code"]),
+                              at=m["ko"] - timedelta(minutes=RIDOSSO_MINUTES), force=True)
+            R = read_history(st, m["fid"], apertura_time(m["ko"], m["code"]), at=t40, force=True, sim=sim)
         except QuotaExhausted:
             raise
         except Exception as e:      # noqa: BLE001
             print(f"  {names['home']} - {names['away']}: storico non letto ({e})")
             continue
-        an = analyze(R, m["ko"])
+        an0 = analyze(R0, m["ko"])          # come prima: 3 book, storico completo
+        an = analyze(R, m["ko"])            # come adesso: solo Pinnacle, visto nelle letture del bot
         floor = alert_floor(m, everything)
         an["alert"] = an["forza"] >= floor
-        entry = stats_entry(m, an, "rivedi", an["alert"], floor)
-        lr = last_review(m, names, an, R, an["alert"])
-        if lr:                              # ultimi minuti: forza dell'ultimo tratto e ribaltone
+        old_alerts[match_key(m)] = (an0["forza"], an0["forza"] >= floor)
+        entry = dict(stats_entry(m, an, "rivedi", an["alert"], floor), f3=an0["forza"], reads=len(sim) - 1)
+        lr = last_review(m, names, an, R, an["alert"]) if an["forza"] >= FORZA_FORTE else None
+        if lr:                              # ultimi minuti (solo dopo un avviso forte): ultimo tratto e ribaltone
             an["last"] = (lr[1]["forza"], bool(lr[4]))
             entry["last"] = [lr[1]["forza"], int(bool(lr[4]))]
         save_stats(st, entry)
+        print(f"  {names['home']} - {names['away']}: COME PRIMA forza {an0['forza']} · {describe(an0)}")
         results.append((m, names, an, R))
         a, b = an["a"], an["b"]
         print(f"  {names['home']} - {names['away']} ({when_text(m['ko'])}): forza {an['forza']} · {describe(an)}\n"
@@ -3535,12 +3651,19 @@ def do_rivedi(st: dict, topic: QuoteTopic, query: str = "") -> None:
         forti = sum(1 for r in results if r[2]["alert"] and r[2]["forza"] >= FORZA_FORTE)
         medi = sum(1 for r in results if r[2]["alert"] and r[2]["forza"] < FORZA_FORTE)
         chosen = sorted((r for r in results if r[2]["alert"]), key=lambda r: -r[2]["forza"])[:RIVEDI_TOP]
+        o = [old_alerts.get(match_key(r[0]), (0, False)) for r in results]
+        forti0 = sum(1 for f, al in o if al and f >= FORZA_FORTE)
+        medi0 = sum(1 for f, al in o if al and f < FORZA_FORTE)
+        both = sum(1 for r, (f, al) in zip(results, o) if al and r[2]["alert"])
         topic.send(f"🧪 <b>Rivedi{' · ' + esc(query) if query else ''}</b>: {len(results)} partite giocate da "
                    f"{day_text(results[0][0]['ko'])} a "
-                   f"{day_text(results[-1][0]['ko'])}, rilette come {RIDOSSO_MINUTES} minuti prima con le regole "
-                   f"nuove\nforti ({FORZA_FORTE}-10): <b>{forti}</b> · medie ({FORZA_MIN_AVVISO}-{FORZA_FORTE - 1}): "
+                   f"{day_text(results[-1][0]['ko'])}, rilette come {RIDOSSO_MINUTES} minuti prima <b>come le legge "
+                   f"il bot adesso</b> (solo Pinnacle, quote viste solo all'apertura e a ogni orario)\n"
+                   f"forti ({FORZA_FORTE}-10): <b>{forti}</b> · medie ({FORZA_MIN_AVVISO}-{FORZA_FORTE - 1}): "
                    f"<b>{medi}</b> · sotto la soglia (niente avviso): "
                    f"<b>{len(results) - forti - medi}</b>\n"
+                   f"<i>come prima (3 book, storico completo): forti {forti0} · medie {medi0} · avvisi su tutte e due "
+                   f"le letture: {both}</i>\n"
                    f"ultimi minuti (tra {RIDOSSO_MINUTES} e {LAST_REVIEW_MINUTES} minuti prima): 🚨 movimenti da "
                    f"{FORZA_FORTE}/10 <b>{sum(1 for r in results if not r[2].get('last', (0, 0))[1] and r[2].get('last', (0, 0))[0] >= FORZA_FORTE)}"
                    f"</b> · ⚠️ ribaltoni <b>{sum(1 for r in results if r[2].get('last', (0, 0))[1])}</b>"
