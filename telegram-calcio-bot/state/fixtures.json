@@ -34,7 +34,7 @@
       "home": "Manchester City FC",
       "away": "Fulham FC",
       "kickoff": "2026-11-21T12:30:00Z",
-      "status": "TIMED"
+      "status": "IN_PLAY"
     },
     {
       "competition": "PD",
@@ -43,7 +43,7 @@
       "home": "Deportivo Alavés",
       "away": "RC Deportivo La Coruña",
       "kickoff": "2026-11-21T13:00:00Z",
-      "status": "TIMED"
+      "status": "IN_PLAY"
     },
     {
       "competition": "SA",
