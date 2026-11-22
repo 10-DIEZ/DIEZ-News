@@ -268,7 +268,7 @@
       "home": "Juventus FC",
       "away": "Venezia FC",
       "kickoff": "2026-11-22T11:30:00Z",
-      "status": "TIMED"
+      "status": "IN_PLAY"
     },
     {
       "competition": "PD",
@@ -277,7 +277,7 @@
       "home": "FC Barcelona",
       "away": "Villarreal CF",
       "kickoff": "2026-11-22T13:00:00Z",
-      "status": "TIMED"
+      "status": "IN_PLAY"
     },
     {
       "competition": "SA",
@@ -1590,5 +1590,5 @@
       "league": "Ligue 1"
     }
   ],
-  "teams_updated": "2026-11-21T04:00:26.707529+00:00"
+  "teams_updated": "2026-11-22T13:25:47.997070+00:00"
 }
