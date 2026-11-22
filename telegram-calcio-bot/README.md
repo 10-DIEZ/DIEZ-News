@@ -168,6 +168,18 @@ Conference League) con OddsPapi (piano gratuito, 250 chiamate al mese, secret
   senza quote di partenza non conta. Sono chiamate «in più»: saltano se il
   mese è stretto. Sulle 48 partite del 6-8 novembre, quando Pinnacle si
   muoveva, Sbobet e Singbet andavano nella stessa direzione 40 volte su 44.
+- **🔁 Altri book (secondo parere, dal 22/11/2026)**: con The Odds API (piano
+  gratuito, 500 crediti al mese, secret `ODDS_API_KEY`) il bot legge anche
+  Betfair Exchange, Matchbook, Marathonbet e 1xBet sui 5 campionati: la base
+  all'apertura (1X2 e linea gol, 1 credito per campionato e per mercato: fino a
+  10 book costano come uno) e, a 40 minuti, una lettura solo per i campionati
+  con un avviso. Sotto il segnale una riga 🔁: quanti si sono mossi nello stesso
+  verso su segno e linea gol; per il GG (letto partita per partita, 1 credito,
+  solo per gli avvisi con un segnale GG) quanti sono già alle quote di adesso
+  di Pinnacle. Solo informazione: la forza non cambia. Betfair dà solo l'1X2,
+  il GG lo danno 1xBet e Matchbook. Circa 300-360 crediti al mese; ne tiene da
+  parte 6 per ogni giorno che manca a fine mese. Senza la chiave non fa niente.
+  Prova: «Prova bot quote» → `altribook` (circa 16 crediti, nel registro).
 - **Ultimi minuti**: da 12 a 3 minuti prima del fischio, **solo se a 40
   minuti è partito un avviso forte** (7/10 o più) e se le chiamate del mese lo
   permettono, il bot rilegge le quote (una chiamata) e scrive: ⚠️
@@ -269,6 +281,7 @@ DIEZ-News (`copia-diez/`, tutto tranne il registro delle notizie).
    | `GROQ_API_KEY` | riassunti in italiano (piano gratuito) |
    | `FOOTBALL_DATA_API_KEY` | calendario e squadre (football-data.org, piano gratuito) |
    | `ODDSPAPI_API_KEY` | quote (OddsPapi, piano gratuito: 250 chiamate al mese) |
+   | `ODDS_API_KEY` | altri book, secondo parere (The Odds API, piano gratuito: 500 crediti al mese) |
    | `TELEGRAM_GROUP_ID` | facoltativo: il bot trova il gruppo da solo |
 
 3. **Workflow** (tab Actions del repository):
