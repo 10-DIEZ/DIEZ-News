@@ -227,6 +227,32 @@ Conference League) con OddsPapi (piano gratuito, 250 chiamate al mese, secret
   `state/quote_state.json`, quote lette in `state/quote_live.json`, file per i
   Pace Index in `state/mercato.csv`.
 
+### Bot coppe e Serie B (il bot di tuo fratello)
+
+Stesso codice, profilo diverso (`QUOTE_PROFILE=coppe`, dal 22/11/2026). Gira nel
+repository di tuo fratello, con il suo account OddsPapi (la sua chiave nei suoi
+segreti) e un bot Telegram suo, nello stesso gruppo, in un argomento suo
+(«🏆 Quote coppe e B»). Il modello del flusso da mettere nel suo repository è
+`fratello/quote-coppe.yml`: a ogni giro prende il codice da qui, salva lo stato
+nel suo repository (`state/`) e una volta al giorno una copia di sicurezza di
+DIEZ-News (`copia-diez/`, tutto tranne il registro delle notizie).
+
+- **Partite**: ⭐ Champions, 🟠 Europa e 🟢 Conference League (come qui: Europa e
+  Conference solo con squadre dei 5 campionati) e 🇮🇹 **Serie B**, tutte dall'elenco
+  OddsPapi e lette insieme con una chiamata. L'elenco si legge sempre la domenica
+  e il mercoledì alle 15 (la Serie B del fine settimana).
+- **Dove non ci sono i fogli il mercato pesa di più**: avviso da **3/10**,
+  confronto con Sbobet e Singbet su **ogni avviso**, e a 40 minuti il
+  🕒 **quadro dell'orario**, un messaggio con tutte le partite di quell'orario e le
+  quote di adesso con le frecce, anche sotto la soglia (non costa chiamate).
+- Nomi delle squadre, squadre dei 5 campionati e mercati li prende senza chiamate
+  dallo stato di questo bot (`state/quote_state.json`, solo letto).
+- Consumo stimato sul suo account: circa 200-230 chiamate al mese su 250.
+- Prova da qui con la tua chiave: «Prova bot quote» con `profilo` = `coppe`
+  (sempre muta, stato in una cartella temporanea: non tocca niente).
+- Le soglie sono in cima a `monitor_quote.py` (`FORZA_MIN_AVVISO`, `CONFIRM_FROM`,
+  `QUADRO_ORARIO`, `CUP_DISCOVERY_DAYS`, `TOPIC_NAME`), divise per profilo.
+
 ---
 
 ## Come è montato
@@ -249,7 +275,10 @@ Conference League) con OddsPapi (piano gratuito, 250 chiamate al mese, secret
    - «Monitor notizie squadre»: il giro ogni 5 minuti (prima le quote, poi le
      notizie).
    - «Aggiorna calendario partite e squadre»: 4 volte al giorno.
-   - «Prova bot quote»: solo a mano.
+   - «Prova bot quote»: solo a mano (con `profilo` = `coppe` prova il bot di
+     tuo fratello, sempre muta).
+   - Il bot di tuo fratello ha il suo flusso nel suo repository (modello in
+     `fratello/quote-coppe.yml`, vedi «Bot coppe e Serie B»).
 4. **Chi fa partire il giro ogni 5 minuti**: cron-job.org (gratis), con una
    richiesta `POST` a
    `https://api.github.com/repos/10-DIEZ/DIEZ-News/actions/workflows/monitor-news.yml/dispatches`,
