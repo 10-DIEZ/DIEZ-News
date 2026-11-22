@@ -2673,8 +2673,8 @@ LEGEND = ("📖 <b>Come leggere i messaggi delle quote</b>\n\n"
           + ": confronto con <b>Sbobet e Singbet</b>. «3 book su 3» = tutti "
           "d'accordo; se uno non conferma la forza scende di 1, se nessuno di 2\n"
           + ("• 🔁 <b>altri book</b> (" + ", ".join(OA_BOOKS.values()) + "): sotto il segnale, quanti si sono mossi "
-             "nello stesso verso su segno e linea gol, dall'apertura ad adesso. È solo un secondo parere: la forza "
-             "non cambia\n" if OA_ON else "") + "\n"
+             "nello stesso verso su segno e linea gol, dall'apertura ad adesso; per il GG quanti sono già alle quote "
+             "di adesso di Pinnacle. È solo un secondo parere: la forza non cambia\n" if OA_ON else "") + "\n"
           "<b>Forza del segnale (1-10)</b>\n"
           "quanto si è mosso (linea asiatica o linea gol spostata = tanto) + se ha tenuto o è tornato indietro + "
           "se un altro mercato dice la stessa cosa\n"
@@ -3333,6 +3333,7 @@ def oa_read(st: dict, code: str, cal: list, why: str, manual: bool = False) -> i
         if not snaps:
             continue
         rec = oa["m"].setdefault(match_key(m), {})
+        rec["ev"], rec["sport"] = ev.get("id"), sport           # per il GG (si legge partita per partita)
         point = {"t": now.isoformat(timespec="seconds"), "b": snaps}
         if "base" not in rec and now >= apertura_time(m["ko"], m["code"]) - timedelta(minutes=APERTURA_REUSE_MINUTES):
             rec["base"] = point
@@ -3344,17 +3345,33 @@ def oa_read(st: dict, code: str, cal: list, why: str, manual: bool = False) -> i
 
 def oa_line(st: dict, m: dict, an: dict) -> str | None:
     """La riga 🔁 dell'avviso: per ogni segnale mostrato, quanti degli altri book (con la loro quota dell'apertura e
-    una di adesso) si sono mossi nello stesso verso di Pinnacle dall'apertura."""
+    una di adesso) si sono mossi nello stesso verso di Pinnacle dall'apertura; per il GG (letto solo adesso) quanti
+    sono gia' alle quote di adesso di Pinnacle."""
     rec = (oa_state(st)["m"]).get(match_key(m)) or {}
-    base, last = rec.get("base"), rec.get("last")
-    if not base or not last:
-        return None
-    tb, tl = parse_time(base["t"]), parse_time(last["t"])
-    if not tb or not tl or tl - tb < timedelta(hours=6) or now_utc() - tl > timedelta(minutes=LIVE_FRESH_MINUTES):
-        return None
+    base, last = rec.get("base") or {}, rec.get("last") or {}
+    tb, tl = parse_time(base.get("t")), parse_time(last.get("t"))
+    moved = bool(tb and tl and tl - tb >= timedelta(hours=6) and now_utc() - tl <= timedelta(minutes=LIVE_FRESH_MINUTES))
     parts = []
     for sg in an["shown"]:
         marks = []
+        if sg["fam"] == "gg":               # GG: letto solo adesso; d'accordo = quota gia' dov'e' arrivato Pinnacle
+            gg_now = rec.get("gg") or {}
+            fresh = parse_time(gg_now.get("t"))
+            pa, pb = (an.get("a") or {}).get("gg"), (an.get("b") or {}).get("gg")
+            if fresh and now_utc() - fresh <= timedelta(minutes=LIVE_FRESH_MINUTES) and pa and pb:
+                qa, qb = novig(pa)[0], novig(pb)[0]
+                for b, label in OA_BOOKS.items():
+                    g = (gg_now.get("b") or {}).get(b)
+                    if g:
+                        q = novig(g)[0]
+                        marks.append((label, abs(q - qb) < abs(q - qa)))
+            if marks:
+                ok = sum(1 for _, y in marks if y)
+                parts.append(f"GG {ok} su {len(marks)} già alle quote di adesso ("
+                             + ", ".join(f"{lab} {'✓' if y else '✗'}" for lab, y in marks) + ")")
+            continue
+        if not moved:                       # segno e linea gol: servono la base dell'apertura e una lettura adesso
+            continue
         for b, label in OA_BOOKS.items():
             a, n = base["b"].get(b), last["b"].get(b)
             mv = MOVE_FN[sg["fam"]](a, n) if a and n else None
@@ -3380,6 +3397,16 @@ def oa_check(st: dict, cal: list, alerts: list, manual: bool = False) -> None:
             print(f"The Odds API: {code} non letto a {RIDOSSO_MINUTES} minuti (manca la base dell'apertura)")
             continue                        # senza la base non si puo' dire niente: crediti risparmiati
         oa_read(st, code, cal, f"{RIDOSSO_MINUTES} minuti", manual)
+    for m, names, an, R, sig_txt in alerts:     # GG: una lettura della partita (1 credito), solo con un segnale GG
+        rec = recs.get(match_key(m)) or {}
+        if not any(sg["fam"] == "gg" for sg in an["shown"]) or not rec.get("ev") or not oa_ok(st, 1, manual):
+            continue
+        d = oa_get(st, f"/sports/{rec['sport']}/events/{rec['ev']}/odds",
+                   {"bookmakers": ",".join(OA_BOOKS), "markets": "btts", "oddsFormat": "decimal"})
+        if isinstance(d, dict):
+            gg = {bm.get("key"): oa_snap(bm, d.get("home_team", ""), d.get("away_team", ""))["gg"]
+                  for bm in d.get("bookmakers") or [] if bm.get("key") in OA_BOOKS}
+            rec["gg"] = {"t": now_utc().isoformat(timespec="seconds"), "b": {k: v for k, v in gg.items() if v}}
     for m, names, an, R, sig_txt in alerts:
         line = oa_line(st, m, an) if m["code"] in OA_CODES else None
         if line:
