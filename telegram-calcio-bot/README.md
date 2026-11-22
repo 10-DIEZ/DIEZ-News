@@ -281,4 +281,5 @@ Tutto in `config.py`:
 - Piani gratuiti: Groq (riassunti) è l'unico vicino al tetto giornaliero nei
   giorni pieni, per questo c'è la soglia delle 600 chiamate; football-data,
   Telegram, cron-job.org e GitHub Actions (repository pubblico) hanno margine
-  ampio; OddsPapi usa circa 25-40 chiamate al mese su 250.
+  ampio; OddsPapi usa circa 200-210 chiamate al mese su 250 (vedi «Consumo»
+  nella parte del bot quote).
