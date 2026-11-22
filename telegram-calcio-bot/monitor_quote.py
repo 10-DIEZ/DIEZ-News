@@ -283,10 +283,28 @@ NOTIZIE_SOTTO_AVVISO = True     # dopo ogni avviso, in risposta, le notizie dell
 NOTIZIE_ORE = 36                # notizie delle ultime 36 ore...
 NOTIZIE_PER_SQUADRA = 4         # ...al massimo 4 per squadra (conferenze, infortuni, formazioni, allenatore)
 
+# Secondo parere degli ALTRI BOOK con The Odds API (dal 22/11/2026; piano gratuito, 500 crediti al mese, segreto
+# ODDS_API_KEY; solo il bot campionati). 1X2 e linea gol di Betfair Exchange, Matchbook, Marathonbet e 1xBet: fino a
+# 10 book costano come uno, 1 credito per campionato e per mercato. Base all'apertura (alle 15 di due giorni prima),
+# poi a 40 minuti solo per i campionati con un avviso. Solo informazione: una riga 🔁 sotto il segnale, la forza non
+# cambia. Senza la chiave non fa niente.
+OA_KEY = os.environ.get("ODDS_API_KEY", "").strip()
+OA_ON = bool(OA_KEY) and not COPPE
+OA_BASE = "https://api.the-odds-api.com/v4"
+OA_SPORTS = {"SA": "soccer_italy_serie_a", "PL": "soccer_epl", "PD": "soccer_spain_la_liga",
+             "BL1": "soccer_germany_bundesliga", "FL1": "soccer_france_ligue_one",
+             "CL": "soccer_uefa_champs_league", "EL": "soccer_uefa_europa_league",
+             "ECL": "soccer_uefa_europa_conference_league", "SB": "soccer_italy_serie_b"}
+OA_CODES = ("SA", "PL", "PD", "BL1", "FL1")     # per ora solo i 5 campionati
+OA_BOOKS = {"betfair_ex_eu": "Betfair", "matchbook": "Matchbook", "marathonbet": "Marathonbet", "onexbet": "1xBet"}
+OA_MARKETS = ("h2h", "totals")  # 1X2 e linea gol (1 credito ciascuno per campionato); GG solo partita per partita
+OA_PER_DAY = 6                  # crediti tenuti da parte per ogni giorno che manca a fine mese
+OA_RESERVE = 10                 # e altri 10 per le prove a mano
 TOPIC_NAME = "🏆 Quote coppe e B" if COPPE else "📈 Quote"
 TOPIC_COLOR = 16766590 if COPPE else 9367192    # giallo / verde
 KEEP_DAYS = 8                   # partite finite tenute nello stato una settimana (per "rivedi")
-LEGEND_VERSION = 7              # se cambia, la legenda viene rimandata una volta (4 = tabella unica e grafico;
+LEGEND_VERSION = 8 if OA_ON else 7  # se cambia, la legenda viene rimandata una volta (8 = riga 🔁 altri book;
+                                # 4 = tabella unica e grafico;
                                 # 5 = gol e corner attesi, ultimi minuti, soglia Europa/Conference, niente riepilogo)
 APERTURA_TRIES = 3              # elenco partite non letto all'apertura: si riprova al giro dopo, al massimo 3 volte
 MARKETS_VERSION = 4             # se cambia, l'elenco dei mercati viene riletto subito (3-4 = corner, gol e tiri di squadra)
@@ -2473,6 +2491,8 @@ def build_message(m: dict, names: dict, an: dict, base_at: datetime, first: bool
     top = [f"{prefix}{lg['flag']} <b>{match_title(names)}</b> · {m['ko'].astimezone(ROME):%H:%M}"]
     if main:
         top.append(signal_head(an, main, names))
+    if an.get("oa_line"):
+        top.append(an["oa_line"])
     table, tnote = fmt_table_one(names, an)
     chart = chart_block(an, names, m["ko"]) or [quando_text(an, names)]
     others = moved_lines(an, names, main)
@@ -2651,7 +2671,10 @@ LEGEND = ("📖 <b>Come leggere i messaggi delle quote</b>\n\n"
           + (f"; {SERIE_B_Q['SB']['flag']} Serie B tutte le partite" if COPPE else "") + "\n"
           + ("• <b>ogni avviso</b>" if CONFIRM_FROM <= FORZA_MIN_AVVISO else f"• segnali forti ({FORZA_FORTE}/10 o più)")
           + ": confronto con <b>Sbobet e Singbet</b>. «3 book su 3» = tutti "
-          "d'accordo; se uno non conferma la forza scende di 1, se nessuno di 2\n\n"
+          "d'accordo; se uno non conferma la forza scende di 1, se nessuno di 2\n"
+          + ("• 🔁 <b>altri book</b> (" + ", ".join(OA_BOOKS.values()) + "): sotto il segnale, quanti si sono mossi "
+             "nello stesso verso su segno e linea gol, dall'apertura ad adesso. È solo un secondo parere: la forza "
+             "non cambia\n" if OA_ON else "") + "\n"
           "<b>Forza del segnale (1-10)</b>\n"
           "quanto si è mosso (linea asiatica o linea gol spostata = tanto) + se ha tenuto o è tornato indietro + "
           "se un altro mercato dice la stessa cosa\n"
@@ -2943,6 +2966,7 @@ def do_apertura(st: dict, topic: QuoteTopic, key: str | None, cal: list, force: 
     st["done"].append(key)
     learn_teams(st)
     cal = calendar_matches(st)
+    oa_apertura(st, cal)                        # base degli altri book (The Odds API), se c'e' la chiave
     today_ap = datetime(loc.year, loc.month, loc.day, APERTURA_HOUR, tzinfo=ROME).astimezone(timezone.utc)
     for fam in fams:
         codes = LEAGUES_Q if fam == "campionati" else CUPS_Q
@@ -3175,6 +3199,241 @@ def write_pace(st: dict) -> None:
         print(f"[WARN] file per il Pace Index non scritto: {e}")
 
 
+# ---------------------------------------------------------------------
+# Altri book (The Odds API): secondo parere su segno e linea gol, solo informazione
+# ---------------------------------------------------------------------
+OA_FAM = {"side": "segno", "gol": "linea gol", "gg": "GG"}
+
+
+def oa_state(st: dict) -> dict:
+    oa = st.setdefault("oa", {})
+    month = now_utc().astimezone(ROME).strftime("%Y-%m")
+    if oa.get("month") != month:
+        oa.update(month=month, used=0, left=None)
+    oa.setdefault("m", {})
+    return oa
+
+
+def oa_ok(st: dict, need: int, manual: bool = False) -> bool:
+    """Crediti di The Odds API: restano sempre OA_RESERVE crediti per le prove e, fuori dalle prove, OA_PER_DAY per
+    ogni giorno che manca a fine mese (cosi' non finiscono a meta' mese)."""
+    oa = oa_state(st)
+    left = oa.get("left")
+    if left is None:
+        return True                         # non ancora letti: lo dice la prima risposta
+    loc = now_utc().astimezone(ROME)
+    days = _calmod.monthrange(loc.year, loc.month)[1] - loc.day + 1
+    return left - need >= OA_RESERVE + (0 if manual else OA_PER_DAY * days)
+
+
+def oa_get(st: dict, path: str, params: dict):
+    """Chiamata a The Odds API: aggiorna i crediti usati e rimasti (dalle intestazioni della risposta)."""
+    q = dict(params, apiKey=OA_KEY)
+    try:
+        resp = requests.get(OA_BASE + path, params=q, timeout=30)
+    except requests.RequestException as e:
+        print(f"[WARN] The Odds API: rete ({e.__class__.__name__})")
+        return None
+    oa = oa_state(st)
+    for h, k in (("x-requests-remaining", "left"), ("x-requests-used", "used")):
+        try:
+            oa[k] = int(float(resp.headers.get(h)))
+        except (TypeError, ValueError):
+            pass
+    if resp.status_code != 200:
+        print(f"[WARN] The Odds API {path}: HTTP {resp.status_code} {resp.text[:200]}")
+        return None
+    try:
+        return resp.json()
+    except ValueError:
+        return None
+
+
+def oa_snap(bm: dict, home: str, away: str) -> dict:
+    """Quote di un book di The Odds API nello stesso formato degli altri (1X2, linea gol principale e tutte le
+    linee, asiatico, GG), cosi' il movimento si misura con le stesse regole."""
+    snap = {"x": None, "ah": None, "ou": None, "lines": {}, "ah_lines": {}, "gg": None}
+    for mk in bm.get("markets") or []:
+        key, outs = mk.get("key"), mk.get("outcomes") or []
+        by = {}
+        for o in outs:
+            try:
+                by[(o.get("name"), o.get("point"))] = float(o.get("price"))
+            except (TypeError, ValueError):
+                continue
+        if key == "h2h":
+            x = [by.get((home, None)), by.get(("Draw", None)), by.get((away, None))]
+            if all(x):
+                snap["x"] = x
+        elif key == "btts":
+            gg = [by.get(("Yes", None)), by.get(("No", None))]
+            if all(gg):
+                snap["gg"] = gg
+        elif key in ("totals", "spreads"):
+            pairs = []
+            for (name, pt), price in by.items():
+                if pt is None:
+                    continue
+                if key == "totals" and name == "Over" and by.get(("Under", pt)):
+                    pairs.append((float(pt), price, by[("Under", pt)]))
+                elif key == "spreads" and name == home and by.get((away, -pt)):
+                    pairs.append((float(pt) * AH_HOME_SIGN, price, by[(away, -pt)]))
+            if pairs:
+                main = min(pairs, key=lambda p: abs(1 / p[1] - 1 / p[2]))
+                lines = {f"{p[0]:g}": [p[1], p[2]] for p in pairs}
+                if key == "totals":
+                    snap["ou"], snap["lines"] = list(main), lines
+                else:
+                    snap["ah"], snap["ah_lines"] = list(main), lines
+    return snap
+
+
+def oa_match(events: list, matches: list) -> list:
+    """Le partite di The Odds API abbinate a quelle del calendario: stesso campionato, orario entro 30 minuti, nomi
+    simili (i nomi sono diversi da quelli del calendario: 'Inter Milan' / 'FC Internazionale Milano')."""
+    out = []
+    for ev in events if isinstance(events, list) else []:
+        ko = parse_time(ev.get("commence_time"))
+        if not ko:
+            continue
+        best, score = None, 0.0
+        for m in matches:
+            if abs((m["ko"] - ko).total_seconds()) > 30 * 60:
+                continue
+            s = _name_sim(ev.get("home_team", ""), m, "home") + _name_sim(ev.get("away_team", ""), m, "away")
+            if s > score:
+                best, score = m, s
+        if best and score >= 1.0:
+            out.append((best, ev))
+    return out
+
+
+def oa_read(st: dict, code: str, cal: list, why: str, manual: bool = False) -> int:
+    """Una lettura di un campionato (1 credito per mercato): per ogni partita abbinata tiene la base (la prima
+    lettura dalla sua apertura in poi) e l'ultima. Ritorna quante partite ha abbinato."""
+    sport = OA_SPORTS.get(code)
+    if not OA_KEY or not sport:
+        return 0
+    if not oa_ok(st, len(OA_MARKETS), manual):
+        print(f"The Odds API: {code} non letto ({why}): crediti del mese da tenere da parte")
+        return 0
+    data = oa_get(st, f"/sports/{sport}/odds", {"bookmakers": ",".join(OA_BOOKS), "markets": ",".join(OA_MARKETS),
+                                                 "oddsFormat": "decimal", "dateFormat": "iso"})
+    if data is None:
+        return 0
+    oa, now = oa_state(st), now_utc()
+    pairs = oa_match(data, [m for m in cal if m["code"] == code and m["ko"] > now])
+    for m, ev in pairs:
+        snaps = {}
+        for bm in ev.get("bookmakers") or []:
+            if bm.get("key") in OA_BOOKS:
+                s = oa_snap(bm, ev.get("home_team", ""), ev.get("away_team", ""))
+                if has_data(s):
+                    snaps[bm["key"]] = s
+        if not snaps:
+            continue
+        rec = oa["m"].setdefault(match_key(m), {})
+        point = {"t": now.isoformat(timespec="seconds"), "b": snaps}
+        if "base" not in rec and now >= apertura_time(m["ko"], m["code"]) - timedelta(minutes=APERTURA_REUSE_MINUTES):
+            rec["base"] = point
+        rec["last"] = point
+    print(f"The Odds API ({why}): {code} letto, {len(data) if isinstance(data, list) else 0} partite, "
+          f"{len(pairs)} abbinate · crediti usati {oa.get('used')}, rimasti {oa.get('left')}")
+    return len(pairs)
+
+
+def oa_line(st: dict, m: dict, an: dict) -> str | None:
+    """La riga 🔁 dell'avviso: per ogni segnale mostrato, quanti degli altri book (con la loro quota dell'apertura e
+    una di adesso) si sono mossi nello stesso verso di Pinnacle dall'apertura."""
+    rec = (oa_state(st)["m"]).get(match_key(m)) or {}
+    base, last = rec.get("base"), rec.get("last")
+    if not base or not last:
+        return None
+    tb, tl = parse_time(base["t"]), parse_time(last["t"])
+    if not tb or not tl or tl - tb < timedelta(hours=6) or now_utc() - tl > timedelta(minutes=LIVE_FRESH_MINUTES):
+        return None
+    parts = []
+    for sg in an["shown"]:
+        marks = []
+        for b, label in OA_BOOKS.items():
+            a, n = base["b"].get(b), last["b"].get(b)
+            mv = MOVE_FN[sg["fam"]](a, n) if a and n else None
+            if mv is not None:
+                marks.append((label, mv["dir"] == sg["dir"] and abs(mv["meas"]) >= MIN_BOOK_PTS))
+        if marks:
+            ok = sum(1 for _, y in marks if y)
+            parts.append(f"{OA_FAM[sg['fam']]} {ok} su {len(marks)} ("
+                         + ", ".join(f"{lab} {'✓' if y else '✗'}" for lab, y in marks) + ")")
+    return ("🔁 <i>Altri book dall'apertura</i>: " + " · ".join(parts)) if parts else None
+
+
+def oa_check(st: dict, cal: list, alerts: list, manual: bool = False) -> None:
+    """A 40 minuti, solo per i campionati con un avviso: una lettura degli altri book per campionato e la riga 🔁 in
+    ogni avviso (se ci sono la loro quota dell'apertura e una di adesso)."""
+    if not OA_ON:
+        return
+    old = now_utc() - timedelta(hours=6)
+    recs = oa_state(st)["m"]
+    for code in sorted({a[0]["code"] for a in alerts if a[0]["code"] in OA_CODES}):
+        if not any((parse_time(((recs.get(match_key(a[0])) or {}).get("base") or {}).get("t")) or now_utc()) <= old
+                   for a in alerts if a[0]["code"] == code):
+            print(f"The Odds API: {code} non letto a {RIDOSSO_MINUTES} minuti (manca la base dell'apertura)")
+            continue                        # senza la base non si puo' dire niente: crediti risparmiati
+        oa_read(st, code, cal, f"{RIDOSSO_MINUTES} minuti", manual)
+    for m, names, an, R, sig_txt in alerts:
+        line = oa_line(st, m, an) if m["code"] in OA_CODES else None
+        if line:
+            an["oa_line"] = line
+            print(f"  {names['home']} - {names['away']}: {re.sub(r'</?i>', '', line)}")
+
+
+def oa_apertura(st: dict, cal: list) -> None:
+    """All'apertura (alle 15): la base degli altri book per i campionati con partite fra due giorni."""
+    if not OA_ON:
+        return
+    for code in sorted({m["code"] for m in apertura_matches(cal, now_utc()) if m["code"] in OA_CODES}):
+        oa_read(st, code, cal, "apertura")
+
+
+def do_altribook(st: dict, cal: list) -> None:
+    """Prova (muta) di The Odds API: per ogni campionato una lettura con 1X2, linea gol e asiatico (3 crediti) e il
+    GG di una partita (1 credito): quali book rispondono, con quali mercati, e come si abbinano le partite."""
+    if not OA_KEY:
+        print("Altri book: manca il segreto ODDS_API_KEY")
+        return
+    sport_ev = None
+    for code in OA_CODES:
+        data = oa_get(st, f"/sports/{OA_SPORTS[code]}/odds", {"bookmakers": ",".join(["pinnacle", *OA_BOOKS]),
+                      "markets": "h2h,totals,spreads", "oddsFormat": "decimal", "dateFormat": "iso"})
+        if not isinstance(data, list):
+            print(f"{code}: niente")
+            continue
+        cover = {}
+        for ev in data:
+            for bm in ev.get("bookmakers") or []:
+                for mk in bm.get("markets") or []:
+                    cover.setdefault(bm.get("key"), {}).setdefault(mk.get("key"), 0)
+                    cover[bm["key"]][mk["key"]] += 1
+        pairs = oa_match(data, [m for m in cal if m["code"] == code and m["ko"] > now_utc()])
+        print(f"{code}: {len(data)} partite, {len(pairs)} abbinate al calendario · mercati per book: {cover}")
+        for m, ev in pairs[:2]:
+            print(f"   {ev.get('home_team')} - {ev.get('away_team')} = {m['home']} - {m['away']}")
+            for bm in ev.get("bookmakers") or []:
+                s = oa_snap(bm, ev.get("home_team", ""), ev.get("away_team", ""))
+                print(f"      {bm.get('key')}: 1X2 {s['x']} linea gol {s['ou']} asiatico {s['ah']}")
+        if data and not sport_ev:
+            sport_ev = (OA_SPORTS[code], data[0])
+    if sport_ev:
+        sport, ev = sport_ev
+        d = oa_get(st, f"/sports/{sport}/events/{ev.get('id')}/odds",
+                   {"bookmakers": ",".join(["pinnacle", *OA_BOOKS]), "markets": "btts", "oddsFormat": "decimal"})
+        gg = {bm.get("key"): oa_snap(bm, ev.get("home_team", ""), ev.get("away_team", ""))["gg"]
+              for bm in (d or {}).get("bookmakers") or []}
+        print(f"GG di {ev.get('home_team')} - {ev.get('away_team')}: {gg or 'nessun book'}")
+    oa = oa_state(st)
+    print(f"The Odds API: crediti usati {oa.get('used')}, rimasti {oa.get('left')}")
+
+
 def do_ridosso(st: dict, topic: QuoteTopic, key: str | None, group: dict | None, cal: list, force: bool = False) -> int:
     """Per ogni partita del gruppo: storico (gratis) -> apertura e adesso sui 3 book -> forza dei segnali ->
     avviso se la forza arriva alla soglia della partita (alert_floor). Prima si leggono tutte, poi gli avvisi
@@ -3279,6 +3538,8 @@ def do_ridosso(st: dict, topic: QuoteTopic, key: str | None, group: dict | None,
             need = f", qui serve {floor}" if floor != FORZA_MIN_AVVISO else ""
             print(f"  {names['home']} - {names['away']}: sotto la soglia ({sig_txt}{need})")
             mark(m)
+    if alerts:
+        oa_check(st, cal, alerts, manual)      # secondo parere degli altri book (The Odds API), se c'e' la chiave
     for m, names, an, R, sig_txt in sorted(alerts, key=lambda r: -r[2]["forza"]):       # dal piu' forte
         if topic.send(build_message(m, names, an, R["base_at"], R["first"],
                                     "controllo a mano" if manual else "formazioni uscite")):
@@ -4238,6 +4499,9 @@ def cleanup(st: dict) -> None:
     st["ap_msg"] = [k for k in (st.get("ap_msg") or []) if k.split("|")[1:2] >= [keep]]
     if "quadro" in st:
         st["quadro"] = {k: v for k, v in (st.get("quadro") or {}).items() if k.split("|", 1)[-1] >= keep}
+    if isinstance(st.get("oa"), dict):          # altri book: le partite fino a un giorno dopo
+        day = (now_utc() - timedelta(days=1)).isoformat()[:16]
+        st["oa"]["m"] = {k: v for k, v in (st["oa"].get("m") or {}).items() if k.split("|")[1:2] >= [day]}
 
 
 _START = time.monotonic()
@@ -4248,7 +4512,8 @@ def main() -> int:
     _START = time.monotonic()
     ap = argparse.ArgumentParser()
     ap.add_argument("--mode", default="auto",
-                    choices=["auto", "test", "ora", "apertura", "riepilogo", "rivedi", "esempio", "notizie"])
+                    choices=["auto", "test", "ora", "apertura", "riepilogo", "rivedi", "esempio", "notizie",
+                             "altribook"])
     ap.add_argument("--partita", default="", help="prove a mano: squadra (es. Roma) o competizione (es. CL, coppe); "
                                                   "per rivedi vuoto = tutta la settimana")
     ap.add_argument("--muto", action="store_true", help="prove a mano: messaggi nel registro, non nel gruppo")
@@ -4292,6 +4557,8 @@ def main() -> int:
             do_esempio(st, topic, query)
         elif args.mode == "notizie":
             do_notizie(st, topic, cal, query)
+        elif args.mode == "altribook":
+            do_altribook(st, cal)
         else:
             send_legend(st, topic)
             if lkey:                    # prima gli ultimi minuti (l'orario piu' stretto), poi gli avvisi a ridosso

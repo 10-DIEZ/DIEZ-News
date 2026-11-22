@@ -8,6 +8,8 @@ name: Prova bot quote
 #   esempio   = prova grafica nel gruppo con quote vere: legenda, tre avvisi di 40 minuti prima (calo che tiene,
 #               tornato indietro, solo gol), un esempio degli ultimi minuti e la riga «Non controllate»;
 #               con "partita" = tutto anche apertura delle coppe e riepiloghi
+#   altribook = prova di The Odds API (altri book): quali book e mercati rispondono sui 5 campionati, nel
+#               registro (circa 16 crediti dei 500 del mese, nessuna chiamata OddsPapi)
 #   notizie   = le notizie che arriverebbero adesso sotto l'avviso della prossima partita (di una squadra, se
 #               scritta in "partita"): nessuna chiamata, nessuna quota
 #   rivedi    = rilegge le partite gia' giocate (ultimi 8 giorni) come 40 minuti prima, con le regole di adesso:
@@ -25,7 +27,7 @@ on:
         required: true
         default: test
         type: choice
-        options: [test, ora, apertura, riepilogo, rivedi, esempio, notizie]
+        options: [test, ora, apertura, riepilogo, rivedi, esempio, notizie, altribook]
       partita:
         description: "squadra (es. Roma) o competizione (SA, PL, PD, BL1, FL1, CL, EL, ECL, coppe); per rivedi vuoto = tutta la settimana"
         required: false
@@ -73,6 +75,7 @@ jobs:
         working-directory: telegram-calcio-bot
         env:
           ODDSPAPI_API_KEY: ${{ secrets.ODDSPAPI_API_KEY }}
+          ODDS_API_KEY: ${{ secrets.ODDS_API_KEY }}
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
           TELEGRAM_GROUP_ID: ${{ secrets.TELEGRAM_GROUP_ID }}
