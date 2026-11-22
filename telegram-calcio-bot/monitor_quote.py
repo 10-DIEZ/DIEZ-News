@@ -73,6 +73,17 @@ COSA FA
   a tarare le soglie.
 - Tutto nell'argomento "📈 Quote" del gruppo (lo crea il bot).
 
+PROFILI (dal 22/11/2026, variabile QUOTE_PROFILE):
+- "campionati" (quello di sempre, senza variabile): tutto quello che c'e' sopra.
+- "coppe": il bot di tuo fratello, nel suo repository e con la sua chiave OddsPapi (flusso
+  fratello/quote-coppe.yml, che prende il codice da qui). Champions, Europa e Conference League e SERIE B
+  (dove non ci sono i fogli e il mercato pesa di piu'), lette insieme con una chiamata; avviso da 3/10;
+  Sbobet e Singbet su OGNI avviso (CONFIRM_FROM); 🕒 QUADRO DELL'ORARIO a 40 minuti con tutte le partite
+  di quell'orario, anche sotto la soglia (QUADRO_ORARIO); elenco letto anche il mercoledi' (Serie B del
+  fine settimana); argomento "🏆 Quote coppe e B"; gruppo dal secret TELEGRAM_GROUP_ID. Lo stato sta nella
+  cartella QUOTE_STATE_DIR (il suo repository); nomi delle squadre, squadre dei 5 campionati e mercati li
+  prende, senza chiamate, dallo stato di questo bot (state/quote_state.json, solo letto).
+
 QUANTO CONSUMA: ogni lettura delle quote di adesso e' 1 chiamata delle 250 al
 mese: circa 22 orari d'inizio per weekend di campionato, 6-7 per settimana di
 coppe, le aperture delle 15 (3-4 a settimana), Sbobet e Singbet (2 a inizio
@@ -138,10 +149,20 @@ from utils import send_telegram_message, telegram_api
 ROME = ZoneInfo("Europe/Rome")
 API_BASE = "https://api.oddspapi.io/v4"
 API_KEY = os.environ.get("ODDSPAPI_API_KEY", "").strip()
-QUOTE_STATE_FILE = os.path.join(os.path.dirname(__file__), "state", "quote_state.json")
-PACE_FILE = os.path.join(os.path.dirname(__file__), "state", "mercato.csv")     # letto dai file Excel Pace Index
-LIVE_FILE = os.path.join(os.path.dirname(__file__), "state", "quote_live.json")  # quote Pinnacle lette dal bot
-ARCHIVE_FILE = os.path.join(os.path.dirname(__file__), "state", "rivedi_archivio.json")  # partite vecchie per rivedi
+# Profilo (dal 22/11/2026). "campionati" = il bot di sempre (5 campionati e coppe, con i fogli Excel).
+# "coppe" = il bot di tuo fratello, nel suo repository e con la sua chiave: Champions, Europa, Conference e
+# Serie B (dove non ci sono i fogli e il mercato pesa di piu'): avviso da 3/10, Sbobet e Singbet su ogni avviso,
+# quadro di tutte le partite dell'orario, argomento suo. Lo stato sta nella cartella QUOTE_STATE_DIR.
+PROFILE = (os.environ.get("QUOTE_PROFILE") or "campionati").strip().lower()
+COPPE = PROFILE == "coppe"
+_HERE = os.path.dirname(__file__)
+STATE_DIR = os.environ.get("QUOTE_STATE_DIR", "").strip() or os.path.join(_HERE, "state")
+QUOTE_STATE_FILE = os.path.join(STATE_DIR, "quote_state.json")
+PACE_FILE = os.path.join(STATE_DIR, "mercato.csv")     # letto dai file Excel Pace Index
+LIVE_FILE = os.path.join(STATE_DIR, "quote_live.json")  # quote Pinnacle lette dal bot
+ARCHIVE_FILE = os.path.join(_HERE, "state", "rivedi_archivio.json")  # partite vecchie per rivedi
+MAIN_STATE_FILE = os.path.join(_HERE, "state", "quote_state.json")   # profilo coppe: lo stato del bot campionati,
+                                                                     # solo letto (nomi, squadre dei 5, mercati)
 
 # I 3 book confrontati (lo storico ne accetta al massimo 3 per chiamata): Pinnacle e' il riferimento
 BOOKMAKERS = ["pinnacle", "sbobet", "singbet"]
@@ -168,12 +189,21 @@ CUPS_Q = {
     "ECL": {"name": "Conference League", "flag": "🟢",
             "names": ("uefa conference league", "uefa europa conference league"), "id": 34480},
 }
+# Serie B (solo profilo coppe): come le coppe, le partite arrivano dall'elenco OddsPapi (il calendario gratuito di
+# football-data non ce l'ha) e si leggono insieme alle coppe, con una chiamata. Paese controllato: "Serie B" c'e'
+# anche in altri paesi.
+SERIE_B_Q = {"SB": {"name": "Serie B", "flag": "🇮🇹", "country": "italy", "names": ("serie b",), "id": 53}}
+if COPPE:
+    LEAGUES_Q = {}
+    CUPS_Q = {**CUPS_Q, **SERIE_B_Q}
 COMPS_Q = {**LEAGUES_Q, **CUPS_Q}
 CUPS_ONLY_TOP5 = False          # coppe: True = solo le partite con almeno una squadra dei 5 campionati; False = tutte...
 CUPS_TOP5_MONTHS = (7, 8)       # ...ma a luglio e agosto (preliminari: anche 80-90 partite il giovedi') solo quelle
 CUPS_TOP5_ONLY = ("EL", "ECL")  # Europa e Conference League (dal 21/11/2026): solo le partite con almeno una squadra
                                 # dei 5 campionati, tutto l'anno; la Champions tutta
 CUP_DISCOVERY_DAY = 6           # domenica alle 15: si leggono sempre le coppe (scopre le partite della settimana)
+CUP_DISCOVERY_DAYS = (CUP_DISCOVERY_DAY, 2) if COPPE else (CUP_DISCOVERY_DAY,)  # profilo coppe: anche il mercoledi'
+                                # (la Serie B del fine settimana: e' anche l'apertura delle partite del venerdi')
 CUP_REREAD = False              # rilettura delle 11 (spenta dal 21/11/2026: le letture delle 15 e dei 40 minuti
 CUP_REREAD_HOUR = 11            #  aggiornano gia' l'elenco)
 CUP_REREAD_AHEAD_HOURS = 36
@@ -222,8 +252,11 @@ STALE_MAX_HOURS = 72            # equilibrata per vincere; ferma da piu' di 72 o
 # L'ampiezza si misura in punti di probabilita' (senza margine) SULLA LINEA DELL'APERTURA: se la linea principale
 # e' cambiata, si guarda come si e' mossa la quota della linea di partenza (cosi' un cambio di linea "di confine"
 # non conta come un movimento grande).
-FORZA_MIN_AVVISO = 4            # avviso a 40 minuti da 4/10 in su (sotto e' rumore)
+FORZA_MIN_AVVISO = 3 if COPPE else 4   # avviso a 40 minuti da 4/10 in su (sotto e' rumore); coppe e Serie B da 3
 FORZA_FORTE = 7                 # da 7/10: segnale forte
+CONFIRM_FROM = FORZA_MIN_AVVISO if COPPE else FORZA_FORTE   # confronto con Sbobet e Singbet da qui: sui forti,
+                                # nel profilo coppe su ogni avviso
+QUADRO_ORARIO = COPPE           # a 40 minuti anche il quadro di tutte le partite dell'orario (sotto la soglia comprese)
 CUP_BUSY_CODES = ("EL", "ECL")  # Europa e Conference League: nei giorni in cui insieme hanno piu' di...
 CUP_BUSY_MATCHES = 8            # ...8 partite (fase campionato, spareggi, ottavi)...
 FORZA_MIN_BUSY = 6              # ...l'avviso parte solo da 6/10 (forti e medio-forti)
@@ -250,8 +283,8 @@ NOTIZIE_SOTTO_AVVISO = True     # dopo ogni avviso, in risposta, le notizie dell
 NOTIZIE_ORE = 36                # notizie delle ultime 36 ore...
 NOTIZIE_PER_SQUADRA = 4         # ...al massimo 4 per squadra (conferenze, infortuni, formazioni, allenatore)
 
-TOPIC_NAME = "📈 Quote"
-TOPIC_COLOR = 9367192           # verde
+TOPIC_NAME = "🏆 Quote coppe e B" if COPPE else "📈 Quote"
+TOPIC_COLOR = 16766590 if COPPE else 9367192    # giallo / verde
 KEEP_DAYS = 8                   # partite finite tenute nello stato una settimana (per "rivedi")
 LEGEND_VERSION = 7              # se cambia, la legenda viene rimandata una volta (4 = tabella unica e grafico;
                                 # 5 = gol e corner attesi, ultimi minuti, soglia Europa/Conference, niente riepilogo)
@@ -296,7 +329,38 @@ def load_qstate() -> dict:
     if st["month"] != month:
         st["month"], st["calls"] = month, 0
         st["notices"] = [n for n in st["notices"] if not n.startswith("limit:")]
+    if COPPE:
+        seed_from_main(st)
     return st
+
+
+def seed_from_main(st: dict) -> None:
+    """Profilo coppe: dallo stato del bot campionati (solo letto, nessuna chiamata) i nomi delle squadre, le squadre
+    dei 5 campionati (filtro di Europa e Conference, nomi italiani e hashtag), gli id delle competizioni e l'elenco
+    dei mercati del mese. Se quello stato non c'e', il bot si arrangia da solo."""
+    if os.path.abspath(MAIN_STATE_FILE) == os.path.abspath(QUOTE_STATE_FILE):
+        return
+    main = load_json(MAIN_STATE_FILE, {})
+    if not main:
+        return
+    for pid, name in (main.get("participants") or {}).items():
+        if name:
+            st["participants"].setdefault(str(pid), name)
+    top5 = st.get("top5") if isinstance(st.get("top5"), dict) else {}
+    for pid, v in (main.get("top5") or {}).items():
+        if isinstance(v, list) and len(v) == 2 and (pid not in top5 or str(v[1]) > str(top5[pid][1])):
+            top5[pid] = v
+    st["top5"] = top5
+    fd = st.get("team_fd") if isinstance(st.get("team_fd"), dict) else {}
+    fd.update({k: v for k, v in (main.get("team_fd") or {}).items() if v})
+    st["team_fd"] = fd
+    for code, tid in (main.get("tournaments") or {}).items():
+        if code in COMPS_Q:
+            st["tournaments"].setdefault(code, tid)
+    mine = st["markets"] and st.get("markets_v") == MARKETS_VERSION and st["markets_month"] == st["month"]
+    if not mine and main.get("markets") and main.get("markets_v") == MARKETS_VERSION and \
+            main.get("markets_month") == st["month"]:
+        st["markets"], st["markets_v"], st["markets_month"] = main["markets"], MARKETS_VERSION, st["month"]
 
 
 def save_qstate(st: dict) -> None:
@@ -501,7 +565,7 @@ def ensure_tournaments(st: dict, force: bool = False) -> dict:
         for t in items:
             name = norm(t.get("tournamentName") or t.get("name"))
             cat = norm(t.get("categoryName") or t.get("categorySlug") or t.get("category"))
-            if name in lg["names"] and (code in CUPS_Q or lg["country"] in cat):
+            if name in lg["names"] and (not lg.get("country") or lg["country"] in cat):
                 tid = t.get("tournamentId") or t.get("id")
                 if best is None or tid == lg["id"]:
                     best = tid
@@ -1182,7 +1246,7 @@ def sim_reads(m: dict, everything: list) -> tuple:
     while d <= t40.astimezone(ROME).date():
         t = datetime(d.year, d.month, d.day, APERTURA_HOUR, tzinfo=ROME).astimezone(timezone.utc)
         if ap < t < t40 and ((d + timedelta(days=APERTURA_DAYS_BEFORE)) in days or
-                             (cup and d.weekday() == CUP_DISCOVERY_DAY)):
+                             (cup and d.weekday() in CUP_DISCOVERY_DAYS)):
             times.add(t)
         d += timedelta(days=1)
     return sorted(times), t40
@@ -1896,11 +1960,16 @@ def club_name(name: str) -> str:
     """Nome di una squadra straniera senza le sigle di societa' all'inizio o alla fine: 'SK Sturm Graz' -> 'Sturm Graz',
     'Heart of Midlothian FC' -> 'Heart of Midlothian' (anche l'hashtag viene piu' pulito)."""
     words = str(name or "").split()
-    while len(words) > 1 and words[0] in _CLUB_TAGS:
+    tags = _CLUB_TAGS | _IT_TAGS if COPPE else _CLUB_TAGS
+    while len(words) > 1 and words[0] in tags:
         words = words[1:]
-    while len(words) > 1 and words[-1] in _CLUB_TAGS:
+    while len(words) > 1 and (words[-1] in tags or (COPPE and re.fullmatch(r"\d{4}", words[-1]))):
         words = words[:-1]
     return " ".join(words)
+
+
+_IT_TAGS = {"US", "SS", "SSC", "UC", "AS", "ACF", "ASD", "SSD", "USD", "Calcio"}   # profilo coppe: nomi della Serie B
+                                    # ('SSC Bari' -> 'Bari', 'US Catanzaro 1929' -> 'Catanzaro', 'Spezia Calcio' -> 'Spezia')
 
 
 def cup_team(st: dict, pid: str) -> tuple:
@@ -2490,6 +2559,16 @@ def riepilogo_row(m: dict, names: dict, an: dict | None) -> str:
     title = f"<b>{match_title(names)}</b> {m['ko'].astimezone(ROME):%H:%M}"
     if not an or not an["b"]:
         return f"{title}\n<i>quote non trovate su OddsPapi</i>"
+    rows = [title, " · ".join(quote_bits(an)), judgement_short(an, names)]
+    if an["shown"]:
+        main = max(an["shown"], key=lambda s: (s["forza"], {"side": 2, "gol": 1, "gg": 0}[s["fam"]]))
+        rows += andamento(an, main, names)
+    rows.append(picks_text(an, names, short=True))
+    return "\n".join(r for r in rows if r)
+
+
+def quote_bits(an: dict) -> list:
+    """Le quote di adesso in una riga (1X2, asiatico, linea gol, Over 2,5, GG) con le frecce dall'apertura."""
     a, b = an["a"], an["b"]
     bits = []
     if b.get("x"):
@@ -2506,12 +2585,39 @@ def riepilogo_row(m: dict, names: dict, an: dict | None) -> str:
         bits.append("O2,5 " + fmt_num(ob[0]) + (arrow_p(novig(oa)[0], novig(ob)[0]) if oa else ""))
     if b.get("gg"):
         bits.append("GG " + fmt_num(b["gg"][0]) + (arrow_p(novig(a["gg"])[0], novig(b["gg"])[0]) if a.get("gg") else ""))
-    rows = [title, " · ".join(bits), judgement_short(an, names)]
-    if an["shown"]:
-        main = max(an["shown"], key=lambda s: (s["forza"], {"side": 2, "gol": 1, "gg": 0}[s["fam"]]))
-        rows += andamento(an, main, names)
-    rows.append(picks_text(an, names, short=True))
-    return "\n".join(r for r in rows if r)
+    return bits
+
+
+def quadro_row(m: dict, names: dict, an: dict, alert: bool) -> str:
+    """Una partita nel quadro dell'orario (profilo coppe): competizione, squadre, se e' partito l'avviso o quanto si
+    e' mosso, e le quote di adesso con le frecce."""
+    lg = COMPS_Q.get(m["code"], {"flag": ""})
+    title = f"{lg['flag']} <b>{match_title(names)}</b>"
+    if alert:
+        tag = f"🔔 avviso qui sopra, forza {an['forza']}/10"
+    elif an["sigs"]:
+        tag = f"movimenti leggeri, forza {an['forza']}/10"
+    else:
+        tag = "quote ferme"
+    bits = quote_bits(an) if an.get("b") else []
+    return f"{title} · {tag}" + (f"\n{' · '.join(bits)}" if bits else "")
+
+
+def quadro_messages(first: datetime, entries: list) -> list:
+    """Quadro dell'orario: tutte le partite controllate a 40 minuti, prima quelle con l'avviso, poi dalla forza piu'
+    alta (spezzato se troppo lungo). entries: [forza, avviso, riga]."""
+    entries = sorted(entries, key=lambda e: (not e[1], -e[0]))
+    n = len(entries)
+    head = (f"🕒 <b>Quadro delle {first.astimezone(ROME):%H:%M}</b> · {n} partit{'a' if n == 1 else 'e'} · quote "
+            f"Pinnacle di adesso, frecce dall'apertura (▼ scesa · ▲ salita)")
+    msgs, chunk = [], head
+    for e in entries:
+        if len(chunk) + len(e[2]) > 3800:
+            msgs.append(chunk)
+            chunk = head
+        chunk += "\n\n" + e[2]
+    msgs.append(chunk)
+    return msgs
 
 
 LEGEND_SHORT = ("<i>▼ quota scesa (più probabile) · ▲ salita · AH = handicap della squadra di casa · 📊 andamento "
@@ -2528,6 +2634,8 @@ LEGEND = ("📖 <b>Come leggere i messaggi delle quote</b>\n\n"
           f"<b>forza {FORZA_MIN_AVVISO}/10 o più</b>. Per {CUPS_Q['EL']['flag']} Europa e {CUPS_Q['ECL']['flag']} "
           f"Conference League, nelle sere con più di {CUP_BUSY_MATCHES} partite, solo <b>da {FORZA_MIN_BUSY}/10</b>. "
           "Gli avvisi della stessa ora arrivano dal più forte\n"
+          + ("• insieme agli avvisi, 🕒 il <b>quadro dell'orario</b>: tutte le partite di quell'orario con le quote di "
+             "adesso e le frecce dall'apertura, anche quelle sotto la soglia\n" if QUADRO_ORARIO else "") +
           f"• circa 10 minuti prima, <b>solo dove a {RIDOSSO_MINUTES} minuti c'era un segnale forte</b> "
           f"({FORZA_FORTE}/10 o più): ⚠️ ribaltone se adesso non c'è più · 🚨 se alla stessa ora nasce un altro "
           "movimento forte\n"
@@ -2539,8 +2647,10 @@ LEGEND = ("📖 <b>Come leggere i messaggi delle quote</b>\n\n"
           "per il venerdì, giovedì per il sabato, venerdì per la domenica, sabato per il lunedì; coppe allo stesso "
           "modo): stessa finestra per tutte. A inizio turno un messaggio breve con le partite\n"
           f"• coppe: {CUPS_Q['CL']['flag']} Champions tutte le partite, {CUPS_Q['EL']['flag']} Europa e "
-          f"{CUPS_Q['ECL']['flag']} Conference solo quelle con squadre dei 5 campionati\n"
-          f"• segnali forti ({FORZA_FORTE}/10 o più): confronto con <b>Sbobet e Singbet</b>. «3 book su 3» = tutti "
+          f"{CUPS_Q['ECL']['flag']} Conference solo quelle con squadre dei 5 campionati"
+          + (f"; {SERIE_B_Q['SB']['flag']} Serie B tutte le partite" if COPPE else "") + "\n"
+          + ("• <b>ogni avviso</b>" if CONFIRM_FROM <= FORZA_MIN_AVVISO else f"• segnali forti ({FORZA_FORTE}/10 o più)")
+          + ": confronto con <b>Sbobet e Singbet</b>. «3 book su 3» = tutti "
           "d'accordo; se uno non conferma la forza scende di 1, se nessuno di 2\n\n"
           "<b>Forza del segnale (1-10)</b>\n"
           "quanto si è mosso (linea asiatica o linea gol spostata = tanto) + se ha tenuto o è tornato indietro + "
@@ -2552,7 +2662,7 @@ LEGEND = ("📖 <b>Come leggere i messaggi delle quote</b>\n\n"
           "<b>Tabella</b> (Pinnacle, apertura e adesso): 1X2 · AH = handicap asiatico della squadra di casa "
           "(▼ = casa più favorita) · Linea gol (▲ = più gol attesi) · Over 2,5 · GG; sotto, <b>gol attesi</b> e "
           "<b>corner attesi</b> di ogni squadra: quanti se ne aspetta il mercato, ricavati dalle quote (▲ = di più; "
-          "* = da un altro book). Sono i numeri da confrontare con il foglio\n"
+          "* = da un altro book)." + ("" if COPPE else " Sono i numeri da confrontare con il foglio") + "\n"
           "▼ quota scesa = più probabile · ▲ salita · doppia freccia = movimento forte\n"
           "📊 <b>Grafico</b>: la quota della favorita (o della squadra su cui si muove il mercato) dall'apertura ad "
           "adesso, una barra ogni tratto di tempo uguale; barra alta = quota alta (▇▆▄▂▁ = scesa piano piano, "
@@ -2565,8 +2675,8 @@ LEGEND = ("📖 <b>Come leggere i messaggi delle quote</b>\n\n"
           "💡 <b>Lettura</b>: cosa può voler dire il movimento, come domanda da verificare: non è una verità\n"
           f"📰 <b>Notizie</b> (in risposta all'avviso): conferenze, infortuni, formazioni e allenatore delle due "
           f"squadre delle ultime {NOTIZIE_ORE} ore, al massimo {NOTIZIE_PER_SQUADRA} per squadra; tocca il titolo "
-          "per aprire la notizia\n\n"
-          "<b>Giudizio</b> (colore per la riga «Mercato» del foglio)\n"
+          "per aprire la notizia" + (" (solo per le squadre dei 5 campionati)" if COPPE else "") + "\n\n"
+          "<b>Giudizio</b>" + ("" if COPPE else " (colore per la riga «Mercato» del foglio)") + "\n"
           "🟢🟢 calo forte: linea asiatica spostata verso la squadra → Verde forte\n"
           "🟢 calo: stessa linea, quota scesa → Verde\n"
           "🔴 si alza la quota della favorita → Rosso · 🔴🔴 di mezzo gol → Rosso forte\n"
@@ -2589,6 +2699,9 @@ class QuoteTopic:
         news = load_json(STATE_FILE, {})
         tg = news.get("telegram") or {}
         self.group_id = tg.get("group_id") if tg.get("ready") else None
+        gid = os.environ.get("TELEGRAM_GROUP_ID", "").strip() if COPPE else ""
+        if re.fullmatch(r"-?\d+", gid):         # profilo coppe: il gruppo dal secret (non dipende dal bot notizie)
+            self.group_id = int(gid)
         self.recreated = False
         self.last_id = None             # id dell'ultimo messaggio mandato (per rispondergli con le notizie)
 
@@ -2665,7 +2778,7 @@ def due_apertura(st: dict, cal: list, now: datetime) -> str | None:
     key = f"A|{loc:%Y-%m-%d}T{APERTURA_HOUR:02d}"
     if key in st["done"]:
         return None
-    if loc.weekday() == CUP_DISCOVERY_DAY or apertura_matches(cal, now):
+    if loc.weekday() in CUP_DISCOVERY_DAYS or apertura_matches(cal, now):
         return key              # partite fra due giorni (o domenica: le coppe si leggono comunque)
     return None
 
@@ -2764,7 +2877,8 @@ def apertura_text(st: dict, soon: list, when: datetime, n: int, kind: str) -> st
         days = sorted({m["ko"].astimezone(ROME).date() for m in soon})
         pairs = " · ".join(f"{wd[d.weekday()]} ← {wd[(d - timedelta(days=APERTURA_DAYS_BEFORE)).weekday()]}"
                            for d in days)
-        head = (f"📸 <b>Apertura {'delle coppe' if kind == 'coppe' else 'del turno'}</b> ({when_text(when)}): "
+        what = ("delle coppe e della Serie B" if COPPE else "delle coppe") if kind == "coppe" else "del turno"
+        head = (f"📸 <b>Apertura {what}</b> ({when_text(when)}): "
                 f"{len(soon)} partite fino a {when_text(last).split()[0]}, ognuna dalle quote delle {APERTURA_HOUR} "
                 f"di due giorni prima ({pairs})")
     cups, left = "", cup_matches(st, when, last)[1]
@@ -2781,10 +2895,11 @@ def apertura_text(st: dict, soon: list, when: datetime, n: int, kind: str) -> st
     if lost:                                # partite del calendario che OddsPapi non ha (ancora) nell'elenco
         warn = ("\n⚠️ Non ancora nell'elenco di OddsPapi: " + ", ".join(match_title(team_names(m)) for m in lost[:6])
                 + (f" e altre {len(lost) - 6}" if len(lost) > 6 else "") + f" (riprovo {RIDOSSO_MINUTES} minuti prima)")
+    books = ("ogni avviso confrontato con Sbobet e Singbet, i forti anche a 10 minuti, e il quadro dell'orario"
+             if COPPE else "i segnali forti confrontati con Sbobet e Singbet, poi a 10 minuti")
     return (f"{head} · {detail}{warn}\n"
-            f"<i>{cups}{riep}Avvisi {RIDOSSO_MINUTES} minuti prima da forza {FORZA_MIN_AVVISO}/10{strict}; i "
-            f"segnali forti confrontati con Sbobet e Singbet, poi a 10 minuti · chiamate usate {st['calls']}/"
-            f"{st.get('limit', MONTH_LIMIT)}</i>")
+            f"<i>{cups}{riep}Avvisi {RIDOSSO_MINUTES} minuti prima da forza {FORZA_MIN_AVVISO}/10{strict}; "
+            f"{books} · chiamate usate {st['calls']}/{st.get('limit', MONTH_LIMIT)}</i>")
 
 
 def do_apertura(st: dict, topic: QuoteTopic, key: str | None, cal: list, force: bool = False) -> list:
@@ -2806,7 +2921,7 @@ def do_apertura(st: dict, topic: QuoteTopic, key: str | None, cal: list, force: 
     loc = now.astimezone(ROME)
     today = apertura_matches(cal, now)
     fams = [f for f, codes in (("campionati", LEAGUES_Q), ("coppe", CUPS_Q))
-            if any(m["code"] in codes for m in today) or (f == "coppe" and loc.weekday() == CUP_DISCOVERY_DAY)]
+            if any(m["code"] in codes for m in today) or (f == "coppe" and loc.weekday() in CUP_DISCOVERY_DAYS)]
     n = 0
     for fam in fams:
         last = parse_time((st.get("reads") or {}).get(fam))
@@ -3127,7 +3242,7 @@ def do_ridosso(st: dict, topic: QuoteTopic, key: str | None, group: dict | None,
             mark(m)
             continue
         rows.append([m, names, fid, R, analyze(R, m["ko"])])
-    strong = [r for r in rows if r[3].get("live") and r[4]["forza"] >= FORZA_FORTE]
+    strong = [r for r in rows if r[3].get("live") and r[4]["forza"] >= CONFIRM_FROM]
     if len(strong) > len(OTHER_BOOKS) and optional_ok(st, len(OTHER_BOOKS)):
         fams = {("coppe" if r[0]["code"] in CUPS_Q else "campionati") for r in strong}
         which = next(iter(fams)) if len(fams) == 1 else "tutto"
@@ -3146,11 +3261,15 @@ def do_ridosso(st: dict, topic: QuoteTopic, key: str | None, group: dict | None,
     else:
         for r in strong:                        # pochi: una chiamata per partita (/odds)
             r[4] = confirm_books(st, r[2], r[4], r[3], force=force)
+    qkey = key or "mano"
+    quadro = st.setdefault("quadro", {}).setdefault(qkey, {}) if QUADRO_ORARIO else None
     for m, names, fid, R, an in rows:
         floor = alert_floor(m, cal)
         alert = an["forza"] >= floor
         if alert:
             an = add_sot(st, fid, m, R, an, force=force)
+        if quadro is not None:                  # riga del quadro dell'orario (tenuta nello stato fino alla fine)
+            quadro[match_key(m)] = [an["forza"], alert, quadro_row(m, names, an, alert)]
         save_stats(st, stats_entry(m, an, "a mano" if manual else "ridosso", alert, floor))
         pace_save(st, m, names, an, R, alert, "a mano" if manual else PACE_RIDOSSO)
         sig_txt = ", ".join(f"{s['fam']} {s['forza']}" for s in an["sigs"]) or "nessun movimento"
@@ -3171,6 +3290,12 @@ def do_ridosso(st: dict, topic: QuoteTopic, key: str | None, group: dict | None,
         else:
             print(f"  {names['home']} - {names['away']}: SEGNALE, ma Telegram non ha accettato: riprovo")
             unfinished = True
+    if quadro is not None and (manual or (key and not unfinished)):
+        entries = list(st["quadro"].pop(qkey, {}).values())
+        if entries and not all(e[1] for e in entries):      # tutte con l'avviso: il quadro non aggiunge niente
+            for text in quadro_messages(group["first"], entries):
+                topic.send(text)
+                time.sleep(SEND_DELAY_GROUP_SECONDS)
     parts = [(notfound, "non sono nell'elenco di OddsPapi"), (noodds, "Pinnacle adesso non le quota"),
              (nobase, "lette per la prima volta adesso: manca la quota di partenza")]
     if any(p[0] for p in parts) and not manual:
@@ -4111,6 +4236,8 @@ def cleanup(st: dict) -> None:
     st["news_at"] = {k: v for k, v in (st.get("news_at") or {}).items() if k.split("|")[1:2] >= [keep]}
     st["live_tries"] = {k: v for k, v in (st.get("live_tries") or {}).items() if k.split("|", 1)[-1] >= keep}
     st["ap_msg"] = [k for k in (st.get("ap_msg") or []) if k.split("|")[1:2] >= [keep]]
+    if "quadro" in st:
+        st["quadro"] = {k: v for k, v in (st.get("quadro") or {}).items() if k.split("|", 1)[-1] >= keep}
 
 
 _START = time.monotonic()

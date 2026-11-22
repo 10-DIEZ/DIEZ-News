@@ -1,0 +1,133 @@
+# Bot quote COPPE E SERIE B (il bot di tuo fratello).
+#
+# Questo file va nel repository di tuo fratello, in .github/workflows/quote-coppe.yml
+# (su GitHub: Add file -> Create new file, nome ".github/workflows/quote-coppe.yml", incolla tutto, Commit).
+# Qui in DIEZ-News e' solo il modello: non gira.
+#
+# Cosa fa a ogni giro: prende il codice da 10-DIEZ/DIEZ-News, fa girare il bot quote con il profilo "coppe"
+# (Champions, Europa, Conference e Serie B) con la chiave OddsPapi di tuo fratello, e salva lo stato nel suo
+# repository (cartella state/). Una volta al giorno salva anche una copia di sicurezza di DIEZ-News
+# (codice e stato del tuo bot, cartella copia-diez/): se il tuo GitHub sparisce, si riparte da li'.
+#
+# Segreti nel suo repository (Settings -> Secrets and variables -> Actions):
+#   ODDSPAPI_API_KEY    la sua chiave OddsPapi
+#   TELEGRAM_BOT_TOKEN  il token del bot nuovo
+#   TELEGRAM_GROUP_ID   il numero del gruppo «DIEZ News»
+#   TELEGRAM_CHAT_ID    il tuo id Telegram (messaggi in privato se il gruppo non risponde)
+#
+# Il giro ogni 5 minuti lo fa partire cron-job.org: POST a
+#   https://api.github.com/repos/<utente>/<repository>/actions/workflows/quote-coppe.yml/dispatches
+# con header "Authorization: Bearer <token>" e "Accept: application/vnd.github+json", corpo {"ref":"main"}.
+name: Bot quote coppe e Serie B
+
+on:
+  schedule:
+    - cron: "3-59/5 * * * *"    # solo riserva: GitHub lo esegue in modo irregolare (il giro vero e' cron-job.org)
+  workflow_dispatch:
+    inputs:
+      modo:
+        description: "auto = giro normale · test = prova completa · ora = controllo subito · apertura = elenco partite · rivedi = partite già giocate · esempio = prova grafica · notizie = notizie sotto l'avviso"
+        required: false
+        default: auto
+        type: choice
+        options: [auto, test, ora, apertura, rivedi, esempio, notizie]
+      partita:
+        description: "squadra (es. Palermo) o competizione (CL, EL, ECL, SB, coppe)"
+        required: false
+        default: ""
+        type: string
+      muto:
+        description: "prova muta: i messaggi vanno solo nel registro di GitHub, non nel gruppo"
+        required: false
+        default: false
+        type: boolean
+
+permissions:
+  contents: write
+
+concurrency:
+  group: quote-coppe
+  cancel-in-progress: false
+
+jobs:
+  run:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    steps:
+      - name: Repository di tuo fratello (stato)
+        uses: actions/checkout@v5
+        with:
+          ref: main
+          path: mio
+
+      - name: Codice da DIEZ-News
+        uses: actions/checkout@v5
+        with:
+          repository: 10-DIEZ/DIEZ-News
+          ref: main
+          path: diez
+
+      - name: Setup Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+
+      - name: Installa dipendenze
+        run: pip install -r diez/telegram-calcio-bot/requirements.txt
+
+      - name: Bot quote (profilo coppe)
+        working-directory: diez/telegram-calcio-bot
+        timeout-minutes: 8
+        env:
+          QUOTE_PROFILE: coppe
+          QUOTE_STATE_DIR: ${{ github.workspace }}/mio/state
+          ODDSPAPI_API_KEY: ${{ secrets.ODDSPAPI_API_KEY }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          TELEGRAM_GROUP_ID: ${{ secrets.TELEGRAM_GROUP_ID }}
+          MODO: ${{ inputs.modo || 'auto' }}
+          PARTITA: ${{ inputs.partita }}
+          MUTO: ${{ inputs.muto }}
+        run: |
+          ARGS=""
+          if [ "$MUTO" = "true" ]; then ARGS="--muto"; fi
+          python monitor_quote.py --mode "$MODO" --partita "$PARTITA" $ARGS
+
+      - name: Copia di sicurezza di DIEZ-News (una volta al giorno)
+        if: always()
+        run: |
+          DAY=$(date -u +%Y-%m-%d)
+          if [ "$(cat mio/copia-diez/GIORNO 2>/dev/null)" != "$DAY" ]; then
+            rm -rf mio/copia-diez && mkdir -p mio/copia-diez
+            # tutto il repository tranne il registro delle notizie (grande e non serve per ripartire)
+            (cd diez && git ls-files -z | grep -zv 'telegram-calcio-bot/state/state.json$' \
+               | xargs -0 cp --parents -t ../mio/copia-diez)
+            echo "$DAY" > mio/copia-diez/GIORNO
+            echo "Copia di DIEZ-News del $DAY fatta"
+          fi
+
+      - name: Salva lo stato
+        if: always()
+        working-directory: mio
+        run: |
+          git config user.name "quote-coppe-bot"
+          git config user.email "quote-coppe-bot@users.noreply.github.com"
+          mkdir -p state
+          git add -A state
+          if [ -d copia-diez ]; then git add -A copia-diez; fi
+          if git diff --staged --quiet; then
+            echo "Stato invariato, niente da salvare."
+            exit 0
+          fi
+          git commit --quiet -m "Aggiorna stato bot coppe"
+          for i in 1 2 3 4 5; do
+            if git push --quiet origin HEAD:main; then
+              echo "Stato salvato."
+              exit 0
+            fi
+            echo "Salvataggio non riuscito (tentativo $i di 5), riprovo..."
+            git pull --rebase --quiet origin main || true
+            sleep $((i * 4))
+          done
+          echo "::error::Stato non salvato dopo 5 tentativi"
+          exit 1

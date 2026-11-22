@@ -36,6 +36,12 @@ on:
         required: false
         default: false
         type: boolean
+      profilo:
+        description: "campionati = il tuo bot · coppe = prova del bot di tuo fratello (sempre muta, stato a parte)"
+        required: false
+        default: campionati
+        type: choice
+        options: [campionati, coppe]
 
 permissions:
   contents: write
@@ -73,9 +79,15 @@ jobs:
           MODO: ${{ inputs.modo }}
           PARTITA: ${{ inputs.partita }}
           MUTO: ${{ inputs.muto }}
+          PROFILO: ${{ inputs.profilo }}
         run: |
           ARGS=""
           if [ "$MUTO" = "true" ]; then ARGS="--muto"; fi
+          if [ "$PROFILO" = "coppe" ]; then
+            # prova del profilo coppe con la tua chiave: sempre muta, stato in una cartella temporanea (non si salva)
+            export QUOTE_PROFILE=coppe QUOTE_STATE_DIR="$RUNNER_TEMP/coppe-state"
+            ARGS="--muto"
+          fi
           python monitor_quote.py --mode "$MODO" --partita "$PARTITA" $ARGS
 
       - name: Salva lo stato delle quote
