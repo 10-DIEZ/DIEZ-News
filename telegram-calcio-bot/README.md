@@ -128,7 +128,7 @@ Conference League) con OddsPapi (piano gratuito, 250 chiamate al mese, secret
   uscite) legge le quote di adesso di Pinnacle di tutte le partite di
   quell'orario con **una chiamata** (i 5 campionati insieme, o le 3 coppe
   insieme) e confronta adesso con l'apertura.
-  Arriva un messaggio **solo** se un movimento ha forza 4/10 o più; per
+  Arriva un **avviso** solo se un movimento ha forza 4/10 o più; per
   🟠 Europa e 🟢 Conference League, nelle sere in cui insieme hanno più di 8
   partite, **solo da 6/10** (`CUP_BUSY_MATCHES`, `FORZA_MIN_BUSY`). Gli avvisi
   della stessa ora partono **dal più forte**. Il
@@ -150,6 +150,16 @@ Conference League) con OddsPapi (piano gratuito, 250 chiamate al mese, secret
   mossi, senza grafico); la **💡 lettura**, il colore da mettere
   nella riga «Mercato» della Direzione generale e il pronostico con la quota
   giusta.
+- **✅ Niente da segnalare (dal 23/11/2026)**: dopo gli avvisi di ogni orario,
+  un messaggio **senza suono** con le partite di quell'orario che non hanno
+  avuto l'avviso, una riga ciascuna dalla più mossa: «quote quasi ferme»
+  oppure la forza e il mercato che si è mosso (es. «forza 2/10 sulla linea
+  gol»); l'ora tra parentesi se diversa da quella del titolo. Se nello stesso
+  orario c'erano avvisi o partite non controllate il titolo è «Le altre delle
+  …». Usa la stessa lettura dei 40 minuti: **nessuna chiamata in più**. Se le
+  partite sono tutte con l'avviso non arriva. Si spegne in cima a
+  `monitor_quote.py` (`NIENTE_DA_SEGNALARE`). Nel controllo a mano diventa
+  «🔎 Controllo a mano · …: niente da segnalare».
 - **📰 Notizie sotto l'avviso**: subito dopo ogni avviso (40 minuti prima e
   ultimi minuti), in risposta, arriva un messaggio con le notizie delle due
   squadre delle ultime 36 ore: conferenze stampa, infortuni, formazioni e
@@ -190,8 +200,8 @@ Conference League) con OddsPapi (piano gratuito, 250 chiamate al mese, secret
 - **Non controllate**: se una partita non è nell'elenco di OddsPapi, se
   Pinnacle adesso non la quota, se manca una quota di partenza (letta per la
   prima volta a 40 minuti) o se le quote non si riescono a leggere entro 12
-  minuti dal fischio (al massimo 3 tentativi), il bot lo scrive. Così il
-  silenzio vuol dire davvero «nessun segnale».
+  minuti dal fischio (al massimo 3 tentativi), il bot lo scrive (prima del ✅
+  delle altre). Così ogni partita controllata o no ha sempre un messaggio.
 - **File per i Pace Index**: `state/mercato.csv`, una riga per partita
   controllata (separatore `;`, numeri con il punto): competizione, data, ora,
   squadre, quando (40 minuti, 10 minuti, a mano), forza, avviso SI/NO, colore

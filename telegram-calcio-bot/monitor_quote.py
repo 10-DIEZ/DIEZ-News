@@ -257,6 +257,8 @@ FORZA_FORTE = 7                 # da 7/10: segnale forte
 CONFIRM_FROM = FORZA_MIN_AVVISO if COPPE else FORZA_FORTE   # confronto con Sbobet e Singbet da qui: sui forti,
                                 # nel profilo coppe su ogni avviso
 QUADRO_ORARIO = COPPE           # a 40 minuti anche il quadro di tutte le partite dell'orario (sotto la soglia comprese)
+NIENTE_DA_SEGNALARE = not COPPE # campionati (dal 23/11/2026): a 40 minuti un messaggio ✅ con le partite senza avviso
+                                # e la loro forza, cosi' il silenzio non lascia dubbi (stessa lettura, nessuna chiamata)
 CUP_BUSY_CODES = ("EL", "ECL")  # Europa e Conference League: nei giorni in cui insieme hanno piu' di...
 CUP_BUSY_MATCHES = 8            # ...8 partite (fase campionato, spareggi, ottavi)...
 FORZA_MIN_BUSY = 6              # ...l'avviso parte solo da 6/10 (forti e medio-forti)
@@ -303,7 +305,8 @@ OA_RESERVE = 10                 # e altri 10 per le prove a mano
 TOPIC_NAME = "🏆 Quote coppe e B" if COPPE else "📈 Quote"
 TOPIC_COLOR = 16766590 if COPPE else 9367192    # giallo / verde
 KEEP_DAYS = 8                   # partite finite tenute nello stato una settimana (per "rivedi")
-LEGEND_VERSION = 8 if OA_ON else 7  # se cambia, la legenda viene rimandata una volta (8 = riga 🔁 altri book;
+LEGEND_VERSION = 9              # se cambia, la legenda viene rimandata una volta (9 = ✅ niente da segnalare;
+                                # 8 = riga 🔁 altri book;
                                 # 4 = tabella unica e grafico;
                                 # 5 = gol e corner attesi, ultimi minuti, soglia Europa/Conference, niente riepilogo)
 APERTURA_TRIES = 3              # elenco partite non letto all'apertura: si riprova al giro dopo, al massimo 3 volte
@@ -2623,6 +2626,59 @@ def quadro_row(m: dict, names: dict, an: dict, alert: bool) -> str:
     return f"{title} · {tag}" + (f"\n{' · '.join(bits)}" if bits else "")
 
 
+CALM_FAM = {"side": "sul segno", "gol": "sulla linea gol", "gg": "sul GG"}
+
+
+def calm_row(m: dict, names: dict, an: dict, floor: int, first: datetime) -> str:
+    """Una partita senza avviso nel messaggio ✅ niente da segnalare (profilo campionati): una riga sola, con la
+    forza e il mercato che si e' mosso di piu' (l'orario solo se diverso da quello del messaggio)."""
+    lg = COMPS_Q.get(m["code"], {"flag": ""})
+    ora = f" ({m['ko'].astimezone(ROME):%H:%M})" if abs((m["ko"] - first).total_seconds()) >= 60 else ""
+    title = f"{lg['flag']} {match_title(names)}{ora}"
+    if not an.get("b"):
+        return f"{title} · quote non trovate"
+    if not an["sigs"]:
+        return f"{title} · quote quasi ferme"
+    where = CALM_FAM.get(max(an["sigs"], key=lambda s: s["forza"])["fam"])
+    busy = f", sotto la soglia di stasera ({floor}/10)" if an["forza"] >= FORZA_MIN_AVVISO else ""
+    return f"{title} · forza {an['forza']}/10" + (f" {where}" if where else "") + busy
+
+
+def calm_messages(first: datetime, entries: list, others: bool, manual: bool = False) -> list:
+    """✅ niente da segnalare: le partite dell'orario senza avviso, dalla forza piu' alta (spezzato se troppo lungo).
+    others = nello stesso orario ci sono anche partite con l'avviso o non controllate. entries: [forza, riga]."""
+    if manual:
+        head = (f"🔎 <b>Controllo a mano · {'le altre di ' if others else ''}{when_text(first)}: "
+                "niente da segnalare</b>")
+    else:
+        head = f"✅ <b>{'Le altre delle' if others else 'Ore'} {first.astimezone(ROME):%H:%M} · niente da segnalare</b>"
+    msgs, chunk = [], head
+    for e in sorted(entries, key=lambda e: -e[0]):
+        if len(chunk) + len(e[1]) > 3800:
+            msgs.append(chunk)
+            chunk = head
+        chunk += "\n" + e[1]
+    msgs.append(chunk)
+    return msgs
+
+
+def flush_quadro(st: dict, topic: "QuoteTopic", qkey: str, group: dict, manual: bool = False) -> list:
+    """Fine dell'orario: le righe tenute nello stato diventano il quadro dell'orario (coppe) o il ✅ niente da
+    segnalare (campionati, senza suono). Ritorna le partite senza avviso."""
+    entries = list((st.get("quadro") or {}).pop(qkey, {}).values())
+    calm = [[e[0], e[2]] for e in entries if not e[1]]
+    if not calm:                                # nessuna o tutte con l'avviso: non aggiunge niente
+        return calm
+    if QUADRO_ORARIO:
+        texts = quadro_messages(group["first"], entries)
+    else:
+        texts = calm_messages(group["first"], calm, len(calm) < len(group["matches"]), manual)
+    for text in texts:
+        topic.send(text, silent=not QUADRO_ORARIO)
+        time.sleep(SEND_DELAY_GROUP_SECONDS)
+    return calm
+
+
 def quadro_messages(first: datetime, entries: list) -> list:
     """Quadro dell'orario: tutte le partite controllate a 40 minuti, prima quelle con l'avviso, poi dalla forza piu'
     alta (spezzato se troppo lungo). entries: [forza, avviso, riga]."""
@@ -2655,12 +2711,14 @@ LEGEND = ("📖 <b>Come leggere i messaggi delle quote</b>\n\n"
           f"Conference League, nelle sere con più di {CUP_BUSY_MATCHES} partite, solo <b>da {FORZA_MIN_BUSY}/10</b>. "
           "Gli avvisi della stessa ora arrivano dal più forte\n"
           + ("• insieme agli avvisi, 🕒 il <b>quadro dell'orario</b>: tutte le partite di quell'orario con le quote di "
-             "adesso e le frecce dall'apertura, anche quelle sotto la soglia\n" if QUADRO_ORARIO else "") +
+             "adesso e le frecce dall'apertura, anche quelle sotto la soglia\n" if QUADRO_ORARIO else "")
+          + ("• le partite di quell'orario senza avviso arrivano insieme in un messaggio ✅ <b>niente da segnalare</b> "
+             "(senza suono), con la forza di ognuna: così sai che sono state controllate\n"
+             if NIENTE_DA_SEGNALARE else "") +
           f"• circa 10 minuti prima, <b>solo dove a {RIDOSSO_MINUTES} minuti c'era un segnale forte</b> "
           f"({FORZA_FORTE}/10 o più): ⚠️ ribaltone se adesso non c'è più · 🚨 se alla stessa ora nasce un altro "
           "movimento forte\n"
-          "• ⚠️ «Non controllate»: se non riesco a leggere le quote di una partita te lo scrivo. Se non scrivo "
-          "niente, non c'era nessun segnale\n"
+          "• ⚠️ «Non controllate»: se non riesco a leggere le quote di una partita te lo scrivo\n"
           "• le quote sono di <b>Pinnacle</b>, lette all'apertura e a ogni orario d'inizio (OddsPapi non dà più "
           "gratis lo storico delle partite da giocare): il grafico ha un punto per ogni lettura\n"
           f"• <b>apertura</b>: per ogni partita le quote delle {APERTURA_HOUR} di <b>due giorni prima</b> (mercoledì "
@@ -2679,7 +2737,8 @@ LEGEND = ("📖 <b>Come leggere i messaggi delle quote</b>\n\n"
           "quanto si è mosso (linea asiatica o linea gol spostata = tanto) + se ha tenuto o è tornato indietro + "
           "se un altro mercato dice la stessa cosa\n"
           f"{FORZA_FORTE}-10 forte · {FORZA_MIN_AVVISO}-{FORZA_FORTE - 1} medio, da farsi domande · sotto "
-          f"{FORZA_MIN_AVVISO} rumore: a {RIDOSSO_MINUTES} minuti non arriva\n\n"
+          f"{FORZA_MIN_AVVISO} rumore: a {RIDOSSO_MINUTES} minuti nessun avviso"
+          + (" (solo una riga nel ✅)" if NIENTE_DA_SEGNALARE else "") + "\n\n"
           f"<b>Avviso {RIDOSSO_MINUTES} minuti prima</b>\n"
           "In alto il segnale principale, con la forza\n"
           "<b>Tabella</b> (Pinnacle, apertura e adesso): 1X2 · AH = handicap asiatico della squadra di casa "
@@ -2751,15 +2810,17 @@ class QuoteTopic:
         tid = self._create()
         return (self.group_id, tid) if tid else (None, None)
 
-    def send(self, text: str, reply_to: int | None = None) -> bool:
+    def send(self, text: str, reply_to: int | None = None, silent: bool = False) -> bool:
+        """silent=True: arriva senza suono (il ✅ niente da segnalare)."""
         self.last_id = None
         if MUTO:                        # prova muta: il messaggio va solo nel registro
-            print("[MUTO] messaggio:\n" + re.sub(r"</?(b|i|pre)>", "", text) + "\n[/MUTO]")
+            print(f"[MUTO] messaggio{' (senza suono)' if silent else ''}:\n"
+                  + re.sub(r"</?(b|i|pre)>", "", text) + "\n[/MUTO]")
             return True
         for _ in range(2):
             chat_id, thread_id = self.target()
             res = send_telegram_message(text, disable_preview=True, chat_id=chat_id, thread_id=thread_id,
-                                        reply_to=reply_to)
+                                        reply_to=reply_to, silent=silent)
             if res:
                 self.last_id = res.result.get("message_id") if isinstance(res.result, dict) else None
                 return True
@@ -3548,14 +3609,15 @@ def do_ridosso(st: dict, topic: QuoteTopic, key: str | None, group: dict | None,
         for r in strong:                        # pochi: una chiamata per partita (/odds)
             r[4] = confirm_books(st, r[2], r[4], r[3], force=force)
     qkey = key or "mano"
-    quadro = st.setdefault("quadro", {}).setdefault(qkey, {}) if QUADRO_ORARIO else None
+    quadro = (st.setdefault("quadro", {}).setdefault(qkey, {}) if QUADRO_ORARIO or NIENTE_DA_SEGNALARE else None)
     for m, names, fid, R, an in rows:
         floor = alert_floor(m, cal)
         alert = an["forza"] >= floor
         if alert:
             an = add_sot(st, fid, m, R, an, force=force)
-        if quadro is not None:                  # riga del quadro dell'orario (tenuta nello stato fino alla fine)
-            quadro[match_key(m)] = [an["forza"], alert, quadro_row(m, names, an, alert)]
+        if quadro is not None:                  # riga del quadro / del niente da segnalare (nello stato fino alla fine)
+            quadro[match_key(m)] = [an["forza"], alert, quadro_row(m, names, an, alert) if QUADRO_ORARIO
+                                    else calm_row(m, names, an, floor, group["first"])]
         save_stats(st, stats_entry(m, an, "a mano" if manual else "ridosso", alert, floor))
         pace_save(st, m, names, an, R, alert, "a mano" if manual else PACE_RIDOSSO)
         sig_txt = ", ".join(f"{s['fam']} {s['forza']}" for s in an["sigs"]) or "nessun movimento"
@@ -3578,19 +3640,16 @@ def do_ridosso(st: dict, topic: QuoteTopic, key: str | None, group: dict | None,
         else:
             print(f"  {names['home']} - {names['away']}: SEGNALE, ma Telegram non ha accettato: riprovo")
             unfinished = True
-    if quadro is not None and (manual or (key and not unfinished)):
-        entries = list(st["quadro"].pop(qkey, {}).values())
-        if entries and not all(e[1] for e in entries):      # tutte con l'avviso: il quadro non aggiunge niente
-            for text in quadro_messages(group["first"], entries):
-                topic.send(text)
-                time.sleep(SEND_DELAY_GROUP_SECONDS)
     parts = [(notfound, "non sono nell'elenco di OddsPapi"), (noodds, "Pinnacle adesso non le quota"),
              (nobase, "lette per la prima volta adesso: manca la quota di partenza")]
     if any(p[0] for p in parts) and not manual:
         topic.send(missed_text(group["first"], [], "", parts))
+    calm = []                                   # per ultimo il quadro (coppe) o il ✅ niente da segnalare
+    if quadro is not None and (manual or (key and not unfinished)):
+        calm = flush_quadro(st, topic, qkey, group, manual)
     if key and not unfinished:
         st["done"].append(key)
-    if manual and sent == 0:
+    if manual and sent == 0 and not (calm and NIENTE_DA_SEGNALARE):    # (il ✅ a mano dice gia' tutto)
         topic.send(f"🔎 Controllo a mano delle partite di {when_text(group['first'])}: nessun movimento da "
                    f"{FORZA_MIN_AVVISO}/10 in su dall'apertura ({checked} partite lette su {len(todo)}).")
     st["log"].append(f"{now_utc().isoformat(timespec='minutes')} {'a mano' if manual else 'ridosso'} "
@@ -3613,6 +3672,8 @@ def do_missed(st: dict, topic: QuoteTopic, key: str, group: dict) -> None:
     if left and not quiet and not topic.send(missed_text(group["first"], [team_names(m) for m in left],
                                                          "quote non lette in tempo")):
         return                              # Telegram non ha accettato: si riprova al giro dopo
+    if QUADRO_ORARIO or NIENTE_DA_SEGNALARE:   # le partite lette in tempo: quadro / ✅ niente da segnalare
+        flush_quadro(st, topic, key, group)
     st["done"] += [match_key(m) for m in left] + [key]
     st["log"].append(f"{now_utc().isoformat(timespec='minutes')} non controllate: {len(left)} partite")
 
