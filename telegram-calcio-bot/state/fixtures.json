@@ -1,33 +1,6 @@
 {
   "fixtures": [
     {
-      "competition": "BL1",
-      "league": "Bundesliga",
-      "flag": "🇩🇪",
-      "home": "FC Bayern München",
-      "away": "1. FC Köln",
-      "kickoff": "2026-11-20T19:30:00Z",
-      "status": "FINISHED"
-    },
-    {
-      "competition": "FL1",
-      "league": "Ligue 1",
-      "flag": "🇫🇷",
-      "home": "ES Troyes AC",
-      "away": "Le Havre AC",
-      "kickoff": "2026-11-20T19:45:00Z",
-      "status": "FINISHED"
-    },
-    {
-      "competition": "PD",
-      "league": "La Liga",
-      "flag": "🇪🇸",
-      "home": "Athletic Club",
-      "away": "RCD Espanyol de Barcelona",
-      "kickoff": "2026-11-20T20:00:00Z",
-      "status": "FINISHED"
-    },
-    {
       "competition": "PL",
       "league": "Premier League",
       "flag": "🏴󠁧󠁢󠁥󠁮󠁧󠁿",
@@ -412,7 +385,7 @@
       "home": "AC Monza",
       "away": "ACF Fiorentina",
       "kickoff": "2026-11-23T19:45:00Z",
-      "status": "TIMED"
+      "status": "FINISHED"
     },
     {
       "competition": "PL",
@@ -421,7 +394,7 @@
       "home": "Brentford FC",
       "away": "Everton FC",
       "kickoff": "2026-11-23T20:00:00Z",
-      "status": "TIMED"
+      "status": "FINISHED"
     },
     {
       "competition": "PD",
@@ -430,7 +403,7 @@
       "home": "Levante UD",
       "away": "Elche CF",
       "kickoff": "2026-11-23T20:00:00Z",
-      "status": "TIMED"
+      "status": "FINISHED"
     },
     {
       "competition": "CL",
@@ -997,6 +970,33 @@
       "home": "Real Sociedad de Fútbol",
       "away": "Sevilla FC",
       "kickoff": "2026-11-29T20:00:00Z",
+      "status": "TIMED"
+    },
+    {
+      "competition": "SA",
+      "league": "Serie A",
+      "flag": "🇮🇹",
+      "home": "US Lecce",
+      "away": "Atalanta BC",
+      "kickoff": "2026-11-30T17:30:00Z",
+      "status": "TIMED"
+    },
+    {
+      "competition": "SA",
+      "league": "Serie A",
+      "flag": "🇮🇹",
+      "home": "Cagliari Calcio",
+      "away": "AC Milan",
+      "kickoff": "2026-11-30T19:45:00Z",
+      "status": "TIMED"
+    },
+    {
+      "competition": "PD",
+      "league": "La Liga",
+      "flag": "🇪🇸",
+      "home": "RCD Espanyol de Barcelona",
+      "away": "Getafe CF",
+      "kickoff": "2026-11-30T20:00:00Z",
       "status": "TIMED"
     }
   ],
