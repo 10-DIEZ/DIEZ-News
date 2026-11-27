@@ -1,33 +1,6 @@
 {
   "fixtures": [
     {
-      "competition": "SA",
-      "league": "Serie A",
-      "flag": "🇮🇹",
-      "home": "AC Monza",
-      "away": "ACF Fiorentina",
-      "kickoff": "2026-11-23T19:45:00Z",
-      "status": "FINISHED"
-    },
-    {
-      "competition": "PL",
-      "league": "Premier League",
-      "flag": "🏴󠁧󠁢󠁥󠁮󠁧󠁿",
-      "home": "Brentford FC",
-      "away": "Everton FC",
-      "kickoff": "2026-11-23T20:00:00Z",
-      "status": "FINISHED"
-    },
-    {
-      "competition": "PD",
-      "league": "La Liga",
-      "flag": "🇪🇸",
-      "home": "Levante UD",
-      "away": "Elche CF",
-      "kickoff": "2026-11-23T20:00:00Z",
-      "status": "FINISHED"
-    },
-    {
       "competition": "CL",
       "league": "CL",
       "flag": "",
@@ -718,6 +691,15 @@
       "home": "FC Barcelona",
       "away": "Club Atlético de Madrid",
       "kickoff": "2026-12-02T20:30:00Z",
+      "status": "TIMED"
+    },
+    {
+      "competition": "PL",
+      "league": "Premier League",
+      "flag": "🏴󠁧󠁢󠁥󠁮󠁧󠁿",
+      "home": "Tottenham Hotspur FC",
+      "away": "Fulham FC",
+      "kickoff": "2026-12-03T20:00:00Z",
       "status": "TIMED"
     }
   ],
