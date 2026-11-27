@@ -150,20 +150,22 @@ Conference League) con OddsPapi (piano gratuito, 250 chiamate al mese, secret
   attesi che si sono mossi, senza grafico); la **💡 lettura**, il colore da
   mettere nella riga «Mercato» della Direzione generale e il pronostico con la
   quota giusta.
-- **🔎 Perché (dal 27/11/2026)**: subito sotto le barre del grafico, una o due
-  frasi semplici con quando si è mossa la quota e il motivo più probabile
-  (es. «Scesa di colpo sabato mattina, subito dopo la notizia dello stop di
-  Mendy: il mercato crede di più nel Cagliari»). Le scrive Groq (gratis, lo
-  stesso `GROQ_API_KEY` del bot notizie) dai movimenti di Pinnacle, da come si
-  è mossa nel tempo e dalle notizie delle due squadre delle 48 ore prima
-  (conferenze, infortuni, formazioni, allenatore: registro del bot notizie,
-  nessuna chiamata OddsPapi). Regole date all'IA: solo le notizie
-  dell'elenco, niente nomi inventati; se nessuna notizia lo spiega lo dice e
-  dà l'ipotesi più probabile (formazione, turnover, soldi del mercato). È
-  un'ipotesi, non una certezza. Con il 🔎 la 💡 lettura non ripete le domande
-  sul perché. Se Groq non risponde (o manca la chiave) al suo posto resta la
-  riga ⏱. Al massimo 10 chiamate per giro. Si regola in cima a
-  `monitor_quote.py` (`PERCHE_ON`, `PERCHE_ORE`, `PERCHE_PER_SQUADRA`).
+- **🔎 Perché (dal 27/11/2026)**: subito sotto le barre del grafico, in una
+  riga: come e quando si è mossa la quota (la scrive il bot dai dati del
+  grafico, es. «Salita soprattutto oggi pomeriggio») e il possibile motivo:
+  «Possibile motivo: Miranda non ha recuperato (notizia di ieri pomeriggio)».
+  La notizia la sceglie Groq (gratis, lo stesso `GROQ_API_KEY` del bot
+  notizie) tra quelle delle due squadre delle 48 ore prima (conferenze,
+  infortuni, formazioni, allenatore: registro del bot notizie, nessuna
+  chiamata OddsPapi), solo se va nello stesso verso del movimento, e la
+  riassume in poche parole; tra parentesi quando è uscita, così si vede se è
+  arrivata prima del movimento. Se nessuna lo spiega: «Nessuna notizia lo
+  spiega: probabile flusso di giocate» (o «guarda le formazioni» se si è
+  mossa dopo le formazioni). È un'ipotesi, non una certezza. Con il 🔎 la 💡
+  lettura non ripete le domande sul perché. Se Groq non risponde (o manca la
+  chiave) al suo posto resta la riga ⏱. Al massimo 10 chiamate per giro. Si
+  regola in cima a `monitor_quote.py` (`PERCHE_ON`, `PERCHE_ORE`,
+  `PERCHE_PER_SQUADRA`).
 - **✅ Niente da segnalare (dal 23/11/2026)**: dopo gli avvisi di ogni orario,
   un messaggio **senza suono** con le partite di quell'orario che non hanno
   avuto l'avviso, una riga ciascuna dalla più mossa: «quote quasi ferme»

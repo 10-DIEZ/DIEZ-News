@@ -37,11 +37,12 @@ COSA FA
   RIBALTONE (il segnale forte non arriva piu' a 4/10) o 🚨 un altro movimento
   da 7/10 nato dopo il controllo dei 40 minuti.
 - 🔎 PERCHE' (dal 27/11/2026): sotto il grafico dell'avviso, al posto della
-  riga ⏱, una o due frasi con quando si e' mossa la quota e il motivo piu'
-  probabile, scritte da Groq (gratis, GROQ_API_KEY) con le notizie delle due
-  squadre delle 48 ore prima (registro del bot notizie, state/state.json,
-  "log"; nessuna chiamata OddsPapi). Senza chiave o se Groq non risponde resta
-  il ⏱. Prova: --mode perche.
+  riga ⏱: come e quando si e' mossa la quota (scritto dal bot) e il possibile
+  motivo, cioe' la notizia delle due squadre delle 48 ore prima che va nello
+  stesso verso, scelta e riassunta da Groq (gratis, GROQ_API_KEY; registro del
+  bot notizie, state/state.json, "log"; nessuna chiamata OddsPapi), o "nessuna
+  notizia lo spiega". Senza chiave o se Groq non risponde resta il ⏱. Prova:
+  --mode perche.
 - NOTIZIE SOTTO L'AVVISO (📰 in risposta all'avviso): SPENTE dal 27/11/2026
   (NOTIZIE_SOTTO_AVVISO), troppo carico da vedere; le notizie servono al 🔎.
 - «NON CONTROLLATE»: se una partita non e' nell'elenco di OddsPapi, o le sue
@@ -289,15 +290,15 @@ NOTIZIE_SOTTO_AVVISO = False    # dopo ogni avviso, in risposta, le notizie dell
 NOTIZIE_ORE = 36                # notizie delle ultime 36 ore...
 NOTIZIE_PER_SQUADRA = 4         # ...al massimo 4 per squadra (conferenze, infortuni, formazioni, allenatore)
 
-# 🔎 PERCHE' (dal 27/11/2026): sotto il grafico dell'avviso, in una o due frasi, quando si e' mossa la quota e il motivo
-# piu' probabile, dalle notizie delle due squadre (registro del bot notizie). Lo scrive Groq (gratis, segreto
-# GROQ_API_KEY, lo stesso del bot notizie). Senza la chiave, oltre il tetto del giro o se Groq non risponde, al suo
-# posto resta la riga ⏱ con gli orari. Nessuna chiamata OddsPapi.
+# 🔎 PERCHE' (dal 27/11/2026): sotto il grafico dell'avviso, come e quando si e' mossa la quota (scritto dal bot) e il
+# possibile motivo: la notizia delle due squadre (registro del bot notizie) che va nello stesso verso, scelta e
+# riassunta da Groq (gratis, segreto GROQ_API_KEY, lo stesso del bot notizie), o "nessuna notizia lo spiega". Senza
+# la chiave, oltre il tetto del giro o se Groq non risponde, al suo posto resta la riga ⏱. Nessuna chiamata OddsPapi.
 PERCHE_ON = True
 PERCHE_ORE = 48                 # notizie delle 48 ore prima della lettura (il registro del bot notizie tiene 48 ore)
 PERCHE_PER_SQUADRA = 6          # al massimo 6 notizie per squadra (conferenze, infortuni, formazioni, allenatore)
 PERCHE_MAX_GIRO = 10            # al massimo 10 chiamate Groq per giro
-PERCHE_MAX_CHARS = 220          # motivo scritto dall'IA piu' lungo: tagliato
+PERCHE_MAX_CHARS = 90           # il fatto scritto dall'IA, se piu' lungo: tagliato
 GROQ_API_KEY = os.environ.get("GROQ_API_KEY", "").strip()
 GROQ_MODELS = ("openai/gpt-oss-120b", "openai/gpt-oss-20b")     # come il bot notizie: se uno e' al limite, l'altro
 GROQ_ENDPOINT = "https://api.groq.com/openai/v1/chat/completions"
@@ -2283,14 +2284,14 @@ _NO_ANSWER_RE = re.compile(r"mi dispiace|non (?:posso|riesco|sono in grado)|\bso
 PERCHE_SYSTEM = ("Sei un analista di quote di calcio. Spieghi in italiano, in modo semplice e diretto, perché una "
                  "quota si è mossa.")
 PERCHE_RULES = (
-    "Scrivi SOLO il motivo più probabile del movimento, in una frase breve (al massimo 150 caratteri), in italiano "
-    "semplice e diretto. Non ripetere come e quando si è mossa la quota: lo scrivo io prima della tua frase.\n"
-    "Regole:\n"
-    "- Se una notizia dell'elenco può spiegarlo, citala in poche parole (chi e perché).\n"
-    "- Usa solo le notizie dell'elenco: non inventare giocatori, infortuni o fatti.\n"
-    "- Se nessuna notizia lo spiega, comincia con «Nessuna notizia lo spiega:» e dai l'ipotesi più probabile "
-    "(formazione, turnover, soldi del mercato).\n"
-    "- Niente elenchi, emoji, premesse, numeri di quote o consigli di gioco.")
+    "Compito: tra le notizie numerate scegli quella che spiega meglio il movimento.\n"
+    "- Deve andare nello stesso verso del movimento: rende più forte la squadra su cui il mercato crede di più, o "
+    "più debole l'altra; per i gol, porta più gol se il mercato ne aspetta di più, meno gol se ne aspetta di meno.\n"
+    "- Usa solo le notizie dell'elenco. Se nessuna va in quel verso, rispondi 0.\n"
+    "Rispondi SOLO con queste due righe:\n"
+    "NOTIZIA: <numero della notizia, al massimo due separati da virgola, oppure 0>\n"
+    "FATTO: <il fatto della notizia in poche parole, con il nome del giocatore o della squadra, al massimo 70 "
+    "caratteri, senza giudizi; vuoto se 0>")
 
 
 def _plain(text: str) -> str:
@@ -2375,7 +2376,7 @@ def _fact_signal(an: dict, s: dict, N: dict) -> str:
 
 def perche_news(m: dict, names: dict, at: datetime) -> list:
     """Notizie delle due squadre (conferenze, infortuni, formazioni, allenatore) delle PERCHE_ORE ore prima di 'at',
-    dal registro del bot notizie (nessuna chiamata): una riga ciascuna, per l'IA."""
+    dal registro del bot notizie (nessuna chiamata), dalla piu' recente: [{"txt": riga per l'IA, "t": momento}]."""
     try:
         entries = (load_json(STATE_FILE, {}) or {}).get("log")
     except Exception:       # noqa: BLE001
@@ -2390,14 +2391,30 @@ def perche_news(m: dict, names: dict, at: datetime) -> list:
             title = re.sub(r"\s+", " ", str(e.get("tc") or e.get("ti") or "")).strip()[:180]
             kinds = [TYPE_TAGS[t][1].lower() for t in (e.get("y") or []) if t in TYPE_TAGS] or ["notizia"]
             if title:
-                when = _plain(when_text(datetime.fromtimestamp(float(e["t"]), timezone.utc)))
-                out.append(f"- {when} · {names[side]} · {kinds[0]} · {title}")
-    return out
+                t = datetime.fromtimestamp(float(e["t"]), timezone.utc)
+                out.append({"txt": f"{_plain(when_text(t))} · {names[side]} · {kinds[0]} · {title}", "t": t})
+    return sorted(out, key=lambda n: n["t"], reverse=True)
+
+
+def _market_meaning(an: dict, N: dict) -> str:
+    """Cosa crede il mercato, a parole, dal segnale principale (per dire all'IA il verso del movimento)."""
+    main = next((s for s in an["shown"] if s["fam"] == "side"), None) or \
+        (max(an["shown"], key=lambda s: s["forza"]) if an["shown"] else None)
+    if main is None:
+        return ""
+    if main["fam"] == "side":
+        t = an.get("team") or ("home" if main["dir"] > 0 else "away")
+        less = an.get("color") in ("rosso", "rosso_forte")
+        return f"il mercato crede {'di meno' if less else 'di più'} in {N[t]} (e {'di più' if less else 'di meno'} " \
+               f"in {N['away' if t == 'home' else 'home']})"
+    if main["fam"] == "gol":
+        return "il mercato si aspetta " + ("più gol" if main["dir"] > 0 else "meno gol")
+    return "il mercato si aspetta " + ("che segnino tutte e due" if main["dir"] > 0 else "che una delle due resti a zero")
 
 
 def perche_facts(m: dict, names: dict, an: dict) -> tuple:
-    """Fatti per il 🔎 Perche': partita, movimenti di Pinnacle dall'apertura, andamento nel tempo, altri book e
-    notizie delle due squadre prima della lettura. Ritorna (testo, quante notizie)."""
+    """Fatti per il 🔎 Perche': partita, movimenti di Pinnacle dall'apertura, cosa crede il mercato, andamento nel
+    tempo, altri book e notizie numerate delle due squadre prima della lettura. Ritorna (testo, notizie)."""
     N = {k: names[k] for k in ("home", "away")}
     at = an.get("at") or now_utc()
     base_at = (an.get("R") or {}).get("base_at")
@@ -2411,35 +2428,48 @@ def perche_facts(m: dict, names: dict, an: dict) -> tuple:
     if tg.get("home") and tg.get("away"):
         out.append(f"- gol attesi: {N['home']} da {fmt_num(tg['home'][0])} a {fmt_num(tg['home'][1])}, "
                    f"{N['away']} da {fmt_num(tg['away'][0])} a {fmt_num(tg['away'][1])}")
+    if _market_meaning(an, N):
+        out.append(f"Verso del movimento: {_market_meaning(an, N)}.")
     if an.get("tempo"):                         # dal grafico: la quota della squadra del grafico
         team = chart_team(an)
         out.append(f"Andamento della quota{' di ' + N[team] if team else ''}: "
                    + " · ".join(_plain(p) for p in an["tempo"]))
     elif quando_text(an, names):
         out.append("Andamento: " + _plain(quando_text(an, names)).replace("⏱ Quando: ", ""))
-    if movimento_frase(an):
-        out.append(f"La frase che scrivo io prima della tua: «{movimento_frase(an)}».")
     if an.get("oa_line"):
         out.append(_plain(an["oa_line"]).replace("🔁 ", ""))
     news = perche_news(m, N, at)
-    out.append(f"Notizie delle due squadre (ultime {PERCHE_ORE} ore):")
-    out += news or ["- nessuna"]
-    return "\n".join(out), len(news)
+    out.append(f"Notizie delle due squadre (ultime {PERCHE_ORE} ore, dalla più recente):")
+    out += [f"{k}. {n['txt']}" for k, n in enumerate(news, 1)] or ["nessuna"]
+    return "\n".join(out), news
 
 
-def _clean_perche(text: str) -> str:
-    """Risposta dell'IA -> una o due frasi pulite ("" se non e' una risposta)."""
-    t = re.sub(r"<think>.*?</think>", "", text or "", flags=re.S)
-    t = re.sub(r"[*_#`]+", "", t)
-    t = re.sub(r"\s+", " ", t).strip().strip("\"'«»“” ")
-    t = re.sub(r"^(?:🔎\s*)?(?:perch[eé]|motivo|risposta)\s*:\s*", "", t, flags=re.IGNORECASE)
-    if len(t) < 15 or _NO_ANSWER_RE.search(t):
+def _clean_fatto(text: str) -> str:
+    """Il FATTO scritto dall'IA -> poche parole pulite ("" se non e' un fatto)."""
+    t = re.sub(r"[*_#`]+", "", text or "")
+    t = re.sub(r"\s+", " ", t).strip().rstrip(".;:, ")
+    pairs = {'"': '"', "'": "'", "«": "»", "“": "”"}
+    while len(t) > 1 and t[0] in pairs and t[-1] == pairs[t[0]]:      # tutto tra virgolette: via le virgolette
+        t = t[1:-1].strip().rstrip(".;:, ")
+    if len(t) < 6 or _NO_ANSWER_RE.search(t) or t.lower() in ("vuoto", "nessuno", "nessuna", "0"):
         return ""
-    t = " ".join(re.split(r"(?<=[.!?])\s+", t)[:2])
     if len(t) > PERCHE_MAX_CHARS:
-        cut = t[:PERCHE_MAX_CHARS]
-        t = cut[:cut.rfind(" ")].rstrip(",;:") + "…"
-    return t
+        t = t[:PERCHE_MAX_CHARS]
+        t = t[:t.rfind(" ")].rstrip(",;:") + "…"
+    return t[:1].upper() + t[1:]
+
+
+def parse_scelta(text: str, n_news: int):
+    """Risposta dell'IA -> (numeri delle notizie scelte, fatto); None se non ha la riga NOTIZIA."""
+    t = re.sub(r"<think>.*?</think>", "", text or "", flags=re.S)
+    mn = re.search(r"NOTIZI[AE]\s*:\s*([^\n]*)", t, re.IGNORECASE)
+    if not mn:
+        return None
+    nums = [int(x) for x in re.findall(r"\d+", mn.group(1))]
+    nums = list(dict.fromkeys(k for k in nums if 1 <= k <= n_news))[:2]
+    mf = re.search(r"FATTO\s*:\s*([^\n]*)", t, re.IGNORECASE)
+    fatto = _clean_fatto(mf.group(1)) if mf and nums else ""
+    return nums, fatto
 
 
 def groq_short(system: str, prompt: str) -> str:
@@ -2449,17 +2479,17 @@ def groq_short(system: str, prompt: str) -> str:
         try:
             resp = requests.post(GROQ_ENDPOINT, timeout=25,
                                  headers={"Authorization": f"Bearer {GROQ_API_KEY}", "Content-Type": "application/json"},
-                                 json={"model": model, "temperature": 0.3, "max_completion_tokens": 700,
+                                 json={"model": model, "temperature": 0.2, "max_completion_tokens": 700,
                                        "messages": [{"role": "system", "content": system},
                                                     {"role": "user", "content": prompt}], **params})
         except requests.RequestException as e:
             print(f"[WARN] Groq ({model}) non raggiunto: {e.__class__.__name__}")
             continue
         if resp.status_code != 200:
-            print(f"[WARN] Groq ({model}) ha risposto {resp.status_code}: {resp.text[:150]}")
+            print(f"[WARN] Groq ({model}) ha risposto {resp.status_code}: {resp.text[:300]}")
             continue
         try:
-            text = _clean_perche(resp.json()["choices"][0]["message"]["content"])
+            text = str(resp.json()["choices"][0]["message"]["content"] or "").strip()
         except (ValueError, KeyError, IndexError, TypeError):
             text = ""
         if text:
@@ -2468,9 +2498,10 @@ def groq_short(system: str, prompt: str) -> str:
 
 
 def add_perche(m: dict, names: dict, an: dict) -> dict:
-    """🔎 PERCHE' dell'avviso (an["perche"]): quando si e' mossa la quota e il motivo piu' probabile, in una o due frasi
-    scritte da Groq con le notizie delle due squadre. Niente (resta il ⏱) se spento, senza chiave Groq, oltre il tetto
-    del giro, con poco tempo rimasto o se Groq non risponde."""
+    """🔎 PERCHE' dell'avviso (an["perche"]): come e quando si e' mossa la quota (scritto dal bot, dai dati del
+    grafico) e il possibile motivo: la notizia delle due squadre che lo spiega, scelta e riassunta da Groq in poche
+    parole, con quando e' uscita; se nessuna lo spiega lo dice. Niente (resta il ⏱) se spento, senza chiave Groq,
+    oltre il tetto del giro, con poco tempo rimasto o se Groq non risponde."""
     if "perche" in an:
         return an
     an["perche"] = ""
@@ -2478,15 +2509,26 @@ def add_perche(m: dict, names: dict, an: dict) -> dict:
             or time.monotonic() - _START > RUN_BUDGET_SECONDS - 40:
         return an
     chart_block(an, names, m["ko"])             # l'andamento nel tempo (an["tempo"], an["tempo_dati"])
-    facts, n_news = perche_facts(m, names, an)
+    facts, news = perche_facts(m, names, an)
     _PERCHE_CALLS[0] += 1
-    reason = groq_short(PERCHE_SYSTEM, facts + "\n\n" + PERCHE_RULES)
+    pick = parse_scelta(groq_short(PERCHE_SYSTEM, facts + "\n\n" + PERCHE_RULES), len(news))
+    if pick is None:
+        print(f"  {names['home']} - {names['away']}: 🔎 perché non scritto, resta il ⏱ ({len(news)} notizie)")
+        return an
+    nums, fatto = pick
+    if nums and not fatto:                      # notizia scelta senza il fatto: il suo titolo
+        fatto = _clean_fatto(news[nums[0] - 1]["txt"].split(" · ", 3)[-1])
+    at = an.get("at") or now_utc()
+    if nums and fatto:
+        when = quando_parole(max(news[k - 1]["t"] for k in nums), at)
+        why = f"Possibile motivo: {fatto} (notizia di {when})"
+    else:
+        info = an.get("tempo_dati") or {}
+        late = an.get("late") or info.get("dopo") in ("ancora", "giù", "su")
+        why = "Nessuna notizia lo spiega: " + ("guarda le formazioni" if late else "probabile flusso di giocate")
     mov = movimento_frase(an)                   # come e quando: scritto dal bot, cosi' non e' mai sbagliato
-    if mov and reason.lower().startswith(mov.lower()):          # l'IA l'ha ripetuto: via
-        reason = reason[len(mov):].lstrip(" .,:;-–")
-    an["perche"] = (f"{mov}. {reason[:1].upper()}{reason[1:]}" if mov else reason) if reason else ""
-    print(f"  {names['home']} - {names['away']}: 🔎 perché {'scritto' if reason else 'non scritto (resta il ⏱)'}"
-          f" ({n_news} notizie)")
+    an["perche"] = f"{mov}. {why}." if mov else f"{why}."
+    print(f"  {names['home']} - {names['away']}: 🔎 perché scritto ({len(news)} notizie, scelte {nums or 'nessuna'})")
     return an
 
 
@@ -3003,9 +3045,10 @@ LEGEND = ("📖 <b>Come leggere i messaggi delle quote</b>\n\n"
           "📊 <b>Grafico</b>: la quota della favorita (o della squadra su cui si muove il mercato) dall'apertura ad "
           "adesso, una barra ogni tratto di tempo uguale; barra alta = quota alta (▇▆▄▂▁ = scesa piano piano, "
           "▇▇▇▇▁ = scesa tutta alla fine)\n"
-          + ("🔎 <b>Perché</b>: quando si è mossa la quota e il motivo più probabile, in una o due frasi, dalle "
-             f"notizie delle due squadre (ultime {PERCHE_ORE} ore). Lo scrive un'IA gratuita: è un'ipotesi, non una "
-             "certezza. Se l'IA non risponde resta il ⏱\n" if PERCHE_ON and GROQ_API_KEY else "")
+          + ("🔎 <b>Perché</b>: come e quando si è mossa la quota e la notizia delle due squadre (ultime "
+             f"{PERCHE_ORE} ore) che può spiegarlo, scelta e riassunta da un'IA gratuita: è un'ipotesi, non una "
+             "certezza; se nessuna lo spiega lo dice. Se l'IA non risponde resta il ⏱\n" if PERCHE_ON and GROQ_API_KEY
+             else "")
           + "⏱ quando si è mossa (di colpo o piano piano) e cosa è successo dopo le formazioni · ↩️ se è tornata "
           "indietro di almeno un quinto: fin dove era arrivata e quando (un po' indietro: forza −1 · più di metà: "
           "forza −2)\n"
