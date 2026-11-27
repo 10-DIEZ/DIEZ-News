@@ -28,7 +28,7 @@ COSA FA
   (quanti se ne aspetta il mercato: ricavati da linea e quote dei gol/corner di
   squadra; se i gol di squadra non sono quotati, da linea gol e 1X2); il
   grafico della quota in barre (e ↩️ se e' tornata indietro di almeno un quinto
-  dal suo punto estremo), QUANDO si e' mossa, "Si muovono anche" (gli altri
+  dal suo punto estremo), 🔎 PERCHE' (o ⏱ QUANDO si e' mossa), "Si muovono anche" (gli altri
   movimenti buoni), LETTURA (cosa puo' voler dire, come domanda), colore per la
   riga "Mercato" della Direzione generale e pronostico dalle quote.
 - ULTIMI MINUTI: da 12 a 3 minuti prima del fischio, SOLO se a 40 minuti e'
@@ -36,13 +36,14 @@ COSA FA
   permettono (optional_ok), rilegge le quote (1 chiamata) e scrive: ⚠️
   RIBALTONE (il segnale forte non arriva piu' a 4/10) o 🚨 un altro movimento
   da 7/10 nato dopo il controllo dei 40 minuti.
-- NOTIZIE SOTTO L'AVVISO: subito dopo ogni avviso (40 minuti e ultimi minuti),
-  in risposta, un messaggio 📰 con le notizie delle due squadre delle ultime
-  NOTIZIE_ORE (36) ore: conferenze stampa, infortuni, formazioni, allenatore,
-  al massimo NOTIZIE_PER_SQUADRA (4) per squadra, con ora e testata; il titolo
-  porta al post nell'argomento del campionato. Le prende dal registro del bot
-  notizie (state/state.json, "log"; vedi notizie_partita.py): nessuna chiamata.
-  Se non ce ne sono non arriva niente; dopo gli ultimi minuti solo quelle nuove.
+- 🔎 PERCHE' (dal 27/11/2026): sotto il grafico dell'avviso, al posto della
+  riga ⏱, una o due frasi con quando si e' mossa la quota e il motivo piu'
+  probabile, scritte da Groq (gratis, GROQ_API_KEY) con le notizie delle due
+  squadre delle 48 ore prima (registro del bot notizie, state/state.json,
+  "log"; nessuna chiamata OddsPapi). Senza chiave o se Groq non risponde resta
+  il ⏱. Prova: --mode perche.
+- NOTIZIE SOTTO L'AVVISO (📰 in risposta all'avviso): SPENTE dal 27/11/2026
+  (NOTIZIE_SOTTO_AVVISO), troppo carico da vedere; le notizie servono al 🔎.
 - «NON CONTROLLATE»: se una partita non e' nell'elenco di OddsPapi, o le sue
   quote non si riescono a leggere entro 12 minuti dal fischio, lo scrive. Cosi'
   il silenzio vuol dire davvero "nessun segnale".
@@ -100,8 +101,8 @@ Prove a mano: workflow "Prova bot quote".
 
 STATO: state/quote_state.json, state/quote_live.json (le quote lette dal bot)
 e state/mercato.csv (solo questi file; lo stato
-delle notizie lo legge e basta, per sapere qual e' il gruppo Telegram e per le
-notizie sotto l'avviso).
+delle notizie lo legge e basta, per sapere qual e' il gruppo Telegram e per il
+🔎 perche').
 
 Uso: python monitor_quote.py                   giro normale
      python monitor_quote.py --mode test       prova (diagnostica + messaggio di prova)
@@ -112,9 +113,10 @@ Uso: python monitor_quote.py                   giro normale
                                                rilegge le partite gia' giocate come 40 minuti prima:
                                                con --partita manda quelle partite; senza, il conto
                                                forti/medi/rumore della settimana e le 3 piu' forti
-     python monitor_quote.py --mode notizie [--partita Roma]
-                                               prova delle notizie sotto l'avviso: il messaggio 📰 della
-                                               prossima partita (di quella squadra), come arriverebbe adesso
+     python monitor_quote.py --mode perche [--partita Roma]
+                                               prova del 🔎 perche' (nessuna chiamata OddsPapi): l'avviso
+                                               come sarebbe adesso per la prossima partita di quella
+                                               squadra, o per le 3 piu' mosse dei prossimi 3 giorni
      python monitor_quote.py --mode esempio [--partita tutto]
                                                prova grafica nel gruppo (quote vere): legenda, tre avvisi,
                                                un esempio degli ultimi minuti e la riga «Non controllate»;
@@ -139,8 +141,9 @@ from zoneinfo import ZoneInfo
 
 import requests
 
-from config import FIXTURES_FILE, HASHTAGS, SEND_DELAY_GROUP_SECONDS, STATE_FILE
+from config import FIXTURES_FILE, HASHTAGS, SEND_DELAY_GROUP_SECONDS, STATE_FILE, TYPE_TAGS
 from notizie_partita import match_news
+from notizie_partita import pick as news_pick
 from utils import send_telegram_message, telegram_api
 
 # =====================================================================
@@ -281,9 +284,23 @@ SPARK = "▁▂▃▄▅▆▇█"             # andamento della quota: barra al
 SPARK_POINTS = 10               # la quota in 10 tratti uguali dall'apertura ad adesso (11 barre)
 SPARK_MIN_PTS = 4.0             # sotto 4 punti di probabilita' di differenza le barre restano quasi piatte
 
-NOTIZIE_SOTTO_AVVISO = True     # dopo ogni avviso, in risposta, le notizie delle due squadre (False = spento)
+NOTIZIE_SOTTO_AVVISO = False    # dopo ogni avviso, in risposta, le notizie delle due squadre: spento dal 27/11/2026
+                                # (troppo carico da vedere); le notizie adesso servono al 🔎 Perche' (True = di nuovo)
 NOTIZIE_ORE = 36                # notizie delle ultime 36 ore...
 NOTIZIE_PER_SQUADRA = 4         # ...al massimo 4 per squadra (conferenze, infortuni, formazioni, allenatore)
+
+# 🔎 PERCHE' (dal 27/11/2026): sotto il grafico dell'avviso, in una o due frasi, quando si e' mossa la quota e il motivo
+# piu' probabile, dalle notizie delle due squadre (registro del bot notizie). Lo scrive Groq (gratis, segreto
+# GROQ_API_KEY, lo stesso del bot notizie). Senza la chiave, oltre il tetto del giro o se Groq non risponde, al suo
+# posto resta la riga ⏱ con gli orari. Nessuna chiamata OddsPapi.
+PERCHE_ON = True
+PERCHE_ORE = 48                 # notizie delle 48 ore prima della lettura (il registro del bot notizie tiene 48 ore)
+PERCHE_PER_SQUADRA = 6          # al massimo 6 notizie per squadra (conferenze, infortuni, formazioni, allenatore)
+PERCHE_MAX_GIRO = 10            # al massimo 10 chiamate Groq per giro
+PERCHE_MAX_CHARS = 320          # testo piu' lungo: tagliato
+GROQ_API_KEY = os.environ.get("GROQ_API_KEY", "").strip()
+GROQ_MODELS = ("openai/gpt-oss-120b", "openai/gpt-oss-20b")     # come il bot notizie: se uno e' al limite, l'altro
+GROQ_ENDPOINT = "https://api.groq.com/openai/v1/chat/completions"
 
 # Secondo parere degli ALTRI BOOK con The Odds API (dal 22/11/2026; piano gratuito, 500 crediti al mese, segreto
 # ODDS_API_KEY; solo il bot campionati). 1X2 e linea gol di Betfair Exchange, Matchbook, Marathonbet e 1xBet: fino a
@@ -305,7 +322,8 @@ OA_RESERVE = 10                 # e altri 10 per le prove a mano
 TOPIC_NAME = "🏆 Quote coppe e B" if COPPE else "📈 Quote"
 TOPIC_COLOR = 16766590 if COPPE else 9367192    # giallo / verde
 KEEP_DAYS = 8                   # partite finite tenute nello stato una settimana (per "rivedi")
-LEGEND_VERSION = 9              # se cambia, la legenda viene rimandata una volta (9 = ✅ niente da segnalare;
+LEGEND_VERSION = 10             # se cambia, la legenda viene rimandata una volta (10 = 🔎 perche', niente 📰;
+                                # 9 = ✅ niente da segnalare;
                                 # 8 = riga 🔁 altri book;
                                 # 4 = tabella unica e grafico;
                                 # 5 = gol e corner attesi, ultimi minuti, soglia Europa/Conference, niente riepilogo)
@@ -2193,8 +2211,9 @@ def quando_text(an: dict, names: dict) -> str:
     return "⏱ <b>Quando</b>: " + " · ".join(parts) if parts else ""
 
 
-def lettura(an: dict, names: dict) -> str:
-    """💡 LETTURA: cosa puo' voler dire il movimento, incrociando asiatico, gol e corner, come domanda da verificare."""
+def lettura(an: dict, names: dict, why: bool = False) -> str:
+    """💡 LETTURA: cosa puo' voler dire il movimento, incrociando asiatico, gol e corner, come domanda da verificare.
+    why=True (c'e' il 🔎 Perche'): senza le domande sul perche' e senza la nota sulle formazioni, gia' dette li'."""
     shown = an["shown"]
     side = next((s for s in shown if s["fam"] == "side"), None)
     gol = next((s for s in shown if s["fam"] == "gol"), None)
@@ -2226,29 +2245,202 @@ def lettura(an: dict, names: dict) -> str:
     elif side:
         F = an["team"]
         U = other[F]
-        txt = (f"La favorita {N[F]} perde fiducia{' proprio dopo le formazioni' if late else ''}. <b>Perché?</b> "
-               f"Controlla chi manca in {N[F]}. Se il motivo regge, valuta il contro quota su {N[U]} con linee basse "
-               f"(segna, tiri in porta).")
+        txt = (f"La favorita {N[F]} perde fiducia{' proprio dopo le formazioni' if late and not why else ''}. "
+               + ("Se il motivo regge, " if why else
+                  f"<b>Perché?</b> Controlla chi manca in {N[F]}. Se il motivo regge, ")
+               + f"valuta il contro quota su {N[U]} con linee basse (segna, tiri in porta).")
     elif gol:
         if fav and gol["dir"] < 0:
             txt = (f"Meno gol attesi ma {N[fav]} resta favorita: partita chiusa, con {N[fav]} che attacca una squadra "
-                   f"bassa → occhio a corner e tiri di {N[fav]}. <b>Perché è scesa?</b> Guarda modulo e formazione "
-                   f"di {N[other[fav]]}." + corner_note(fav))
+                   f"bassa → occhio a corner e tiri di {N[fav]}."
+                   + ("" if why else f" <b>Perché è scesa?</b> Guarda modulo e formazione di {N[other[fav]]}.")
+                   + corner_note(fav))
         elif fav:
             txt = (f"Più gol attesi con {N[fav]} favorita: partita aperta → gol e tiri di {N[fav]}, occhio anche al "
-                   f"GG. <b>Perché è salita?</b> Guarda le formazioni.")
+                   f"GG." + ("" if why else " <b>Perché è salita?</b> Guarda le formazioni."))
         elif gol["dir"] < 0:
-            txt = ("Meno gol attesi e nessuna favorita: partita bloccata per tutte e due → eventi bassi. "
-                   "<b>Perché?</b> Guarda formazioni e moduli.")
+            txt = ("Meno gol attesi e nessuna favorita: partita bloccata per tutte e due → eventi bassi."
+                   + ("" if why else " <b>Perché?</b> Guarda formazioni e moduli."))
         else:
-            txt = ("Più gol attesi e partita equilibrata: più eventi per tutte e due, occhio al GG. "
-                   "<b>Perché?</b> Guarda formazioni e moduli.")
+            txt = ("Più gol attesi e partita equilibrata: più eventi per tutte e due, occhio al GG."
+                   + ("" if why else " <b>Perché?</b> Guarda formazioni e moduli."))
     elif gg:
         txt = ("Il mercato sposta il Goal verso il GG: tutte e due dovrebbero segnare." if gg["dir"] > 0 else
                "Il mercato sposta il Goal verso il NG: una delle due potrebbe restare a zero.")
-    if txt and late and an["color"] not in ("rosso", "rosso_forte"):
+    if txt and late and not why and an["color"] not in ("rosso", "rosso_forte"):
         txt += " Il grosso è arrivato dopo le formazioni: guarda chi gioca."
     return f"💡 {txt}" if txt else ""
+
+
+# ---------------------------------------------------------------------
+# 🔎 PERCHE': il motivo piu' probabile del movimento, in breve (Groq)
+# ---------------------------------------------------------------------
+_PERCHE_CALLS = [0]                 # chiamate Groq fatte in questo giro (tetto PERCHE_MAX_GIRO)
+_GIORNI = {"lun": "lunedì", "mar": "martedì", "mer": "mercoledì", "gio": "giovedì", "ven": "venerdì",
+           "sab": "sabato", "dom": "domenica"}
+_NO_ANSWER_RE = re.compile(r"mi dispiace|non (?:posso|riesco|sono in grado)|\bsorry\b|\bcannot\b|can't|"
+                           r"non ho (?:accesso|informazioni)|come (?:modello|ia)\b", re.IGNORECASE)
+PERCHE_SYSTEM = ("Sei un analista di quote di calcio. Spieghi in italiano, in modo semplice e diretto, perché una "
+                 "quota si è mossa.")
+PERCHE_RULES = (
+    "Scrivi il motivo più probabile del movimento in 1 o 2 frasi brevi, in tutto al massimo 230 caratteri, in "
+    "italiano semplice e diretto.\n"
+    "Regole:\n"
+    "- Comincia da cosa ha fatto la quota e quando, in parole semplici (per esempio «Scesa di colpo sabato "
+    "pomeriggio»). I giorni per esteso, niente numeri di quote.\n"
+    "- Se una notizia dell'elenco può spiegarlo, collegala in poche parole (chi e perché). Usa solo le notizie "
+    "dell'elenco: non inventare giocatori, infortuni o fatti.\n"
+    "- Se nessuna notizia lo spiega, scrivilo e dai l'ipotesi più probabile (formazione, turnover, soldi del "
+    "mercato).\n"
+    "- Niente elenchi, emoji, premesse o consigli di gioco.")
+
+
+def _plain(text: str) -> str:
+    """Una riga del messaggio senza tag HTML, con i giorni per esteso (per i fatti dati all'IA)."""
+    t = html.unescape(re.sub(r"<[^>]+>", "", text or "")).strip()
+    return re.sub(r"\b(lun|mar|mer|gio|ven|sab|dom) (\d\d:\d\d)", lambda g: f"{_GIORNI[g[1]]} {g[2]}", t)
+
+
+def _fact_signal(an: dict, s: dict, N: dict) -> str:
+    """Un segnale in parole, con le quote di Pinnacle dall'apertura ad adesso."""
+    a, b = an.get("a") or {}, an.get("b") or {}
+    if s["fam"] == "side":
+        t = an.get("team") or ("home" if s["dir"] > 0 else "away")
+        i = 0 if t == "home" else 2
+        txt = (f"segno: {N[t]}, la favorita, perde fiducia" if an.get("color") in ("rosso", "rosso_forte")
+               else f"segno: {N[t]} più favorita")
+        if a.get("x") and b.get("x"):
+            pa, pb = novig(a["x"])[i], novig(b["x"])[i]
+            txt += (f" (quota da {fmt_num(a['x'][i])} a {fmt_num(b['x'][i])}, probabilità dal {round(pa * 100)}% "
+                    f"al {round(pb * 100)}%)")
+        if a.get("ah") and b.get("ah") and abs(a["ah"][0] - b["ah"][0]) > 1e-9:
+            txt += f", handicap asiatico di {N['home']} da {fmt_line(a['ah'][0], True)} a {fmt_line(b['ah'][0], True)}"
+    elif s["fam"] == "gol":
+        txt = "gol: " + ("più gol attesi (verso l'Over)" if s["dir"] > 0 else "meno gol attesi (verso l'Under)")
+        if a.get("ou") and b.get("ou") and abs(a["ou"][0] - b["ou"][0]) > 1e-9:
+            txt += f", linea gol da {fmt_goal(a['ou'][0])} a {fmt_goal(b['ou'][0])}"
+        oa, ob = (a.get("lines") or {}).get("2.5"), (b.get("lines") or {}).get("2.5")
+        if oa and ob:
+            txt += f", Over 2,5 da {fmt_num(oa[0])} a {fmt_num(ob[0])}"
+    else:
+        yes = s["dir"] > 0
+        txt = f"Goal/No Goal: {'GG' if yes else 'NG'} più probabile"
+        if a.get("gg") and b.get("gg"):
+            k = 0 if yes else 1
+            txt += f" ({'GG' if yes else 'NG'} da {fmt_num(a['gg'][k])} a {fmt_num(b['gg'][k])})"
+    books = f", {len(s['books'])} book su {s['n']} d'accordo" if s.get("n", 1) > 1 else ""
+    return f"{txt}, forza {s['forza']}/10{books}"
+
+
+def perche_news(m: dict, names: dict, at: datetime) -> list:
+    """Notizie delle due squadre (conferenze, infortuni, formazioni, allenatore) delle PERCHE_ORE ore prima di 'at',
+    dal registro del bot notizie (nessuna chiamata): una riga ciascuna, per l'IA."""
+    try:
+        entries = (load_json(STATE_FILE, {}) or {}).get("log")
+    except Exception:       # noqa: BLE001
+        entries = None
+    if not isinstance(entries, list) or not entries:
+        return []
+    end = at.timestamp()
+    found = news_pick(entries, m["home"], m["away"], end - PERCHE_ORE * 3600, end, PERCHE_PER_SQUADRA)
+    out = []
+    for side in ("home", "away"):
+        for e in found.get(m[side]) or []:
+            title = re.sub(r"\s+", " ", str(e.get("tc") or e.get("ti") or "")).strip()[:180]
+            kinds = [TYPE_TAGS[t][1].lower() for t in (e.get("y") or []) if t in TYPE_TAGS] or ["notizia"]
+            if title:
+                when = _plain(when_text(datetime.fromtimestamp(float(e["t"]), timezone.utc)))
+                out.append(f"- {when} · {names[side]} · {kinds[0]} · {title}")
+    return out
+
+
+def perche_facts(m: dict, names: dict, an: dict) -> tuple:
+    """Fatti per il 🔎 Perche': partita, movimenti di Pinnacle dall'apertura, andamento nel tempo, altri book e
+    notizie delle due squadre prima della lettura. Ritorna (testo, quante notizie)."""
+    N = {k: names[k] for k in ("home", "away")}
+    at = an.get("at") or now_utc()
+    base_at = (an.get("R") or {}).get("base_at")
+    lg = (COMPS_Q.get(m["code"]) or {}).get("name", "")
+    out = [f"Partita: {N['home']} - {N['away']}{' (' + lg + ')' if lg else ''}, {_plain(when_text(m['ko']))}.",
+           f"Quote di Pinnacle dall'apertura ({_plain(when_text(base_at)) if base_at else '?'}) ad adesso "
+           f"({_plain(when_text(at))}):"]
+    sigs = an["shown"] or sorted(an["sigs"], key=lambda s: -s["forza"])[:1]
+    out += [f"- {_fact_signal(an, s, N)}" for s in sigs] or ["- nessun movimento importante"]
+    tg = ((an.get("events") or {}).get("tg") or {}).get("exp") or {}
+    if tg.get("home") and tg.get("away"):
+        out.append(f"- gol attesi: {N['home']} da {fmt_num(tg['home'][0])} a {fmt_num(tg['home'][1])}, "
+                   f"{N['away']} da {fmt_num(tg['away'][0])} a {fmt_num(tg['away'][1])}")
+    if an.get("tempo"):                         # dal grafico: la quota della squadra del grafico
+        team = chart_team(an)
+        out.append(f"Andamento della quota{' di ' + N[team] if team else ''}: "
+                   + " · ".join(_plain(p) for p in an["tempo"]))
+    elif quando_text(an, names):
+        out.append("Andamento: " + _plain(quando_text(an, names)).replace("⏱ Quando: ", ""))
+    if an.get("oa_line"):
+        out.append(_plain(an["oa_line"]).replace("🔁 ", ""))
+    news = perche_news(m, N, at)
+    out.append(f"Notizie delle due squadre (ultime {PERCHE_ORE} ore):")
+    out += news or ["- nessuna"]
+    return "\n".join(out), len(news)
+
+
+def _clean_perche(text: str) -> str:
+    """Risposta dell'IA -> una o due frasi pulite ("" se non e' una risposta)."""
+    t = re.sub(r"<think>.*?</think>", "", text or "", flags=re.S)
+    t = re.sub(r"[*_#`]+", "", t)
+    t = re.sub(r"\s+", " ", t).strip().strip("\"'«»“” ")
+    t = re.sub(r"^(?:🔎\s*)?(?:perch[eé]|motivo|risposta)\s*:\s*", "", t, flags=re.IGNORECASE)
+    if len(t) < 15 or _NO_ANSWER_RE.search(t):
+        return ""
+    t = " ".join(re.split(r"(?<=[.!?])\s+", t)[:2])
+    if len(t) > PERCHE_MAX_CHARS:
+        cut = t[:PERCHE_MAX_CHARS]
+        t = cut[:cut.rfind(" ")].rstrip(",;:") + "…"
+    return t
+
+
+def groq_short(system: str, prompt: str) -> str:
+    """Una risposta breve da Groq (gratis), provando i modelli in ordine; "" se nessuno risponde."""
+    for model in GROQ_MODELS:
+        params = {"reasoning_effort": "low", "include_reasoning": False} if model.startswith("openai/gpt-oss") else {}
+        try:
+            resp = requests.post(GROQ_ENDPOINT, timeout=25,
+                                 headers={"Authorization": f"Bearer {GROQ_API_KEY}", "Content-Type": "application/json"},
+                                 json={"model": model, "temperature": 0.3, "max_completion_tokens": 700,
+                                       "messages": [{"role": "system", "content": system},
+                                                    {"role": "user", "content": prompt}], **params})
+        except requests.RequestException as e:
+            print(f"[WARN] Groq ({model}) non raggiunto: {e.__class__.__name__}")
+            continue
+        if resp.status_code != 200:
+            print(f"[WARN] Groq ({model}) ha risposto {resp.status_code}: {resp.text[:150]}")
+            continue
+        try:
+            text = _clean_perche(resp.json()["choices"][0]["message"]["content"])
+        except (ValueError, KeyError, IndexError, TypeError):
+            text = ""
+        if text:
+            return text
+    return ""
+
+
+def add_perche(m: dict, names: dict, an: dict) -> dict:
+    """🔎 PERCHE' dell'avviso (an["perche"]): quando si e' mossa la quota e il motivo piu' probabile, in una o due frasi
+    scritte da Groq con le notizie delle due squadre. Niente (resta il ⏱) se spento, senza chiave Groq, oltre il tetto
+    del giro, con poco tempo rimasto o se Groq non risponde."""
+    if "perche" in an:
+        return an
+    an["perche"] = ""
+    if not PERCHE_ON or not GROQ_API_KEY or _PERCHE_CALLS[0] >= PERCHE_MAX_GIRO \
+            or time.monotonic() - _START > RUN_BUDGET_SECONDS - 40:
+        return an
+    chart_block(an, names, m["ko"])             # l'andamento nel tempo (an["tempo"]) per i fatti
+    facts, n_news = perche_facts(m, names, an)
+    _PERCHE_CALLS[0] += 1
+    an["perche"] = groq_short(PERCHE_SYSTEM, facts + "\n\n" + PERCHE_RULES)
+    print(f"  {names['home']} - {names['away']}: 🔎 perché {'scritto' if an['perche'] else 'non scritto (resta il ⏱)'}"
+          f" ({n_news} notizie)")
+    return an
 
 
 COLOR_TXT = {"verde_forte": "Verde forte", "verde": "Verde", "rosso": "Rosso", "rosso_forte": "Rosso forte"}
@@ -2436,6 +2628,8 @@ def chart_block(an: dict, names: dict, ko: datetime | None) -> list:
             (ext <= min(pts[0], pts[-1]) - 0.01 if falling else ext >= max(pts[0], pts[-1]) + 0.01):
         how = "un po' indietro (forza −1)" if side["ratio"] >= TENUTA_MEZZA else "indietro per più di metà (forza −2)"
         parts.append(f"↩️ era arrivata a {fmt_num(ext)} ({when_text(ext_t)}), poi è tornata {how}")
+    an["tempo"] = parts                         # per il 🔎 Perche' (i fatti dati all'IA) e il ↩️ che resta
+    an["ritorno"] = next((p for p in parts if p.startswith("↩️")), None)
     if parts:
         out.append("⏱ " + " · ".join(parts))
     return out
@@ -2498,8 +2692,12 @@ def build_message(m: dict, names: dict, an: dict, base_at: datetime, first: bool
         top.append(an["oa_line"])
     table, tnote = fmt_table_one(names, an)
     chart = chart_block(an, names, m["ko"]) or [quando_text(an, names)]
+    why = an.get("perche")
+    if why:                                     # 🔎 sotto le barre al posto del ⏱ (il ↩️ resta: spiega la forza)
+        chart = [r for r in chart if not r.startswith("⏱")] + [f"🔎 <b>Perché</b>: {esc(why)}"] \
+            + ([an["ritorno"]] if an.get("ritorno") else [])
     others = moved_lines(an, names, main)
-    end = [lettura(an, names)]
+    end = [lettura(an, names, why=bool(why))]
     if an["color"]:
         end.append(f"Mercato: <b>{COLOR_TXT[an['color']]}</b> a {esc(names[an['team']])}")
     end.append(picks_text(an, names))
@@ -2749,15 +2947,19 @@ LEGEND = ("📖 <b>Come leggere i messaggi delle quote</b>\n\n"
           "📊 <b>Grafico</b>: la quota della favorita (o della squadra su cui si muove il mercato) dall'apertura ad "
           "adesso, una barra ogni tratto di tempo uguale; barra alta = quota alta (▇▆▄▂▁ = scesa piano piano, "
           "▇▇▇▇▁ = scesa tutta alla fine)\n"
-          "⏱ quando si è mossa (di colpo o piano piano) e cosa è successo dopo le formazioni · ↩️ se è tornata "
+          + ("🔎 <b>Perché</b>: quando si è mossa la quota e il motivo più probabile, in una o due frasi, dalle "
+             f"notizie delle due squadre (ultime {PERCHE_ORE} ore). Lo scrive un'IA gratuita: è un'ipotesi, non una "
+             "certezza. Se l'IA non risponde resta il ⏱\n" if PERCHE_ON and GROQ_API_KEY else "")
+          + "⏱ quando si è mossa (di colpo o piano piano) e cosa è successo dopo le formazioni · ↩️ se è tornata "
           "indietro di almeno un quinto: fin dove era arrivata e quando (un po' indietro: forza −1 · più di metà: "
           "forza −2)\n"
           "<b>Si muovono anche</b>: gli altri movimenti buoni (linea gol, GG, gol e corner attesi delle squadre), "
           "senza grafico\n"
-          "💡 <b>Lettura</b>: cosa può voler dire il movimento, come domanda da verificare: non è una verità\n"
-          f"📰 <b>Notizie</b> (in risposta all'avviso): conferenze, infortuni, formazioni e allenatore delle due "
-          f"squadre delle ultime {NOTIZIE_ORE} ore, al massimo {NOTIZIE_PER_SQUADRA} per squadra; tocca il titolo "
-          "per aprire la notizia" + (" (solo per le squadre dei 5 campionati)" if COPPE else "") + "\n\n"
+          "💡 <b>Lettura</b>: cosa può voler dire il movimento per la giocata: non è una verità\n"
+          + (f"📰 <b>Notizie</b> (in risposta all'avviso): conferenze, infortuni, formazioni e allenatore delle due "
+             f"squadre delle ultime {NOTIZIE_ORE} ore, al massimo {NOTIZIE_PER_SQUADRA} per squadra; tocca il "
+             "titolo per aprire la notizia" + (" (solo per le squadre dei 5 campionati)" if COPPE else "") + "\n"
+             if NOTIZIE_SOTTO_AVVISO else "") + "\n"
           "<b>Giudizio</b>" + ("" if COPPE else " (colore per la riga «Mercato» del foglio)") + "\n"
           "🟢🟢 calo forte: linea asiatica spostata verso la squadra → Verde forte\n"
           "🟢 calo: stessa linea, quota scesa → Verde\n"
@@ -3630,6 +3832,7 @@ def do_ridosso(st: dict, topic: QuoteTopic, key: str | None, group: dict | None,
     if alerts:
         oa_check(st, cal, alerts, manual)      # secondo parere degli altri book (The Odds API), se c'e' la chiave
     for m, names, an, R, sig_txt in sorted(alerts, key=lambda r: -r[2]["forza"]):       # dal piu' forte
+        add_perche(m, names, an)                # 🔎 il motivo piu' probabile, in breve (Groq)
         if topic.send(build_message(m, names, an, R["base_at"], R["first"],
                                     "controllo a mano" if manual else "formazioni uscite")):
             sent += 1
@@ -4012,8 +4215,22 @@ def send_legend(st: dict, topic: QuoteTopic, force: bool = False) -> None:
     """La legenda (come leggere i messaggi): una volta, e di nuovo solo se cambia."""
     if MUTO:
         return
-    if (force or st.get("legend") != LEGEND_VERSION) and topic.send(LEGEND):
+    if (force or st.get("legend") != LEGEND_VERSION) and all(topic.send(part) for part in legend_parts(LEGEND)):
         st["legend"] = LEGEND_VERSION
+
+
+def legend_parts(text: str, limit: int = 4000) -> list:
+    """La legenda in uno o piu' messaggi sotto il limite di Telegram (4096), spezzata tra un paragrafo e l'altro."""
+    def size(t):
+        return len(re.sub(r"<[^>]+>", "", t).encode("utf-16-le")) // 2
+    parts, cur = [], ""
+    for para in text.split("\n\n"):
+        if cur and size(cur + "\n\n" + para) > limit:
+            parts.append(cur)
+            cur = para
+        else:
+            cur = f"{cur}\n\n{para}" if cur else para
+    return parts + [cur]
 
 
 def snapshot_main(fx, meta: dict) -> dict:
@@ -4155,6 +4372,7 @@ def do_test(st: dict, topic: QuoteTopic, cal: list, query: str = "") -> None:
     if done:
         m, names, an, base_at, first = max(done, key=lambda it: it[2]["forza"])
         if an["shown"]:
+            add_perche(m, names, an)
             topic.send(f"🧪 <b>ESEMPIO di avviso {RIDOSSO_MINUTES} minuti prima</b> (arriva solo da forza "
                        f"{FORZA_MIN_AVVISO}/10):\n\n" + build_message(m, names, an, base_at, first, "esempio"))
         else:
@@ -4390,7 +4608,7 @@ def do_rivedi(st: dict, topic: QuoteTopic, query: str = "") -> None:
         time.sleep(SEND_DELAY_GROUP_SECONDS)
     for m, names, an, R in chosen:
         if an["alert"]:
-            an = add_sot(st, m["fid"], m, R, an, force=True)
+            an = add_perche(m, names, add_sot(st, m["fid"], m, R, an, force=True))
             text = build_message(m, names, an, R["base_at"], R["first"], "formazioni uscite", prefix="🧪 RIVEDI · ")
         else:
             lg = COMPS_Q.get(m["code"], {"flag": ""})
@@ -4480,6 +4698,7 @@ def do_esempio(st: dict, topic: QuoteTopic, query: str = "") -> None:
     for kind in ("che ha tenuto", "tornato indietro", "solo sui gol"):
         if kind in found:
             m, names, an, R = found[kind]
+            add_perche(m, names, an)
             send(build_message(m, names, an, R["base_at"], R["first"], "formazioni uscite",
                                prefix=f"🧪 <b>ESEMPIO di avviso {kind}</b> · "))
             send_news(st, topic, m, names, reply_to=topic.last_id, record=False,
@@ -4554,23 +4773,37 @@ def send_news(st: dict, topic: QuoteTopic, m: dict, names: dict, reply_to: int |
     return True
 
 
-def do_notizie(st: dict, topic: QuoteTopic, cal: list, query: str = "") -> None:
-    """Prova delle NOTIZIE SOTTO L'AVVISO, senza quote e senza chiamate: per la prossima partita (di una squadra o di
-    una competizione, se indicata) il messaggio 📰 come arriverebbe adesso sotto un avviso."""
-    future = [m for m in filter_matches(cal, query) if m["ko"] > now_utc()]
-    if not future:
-        topic.send(f"🧪 <b>Prova notizie</b>: nessuna partita in arrivo{' per ' + esc(query) if query else ''} "
-                   "nel calendario.")
+PROVA_PERCHE_N = 3                  # prova del 🔎: le 3 partite piu' mosse dei prossimi 3 giorni
+
+
+def do_perche(st: dict, topic: QuoteTopic, cal: list, query: str = "") -> None:
+    """Prova del 🔎 PERCHE', senza chiamate OddsPapi: l'avviso come sarebbe adesso, con le quote dell'ultima lettura del
+    bot e il 🔎 scritto da Groq. Con una squadra la sua prossima partita; se no (o con una competizione) le
+    PROVA_PERCHE_N partite piu' mosse dei prossimi 3 giorni."""
+    now = now_utc()
+    future = [m for m in filter_matches(cal, query) if now < m["ko"] <= now + timedelta(days=3)]
+    one = bool(query) and not query_codes(query)
+    rows = []
+    for m in future[:1] if one else future[:40]:
+        names = team_names(m)
+        fid = find_fixture(st, m)
+        R = read_history(st, fid, apertura_time(m["ko"], m["code"])) if fid else None
+        if not R or not R["base"] or not R["now"]:
+            print(f"  {names['home']} - {names['away']}: nessuna quota letta finora")
+            continue
+        rows.append((m, names, analyze(R, m["ko"]), R))
+    if not rows:
+        topic.send(f"🧪 <b>Prova perché</b>: nessuna partita con quote lette nei prossimi 3 giorni"
+                   f"{' per ' + esc(query) if query else ''}.")
         return
-    m = future[0]
-    names = team_names(m)
-    lg = COMPS_Q.get(m["code"], {"flag": ""})
-    head = (f"🧪 <b>Prova notizie</b> · {lg['flag']} <b>{match_title(names)}</b> · {when_text(m['ko'])}\n"
-            "<i>Così arrivano, in risposta all'avviso delle quote:</i>\n\n")
-    if not send_news(st, topic, m, names, prefix=head, record=False):
-        topic.send(head + f"nessuna notizia su conferenze, infortuni, formazioni o allenatore delle due squadre "
-                          f"nelle ultime {NOTIZIE_ORE} ore: sotto l'avviso non arriverebbe niente.")
-    st["log"].append(f"{now_utc().isoformat(timespec='minutes')} prova notizie {names['home']} - {names['away']}")
+    if not GROQ_API_KEY:
+        print("Prova perché: manca il secret GROQ_API_KEY, al posto del 🔎 resta il ⏱")
+    for m, names, an, R in sorted(rows, key=lambda r: (-r[2]["forza"], r[0]["ko"]))[:PROVA_PERCHE_N]:
+        add_perche(m, names, an)
+        topic.send(build_message(m, names, an, R["base_at"], R["first"], "prova con l'ultima lettura del bot",
+                                 prefix="🧪 <b>PROVA PERCHÉ</b> · "))
+        time.sleep(SEND_DELAY_GROUP_SECONDS)
+    st["log"].append(f"{now_utc().isoformat(timespec='minutes')} prova perché: {len(rows)} partite lette")
 
 
 def cleanup(st: dict) -> None:
@@ -4600,7 +4833,7 @@ def main() -> int:
     _START = time.monotonic()
     ap = argparse.ArgumentParser()
     ap.add_argument("--mode", default="auto",
-                    choices=["auto", "test", "ora", "apertura", "riepilogo", "rivedi", "esempio", "notizie",
+                    choices=["auto", "test", "ora", "apertura", "riepilogo", "rivedi", "esempio", "perche",
                              "altribook"])
     ap.add_argument("--partita", default="", help="prove a mano: squadra (es. Roma) o competizione (es. CL, coppe); "
                                                   "per rivedi vuoto = tutta la settimana")
@@ -4643,8 +4876,8 @@ def main() -> int:
             do_rivedi(st, topic, query)
         elif args.mode == "esempio":
             do_esempio(st, topic, query)
-        elif args.mode == "notizie":
-            do_notizie(st, topic, cal, query)
+        elif args.mode == "perche":
+            do_perche(st, topic, cal, query)
         elif args.mode == "altribook":
             do_altribook(st, cal)
         else:

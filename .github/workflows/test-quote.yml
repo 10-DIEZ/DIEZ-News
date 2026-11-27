@@ -10,8 +10,9 @@ name: Prova bot quote
 #               con "partita" = tutto anche apertura delle coppe e riepiloghi
 #   altribook = prova di The Odds API (altri book): quali book e mercati rispondono sui 5 campionati, nel
 #               registro (circa 16 crediti dei 500 del mese, nessuna chiamata OddsPapi)
-#   notizie   = le notizie che arriverebbero adesso sotto l'avviso della prossima partita (di una squadra, se
-#               scritta in "partita"): nessuna chiamata, nessuna quota
+#   perche    = prova del 🔎 perche': l'avviso come sarebbe adesso, con le quote dell'ultima lettura del bot e il
+#               motivo scritto da Groq (nessuna chiamata OddsPapi): con "partita" = una squadra, la sua prossima
+#               partita; vuoto o una competizione = le 3 partite piu' mosse dei prossimi 3 giorni
 #   rivedi    = rilegge le partite gia' giocate (ultimi 8 giorni) come 40 minuti prima, con le regole di adesso:
 #               "partita" vuoto = conto forti/medi/rumore della settimana e le 3 piu' forti nel gruppo;
 #               "partita" con una squadra (es. Roma) = il messaggio di quella partita
@@ -23,11 +24,11 @@ on:
   workflow_dispatch:
     inputs:
       modo:
-        description: "test = prova completa · ora = controllo subito · apertura = elenco partite · riepilogo = riepilogo di domani · rivedi = partite gia' giocate · esempio = prova grafica nel gruppo · notizie = notizie sotto l'avviso"
+        description: "test = prova completa · ora = controllo subito · apertura = elenco partite · riepilogo = riepilogo di domani · rivedi = partite gia' giocate · esempio = prova grafica nel gruppo · perche = prova del 🔎 perché"
         required: true
         default: test
         type: choice
-        options: [test, ora, apertura, riepilogo, rivedi, esempio, notizie, altribook]
+        options: [test, ora, apertura, riepilogo, rivedi, esempio, perche, altribook]
       partita:
         description: "squadra (es. Roma) o competizione (SA, PL, PD, BL1, FL1, CL, EL, ECL, coppe); per rivedi vuoto = tutta la settimana"
         required: false
@@ -76,6 +77,7 @@ jobs:
         env:
           ODDSPAPI_API_KEY: ${{ secrets.ODDSPAPI_API_KEY }}
           ODDS_API_KEY: ${{ secrets.ODDS_API_KEY }}
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
           TELEGRAM_GROUP_ID: ${{ secrets.TELEGRAM_GROUP_ID }}

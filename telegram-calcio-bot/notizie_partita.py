@@ -1,10 +1,12 @@
 """
 Notizie di una partita, per il bot quote (monitor_quote.py).
 
-Subito dopo un avviso sulle quote, in risposta, arriva un messaggio 📰 con le
-notizie delle due squadre delle ultime ore: conferenze stampa, infortuni,
-formazioni e allenatore (le notizie generali no). Per ogni notizia: ora, tipo,
-titolo e testata; il titolo porta al post nell'argomento del campionato.
+Il messaggio 📰 con le notizie delle due squadre sotto ogni avviso e' spento dal
+27/11/2026 (NOTIZIE_SOTTO_AVVISO in monitor_quote.py); pick() serve ancora al
+🔎 Perche' dell'avviso, che passa all'IA le notizie delle due squadre.
+Com'era il 📰: conferenze stampa, infortuni, formazioni e allenatore (le
+notizie generali no); per ogni notizia ora, tipo, titolo e testata; il titolo
+porta al post nell'argomento del campionato.
 
 Le notizie arrivano dal registro del bot notizie (state/state.json, chiave
 "log": lo scrive monitor_news.py a ogni invio e tiene le ultime 48 ore).

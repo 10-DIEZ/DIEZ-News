@@ -49,6 +49,7 @@ jobs:
         env:
           ODDSPAPI_API_KEY: ${{ secrets.ODDSPAPI_API_KEY }}
           ODDS_API_KEY: ${{ secrets.ODDS_API_KEY }}       # altri book (The Odds API): secondo parere
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}       # 🔎 perche' degli avvisi (lo stesso del bot notizie)
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
           TELEGRAM_GROUP_ID: ${{ secrets.TELEGRAM_GROUP_ID }}

@@ -142,14 +142,28 @@ Conference League) con OddsPapi (piano gratuito, 250 chiamate al mese, secret
   il **📊 grafico** della direzione della partita, cioè la quota della
   favorita (o della squadra su cui si muove il mercato) dall'apertura ad
   adesso in 22 barre a tempi uguali (barra alta = quota alta; un punto per
-  ogni lettura del bot), con sotto **⏱**
-  quando si è mossa (di colpo o piano piano, con il pezzo più grosso e le
-  quote), cosa è successo dopo le formazioni e **↩️** se è tornata indietro
-  di almeno un quinto (fin dove era arrivata e quando: forza −1, oltre metà
-  −2); **Si muovono anche** (linea gol, GG, gol e corner attesi che si sono
-  mossi, senza grafico); la **💡 lettura**, il colore da mettere
-  nella riga «Mercato» della Direzione generale e il pronostico con la quota
-  giusta.
+  ogni lettura del bot), con sotto il **🔎 Perché** (vedi sotto; se manca,
+  la riga **⏱** quando si è mossa: di colpo o piano piano, con il pezzo più
+  grosso e le quote, e cosa è successo dopo le formazioni) e **↩️** se è
+  tornata indietro di almeno un quinto (fin dove era arrivata e quando:
+  forza −1, oltre metà −2); **Si muovono anche** (linea gol, GG, gol e corner
+  attesi che si sono mossi, senza grafico); la **💡 lettura**, il colore da
+  mettere nella riga «Mercato» della Direzione generale e il pronostico con la
+  quota giusta.
+- **🔎 Perché (dal 27/11/2026)**: subito sotto le barre del grafico, una o due
+  frasi semplici con quando si è mossa la quota e il motivo più probabile
+  (es. «Scesa di colpo sabato mattina, subito dopo la notizia dello stop di
+  Mendy: il mercato crede di più nel Cagliari»). Le scrive Groq (gratis, lo
+  stesso `GROQ_API_KEY` del bot notizie) dai movimenti di Pinnacle, da come si
+  è mossa nel tempo e dalle notizie delle due squadre delle 48 ore prima
+  (conferenze, infortuni, formazioni, allenatore: registro del bot notizie,
+  nessuna chiamata OddsPapi). Regole date all'IA: solo le notizie
+  dell'elenco, niente nomi inventati; se nessuna notizia lo spiega lo dice e
+  dà l'ipotesi più probabile (formazione, turnover, soldi del mercato). È
+  un'ipotesi, non una certezza. Con il 🔎 la 💡 lettura non ripete le domande
+  sul perché. Se Groq non risponde (o manca la chiave) al suo posto resta la
+  riga ⏱. Al massimo 10 chiamate per giro. Si regola in cima a
+  `monitor_quote.py` (`PERCHE_ON`, `PERCHE_ORE`, `PERCHE_PER_SQUADRA`).
 - **✅ Niente da segnalare (dal 23/11/2026)**: dopo gli avvisi di ogni orario,
   un messaggio **senza suono** con le partite di quell'orario che non hanno
   avuto l'avviso, una riga ciascuna dalla più mossa: «quote quasi ferme»
@@ -160,8 +174,10 @@ Conference League) con OddsPapi (piano gratuito, 250 chiamate al mese, secret
   partite sono tutte con l'avviso non arriva. Si spegne in cima a
   `monitor_quote.py` (`NIENTE_DA_SEGNALARE`). Nel controllo a mano diventa
   «🔎 Controllo a mano · …: niente da segnalare».
-- **📰 Notizie sotto l'avviso**: subito dopo ogni avviso (40 minuti prima e
-  ultimi minuti), in risposta, arriva un messaggio con le notizie delle due
+- **📰 Notizie sotto l'avviso: SPENTE dal 27/11/2026** (rendevano tutto più
+  pesante da vedere; le notizie adesso servono al 🔎 Perché). Per riaccenderle:
+  `NOTIZIE_SOTTO_AVVISO = True`. Com'erano: subito dopo ogni avviso (40 minuti prima e
+  ultimi minuti), in risposta, arrivava un messaggio con le notizie delle due
   squadre delle ultime 36 ore: conferenze stampa, infortuni, formazioni e
   allenatore (non le generali), al massimo 4 per squadra, dalla più recente,
   con ora e testata. Toccando il titolo si apre la notizia nell'argomento del
@@ -236,9 +252,11 @@ Conference League) con OddsPapi (piano gratuito, 250 chiamate al mese, secret
   apertura = aggiorna subito l'elenco, riepilogo = riepilogo subito di domani,
   rivedi = rilegge le partite già giocate negli ultimi 8 giorni come 40 minuti
   prima: con «partita» vuoto il conto forti/medi/rumore e le 3 più forti, con
-  una squadra il messaggio di quella partita; notizie = il messaggio 📰 della
-  prossima partita (di una squadra, se scritta in «partita») come arriverebbe
-  adesso sotto l'avviso, senza quote e senza chiamate; esempio = prova grafica nel
+  una squadra il messaggio di quella partita; perche = prova del 🔎 Perché:
+  l'avviso come sarebbe adesso, con le quote dell'ultima lettura del bot
+  (nessuna chiamata OddsPapi, una chiamata Groq per partita), per la prossima
+  partita della squadra scritta in «partita» o, se vuoto, per le 3 partite più
+  mosse dei prossimi 3 giorni; esempio = prova grafica nel
   gruppo con quote vere, la legenda, tre avvisi (un calo che tiene, uno
   tornato indietro e uno solo sui gol), un esempio degli ultimi minuti e la
   riga «Non controllate»; con «partita» = tutto anche apertura
@@ -288,7 +306,7 @@ DIEZ-News (`copia-diez/`, tutto tranne il registro delle notizie).
    |---|---|
    | `TELEGRAM_BOT_TOKEN` | il bot Telegram |
    | `TELEGRAM_CHAT_ID` | la chat privata col bot (avvisi di servizio) |
-   | `GROQ_API_KEY` | riassunti in italiano (piano gratuito) |
+   | `GROQ_API_KEY` | riassunti in italiano (piano gratuito); anche il 🔎 Perché degli avvisi quote |
    | `FOOTBALL_DATA_API_KEY` | calendario e squadre (football-data.org, piano gratuito) |
    | `ODDSPAPI_API_KEY` | quote (OddsPapi, piano gratuito: 250 chiamate al mese) |
    | `ODDS_API_KEY` | altri book, secondo parere (The Odds API, piano gratuito: 500 crediti al mese) |

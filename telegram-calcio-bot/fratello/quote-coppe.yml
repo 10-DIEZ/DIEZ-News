@@ -14,6 +14,8 @@
 #   TELEGRAM_BOT_TOKEN  il token del bot nuovo
 #   TELEGRAM_GROUP_ID   il numero del gruppo «DIEZ News»
 #   TELEGRAM_CHAT_ID    il tuo id Telegram (messaggi in privato se il gruppo non risponde)
+#   GROQ_API_KEY        facoltativo: la sua chiave Groq (gratis, console.groq.com) per il 🔎 perche' degli avvisi;
+#                       senza, al posto del 🔎 resta la riga ⏱ con gli orari
 #
 # Il giro ogni 5 minuti lo fa partire cron-job.org: POST a
 #   https://api.github.com/repos/<utente>/<repository>/actions/workflows/quote-coppe.yml/dispatches
@@ -26,11 +28,11 @@ on:
   workflow_dispatch:
     inputs:
       modo:
-        description: "auto = giro normale · test = prova completa · ora = controllo subito · apertura = elenco partite · rivedi = partite già giocate · esempio = prova grafica · notizie = notizie sotto l'avviso"
+        description: "auto = giro normale · test = prova completa · ora = controllo subito · apertura = elenco partite · rivedi = partite già giocate · esempio = prova grafica · perche = prova del 🔎 perché"
         required: false
         default: auto
         type: choice
-        options: [auto, test, ora, apertura, rivedi, esempio, notizie]
+        options: [auto, test, ora, apertura, rivedi, esempio, perche]
       partita:
         description: "squadra (es. Palermo) o competizione (CL, EL, ECL, SB, coppe)"
         required: false
@@ -85,6 +87,7 @@ jobs:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
           TELEGRAM_GROUP_ID: ${{ secrets.TELEGRAM_GROUP_ID }}
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
           MODO: ${{ inputs.modo || 'auto' }}
           PARTITA: ${{ inputs.partita }}
           MUTO: ${{ inputs.muto }}
