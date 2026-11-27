@@ -62,6 +62,13 @@ serve tenere niente acceso.
   (`GROQ_GENERAL_DAILY_BUDGET`) le notizie generali italiane escono con il
   testo del sito al posto del riassunto e quelle estere vengono saltate, così
   i riassunti che restano vanno a conferenze, infortuni e formazioni.
+  **Dal 27/11/2026 il modello più forte (`openai/gpt-oss-120b`, tetto
+  gratuito 200.000 token in 24 ore) è prima di tutto per il 🔎 Perché del
+  bot quote**: le notizie ne usano al massimo 150.000 token nelle ultime 24
+  ore (`GROQ_NEWS_TOKEN_CAP`), poi passano al modello successivo
+  (`openai/gpt-oss-20b`). Stesse notizie, stessi riassunti: cambia solo il
+  modello che li scrive. Il conto ora per ora è in `state/state.json`
+  (`groq_tok_hours`).
 - **Foto**: se Telegram non riesce a scaricare la foto dal sito, la scarica il
   bot e gliela carica; solo se non ci riesce nemmeno lui la notizia esce senza
   foto.
@@ -351,7 +358,8 @@ Tutto in `config.py`:
   accorge dopo 6 ricerche fallite, salta il resto del giro e riprova al
   successivo. Le notizie dei feed diretti continuano ad arrivare.
 - Piani gratuiti: Groq (riassunti) è l'unico vicino al tetto giornaliero nei
-  giorni pieni, per questo c'è la soglia delle 600 chiamate; football-data,
+  giorni pieni, per questo c'è la soglia delle 600 chiamate (e il tetto delle
+  notizie sul modello forte, che lascia il resto al 🔎 del bot quote); football-data,
   Telegram, cron-job.org e GitHub Actions (repository pubblico) hanno margine
   ampio; OddsPapi usa circa 200-210 chiamate al mese su 250 (vedi «Consumo»
   nella parte del bot quote).

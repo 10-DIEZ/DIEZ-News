@@ -127,6 +127,10 @@ PRESS_QUERY_CHUNK = 6       # squadre per ogni ricerca "conferenza stampa"
 # se un modello e' al limite, si passa al successivo.
 GROQ_MODELS = ["openai/gpt-oss-120b", "openai/gpt-oss-20b", "qwen/qwen3.8-27b"]
 GROQ_ENDPOINT = "https://api.groq.com/openai/v1/chat/completions"
+# Dal 27/11/2026 il modello piu' forte e' prima di tutto per il bot quote (🔎 perche' degli avvisi): il suo tetto
+# gratuito e' 200.000 token in 24 ore (finestra mobile) e le notizie ne usano al massimo questi; oltre, passano al
+# modello successivo della lista. Stesse notizie, stessi riassunti: cambia solo il modello che li scrive.
+GROQ_NEWS_TOKEN_CAP = {"openai/gpt-oss-120b": 150000}
 GROQ_MIN_INTERVAL = 3.0
 
 PRIORITY = {"official": 0, "press": 0, "key": 1, "general": 2}
@@ -974,6 +978,7 @@ _groq_lock = threading.Lock()
 _stats_lock = threading.Lock()
 _groq_next = [0.0]
 _groq_cooldown: dict = {}
+_tok_24h: dict = {}         # token Groq usati dalle notizie nelle ultime 24 ore, per modello (a inizio giro)
 _TITLE_RE = re.compile(r"\**\s*TITOLO\s*\**\s*:\s*\**\s*(.+)", re.IGNORECASE)
 _SUMMARY_RE = re.compile(r"\**\s*RIASSUNTO\s*\**\s*:\s*\**\s*(.+)", re.IGNORECASE | re.DOTALL)
 _THINK_RE = re.compile(r"<think>.*?</think>", re.DOTALL | re.IGNORECASE)
@@ -1018,6 +1023,9 @@ def summarize_with_ai(title: str, description: str, source_lang: str, stats: Cou
     for model in GROQ_MODELS:
         if _groq_cooldown.get(model, 0) > time.time():
             continue
+        cap = GROQ_NEWS_TOKEN_CAP.get(model)
+        if cap and _tok_24h.get(model, 0) + stats["tok:" + model] >= cap:
+            continue                # il resto di questo modello e' per il bot quote: si usa il successivo
         _groq_wait_turn()
         try:
             resp = requests.post(
@@ -1173,6 +1181,18 @@ def prune_state(state: dict, now: datetime, today: str) -> None:
     hour = int(now_ts // 3600)
     hours = state.get("groq_hours") if isinstance(state.get("groq_hours"), dict) else {}
     state["groq_hours"] = {h: n for h, n in hours.items() if str(h).isdigit() and hour - int(h) < 24}
+    # token Groq ora per ora per modello (ultime 24 ore), per il tetto delle notizie sul modello del bot quote.
+    # Primo giro: il consumo di oggi conta come se fosse di adesso (prudente: libera il modello prima per le quote)
+    toks = state.get("groq_tok_hours")
+    if not isinstance(toks, dict):
+        today_tok = ((state.get("stats") or {}).get("tok") or {}) if isinstance(state.get("stats"), dict) else {}
+        toks = {str(hour): {m: n for m, n in today_tok.items() if isinstance(n, int)}}
+    state["groq_tok_hours"] = {h: v for h, v in toks.items()
+                               if str(h).isdigit() and hour - int(h) < 24 and isinstance(v, dict)}
+    _tok_24h.clear()
+    for bucket in state["groq_tok_hours"].values():
+        for model, n in bucket.items():
+            _tok_24h[model] = _tok_24h.get(model, 0) + (n if isinstance(n, int) else 0)
     # contatori del giorno: a mezzanotte quelli di ieri passano nello storico
     stats = state.get("stats") if isinstance(state.get("stats"), dict) else {}
     if stats.get("day") != today:
@@ -1550,9 +1570,13 @@ def run():
     add("no_ai", stats["senza_groq"])
     add("skipped_budget", stats["saltate_tetto"])
     tokens = day_stats.setdefault("tok", {})
-    for key, value in stats.items():
-        if key.startswith("tok:"):
-            tokens[key[4:]] = tokens.get(key[4:], 0) + value
+    run_tok = {key[4:]: value for key, value in stats.items() if key.startswith("tok:") and value}
+    for model, value in run_tok.items():
+        tokens[model] = tokens.get(model, 0) + value
+    if run_tok:                 # e ora per ora, per il tetto delle notizie sul modello del bot quote
+        bucket = state["groq_tok_hours"].setdefault(str(int(now_ts // 3600)), {})
+        for model, value in run_tok.items():
+            bucket[model] = bucket.get(model, 0) + value
     day_stats.setdefault("sent", 0)
     day_stats.setdefault("groq_failures", 0)
 
@@ -1590,7 +1614,8 @@ def run():
         f"{day_stats.get('sent_press', 0)}, infortuni/formazioni/allenatore {day_stats.get('sent_key', 0)}, "
         f"generali {day_stats.get('sent_general', 0)} · Groq: {sum(state['groq_hours'].values())} chiamate "
         f"nelle ultime 24 ore (tetto per le generali {GROQ_GENERAL_DAILY_BUDGET}), token di oggi per modello "
-        f"{day_stats.get('tok', {})} · Google: {day_stats.get('g_fail', 0)} ricerche fallite su "
+        f"{day_stats.get('tok', {})}, nelle 24 ore prima di questo giro {dict(_tok_24h)} (tetto notizie "
+        f"{GROQ_NEWS_TOKEN_CAP}) · Google: {day_stats.get('g_fail', 0)} ricerche fallite su "
         f"{day_stats.get('g_q', 0)}"
     )
 

@@ -296,7 +296,7 @@ NOTIZIE_PER_SQUADRA = 4         # ...al massimo 4 per squadra (conferenze, infor
 # la chiave, oltre il tetto del giro o se Groq non risponde, al suo posto resta la riga ⏱. Nessuna chiamata OddsPapi.
 PERCHE_ON = True
 PERCHE_ORE = 48                 # notizie delle 48 ore prima della lettura (il registro del bot notizie tiene 48 ore)
-PERCHE_PER_SQUADRA = 6          # al massimo 6 notizie per squadra (conferenze, infortuni, formazioni, allenatore)
+PERCHE_PER_SQUADRA = 8          # al massimo 8 notizie per squadra (conferenze, infortuni, formazioni, allenatore)
 PERCHE_MAX_GIRO = 10            # al massimo 10 chiamate Groq per giro
 PERCHE_MAX_CHARS = 90           # il fatto scritto dall'IA, se piu' lungo: tagliato
 GROQ_API_KEY = os.environ.get("GROQ_API_KEY", "").strip()
