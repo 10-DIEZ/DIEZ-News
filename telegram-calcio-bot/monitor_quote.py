@@ -297,7 +297,7 @@ PERCHE_ON = True
 PERCHE_ORE = 48                 # notizie delle 48 ore prima della lettura (il registro del bot notizie tiene 48 ore)
 PERCHE_PER_SQUADRA = 6          # al massimo 6 notizie per squadra (conferenze, infortuni, formazioni, allenatore)
 PERCHE_MAX_GIRO = 10            # al massimo 10 chiamate Groq per giro
-PERCHE_MAX_CHARS = 320          # testo piu' lungo: tagliato
+PERCHE_MAX_CHARS = 220          # motivo scritto dall'IA piu' lungo: tagliato
 GROQ_API_KEY = os.environ.get("GROQ_API_KEY", "").strip()
 GROQ_MODELS = ("openai/gpt-oss-120b", "openai/gpt-oss-20b")     # come il bot notizie: se uno e' al limite, l'altro
 GROQ_ENDPOINT = "https://api.groq.com/openai/v1/chat/completions"
@@ -2283,22 +2283,63 @@ _NO_ANSWER_RE = re.compile(r"mi dispiace|non (?:posso|riesco|sono in grado)|\bso
 PERCHE_SYSTEM = ("Sei un analista di quote di calcio. Spieghi in italiano, in modo semplice e diretto, perché una "
                  "quota si è mossa.")
 PERCHE_RULES = (
-    "Scrivi il motivo più probabile del movimento in 1 o 2 frasi brevi, in tutto al massimo 230 caratteri, in "
-    "italiano semplice e diretto.\n"
+    "Scrivi SOLO il motivo più probabile del movimento, in una frase breve (al massimo 150 caratteri), in italiano "
+    "semplice e diretto. Non ripetere come e quando si è mossa la quota: lo scrivo io prima della tua frase.\n"
     "Regole:\n"
-    "- Comincia da cosa ha fatto la quota e quando, in parole semplici (per esempio «Scesa di colpo sabato "
-    "pomeriggio»). I giorni per esteso, niente numeri di quote.\n"
-    "- Se una notizia dell'elenco può spiegarlo, collegala in poche parole (chi e perché). Usa solo le notizie "
-    "dell'elenco: non inventare giocatori, infortuni o fatti.\n"
-    "- Se nessuna notizia lo spiega, scrivilo e dai l'ipotesi più probabile (formazione, turnover, soldi del "
-    "mercato).\n"
-    "- Niente elenchi, emoji, premesse o consigli di gioco.")
+    "- Se una notizia dell'elenco può spiegarlo, citala in poche parole (chi e perché).\n"
+    "- Usa solo le notizie dell'elenco: non inventare giocatori, infortuni o fatti.\n"
+    "- Se nessuna notizia lo spiega, comincia con «Nessuna notizia lo spiega:» e dai l'ipotesi più probabile "
+    "(formazione, turnover, soldi del mercato).\n"
+    "- Niente elenchi, emoji, premesse, numeri di quote o consigli di gioco.")
 
 
 def _plain(text: str) -> str:
     """Una riga del messaggio senza tag HTML, con i giorni per esteso (per i fatti dati all'IA)."""
     t = html.unescape(re.sub(r"<[^>]+>", "", text or "")).strip()
     return re.sub(r"\b(lun|mar|mer|gio|ven|sab|dom) (\d\d:\d\d)", lambda g: f"{_GIORNI[g[1]]} {g[2]}", t)
+
+
+def quando_parole(t: datetime, ref: datetime) -> str:
+    """Un momento a parole, rispetto a 'ref' (ora di Roma): 'stamattina', 'oggi pomeriggio', 'ieri sera',
+    'giovedì notte'... (la notte fino alle 6 e' del giorno prima)."""
+    loc, r = t.astimezone(ROME), ref.astimezone(ROME)
+    day = loc.date() - timedelta(days=1) if loc.hour < 6 else loc.date()
+    part = "notte" if loc.hour < 6 or loc.hour >= 23 else ("mattina" if loc.hour < 12 else
+                                                          "pomeriggio" if loc.hour < 18 else "sera")
+    ago = (r.date() - day).days
+    if ago == 0:
+        return {"mattina": "stamattina", "sera": "stasera", "notte": "stanotte"}.get(part, "oggi pomeriggio")
+    name = "ieri" if ago == 1 else list(_GIORNI.values())[day.weekday()]
+    return f"{name} {part}"
+
+
+def movimento_frase(an: dict) -> str:
+    """🔎 prima parte: come e quando si e' mossa la quota del segnale principale, a parole, dai dati del grafico
+    (segno) o del QUANDO (gol, GG). Es. 'Salita di colpo oggi pomeriggio'. "" se non si sa."""
+    at = an.get("at") or now_utc()
+    main = next((s for s in an["shown"] if s["fam"] == "side"), None) or \
+        (max(an["shown"], key=lambda s: s["forza"]) if an["shown"] else None)
+    if main is None or main["fam"] == "side":
+        info = an.get("tempo_dati") or {}
+        dopo = info.get("dopo")
+        if not info.get("verb"):
+            if dopo in ("giù", "su"):
+                return f"Ferma fino alle formazioni, poi {'scesa' if dopo == 'giù' else 'salita'}"
+            return {"ferma": "Quota quasi ferma", "su e giù": "Su e giù, adesso come all'apertura"}.get(info.get("kind"), "")
+        word = "Scesa" if info["verb"] == "giù" else "Salita"
+        w1 = quando_parole(info["t"], at)
+        if info["kind"] == "piano piano" and info.get("t2"):
+            w2 = quando_parole(info["t2"], at)
+            txt = f"{word} piano piano " + (w1 if w1 == w2 else f"da {w1} a {w2}")
+        else:
+            txt = f"{word} {info['kind']} {w1}"
+        return txt + {"ancora": ", e ancora dopo le formazioni",
+                      "torna": ", poi un po' indietro dopo le formazioni"}.get(dopo, "")
+    word = {"gol": ("Più gol attesi", "Meno gol attesi"),
+            "gg": ("GG più probabile", "NG più probabile")}[main["fam"]][0 if main["dir"] > 0 else 1]
+    tm = an.get("timing") or {}
+    t = ((tm.get("line") or [None])[0] or tm.get("t_half")) if tm.get("fam") == main["fam"] else None
+    return f"{word}, soprattutto {quando_parole(t, at)}" if t else word
 
 
 def _fact_signal(an: dict, s: dict, N: dict) -> str:
@@ -2376,6 +2417,8 @@ def perche_facts(m: dict, names: dict, an: dict) -> tuple:
                    + " · ".join(_plain(p) for p in an["tempo"]))
     elif quando_text(an, names):
         out.append("Andamento: " + _plain(quando_text(an, names)).replace("⏱ Quando: ", ""))
+    if movimento_frase(an):
+        out.append(f"La frase che scrivo io prima della tua: «{movimento_frase(an)}».")
     if an.get("oa_line"):
         out.append(_plain(an["oa_line"]).replace("🔁 ", ""))
     news = perche_news(m, N, at)
@@ -2434,11 +2477,15 @@ def add_perche(m: dict, names: dict, an: dict) -> dict:
     if not PERCHE_ON or not GROQ_API_KEY or _PERCHE_CALLS[0] >= PERCHE_MAX_GIRO \
             or time.monotonic() - _START > RUN_BUDGET_SECONDS - 40:
         return an
-    chart_block(an, names, m["ko"])             # l'andamento nel tempo (an["tempo"]) per i fatti
+    chart_block(an, names, m["ko"])             # l'andamento nel tempo (an["tempo"], an["tempo_dati"])
     facts, n_news = perche_facts(m, names, an)
     _PERCHE_CALLS[0] += 1
-    an["perche"] = groq_short(PERCHE_SYSTEM, facts + "\n\n" + PERCHE_RULES)
-    print(f"  {names['home']} - {names['away']}: 🔎 perché {'scritto' if an['perche'] else 'non scritto (resta il ⏱)'}"
+    reason = groq_short(PERCHE_SYSTEM, facts + "\n\n" + PERCHE_RULES)
+    mov = movimento_frase(an)                   # come e quando: scritto dal bot, cosi' non e' mai sbagliato
+    if mov and reason.lower().startswith(mov.lower()):          # l'IA l'ha ripetuto: via
+        reason = reason[len(mov):].lstrip(" .,:;-–")
+    an["perche"] = (f"{mov}. {reason[:1].upper()}{reason[1:]}" if mov else reason) if reason else ""
+    print(f"  {names['home']} - {names['away']}: 🔎 perché {'scritto' if reason else 'non scritto (resta il ⏱)'}"
           f" ({n_news} notizie)")
     return an
 
@@ -2576,14 +2623,17 @@ def chart_block(an: dict, names: dict, ko: datetime | None) -> list:
     out = [f"📊 <b>Quota {esc(names[team])}</b>{fav} {fmt_num(pts[0])} → {fmt_num(pts[-1])} "
            f"<i>({when_text(t0)} → {when_text(t1)}, una barra ogni {step})</i>", spark(pts)]
     parts, verb = [], ""
+    info = {"verb": "", "kind": "", "t": None, "t2": None, "dopo": None}     # le stesse cose, per il 🔎
     q0, qend = 1.0 / pts[0], 1.0 / pts[-1]
     qx = 1.0 / ext if ext else qend
     total = abs(qx - q0)
     lo_p, hi_p = min(v for _, v in series), max(v for _, v in series)
     if total < 0.015 and abs(qend - q0) < 0.015:
         parts.append("quota quasi ferma")
+        info["kind"] = "ferma"
     elif abs(qend - q0) < 0.015:
         parts.append(f"su e giù tra {fmt_num(lo_p)} e {fmt_num(hi_p)}, adesso {fmt_num(pts[-1])} come all'apertura")
+        info["kind"] = "su e giù"
     else:
         sgn = 1 if qx > q0 else -1          # probabilita' su = quota giu'
         verb = "giù" if sgn > 0 else "su"
@@ -2607,10 +2657,13 @@ def chart_block(an: dict, names: dict, ko: datetime | None) -> list:
             t80 = next((t for t, v in series if (1.0 / v - q0) * sgn >= 0.8 * total), None)
             if share >= 0.75 or (t20 and t80 and t80 - t20 <= timedelta(hours=3)):
                 parts.append(f"{verb} di colpo {piece}")
+                info.update(verb=verb, kind="di colpo", t=b0)
             elif share >= 0.4 or not t20 or not t80:
                 parts.append(f"{verb} soprattutto {piece}")
+                info.update(verb=verb, kind="soprattutto", t=b0)
             else:
                 parts.append(f"{verb} piano piano da {when_text(t20)} a {when_text(t80)}, il pezzo più grosso {piece}")
+                info.update(verb=verb, kind="piano piano", t=t20, t2=t80)
             if not side and abs(qx - qend) >= 0.2 * total:
                 parts.append(f"poi torna a {fmt_num(pts[-1])}")
     if ko:
@@ -2620,15 +2673,18 @@ def chart_block(an: dict, names: dict, ko: datetime | None) -> list:
             dq = qend - 1.0 / p60
             if abs(dq) < 0.01:
                 parts.append("dopo le formazioni ferma")
+                info["dopo"] = "ferma"
             else:
                 v2 = "giù" if dq > 0 else "su"
                 how = "" if not verb else ("ancora " if v2 == verb else "torna ")
                 parts.append(f"dopo le formazioni {how}{v2} ({fmt_num(p60)} → {fmt_num(pts[-1])})")
+                info["dopo"] = how.strip() or v2
     if side and side.get("ratio", 1.0) < TENUTA_OK and ext and \
             (ext <= min(pts[0], pts[-1]) - 0.01 if falling else ext >= max(pts[0], pts[-1]) + 0.01):
         how = "un po' indietro (forza −1)" if side["ratio"] >= TENUTA_MEZZA else "indietro per più di metà (forza −2)"
         parts.append(f"↩️ era arrivata a {fmt_num(ext)} ({when_text(ext_t)}), poi è tornata {how}")
     an["tempo"] = parts                         # per il 🔎 Perche' (i fatti dati all'IA) e il ↩️ che resta
+    an["tempo_dati"] = info
     an["ritorno"] = next((p for p in parts if p.startswith("↩️")), None)
     if parts:
         out.append("⏱ " + " · ".join(parts))
