@@ -1,6 +1,7 @@
-# Coppe ESPN: ogni giorno scarica le partite di Champions, Europa e Conference League
-# (tiri, tiri in porta, corner, falli, possesso di ogni squadra) e le salva nel ramo 'coppe-dati',
-# separato dai bot: i file dei bot non vengono mai toccati.
+# Coppe DIEZ: ogni mattina scarica le partite di Champions, Europa e Conference League (ESPN), i preliminari
+# (solo da conservare: non entrano nei calcoli) e i campionati da football-data (i 5 + Portogallo, Olanda, Turchia,
+# Belgio, Grecia, Scozia), poi calcola con le formule dei Pace Index i numeri di tutte le squadre delle coppe.
+# Tutto nel ramo 'coppe-dati', separato dai bot: i file dei bot non vengono mai toccati.
 # Gratis: nei repository pubblici i minuti di GitHub Actions non si pagano. Nessuna chiave, nessun account.
 name: Coppe ESPN
 
@@ -10,7 +11,7 @@ on:
   workflow_dispatch:
     inputs:
       storico:
-        description: 'Scaricare anche le stagioni 2024/25 e 2025/26? (si/no)'
+        description: 'Riscaricare da capo le stagioni 2024/25 e 2025/26? (si/no)'
         required: false
         default: 'no'
       tutta:
@@ -28,7 +29,7 @@ concurrency:
 jobs:
   scarica:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 30
     steps:
       - name: Prende il repository
         uses: actions/checkout@v4
@@ -45,66 +46,119 @@ jobs:
             git clean -fdxq
           fi
 
-      - name: Scarica le partite da ESPN
+      - name: Scarica coppe e campionati e calcola i numeri delle squadre
         env:
           STORICO: ${{ github.event.inputs.storico || 'no' }}
           TUTTA: ${{ github.event.inputs.tutta || 'no' }}
         run: |
-          cat > /tmp/espn_coppe.py <<'PY'
-          # Scarica da ESPN le partite di Champions, Europa e Conference League con tiri, tiri in porta,
-          # corner, falli e possesso di ogni squadra. Nessuna chiave, nessun account.
-          # Scrive i CSV nella cartella coppe_espn (ramo 'coppe-dati' del repository).
-          import csv, datetime as dt, json, os, time, urllib.request
+          cat > /tmp/coppe_job.py <<'PY'
+          # Coppe DIEZ - ogni mattina, gratis, senza chiavi:
+          # 1) ESPN: Champions, Europa e Conference League (fase campionato ed eliminazione diretta) e preliminari di luglio-agosto
+          #    (i preliminari si scaricano ma NON entrano nei calcoli: calcio d'agosto, numeri poco affidabili).
+          # 2) football-data.co.uk: i 5 campionati e Portogallo, Olanda, Turchia, Belgio, Grecia, Scozia.
+          # 3) Con le formule dei Pace Index calcola i numeri di tutte le squadre delle coppe sulla stessa scala
+          #    (studio del 28/11/2026, parametri v1) e l'elenco delle prossime partite con almeno una squadra dei 5 campionati.
+          # Scrive tutto nel ramo 'coppe-dati' (cartelle coppe_espn e campionati): i file dei bot non vengono mai toccati.
+          import csv, datetime as dt, difflib, io, json, math, os, time, unicodedata, urllib.request
+          from collections import defaultdict
           from zoneinfo import ZoneInfo
 
-          OUT = "coppe_espn"
-          COPPE = [("Champions League", "uefa.champions"),
-                   ("Europa League", "uefa.europa"),
-                   ("Conference League", "uefa.europa.conf")]
-          STAGIONI = [("2024/25", dt.date(2024, 9, 1), dt.date(2025, 6, 15)),
-                      ("2025/26", dt.date(2025, 9, 1), dt.date(2026, 6, 15)),
-                      ("2026/27", dt.date(2026, 9, 1), dt.date(2027, 6, 15))]
-          CORRENTE = "2026/27"
-          URL = "https://site.api.espn.com/apis/site/v2/sports/soccer/{lg}/scoreboard?dates={d}"
+          OUT, OUT_FD = "coppe_espn", "campionati"
           ROMA = ZoneInfo("Europe/Rome")
+          OGGI = dt.datetime.now(ROMA).date()
+          CORRENTE = "2026/27"
+          STAGIONI = ["2024/25", "2025/26", "2026/27"]
+          COPPE = [("Champions League", "uefa.champions", "uefa.champions_qual", "UCL"),
+                   ("Europa League", "uefa.europa", "uefa.europa_qual", "UEL"),
+                   ("Conference League", "uefa.europa.conf", "uefa.europa.conf_qual", "UECL")]
+          URL = "https://site.api.espn.com/apis/site/v2/sports/soccer/{lg}/scoreboard?dates={d}"
+          URL_FD = "https://www.football-data.co.uk/mmz4281/{cod}/{div}.csv"
+          T5_DIV = {"I1": "Serie A", "E0": "Premier League", "SP1": "LaLiga", "D1": "Bundesliga", "F1": "Ligue 1"}
+          FD_DIV = {"P1": "Portogallo", "N1": "Olanda", "T1": "Turchia", "B1": "Belgio", "G1": "Grecia", "SC0": "Scozia"}
+          PESO_PRELIMINARI = 0.0  # 0 = scaricati ma non usati (decisione del 28/11/2026)
+
           STAT = [("tiri", "totalShots"), ("porta", "shotsOnTarget"), ("corner", "wonCorners"),
                   ("falli", "foulsCommitted"), ("possesso", "possessionPct")]
-          FASI = {"league-phase": "Fase campionato", "knockout-round-playoffs": "Spareggi",
-                  "round-of-16": "Ottavi", "quarterfinals": "Quarti", "semifinals": "Semifinali", "final": "Finale"}
+          FASI = {"league-phase": "Fase campionato", "knockout-round-playoffs": "Spareggi", "round-of-16": "Ottavi",
+                  "quarterfinals": "Quarti", "semifinals": "Semifinali", "final": "Finale",
+                  "first-qualifying-round": "1o turno preliminare", "second-qualifying-round": "2o turno preliminare",
+                  "third-qualifying-round": "3o turno preliminare", "playoff-round": "Spareggi preliminari",
+                  "preliminary-round": "Turno preliminare"}
           COL = (["coppa", "stagione", "fase", "data_ita", "ora_ita", "giocata", "stato", "casa", "ospite",
                   "gol_casa", "gol_ospite"] + [f"{n}_{s}" for n, _ in STAT for s in ("casa", "ospite")]
                  + ["casa_id", "ospite_id", "id_evento"])
-          OGGI = dt.datetime.now(ROMA).date()
-          richieste, errori = 0, []
+          COL_FD = ["Date", "Time", "HomeTeam", "AwayTeam", "FTHG", "FTAG", "HS", "AS", "HST", "AST", "HF", "AF", "HC", "AC"]
+
+          # ---------- modello dei Pace Index (Calc_Prior + Calc_Modello, v64) ----------
+          P = dict(KL=40, K={"tiri": 10, "porta": 15, "corner": 20, "falli": 10, "gol": 10}, PRIOR_SHRINK=6, ESCLUDI_ULTIME=2,
+                   MIN_PREC=100, SCALA=0.4, FORMA_MIN=8, FORMA_CLIP=0.4, FORMA_B={"tiri": 0.3, "porta": 0.23, "corner": 0.2})
+          EV = {"tiri": ("HS", "AS"), "porta": ("HST", "AST"), "corner": ("HC", "AC"), "falli": ("HF", "AF"), "gol": ("FTHG", "FTAG")}
+          EVS = list(EV)
+          R_NB = {"tiri": 24, "porta": 35, "corner": 12, "falli": 150, "gol": 1e6}
+
+          # ---------- parametri coppa v1 (studio 28/11/2026: 774 partite con almeno una squadra dei 5 campionati) ----------
+          PARAMETRI = {
+              "versione": "v1 - 28/11/2026",
+              "formula": "evento = previsione Pace Index (base geometrica dei due campionati, tiri in scala, forma) x c x forza(gruppo squadra) / forza(gruppo avversaria); FD: indici del campionato compressi (indice^gamma); ALTRE: livello del gruppo x storia di coppa",
+              "storia": {"K": P["K"], "peso_stagioni_prima": 0.5, "peso_preliminari": PESO_PRELIMINARI},
+              "c": {"tiri": 1.0271, "porta": 1.058, "corner": 0.9559, "falli": 1.0048, "gol": 1.036},
+              "gamma_FD": {"tiri": 0.6523, "porta": 0.7718, "corner": 0.5738, "falli": 0.9342, "gol": 0.4044},
+              "forza": {
+                  "tiri": {"Serie A": 0.9976, "Premier League": 1.1014, "LaLiga": 1.0261, "Bundesliga": 1.029, "Ligue 1": 1.0044, "FD:P1": 0.8628, "FD:N1": 0.8715, "FD:T1": 0.8861, "FD:B1": 0.8997, "FD:G1": 0.7718, "FD:SC0": 0.6751, "ALTRE:UCL": 0.8328, "ALTRE:UEL": 0.8241, "ALTRE:UECL": 0.807},
+                  "porta": {"Serie A": 1.0063, "Premier League": 1.173, "LaLiga": 1.0028, "Bundesliga": 1.0356, "Ligue 1": 0.9832, "FD:P1": 0.8463, "FD:N1": 0.7933, "FD:T1": 0.869, "FD:B1": 0.8859, "FD:G1": 0.6846, "FD:SC0": 0.683, "ALTRE:UCL": 0.7827, "ALTRE:UEL": 0.8188, "ALTRE:UECL": 0.758},
+                  "corner": {"Serie A": 1.0042, "Premier League": 1.0977, "LaLiga": 1.0062, "Bundesliga": 1.0291, "Ligue 1": 1.0167, "FD:P1": 0.839, "FD:N1": 0.9543, "FD:T1": 0.8704, "FD:B1": 0.8504, "FD:G1": 0.7794, "FD:SC0": 0.7057, "ALTRE:UCL": 0.7885, "ALTRE:UEL": 0.8291, "ALTRE:UECL": 0.8338},
+                  "falli": {"Serie A": 1.002, "Premier League": 1.0085, "LaLiga": 1.0467, "Bundesliga": 1.0501, "Ligue 1": 0.9192, "FD:P1": 0.8975, "FD:N1": 1.0577, "FD:T1": 0.8898, "FD:B1": 1.0665, "FD:G1": 0.9247, "FD:SC0": 1.0124, "ALTRE:UCL": 0.9883, "ALTRE:UEL": 0.9891, "ALTRE:UECL": 0.9773},
+                  "gol": {"Serie A": 0.9643, "Premier League": 1.2528, "LaLiga": 1.0099, "Bundesliga": 0.9839, "Ligue 1": 0.9563, "FD:P1": 0.9989, "FD:N1": 0.8383, "FD:T1": 0.9335, "FD:B1": 0.8537, "FD:G1": 0.8018, "FD:SC0": 0.7218, "ALTRE:UCL": 0.7686, "ALTRE:UEL": 0.7641, "ALTRE:UECL": 0.761}},
+              "dispersione_r": R_NB,
+          }
+
+          # ---------- nomi ESPN -> football-data ----------
+          ALIAS = {"manchester city": "Man City", "manchester united": "Man United", "tottenham hotspur": "Tottenham",
+                   "newcastle united": "Newcastle", "nottingham forest": "Nott'm Forest", "afc bournemouth": "Bournemouth",
+                   "brighton & hove albion": "Brighton", "brighton and hove albion": "Brighton", "west ham united": "West Ham",
+                   "wolverhampton wanderers": "Wolves", "leeds united": "Leeds", "atletico madrid": "Ath Madrid",
+                   "atletico de madrid": "Ath Madrid", "athletic club": "Ath Bilbao", "athletic bilbao": "Ath Bilbao",
+                   "real betis": "Betis", "real sociedad": "Sociedad", "celta vigo": "Celta", "rayo vallecano": "Vallecano",
+                   "espanyol": "Espanol", "bayern munich": "Bayern Munich", "bayern munchen": "Bayern Munich",
+                   "borussia dortmund": "Dortmund", "bayer leverkusen": "Leverkusen", "vfb stuttgart": "Stuttgart",
+                   "eintracht frankfurt": "Ein Frankfurt", "tsg hoffenheim": "Hoffenheim", "1. fc heidenheim 1846": "Heidenheim",
+                   "sc freiburg": "Freiburg", "mainz": "Mainz", "1. fsv mainz 05": "Mainz", "fsv mainz 05": "Mainz",
+                   "borussia monchengladbach": "M'gladbach", "vfl wolfsburg": "Wolfsburg", "werder bremen": "Werder Bremen",
+                   "union berlin": "Union Berlin", "1. fc union berlin": "Union Berlin", "fc augsburg": "Augsburg",
+                   "internazionale": "Inter", "inter milan": "Inter", "ac milan": "Milan", "as roma": "Roma",
+                   "paris saint-germain": "Paris SG", "as monaco": "Monaco", "stade brestois 29": "Brest", "brest": "Brest",
+                   "olympique lyonnais": "Lyon", "ogc nice": "Nice", "olympique de marseille": "Marseille", "stade rennais": "Rennes",
+                   "rc lens": "Lens", "losc lille": "Lille", "rc strasbourg alsace": "Strasbourg", "rb leipzig": "RB Leipzig",
+                   # Portogallo, Olanda, Turchia, Belgio, Grecia, Scozia
+                   "sporting cp": "Sp Lisbon", "fc porto": "Porto", "braga": "Sp Braga", "sporting braga": "Sp Braga",
+                   "vitoria de guimaraes": "Guimaraes", "ajax amsterdam": "Ajax", "feyenoord rotterdam": "Feyenoord",
+                   "az alkmaar": "AZ Alkmaar", "fc twente": "Twente", "fc utrecht": "Utrecht", "nec nijmegen": "Nijmegen",
+                   "psv eindhoven": "PSV Eindhoven", "istanbul basaksehir": "Buyuksehyr", "kaa gent": "Gent", "racing genk": "Genk",
+                   "union st.-gilloise": "St. Gilloise", "cercle brugge ksv": "Cercle Brugge", "sint-truidense": "St Truiden",
+                   "olympiacos": "Olympiakos", "aek athens": "AEK", "heart of midlothian": "Hearts"}
+          NON_T5 = {"sporting cp", "real salt lake", "internacional", "inter escaldes", "sporting braga", "braga", "celtic",
+                    "ajax", "rangers"}
+          richieste = {"ESPN": 0, "football-data": 0}
+          errori = []
 
 
-          def giorni(d1, d2):
-              """Solo i giorni in cui giocano le coppe: martedi, mercoledi, giovedi (+ sabato a maggio-giugno, finali)."""
-              d = d1
-              while d <= d2:
-                  if d.weekday() in (1, 2, 3) or (d.weekday() == 5 and d.month in (5, 6)):
-                      yield d
-                  d += dt.timedelta(days=1)
+          # ---------- utilita' ----------
+          def norm(s):
+              s = unicodedata.normalize("NFKD", s).encode("ascii", "ignore").decode().lower().strip()
+              return " ".join(s.split())
 
 
-          def scarica(lg, d):
-              global richieste
-              url = URL.format(lg=lg, d=d.strftime("%Y%m%d"))
-              if os.environ.get("ESPN_MOCK_DIR"):  # solo per le prove: risposte salvate su disco
-                  p = os.path.join(os.environ["ESPN_MOCK_DIR"], f"{lg}_{d:%Y%m%d}.json")
-                  return json.load(open(p, encoding="utf-8")).get("events", []) if os.path.exists(p) else []
-              for tentativo in range(4):
-                  try:
-                      richieste += 1
-                      req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0 (uso personale)"})
-                      with urllib.request.urlopen(req, timeout=30) as r:
-                          time.sleep(0.25)  # gentile con il sito
-                          return json.load(r).get("events", [])
-                  except Exception as e:  # riprova con attese crescenti (anche se il sito chiede di rallentare)
-                      ultimo = e
-                      time.sleep(5 * (tentativo + 1))
-              errori.append(f"{lg} {d:%d/%m/%Y}: {ultimo}")
-              return None
+          def sigla(stagione):
+              return stagione[2:4] + stagione[5:7]
+
+
+          def stagione_di(d):
+              return f"{d.year}/{str(d.year + 1)[2:]}" if d.month >= 7 else f"{d.year - 1}/{str(d.year)[2:]}"
+
+
+          def prima_stagione(s):
+              y = int(s[:4]) - 1
+              return f"{y}/{str(y + 1)[2:]}"
 
 
           def numero(x):
@@ -116,7 +170,60 @@ jobs:
                   return ""
 
 
-          def riga(ev, coppa, stagione):
+          def scarica_url(url, fonte, mock_env, mock_nome):
+              if os.environ.get(mock_env):  # solo per le prove: file salvati su disco
+                  p = os.path.join(os.environ[mock_env], mock_nome)
+                  return open(p, "rb").read() if os.path.exists(p) else None
+              ultimo = None
+              for tentativo in range(4):
+                  try:
+                      richieste[fonte] += 1
+                      req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0 (uso personale)"})
+                      with urllib.request.urlopen(req, timeout=40) as r:
+                          time.sleep(0.25)  # gentile con il sito
+                          return r.read()
+                  except urllib.error.HTTPError as e:
+                      ultimo = e
+                      if e.code in (400, 404):
+                          break
+                      time.sleep(5 * (tentativo + 1))
+                  except Exception as e:  # riprova con attese crescenti
+                      ultimo = e
+                      time.sleep(5 * (tentativo + 1))
+              errori.append(f"{url}: {ultimo}")
+              return None
+
+
+          # ---------- 1) ESPN ----------
+          def giorni_coppa(d1, d2):
+              """Giorni delle coppe: martedi, mercoledi, giovedi (+ sabato a maggio-giugno, finali)."""
+              d = d1
+              while d <= d2:
+                  if d.weekday() in (1, 2, 3) or (d.weekday() == 5 and d.month in (5, 6)):
+                      yield d
+                  d += dt.timedelta(days=1)
+
+
+          def giorni_preliminari(d1, d2):
+              d = d1
+              while d <= d2:
+                  if d.weekday() in (0, 1, 2, 3, 4):
+                      yield d
+                  d += dt.timedelta(days=1)
+
+
+          def eventi_espn(lg, d):
+              raw = scarica_url(URL.format(lg=lg, d=d.strftime("%Y%m%d")), "ESPN", "ESPN_MOCK_DIR", f"{lg}_{d:%Y%m%d}.json")
+              if raw is None:
+                  return None
+              try:
+                  return json.loads(raw).get("events", [])
+              except ValueError as e:
+                  errori.append(f"ESPN {lg} {d}: risposta non leggibile ({e})")
+                  return None
+
+
+          def riga_espn(ev, coppa, stagione):
               comp = (ev.get("competitions") or [{}])[0]
               squadre = comp.get("competitors") or []
               casa = next((c for c in squadre if c.get("homeAway") == "home"), None)
@@ -141,18 +248,14 @@ jobs:
               return r
 
 
-          def file_stagione(stagione):
-              return os.path.join(OUT, f"partite_{stagione.replace('/', '_')}.csv")
-
-
-          def leggi(path):
+          def leggi_csv_espn(path):
               if not os.path.exists(path):
                   return {}
               with open(path, encoding="utf-8", newline="") as f:
                   return {r["id_evento"]: r for r in csv.DictReader(f)}
 
 
-          def scrivi(path, righe):
+          def scrivi_csv_espn(path, righe):
               ordine = sorted(righe.values(), key=lambda r: (dt.datetime.strptime(r["data_ita"] + r["ora_ita"], "%d/%m/%Y%H:%M"), r["coppa"], r["casa"]))
               with open(path, "w", encoding="utf-8", newline="") as f:
                   w = csv.DictWriter(f, fieldnames=COL)
@@ -160,45 +263,428 @@ jobs:
                   w.writerows(ordine)
 
 
-          def aggiorna(stagione, d1, d2):
-              path = file_stagione(stagione)
-              righe = leggi(path)
-              for coppa, lg in COPPE:
-                  for d in giorni(d1, d2):
-                      eventi = scarica(lg, d)
-                      for ev in eventi or []:
-                          r = riga(ev, coppa, stagione)
+          def aggiorna_espn(path, stagione, quali, giorni):
+              """quali: indice 1 = coppe, 2 = preliminari. Aggiunge o aggiorna le partite dei giorni dati."""
+              righe = leggi_csv_espn(path)
+              for coppa, lg_c, lg_p, _ in COPPE:
+                  lg = lg_c if quali == 1 else lg_p
+                  for d in giorni:
+                      for ev in eventi_espn(lg, d) or []:
+                          r = riga_espn(ev, coppa, stagione)
                           if r and r["id_evento"]:
                               righe[r["id_evento"]] = r
-              scrivi(path, righe)
+              scrivi_csv_espn(path, righe)
               return righe
+
+
+          def finestra_coppe(s):
+              y = int(s[:4])
+              return dt.date(y, 9, 1), dt.date(y + 1, 6, 15)
+
+
+          def finestra_preliminari(s):
+              y = int(s[:4])
+              return dt.date(y, 6, 20), dt.date(y, 8, 31)
+
+
+          def scarica_espn(storico, tutta):
+              coppe, prelim = {}, {}
+              for s in STAGIONI:
+                  for quali, dest, finestra, giorni_f, nome in ((1, coppe, finestra_coppe, giorni_coppa, "partite"),
+                                                                (2, prelim, finestra_preliminari, giorni_preliminari, "preliminari")):
+                      path = os.path.join(OUT, f"{nome}_{s.replace('/', '_')}.csv")
+                      d1, d2 = finestra(s)
+                      if s == CORRENTE:
+                          if os.path.exists(path) and not tutta:
+                              d1 = max(d1, OGGI - dt.timedelta(days=14))  # giro normale: ultime 2 settimane + prossime 3
+                          d2 = min(d2, OGGI + dt.timedelta(days=21))
+                          dest[s] = aggiorna_espn(path, s, quali, list(giorni_f(d1, d2)) if d1 <= d2 else [])
+                      elif storico or not os.path.exists(path):
+                          dest[s] = aggiorna_espn(path, s, quali, list(giorni_f(d1, d2)))
+                      else:
+                          dest[s] = leggi_csv_espn(path)
+              return coppe, prelim
+
+
+          # ---------- 2) football-data ----------
+          def data_fd(x):
+              for fmt in ("%d/%m/%Y", "%d/%m/%y", "%Y-%m-%d"):
+                  try:
+                      return dt.datetime.strptime(x.strip(), fmt).date()
+                  except ValueError:
+                      pass
+              return None
+
+
+          def compatta_fd(raw):
+              """Tiene solo le colonne che servono (file piccoli nel ramo dei dati)."""
+              testo = raw.decode("utf-8-sig", errors="replace")
+              out = []
+              for r in csv.DictReader(io.StringIO(testo)):
+                  if not (r.get("HomeTeam") or "").strip() or not data_fd(r.get("Date") or ""):
+                      continue
+                  out.append({k: (r.get(k) or "").strip() for k in COL_FD})
+              return out
+
+
+          def scarica_campionati():
+              """Stagioni passate: una volta sola (restano nel ramo). Stagione in corso: ogni giorno."""
+              stato = {}
+              os.makedirs(OUT_FD, exist_ok=True)
+              stagioni_fd = [prima_stagione(STAGIONI[0])] + STAGIONI
+              for div in list(T5_DIV) + list(FD_DIV):
+                  for s in stagioni_fd:
+                      path = os.path.join(OUT_FD, f"{div}_{sigla(s)}.csv")
+                      if s != CORRENTE and os.path.exists(path):
+                          continue
+                      raw = scarica_url(URL_FD.format(cod=sigla(s), div=div), "football-data", "FD_MOCK_DIR", f"{div}_{sigla(s)}.csv")
+                      if raw is None:
+                          stato[(div, s)] = "non scaricato (resta quello di prima)" if os.path.exists(path) else "non disponibile"
+                          continue
+                      righe = compatta_fd(raw)
+                      if not righe and os.path.exists(path):
+                          stato[(div, s)] = "file vuoto sul sito (resta quello di prima)"
+                          continue
+                      with open(path, "w", encoding="utf-8", newline="") as f:
+                          w = csv.DictWriter(f, fieldnames=COL_FD)
+                          w.writeheader()
+                          w.writerows(righe)
+              return stato
+
+
+          def carica_campionati():
+              dati = {}
+              for div in list(T5_DIV) + list(FD_DIV):
+                  for s in [prima_stagione(STAGIONI[0])] + STAGIONI:
+                      path = os.path.join(OUT_FD, f"{div}_{sigla(s)}.csv")
+                      partite = []
+                      if os.path.exists(path):
+                          for r in csv.DictReader(open(path, encoding="utf-8")):
+                              d = data_fd(r["Date"])
+                              m = {"date": d, "time": r.get("Time") or "", "home": r["HomeTeam"], "away": r["AwayTeam"]}
+                              try:
+                                  for k in ("FTHG", "FTAG", "HS", "AS", "HST", "AST", "HF", "AF", "HC", "AC"):
+                                      m[k] = float(r[k])
+                              except (ValueError, TypeError):
+                                  continue
+                              partite.append(m)
+                      partite.sort(key=lambda m: (m["date"], m["time"]))
+                      dati[(div, s)] = partite
+              return dati
+
+
+          # ---------- 3) modello ----------
+          def prior(prec, squadre_ora, cur_fallback=None):
+              """Livello delle squadre nella stagione scorsa (Calc_Prior)."""
+              dopo, cnt = [], defaultdict(int)
+              for m in reversed(prec):
+                  dopo.append((cnt[m["home"]], cnt[m["away"]]))
+                  cnt[m["home"]] += 1
+                  cnt[m["away"]] += 1
+              dopo.reverse()
+              tenute = [m for m, (a, b) in zip(prec, dopo) if a >= P["ESCLUDI_ULTIME"] and b >= P["ESCLUDI_ULTIME"]]
+              Q, R = {}, {}
+              usa = len(tenute) >= P["MIN_PREC"]
+              for e, (h, a) in EV.items():
+                  if usa:
+                      Q[e] = sum(m[h] for m in tenute) / len(tenute)
+                      R[e] = sum(m[a] for m in tenute) / len(tenute)
+                  else:
+                      Q[e], R[e] = cur_fallback[e] if cur_fallback else (1.0, 1.0)
+              lv = {}
+              squadre_prec = sorted({m["home"] for m in prec} | {m["away"] for m in prec})
+              for t in squadre_prec:
+                  V = sum(1 for m in tenute if t in (m["home"], m["away"]))
+                  d = {}
+                  for e, (h, a) in EV.items():
+                      att = sum(m[h] / Q[e] for m in tenute if m["home"] == t) + sum(m[a] / R[e] for m in tenute if m["away"] == t)
+                      dif = sum(m[a] / R[e] for m in tenute if m["home"] == t) + sum(m[h] / Q[e] for m in tenute if m["away"] == t)
+                      d[e] = ((att + P["PRIOR_SHRINK"]) / (V + P["PRIOR_SHRINK"]), (dif + P["PRIOR_SHRINK"]) / (V + P["PRIOR_SHRINK"]))
+                  lv[t] = d
+              retro = [t for t in squadre_prec if t not in squadre_ora]
+              media_retro = {e: (sum(lv[t][e][0] for t in retro) / len(retro), sum(lv[t][e][1] for t in retro) / len(retro)) if retro else (1, 1) for e in EV}
+              part = {t: ({e: (1.0, 1.0) for e in EV} if not usa else lv.get(t, media_retro)) for t in squadre_ora}
+              return {"Q": Q, "R": R, "part": part, "usa": usa}
+
+
+          def stato(cur, pr, squadre):
+              """Medie frenate e indici attacco/difesa (Calc_Modello) con le partite 'cur' (gia' filtrate per data)."""
+              n = len(cur)
+              media = {}
+              for e, (h, a) in EV.items():
+                  media[e] = ((sum(m[h] for m in cur) + P["KL"] * pr["Q"][e]) / (n + P["KL"]),
+                              (sum(m[a] for m in cur) + P["KL"] * pr["R"][e]) / (n + P["KL"]))
+              idx, forma, gare = {}, {}, {}
+              for t in squadre:
+                  casa = [m for m in cur if m["home"] == t]
+                  fuori = [m for m in cur if m["away"] == t]
+                  nt = len(casa) + len(fuori)
+                  gare[t] = nt
+                  d = {}
+                  for e, (h, a) in EV.items():
+                      K = P["K"][e]
+                      pa, pd = pr["part"][t][e]
+                      att = sum(m[h] for m in casa) / media[e][0] + sum(m[a] for m in fuori) / media[e][1]
+                      dif = sum(m[a] for m in casa) / media[e][1] + sum(m[h] for m in fuori) / media[e][0]
+                      d[e] = ((att + K * pa) / (nt + K), (dif + K * pd) / (nt + K))
+                  idx[t] = d
+                  tutte = sorted(casa + fuori, key=lambda m: (m["date"], m["time"]))
+                  if nt >= P["FORMA_MIN"]:
+                      fatti = [m["HS"] if m["home"] == t else m["AS"] for m in tutte]
+                      subiti = [m["AS"] if m["home"] == t else m["HS"] for m in tutte]
+                      S = (sum(fatti[-5:]) / 5) / (sum(fatti) / nt) - 1 if sum(fatti) > 0 else 0
+                      T = (sum(subiti[-5:]) / 5) / (sum(subiti) / nt) - 1 if sum(subiti) > 0 else 0
+                      forma[t] = (S, T)
+                  else:
+                      forma[t] = None
+              return {"media": media, "idx": idx, "forma": forma, "gare": gare}
+
+
+          class Stati:
+              """Stato di ogni campionato al giorno prima di una data (con memoria)."""
+              def __init__(self, dati):
+                  self.dati, self.cache_pr, self.cache_st = dati, {}, {}
+
+              def squadre(self, div, s):
+                  cur = self.dati.get((div, s), [])
+                  return sorted({m["home"] for m in cur} | {m["away"] for m in cur})
+
+              def get(self, div, s, data):
+                  k = (div, s, data)
+                  if k not in self.cache_st:
+                      cur = self.dati.get((div, s), [])
+                      prec = self.dati.get((div, prima_stagione(s)), [])
+                      squadre = self.squadre(div, s)
+                      if not squadre:
+                          self.cache_st[k] = None
+                          return None
+                      if (div, s) not in self.cache_pr:
+                          self.cache_pr[(div, s)] = prior(prec, squadre)
+                      pr = self.cache_pr[(div, s)]
+                      prima = [m for m in cur if m["date"] < data]
+                      if not pr["usa"]:  # stagione scorsa assente o troppo corta: medie della stagione in corso
+                          if len(prima) < 60:
+                              self.cache_st[k] = None
+                              return None
+                          fb = {e: (sum(m[h] for m in prima) / len(prima), sum(m[a] for m in prima) / len(prima)) for e, (h, a) in EV.items()}
+                          pr = prior(prec, squadre, cur_fallback=fb)
+                      self.cache_st[k] = stato(prima, pr, squadre)
+                  return self.cache_st[k]
+
+
+          def previsione(st_t, t, st_o, o, casa, coppa_media):
+              """Previsione Pace Index della squadra t contro o (base geometrica dei due campionati, tiri in scala, forma).
+              Squadra senza campionato (st None): indici 1 e base del campionato dell'altra."""
+              lato = 0 if casa else 1
+              out = {}
+              for e in EVS:
+                  mT = st_t["media"][e][lato] if st_t else None
+                  mO = st_o["media"][e][lato] if st_o else None
+                  b = math.sqrt(mT * mO) if (mT and mO) else (mT or mO or coppa_media[e][lato])
+                  a = st_t["idx"][t][e][0] if st_t else 1.0
+                  d = st_o["idx"][o][e][1] if st_o else 1.0
+                  out[e] = b * a * d
+              rif = st_t["media"] if st_t else (st_o["media"] if st_o else coppa_media)
+              for e in ("porta", "corner"):
+                  g = out["tiri"] * rif[e][lato] / rif["tiri"][lato]
+                  out[e] = (1 - P["SCALA"]) * out[e] + P["SCALA"] * g
+              I = 0.0
+              if st_t and st_o and st_t["forma"][t] is not None and st_o["forma"][o] is not None:
+                  I = max(-P["FORMA_CLIP"], min(P["FORMA_CLIP"], (st_t["forma"][t][0] + st_o["forma"][o][1]) / 2))
+              for e, bb in P["FORMA_B"].items():
+                  out[e] *= math.exp(bb * I)
+              return out
+
+
+          def scala_coppa(pred, e, info_t, info_o):
+              """Fattore coppa: c x forza gruppo squadra / forza gruppo avversaria; indici FD compressi."""
+              f = PARAMETRI["c"][e] * PARAMETRI["forza"][e][info_t["gruppo"]] / PARAMETRI["forza"][e][info_o["gruppo"]]
+              g = PARAMETRI["gamma_FD"][e] - 1
+              if info_t["classe"] == "FD":
+                  f *= info_t["att"][e] ** g
+              if info_o["classe"] == "FD":
+                  f *= info_o["dif"][e] ** g
+              return pred * f
+
+
+          # ---------- classi delle squadre (T5 / FD / ALTRE) ----------
+          class Classi:
+              def __init__(self, stati):
+                  self.st, self.cache = stati, {}
+
+              def trova(self, nome, s):
+                  if (nome, s) in self.cache:
+                      return self.cache[(nome, s)]
+                  n = norm(nome)
+                  ris = None
+                  for divs, classe, cutoff in ((T5_DIV, "T5", 0.9), (FD_DIV, "FD", 0.88)):
+                      sq = {t: div for div in divs for t in self.st.squadre(div, s)}
+                      if classe == "T5" and n in NON_T5:
+                          continue
+                      if n in ALIAS and ALIAS[n] in sq:
+                          ris = (classe, sq[ALIAS[n]], ALIAS[n]); break
+                      dirette = {norm(t): t for t in sq}
+                      if n in dirette:
+                          ris = (classe, sq[dirette[n]], dirette[n]); break
+                      b = difflib.get_close_matches(n, list(dirette), n=1, cutoff=cutoff)
+                      if b:
+                          ris = (classe, sq[dirette[b[0]]], dirette[b[0]]); break
+                  self.cache[(nome, s)] = ris or ("ALTRE", "", "")
+                  return self.cache[(nome, s)]
+
+
+          def info_squadra(classi, stati, nome, s, data, sigla_coppa):
+              classe, div, fdname = classi.trova(nome, s)
+              st = stati.get(div, s, data) if classe in ("T5", "FD") else None
+              if classe in ("T5", "FD") and (st is None or fdname not in st["idx"]):
+                  classe, st = "ALTRE", None  # campionato senza dati affidabili a quella data
+              gruppo = (T5_DIV[div] if classe == "T5" else ("FD:" + div if classe == "FD" else "ALTRE:" + sigla_coppa))
+              return {"nome": nome, "classe": classe, "div": div if st else "", "fd": fdname if st else "", "st": st, "gruppo": gruppo,
+                      "att": {e: st["idx"][fdname][e][0] for e in EVS} if st else {e: 1.0 for e in EVS},
+                      "dif": {e: st["idx"][fdname][e][1] for e in EVS} if st else {e: 1.0 for e in EVS}}
+
+
+          def media_coppa(stati, s, data):
+              """Media geometrica dei 5 campionati (per le partite tra due squadre senza campionato)."""
+              sts = [stati.get(div, s, data) for div in T5_DIV]
+              sts = [x for x in sts if x]
+              if not sts:
+                  return {e: (1.0, 1.0) for e in EVS}
+              return {e: tuple(math.exp(sum(math.log(x["media"][e][k]) for x in sts) / len(sts)) for k in (0, 1)) for e in EVS}
+
+
+          def sigla_coppa(coppa):
+              return next(c[3] for c in COPPE if c[0] == coppa)
+
+
+          # ---------- 4) numeri delle squadre ----------
+          def calcola(coppe, prelim, dati):
+              stati = Stati(dati)
+              classi = Classi(stati)
+              # storia di coppa: rapporto veri/attesi di ogni partita giocata a 90 minuti (preliminari con PESO_PRELIMINARI)
+              storia = defaultdict(list)  # id squadra -> [(data, stagione, peso_base, rapporti attacco, rapporti difesa)]
+              fonti = [(coppe, 1.0)] + ([(prelim, PESO_PRELIMINARI)] if PESO_PRELIMINARI > 0 else [])
+              for gruppo_righe, peso in fonti:
+                  for s, righe in gruppo_righe.items():
+                      for r in righe.values():
+                          if r["giocata"] != "si" or r["stato"] != "STATUS_FULL_TIME" or not r["tiri_casa"] or not r["tiri_ospite"]:
+                              continue
+                          d = dt.datetime.strptime(r["data_ita"], "%d/%m/%Y").date()
+                          if d >= OGGI:
+                              continue
+                          sc = sigla_coppa(r["coppa"])
+                          cm = media_coppa(stati, s, d)
+                          A = info_squadra(classi, stati, r["casa"], s, d, sc)
+                          B = info_squadra(classi, stati, r["ospite"], s, d, sc)
+                          vero = {lato: {"tiri": float(r[f"tiri_{lato}"]), "porta": float(r[f"porta_{lato}"]), "corner": float(r[f"corner_{lato}"]),
+                                         "falli": float(r[f"falli_{lato}"]), "gol": float(r[f"gol_{lato}"] or 0)} for lato in ("casa", "ospite")}
+                          pc = previsione(A["st"], A["fd"], B["st"], B["fd"], True, cm)
+                          po = previsione(B["st"], B["fd"], A["st"], A["fd"], False, cm)
+                          mu_c = {e: scala_coppa(pc[e], e, A, B) for e in EVS}
+                          mu_o = {e: scala_coppa(po[e], e, B, A) for e in EVS}
+                          for sid, lato_f, lato_s, mf, ms in ((r["casa_id"], "casa", "ospite", mu_c, mu_o), (r["ospite_id"], "ospite", "casa", mu_o, mu_c)):
+                              storia[sid].append((d, s, peso, {e: vero[lato_f][e] / mf[e] for e in EVS}, {e: vero[lato_s][e] / ms[e] for e in EVS}))
+              # squadre della stagione in corso (coppe) con i loro numeri di oggi
+              out, nomi_altre = [], set()
+              corr = coppe.get(CORRENTE, {})
+              viste = {}
+              for r in corr.values():
+                  for nome, sid in ((r["casa"], r["casa_id"]), (r["ospite"], r["ospite_id"])):
+                      viste.setdefault(sid, (nome, sigla_coppa(r["coppa"]), r["coppa"]))
+              for sid, (nome, sc, coppa) in sorted(viste.items(), key=lambda x: x[1][0]):
+                  I = info_squadra(classi, stati, nome, CORRENTE, OGGI, sc)
+                  st = I["st"]
+                  rig = {"squadra_espn": nome, "id_espn": sid, "coppa": coppa, "classe": I["classe"], "campionato": (T5_DIV.get(I["div"]) or FD_DIV.get(I["div"]) or ""),
+                         "nome_football_data": I["fd"], "gruppo": I["gruppo"], "partite_campionato": st["gare"][I["fd"]] if st else 0}
+                  # storia di coppa (solo per le ALTRE entra nella previsione)
+                  K = P["K"]
+                  ev = [x for x in storia.get(sid, []) if x[0] < OGGI]
+                  pesi = [x[2] * (1.0 if x[1] == CORRENTE else PARAMETRI["storia"]["peso_stagioni_prima"]) for x in ev]
+                  rig["partite_coppa"] = len(ev)
+                  rig["peso_storia"] = round(sum(pesi), 2)
+                  for e in EVS:
+                      if I["classe"] == "ALTRE":
+                          sa = sum(w * x[3][e] for w, x in zip(pesi, ev)); sd = sum(w * x[4][e] for w, x in zip(pesi, ev)); W = sum(pesi)
+                          rig[f"storia_att_{e}"] = round((sa + K[e]) / (W + K[e]), 4)
+                          rig[f"storia_dif_{e}"] = round((sd + K[e]) / (W + K[e]), 4)
+                      else:
+                          rig[f"storia_att_{e}"] = rig[f"storia_dif_{e}"] = 1.0
+                      rig[f"att_{e}"] = round(I["att"][e], 4)
+                      rig[f"dif_{e}"] = round(I["dif"][e], 4)
+                      rig[f"media_casa_{e}"] = round(st["media"][e][0], 4) if st else ""
+                      rig[f"media_fuori_{e}"] = round(st["media"][e][1], 4) if st else ""
+                  f = st["forma"][I["fd"]] if st else None
+                  rig["forma_fatti"] = round(f[0], 4) if f else ""
+                  rig["forma_subiti"] = round(f[1], 4) if f else ""
+                  if I["classe"] == "ALTRE":
+                      nomi_altre.add(nome)
+                  out.append(rig)
+              # prossime partite con almeno una squadra dei 5 campionati
+              classe_di = {r["id_espn"]: r["classe"] for r in out}
+              prossime = []
+              for r in sorted(corr.values(), key=lambda r: dt.datetime.strptime(r["data_ita"] + r["ora_ita"], "%d/%m/%Y%H:%M")):
+                  d = dt.datetime.strptime(r["data_ita"], "%d/%m/%Y").date()
+                  if r["giocata"] == "si" or d < OGGI:
+                      continue
+                  cc, co = classe_di.get(r["casa_id"], "ALTRE"), classe_di.get(r["ospite_id"], "ALTRE")
+                  if "T5" not in (cc, co):
+                      continue
+                  prossime.append({"data_ita": r["data_ita"], "ora_ita": r["ora_ita"], "coppa": r["coppa"], "fase": r["fase"],
+                                   "casa": r["casa"], "ospite": r["ospite"], "classe_casa": cc, "classe_ospite": co,
+                                   "tipo": "-".join(sorted((cc, co), key=lambda x: ["T5", "FD", "ALTRE"].index(x))),
+                                   "casa_id": r["casa_id"], "ospite_id": r["ospite_id"], "id_evento": r["id_evento"]})
+              return out, prossime, sorted(nomi_altre)
+
+
+          def scrivi(path, righe, campi=None):
+              campi = campi or (list(righe[0].keys()) if righe else ["vuoto"])
+              with open(path, "w", encoding="utf-8", newline="") as f:
+                  w = csv.DictWriter(f, fieldnames=campi)
+                  w.writeheader()
+                  w.writerows(righe)
 
 
           def main():
               os.makedirs(OUT, exist_ok=True)
-              storico = os.environ.get("STORICO", "no").strip().lower() in ("si", "sì", "yes", "1")
-              tutte = {}
-              for stagione, d1, d2 in STAGIONI:
-                  path = file_stagione(stagione)
-                  if stagione == CORRENTE:
-                      if os.path.exists(path) and os.environ.get("TUTTA", "no").lower() not in ("si", "sì"):
-                          d1 = max(d1, OGGI - dt.timedelta(days=14))  # giro normale: ultime 2 settimane + prossime 3
-                      tutte[stagione] = aggiorna(stagione, d1, min(d2, OGGI + dt.timedelta(days=21)))
-                  elif storico or not os.path.exists(path):
-                      tutte[stagione] = aggiorna(stagione, d1, d2)
-                  else:
-                      tutte[stagione] = leggi(path)
-              # riassunto per controllare a colpo d'occhio
-              out = [f"Aggiornato: {dt.datetime.now(ROMA):%d/%m/%Y %H:%M} (ora italiana) - richieste a ESPN: {richieste}"]
-              for stagione, righe in tutte.items():
-                  for coppa, _ in COPPE:
-                      rr = [r for r in righe.values() if r["coppa"] == coppa]
-                      gioc = [r for r in rr if r["giocata"] == "si"]
-                      senza = [r for r in rr if r["giocata"] != "si" and dt.datetime.strptime(r["data_ita"], "%d/%m/%Y").date() < OGGI]
-                      vuote = [r for r in gioc if not r["tiri_casa"]]
-                      out.append(f"{stagione} {coppa}: {len(rr)} partite, {len(gioc)} giocate, {len(vuote)} giocate senza statistiche, {len(senza)} passate ma ancora 'da giocare' su ESPN")
-                      for r in (senza + vuote)[:30]:
-                          out.append(f"   - {r['data_ita']} {r['casa']} - {r['ospite']} ({r['stato']})")
+              si = lambda x: os.environ.get(x, "no").strip().lower() in ("si", "sì", "yes", "1")
+              coppe, prelim = scarica_espn(si("STORICO"), si("TUTTA"))
+              stato_fd = scarica_campionati()
+              dati = carica_campionati()
+              squadre, prossime, altre = calcola(coppe, prelim, dati)
+              scrivi(os.path.join(OUT, "squadre_coppe.csv"), squadre)
+              scrivi(os.path.join(OUT, "prossime_partite.csv"), prossime,
+                     ["data_ita", "ora_ita", "coppa", "fase", "casa", "ospite", "classe_casa", "classe_ospite", "tipo", "casa_id", "ospite_id", "id_evento"])
+              with open(os.path.join(OUT, "parametri_coppa.json"), "w", encoding="utf-8") as f:
+                  json.dump(PARAMETRI, f, ensure_ascii=False, indent=1)
+              # riassunto da leggere a colpo d'occhio
+              out = [f"Aggiornato: {dt.datetime.now(ROMA):%d/%m/%Y %H:%M} (ora italiana) - richieste ESPN {richieste['ESPN']}, football-data {richieste['football-data']}"]
+              for nome_gruppo, gruppo in (("coppe", coppe), ("preliminari (scaricati, non usati nei calcoli)", prelim)):
+                  out.append(f"-- {nome_gruppo}")
+                  for s, righe in gruppo.items():
+                      for coppa, *_ in COPPE:
+                          rr = [r for r in righe.values() if r["coppa"] == coppa]
+                          gioc = [r for r in rr if r["giocata"] == "si"]
+                          senza = [r for r in rr if r["giocata"] != "si" and dt.datetime.strptime(r["data_ita"], "%d/%m/%Y").date() < OGGI]
+                          vuote = [r for r in gioc if not r["tiri_casa"]]
+                          out.append(f"{s} {coppa}: {len(rr)} partite, {len(gioc)} giocate, {len(vuote)} giocate senza statistiche, {len(senza)} passate ma ancora 'da giocare' su ESPN")
+                          for r in (senza + vuote)[:20]:
+                              out.append(f"   - {r['data_ita']} {r['casa']} - {r['ospite']} ({r['stato']})")
+              out.append("-- campionati football-data (partite con le statistiche, ultima data)")
+              for (div, s), partite in sorted(dati.items()):
+                  if s in (CORRENTE, prima_stagione(CORRENTE)):
+                      nome = T5_DIV.get(div) or FD_DIV.get(div)
+                      ult = max((m["date"] for m in partite), default=None)
+                      nota = stato_fd.get((div, s), "")
+                      out.append(f"{nome} {s}: {len(partite)} partite, ultima {ult:%d/%m/%Y}" + (f" ({nota})" if nota else "") if ult else f"{nome} {s}: nessuna partita {nota}")
+              conta = defaultdict(int)
+              for r in squadre:
+                  conta[r["classe"]] += 1
+              out.append(f"-- squadre delle coppe {CORRENTE}: {len(squadre)} (5 campionati {conta['T5']}, Portogallo/Olanda/Turchia/Belgio/Grecia/Scozia {conta['FD']}, altre {conta['ALTRE']})")
+              out.append("   altre (controllare che non ci sia una squadra dei 5 campionati o di football-data): " + ", ".join(altre))
+              tipi = defaultdict(int)
+              for r in prossime:
+                  tipi[r["tipo"]] += 1
+              out.append(f"-- prossime partite con almeno una squadra dei 5 campionati: {len(prossime)} " + str(dict(tipi)))
               out += ["Errori:"] + (errori or ["nessuno"])
               with open(os.path.join(OUT, "stato.txt"), "w", encoding="utf-8") as f:
                   f.write("\n".join(out) + "\n")
@@ -208,14 +694,14 @@ jobs:
           if __name__ == "__main__":
               main()
           PY
-          python3 /tmp/espn_coppe.py
+          python3 /tmp/coppe_job.py
 
       - name: Salva i dati nel ramo coppe-dati
         run: |
-          git add -A coppe_espn
+          git add -A coppe_espn campionati
           if git diff --cached --quiet; then
-            echo "Niente di nuovo da salvare"
+            echo "Nessun cambiamento"
           else
-            git commit -q -m "Coppe ESPN: dati aggiornati [skip ci]"
+            git commit -q -m "Coppe: dati aggiornati [skip ci]"
             git push -q origin coppe-dati
           fi
