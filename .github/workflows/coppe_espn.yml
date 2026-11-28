@@ -1,0 +1,221 @@
+# Coppe ESPN: ogni giorno scarica le partite di Champions, Europa e Conference League
+# (tiri, tiri in porta, corner, falli, possesso di ogni squadra) e le salva nel ramo 'coppe-dati',
+# separato dai bot: i file dei bot non vengono mai toccati.
+# Gratis: nei repository pubblici i minuti di GitHub Actions non si pagano. Nessuna chiave, nessun account.
+name: Coppe ESPN
+
+on:
+  schedule:
+    - cron: '23 5 * * *'   # ogni giorno alle 05:23 UTC (06:23 in Italia d'inverno, 07:23 d'estate)
+  workflow_dispatch:
+    inputs:
+      storico:
+        description: 'Scaricare anche le stagioni 2024/25 e 2025/26? (si/no)'
+        required: false
+        default: 'no'
+      tutta:
+        description: 'Riscaricare tutta la stagione in corso? (si/no)'
+        required: false
+        default: 'no'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: coppe-espn
+  cancel-in-progress: false
+
+jobs:
+  scarica:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Prende il repository
+        uses: actions/checkout@v4
+
+      - name: Passa al ramo dei dati (separato dai bot)
+        run: |
+          git config user.name "coppe-espn"
+          git config user.email "coppe-espn@users.noreply.github.com"
+          if git fetch --depth=1 origin coppe-dati; then
+            git checkout -B coppe-dati FETCH_HEAD
+          else
+            git checkout --orphan coppe-dati
+            git rm -rf --quiet . || true
+            git clean -fdxq
+          fi
+
+      - name: Scarica le partite da ESPN
+        env:
+          STORICO: ${{ github.event.inputs.storico || 'no' }}
+          TUTTA: ${{ github.event.inputs.tutta || 'no' }}
+        run: |
+          cat > /tmp/espn_coppe.py <<'PY'
+          # Scarica da ESPN le partite di Champions, Europa e Conference League con tiri, tiri in porta,
+          # corner, falli e possesso di ogni squadra. Nessuna chiave, nessun account.
+          # Scrive i CSV nella cartella coppe_espn (ramo 'coppe-dati' del repository).
+          import csv, datetime as dt, json, os, time, urllib.request
+          from zoneinfo import ZoneInfo
+
+          OUT = "coppe_espn"
+          COPPE = [("Champions League", "uefa.champions"),
+                   ("Europa League", "uefa.europa"),
+                   ("Conference League", "uefa.europa.conf")]
+          STAGIONI = [("2024/25", dt.date(2024, 9, 1), dt.date(2025, 6, 15)),
+                      ("2025/26", dt.date(2025, 9, 1), dt.date(2026, 6, 15)),
+                      ("2026/27", dt.date(2026, 9, 1), dt.date(2027, 6, 15))]
+          CORRENTE = "2026/27"
+          URL = "https://site.api.espn.com/apis/site/v2/sports/soccer/{lg}/scoreboard?dates={d}"
+          ROMA = ZoneInfo("Europe/Rome")
+          STAT = [("tiri", "totalShots"), ("porta", "shotsOnTarget"), ("corner", "wonCorners"),
+                  ("falli", "foulsCommitted"), ("possesso", "possessionPct")]
+          FASI = {"league-phase": "Fase campionato", "knockout-round-playoffs": "Spareggi",
+                  "round-of-16": "Ottavi", "quarterfinals": "Quarti", "semifinals": "Semifinali", "final": "Finale"}
+          COL = (["coppa", "stagione", "fase", "data_ita", "ora_ita", "giocata", "stato", "casa", "ospite",
+                  "gol_casa", "gol_ospite"] + [f"{n}_{s}" for n, _ in STAT for s in ("casa", "ospite")]
+                 + ["casa_id", "ospite_id", "id_evento"])
+          OGGI = dt.datetime.now(ROMA).date()
+          richieste, errori = 0, []
+
+
+          def giorni(d1, d2):
+              """Solo i giorni in cui giocano le coppe: martedi, mercoledi, giovedi (+ sabato a maggio-giugno, finali)."""
+              d = d1
+              while d <= d2:
+                  if d.weekday() in (1, 2, 3) or (d.weekday() == 5 and d.month in (5, 6)):
+                      yield d
+                  d += dt.timedelta(days=1)
+
+
+          def scarica(lg, d):
+              global richieste
+              url = URL.format(lg=lg, d=d.strftime("%Y%m%d"))
+              if os.environ.get("ESPN_MOCK_DIR"):  # solo per le prove: risposte salvate su disco
+                  p = os.path.join(os.environ["ESPN_MOCK_DIR"], f"{lg}_{d:%Y%m%d}.json")
+                  return json.load(open(p, encoding="utf-8")).get("events", []) if os.path.exists(p) else []
+              for tentativo in range(4):
+                  try:
+                      richieste += 1
+                      req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0 (uso personale)"})
+                      with urllib.request.urlopen(req, timeout=30) as r:
+                          time.sleep(0.25)  # gentile con il sito
+                          return json.load(r).get("events", [])
+                  except Exception as e:  # riprova con attese crescenti (anche se il sito chiede di rallentare)
+                      ultimo = e
+                      time.sleep(5 * (tentativo + 1))
+              errori.append(f"{lg} {d:%d/%m/%Y}: {ultimo}")
+              return None
+
+
+          def numero(x):
+              x = (x or "").strip().replace(",", ".")
+              try:
+                  float(x)
+                  return x
+              except ValueError:
+                  return ""
+
+
+          def riga(ev, coppa, stagione):
+              comp = (ev.get("competitions") or [{}])[0]
+              squadre = comp.get("competitors") or []
+              casa = next((c for c in squadre if c.get("homeAway") == "home"), None)
+              osp = next((c for c in squadre if c.get("homeAway") == "away"), None)
+              if not casa or not osp or not ev.get("date"):
+                  return None
+              quando = dt.datetime.fromisoformat(ev["date"].replace("Z", "+00:00")).astimezone(ROMA)
+              tipo = ((comp.get("status") or ev.get("status") or {}).get("type") or {})
+              giocata = bool(tipo.get("completed"))
+              st = {s: {x.get("name"): x.get("displayValue") for x in (c.get("statistics") or [])} for s, c in (("casa", casa), ("ospite", osp))}
+              slug = (ev.get("season") or {}).get("slug", "")
+              r = {"coppa": coppa, "stagione": stagione, "fase": FASI.get(slug, slug),
+                   "data_ita": quando.strftime("%d/%m/%Y"), "ora_ita": quando.strftime("%H:%M"),
+                   "giocata": "si" if giocata else "no", "stato": tipo.get("name", ""),
+                   "casa": casa.get("team", {}).get("displayName", ""), "ospite": osp.get("team", {}).get("displayName", ""),
+                   "gol_casa": numero(casa.get("score")) if giocata else "", "gol_ospite": numero(osp.get("score")) if giocata else "",
+                   "casa_id": casa.get("team", {}).get("id", ""), "ospite_id": osp.get("team", {}).get("id", ""),
+                   "id_evento": ev.get("id", "")}
+              for n, k in STAT:
+                  for s in ("casa", "ospite"):
+                      r[f"{n}_{s}"] = numero(st[s].get(k)) if giocata else ""
+              return r
+
+
+          def file_stagione(stagione):
+              return os.path.join(OUT, f"partite_{stagione.replace('/', '_')}.csv")
+
+
+          def leggi(path):
+              if not os.path.exists(path):
+                  return {}
+              with open(path, encoding="utf-8", newline="") as f:
+                  return {r["id_evento"]: r for r in csv.DictReader(f)}
+
+
+          def scrivi(path, righe):
+              ordine = sorted(righe.values(), key=lambda r: (dt.datetime.strptime(r["data_ita"] + r["ora_ita"], "%d/%m/%Y%H:%M"), r["coppa"], r["casa"]))
+              with open(path, "w", encoding="utf-8", newline="") as f:
+                  w = csv.DictWriter(f, fieldnames=COL)
+                  w.writeheader()
+                  w.writerows(ordine)
+
+
+          def aggiorna(stagione, d1, d2):
+              path = file_stagione(stagione)
+              righe = leggi(path)
+              for coppa, lg in COPPE:
+                  for d in giorni(d1, d2):
+                      eventi = scarica(lg, d)
+                      for ev in eventi or []:
+                          r = riga(ev, coppa, stagione)
+                          if r and r["id_evento"]:
+                              righe[r["id_evento"]] = r
+              scrivi(path, righe)
+              return righe
+
+
+          def main():
+              os.makedirs(OUT, exist_ok=True)
+              storico = os.environ.get("STORICO", "no").strip().lower() in ("si", "sì", "yes", "1")
+              tutte = {}
+              for stagione, d1, d2 in STAGIONI:
+                  path = file_stagione(stagione)
+                  if stagione == CORRENTE:
+                      if os.path.exists(path) and os.environ.get("TUTTA", "no").lower() not in ("si", "sì"):
+                          d1 = max(d1, OGGI - dt.timedelta(days=14))  # giro normale: ultime 2 settimane + prossime 3
+                      tutte[stagione] = aggiorna(stagione, d1, min(d2, OGGI + dt.timedelta(days=21)))
+                  elif storico or not os.path.exists(path):
+                      tutte[stagione] = aggiorna(stagione, d1, d2)
+                  else:
+                      tutte[stagione] = leggi(path)
+              # riassunto per controllare a colpo d'occhio
+              out = [f"Aggiornato: {dt.datetime.now(ROMA):%d/%m/%Y %H:%M} (ora italiana) - richieste a ESPN: {richieste}"]
+              for stagione, righe in tutte.items():
+                  for coppa, _ in COPPE:
+                      rr = [r for r in righe.values() if r["coppa"] == coppa]
+                      gioc = [r for r in rr if r["giocata"] == "si"]
+                      senza = [r for r in rr if r["giocata"] != "si" and dt.datetime.strptime(r["data_ita"], "%d/%m/%Y").date() < OGGI]
+                      vuote = [r for r in gioc if not r["tiri_casa"]]
+                      out.append(f"{stagione} {coppa}: {len(rr)} partite, {len(gioc)} giocate, {len(vuote)} giocate senza statistiche, {len(senza)} passate ma ancora 'da giocare' su ESPN")
+                      for r in (senza + vuote)[:30]:
+                          out.append(f"   - {r['data_ita']} {r['casa']} - {r['ospite']} ({r['stato']})")
+              out += ["Errori:"] + (errori or ["nessuno"])
+              with open(os.path.join(OUT, "stato.txt"), "w", encoding="utf-8") as f:
+                  f.write("\n".join(out) + "\n")
+              print("\n".join(out))
+
+
+          if __name__ == "__main__":
+              main()
+          PY
+          python3 /tmp/espn_coppe.py
+
+      - name: Salva i dati nel ramo coppe-dati
+        run: |
+          git add -A coppe_espn
+          if git diff --cached --quiet; then
+            echo "Niente di nuovo da salvare"
+          else
+            git commit -q -m "Coppe ESPN: dati aggiornati [skip ci]"
+            git push -q origin coppe-dati
+          fi
