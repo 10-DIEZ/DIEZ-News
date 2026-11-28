@@ -4,87 +4,6 @@
       "competition": "CL",
       "league": "CL",
       "flag": "",
-      "home": "Galatasaray SK",
-      "away": "Aston Villa FC",
-      "kickoff": "2026-11-24T17:45:00Z",
-      "status": "FINISHED"
-    },
-    {
-      "competition": "CL",
-      "league": "CL",
-      "flag": "",
-      "home": "FK Bodø/Glimt",
-      "away": "LASK Linz",
-      "kickoff": "2026-11-24T17:45:00Z",
-      "status": "FINISHED"
-    },
-    {
-      "competition": "CL",
-      "league": "CL",
-      "flag": "",
-      "home": "Real Madrid CF",
-      "away": "PSV",
-      "kickoff": "2026-11-24T20:00:00Z",
-      "status": "FINISHED"
-    },
-    {
-      "competition": "CL",
-      "league": "CL",
-      "flag": "",
-      "home": "Manchester City FC",
-      "away": "SSC Napoli",
-      "kickoff": "2026-11-24T20:00:00Z",
-      "status": "FINISHED"
-    },
-    {
-      "competition": "CL",
-      "league": "CL",
-      "flag": "",
-      "home": "Arsenal FC",
-      "away": "Borussia Dortmund",
-      "kickoff": "2026-11-24T20:00:00Z",
-      "status": "FINISHED"
-    },
-    {
-      "competition": "CL",
-      "league": "CL",
-      "flag": "",
-      "home": "Feyenoord Rotterdam",
-      "away": "FC Porto",
-      "kickoff": "2026-11-24T20:00:00Z",
-      "status": "FINISHED"
-    },
-    {
-      "competition": "CL",
-      "league": "CL",
-      "flag": "",
-      "home": "ŠK Slovan Bratislava",
-      "away": "Real Betis Balompié",
-      "kickoff": "2026-11-24T20:00:00Z",
-      "status": "FINISHED"
-    },
-    {
-      "competition": "CL",
-      "league": "CL",
-      "flag": "",
-      "home": "RB Leipzig",
-      "away": "Racing Club de Lens",
-      "kickoff": "2026-11-24T20:00:00Z",
-      "status": "FINISHED"
-    },
-    {
-      "competition": "CL",
-      "league": "CL",
-      "flag": "",
-      "home": "Como 1907",
-      "away": "PAE AEK",
-      "kickoff": "2026-11-24T20:00:00Z",
-      "status": "FINISHED"
-    },
-    {
-      "competition": "CL",
-      "league": "CL",
-      "flag": "",
       "home": "Sabah FK",
       "away": "FC Barcelona",
       "kickoff": "2026-11-25T17:45:00Z",
@@ -178,7 +97,7 @@
       "home": "Venezia FC",
       "away": "Bologna FC 1909",
       "kickoff": "2026-11-27T19:45:00Z",
-      "status": "TIMED"
+      "status": "FINISHED"
     },
     {
       "competition": "FL1",
@@ -187,7 +106,7 @@
       "home": "Stade Brestois 29",
       "away": "Paris FC",
       "kickoff": "2026-11-27T19:45:00Z",
-      "status": "TIMED"
+      "status": "FINISHED"
     },
     {
       "competition": "PL",
@@ -196,7 +115,7 @@
       "home": "Nottingham Forest FC",
       "away": "Chelsea FC",
       "kickoff": "2026-11-27T20:00:00Z",
-      "status": "TIMED"
+      "status": "FINISHED"
     },
     {
       "competition": "PD",
@@ -205,7 +124,7 @@
       "home": "Levante UD",
       "away": "Real Racing Club de Santander",
       "kickoff": "2026-11-27T20:00:00Z",
-      "status": "TIMED"
+      "status": "FINISHED"
     },
     {
       "competition": "PD",
@@ -700,6 +619,42 @@
       "home": "Tottenham Hotspur FC",
       "away": "Fulham FC",
       "kickoff": "2026-12-03T20:00:00Z",
+      "status": "TIMED"
+    },
+    {
+      "competition": "BL1",
+      "league": "Bundesliga",
+      "flag": "🇩🇪",
+      "home": "FC Bayern München",
+      "away": "SC Paderborn 07",
+      "kickoff": "2026-12-04T19:30:00Z",
+      "status": "TIMED"
+    },
+    {
+      "competition": "SA",
+      "league": "Serie A",
+      "flag": "🇮🇹",
+      "home": "Bologna FC 1909",
+      "away": "AS Roma",
+      "kickoff": "2026-12-04T19:45:00Z",
+      "status": "TIMED"
+    },
+    {
+      "competition": "FL1",
+      "league": "Ligue 1",
+      "flag": "🇫🇷",
+      "home": "Toulouse FC",
+      "away": "Paris Saint-Germain FC",
+      "kickoff": "2026-12-04T19:45:00Z",
+      "status": "TIMED"
+    },
+    {
+      "competition": "PD",
+      "league": "La Liga",
+      "flag": "🇪🇸",
+      "home": "Deportivo Alavés",
+      "away": "RCD Espanyol de Barcelona",
+      "kickoff": "2026-12-04T20:00:00Z",
       "status": "TIMED"
     }
   ],
@@ -1473,5 +1428,5 @@
       "league": "Ligue 1"
     }
   ],
-  "teams_updated": "2026-11-26T15:25:07.267209+00:00"
+  "teams_updated": "2026-11-28T00:34:20.599171+00:00"
 }
