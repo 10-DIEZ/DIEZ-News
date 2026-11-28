@@ -1,0 +1,532 @@
+coppa,stagione,fase,data_ita,ora_ita,giocata,stato,casa,ospite,gol_casa,gol_ospite,tiri_casa,tiri_ospite,porta_casa,porta_ospite,corner_casa,corner_ospite,falli_casa,falli_ospite,possesso_casa,possesso_ospite,casa_id,ospite_id,id_evento
+Champions League,2024/25,Fase campionato,17/09/2024,18:45,si,STATUS_FULL_TIME,Juventus,PSV Eindhoven,3,1,15,13,6,5,2,4,7,6,43.7,56.3,111,148,720418
+Champions League,2024/25,Fase campionato,17/09/2024,18:45,si,STATUS_FULL_TIME,Young Boys,Aston Villa,0,3,12,20,5,7,3,6,14,12,47.3,52.7,2722,362,720419
+Champions League,2024/25,Fase campionato,17/09/2024,21:00,si,STATUS_FULL_TIME,AC Milan,Liverpool,1,3,8,23,2,11,2,5,9,12,49.4,50.6,103,364,720365
+Champions League,2024/25,Fase campionato,17/09/2024,21:00,si,STATUS_FULL_TIME,Bayern Munich,Dinamo Zagreb,9,2,29,4,19,3,12,0,8,6,69.9,30.1,132,597,720422
+Champions League,2024/25,Fase campionato,17/09/2024,21:00,si,STATUS_FULL_TIME,Real Madrid,VfB Stuttgart,3,1,20,17,8,7,10,6,13,9,45.8,54.2,86,134,720420
+Champions League,2024/25,Fase campionato,17/09/2024,21:00,si,STATUS_FULL_TIME,Sporting CP,Lille,2,0,18,3,5,2,3,2,17,18,50.1,49.9,2250,166,720421
+Champions League,2024/25,Fase campionato,18/09/2024,18:45,si,STATUS_FULL_TIME,Bologna,Shakhtar Donetsk,0,0,17,4,4,1,8,3,13,12,47.6,52.4,107,493,720424
+Champions League,2024/25,Fase campionato,18/09/2024,18:45,si,STATUS_FULL_TIME,Sparta Prague,RB Salzburg,3,0,11,11,6,1,4,2,11,13,29.1,70.9,433,2790,720423
+Champions League,2024/25,Fase campionato,18/09/2024,21:00,si,STATUS_FULL_TIME,Celtic,Slovan Bratislava,5,1,16,8,11,2,11,4,16,10,60.7,39.3,256,521,720427
+Champions League,2024/25,Fase campionato,18/09/2024,21:00,si,STATUS_FULL_TIME,Club Brugge,Borussia Dortmund,0,3,18,17,5,6,5,3,11,4,36.5,63.5,570,124,720428
+Champions League,2024/25,Fase campionato,18/09/2024,21:00,si,STATUS_FULL_TIME,Manchester City,Internazionale,0,0,22,13,5,4,4,3,12,9,59.8,40.2,382,110,720426
+Champions League,2024/25,Fase campionato,18/09/2024,21:00,si,STATUS_FULL_TIME,Paris Saint-Germain,Girona,1,0,26,3,5,1,5,1,8,18,63.8,36.2,160,9812,720425
+Champions League,2024/25,Fase campionato,19/09/2024,18:45,si,STATUS_FULL_TIME,Feyenoord Rotterdam,Bayer Leverkusen,0,4,12,11,3,5,6,2,4,8,50.6,49.4,142,131,720430
+Champions League,2024/25,Fase campionato,19/09/2024,18:45,si,STATUS_FULL_TIME,Red Star Belgrade,Benfica,1,2,15,10,3,3,7,1,12,11,55.4,44.6,2290,1929,720429
+Champions League,2024/25,Fase campionato,19/09/2024,21:00,si,STATUS_FULL_TIME,AS Monaco,Barcelona,2,1,18,4,8,1,10,0,16,14,55.9,44.1,174,83,720434
+Champions League,2024/25,Fase campionato,19/09/2024,21:00,si,STATUS_FULL_TIME,Atalanta,Arsenal,0,0,8,6,2,2,4,2,7,10,53.9,46.1,105,359,720431
+Champions League,2024/25,Fase campionato,19/09/2024,21:00,si,STATUS_FULL_TIME,Atlético Madrid,RB Leipzig,2,1,21,7,4,3,8,2,13,13,51.8,48.2,1068,11420,720432
+Champions League,2024/25,Fase campionato,19/09/2024,21:00,si,STATUS_FULL_TIME,Brest,SK Sturm Graz,2,1,14,8,5,2,6,1,14,23,56.9,43.1,6997,3746,720433
+Europa League,2024/25,Fase campionato,25/09/2024,18:45,si,STATUS_FULL_TIME,AZ Alkmaar,IF Elfsborg,3,2,16,3,9,2,7,0,12,15,66.4,33.6,140,529,720510
+Europa League,2024/25,Fase campionato,25/09/2024,18:45,si,STATUS_FULL_TIME,Bodo/Glimt,FC Porto,3,2,11,28,7,9,2,9,8,8,37.4,62.6,2980,437,720509
+Europa League,2024/25,Fase campionato,25/09/2024,21:00,si,STATUS_FULL_TIME,Anderlecht,Ferencvaros,2,1,13,9,6,3,3,3,12,25,56.2,43.8,441,622,720517
+Europa League,2024/25,Fase campionato,25/09/2024,21:00,si,STATUS_FULL_TIME,Dynamo Kyiv,Lazio,0,3,10,14,6,7,3,3,11,15,56.4,43.6,440,112,720516
+Europa League,2024/25,Fase campionato,25/09/2024,21:00,si,STATUS_FULL_TIME,FC Midtjylland,TSG Hoffenheim,1,1,13,14,7,3,10,5,16,7,49.4,50.6,572,7911,720515
+Europa League,2024/25,Fase campionato,25/09/2024,21:00,si,STATUS_FULL_TIME,Galatasaray,PAOK,3,1,25,7,9,5,9,1,13,9,56.2,43.8,432,605,720511
+Europa League,2024/25,Fase campionato,25/09/2024,21:00,si,STATUS_FULL_TIME,Ludogorets Razgrad,Slavia Prague,0,2,10,12,1,5,3,7,11,26,43.1,56.9,13018,494,720512
+Europa League,2024/25,Fase campionato,25/09/2024,21:00,si,STATUS_FULL_TIME,Manchester United,FC Twente,1,1,19,7,5,3,10,5,5,8,57,43,360,152,720513
+Europa League,2024/25,Fase campionato,25/09/2024,21:00,si,STATUS_FULL_TIME,Nice,Real Sociedad,1,1,10,8,5,2,5,4,7,14,55.1,44.9,2502,89,720514
+Europa League,2024/25,Fase campionato,26/09/2024,18:45,si,STATUS_FULL_TIME,Fenerbahce,Union St.-Gilloise,2,1,10,15,4,7,7,6,13,20,60.3,39.7,436,5807,720519
+Europa League,2024/25,Fase campionato,26/09/2024,18:45,si,STATUS_FULL_TIME,Malmö FF,Rangers,0,2,7,17,0,5,5,3,13,13,59.8,40.2,2720,257,720518
+Europa League,2024/25,Fase campionato,26/09/2024,21:00,si,STATUS_FULL_TIME,AS Roma,Athletic Club,1,1,5,12,3,2,2,10,12,15,59.8,40.2,104,93,720522
+Europa League,2024/25,Fase campionato,26/09/2024,21:00,si,STATUS_FULL_TIME,Ajax Amsterdam,Besiktas,4,0,17,6,9,0,4,6,11,9,46.8,53.2,139,1895,720525
+Europa League,2024/25,Fase campionato,26/09/2024,21:00,si,STATUS_FULL_TIME,Braga,Maccabi Tel-Aviv,2,1,31,10,9,2,8,2,10,12,57.2,42.8,2994,524,720523
+Europa League,2024/25,Fase campionato,26/09/2024,21:00,si,STATUS_FULL_TIME,Eintracht Frankfurt,Viktoria Plzen,3,3,19,13,6,6,5,1,5,11,67.4,32.6,125,11706,720524
+Europa League,2024/25,Fase campionato,26/09/2024,21:00,si,STATUS_FULL_TIME,FCSB,Rigas Futbola Skola,4,1,18,10,8,5,8,4,13,11,59.4,40.6,484,12030,720520
+Europa League,2024/25,Fase campionato,26/09/2024,21:00,si,STATUS_FULL_TIME,Lyon,Olympiacos,2,0,17,7,7,3,8,2,7,14,62.8,37.2,167,435,720526
+Europa League,2024/25,Fase campionato,26/09/2024,21:35,si,STATUS_FULL_TIME,Tottenham Hotspur,FK Qarabag,3,0,10,14,5,5,3,9,10,9,49.4,50.6,367,10414,720521
+Champions League,2024/25,Fase campionato,01/10/2024,18:45,si,STATUS_FULL_TIME,RB Salzburg,Brest,0,4,15,13,7,6,4,0,17,11,51.9,48.1,2790,6997,720435
+Champions League,2024/25,Fase campionato,01/10/2024,18:45,si,STATUS_FULL_TIME,VfB Stuttgart,Sparta Prague,1,1,26,14,10,3,10,0,10,12,76.5,23.5,134,433,720436
+Champions League,2024/25,Fase campionato,01/10/2024,21:00,si,STATUS_FULL_TIME,Arsenal,Paris Saint-Germain,2,0,6,10,5,2,1,5,8,8,35.1,64.9,359,160,720443
+Champions League,2024/25,Fase campionato,01/10/2024,21:00,si,STATUS_FULL_TIME,Barcelona,Young Boys,5,0,21,5,8,1,9,3,9,10,70,30,83,2722,720442
+Champions League,2024/25,Fase campionato,01/10/2024,21:00,si,STATUS_FULL_TIME,Bayer Leverkusen,AC Milan,1,0,16,16,9,5,5,4,15,4,50.3,49.7,131,103,720437
+Champions League,2024/25,Fase campionato,01/10/2024,21:00,si,STATUS_FULL_TIME,Borussia Dortmund,Celtic,7,1,16,9,13,2,8,4,16,6,52.6,47.4,124,256,720438
+Champions League,2024/25,Fase campionato,01/10/2024,21:00,si,STATUS_FULL_TIME,Internazionale,Red Star Belgrade,4,0,15,11,7,3,2,2,11,8,52.4,47.6,110,2290,720440
+Champions League,2024/25,Fase campionato,01/10/2024,21:00,si,STATUS_FULL_TIME,PSV Eindhoven,Sporting CP,1,1,18,9,6,3,0,4,18,15,57.3,42.7,148,2250,720441
+Champions League,2024/25,Fase campionato,01/10/2024,21:00,si,STATUS_FULL_TIME,Slovan Bratislava,Manchester City,0,4,3,28,0,14,0,15,2,8,23.9,76.1,521,382,720439
+Conference League,2024/25,Fase campionato,02/10/2024,16:30,si,STATUS_FULL_TIME,Istanbul Basaksehir,Rapid Vienna,1,2,16,11,4,5,6,5,5,12,53.3,46.7,7914,519,720609
+Conference League,2024/25,Fase campionato,02/10/2024,16:30,si,STATUS_FULL_TIME,Vitória de Guimaraes,NK Celje,3,1,17,5,10,2,5,5,8,7,52.1,47.9,5309,3362,720610
+Champions League,2024/25,Fase campionato,02/10/2024,18:45,si,STATUS_FULL_TIME,Girona,Feyenoord Rotterdam,2,3,14,7,7,2,11,0,11,15,66.1,33.9,9812,142,720445
+Champions League,2024/25,Fase campionato,02/10/2024,18:45,si,STATUS_FULL_TIME,Shakhtar Donetsk,Atalanta,0,3,6,22,0,5,3,5,6,8,46.9,53.1,493,105,720444
+Champions League,2024/25,Fase campionato,02/10/2024,21:00,si,STATUS_FULL_TIME,Aston Villa,Bayern Munich,1,0,5,17,2,7,1,11,8,12,30,70,362,132,720451
+Champions League,2024/25,Fase campionato,02/10/2024,21:00,si,STATUS_FULL_TIME,Benfica,Atlético Madrid,4,0,19,4,10,0,4,2,6,8,53.3,46.7,1929,1068,720447
+Champions League,2024/25,Fase campionato,02/10/2024,21:00,si,STATUS_FULL_TIME,Dinamo Zagreb,AS Monaco,2,2,7,9,3,5,2,4,16,16,38.4,61.6,597,174,720446
+Champions League,2024/25,Fase campionato,02/10/2024,21:00,si,STATUS_FULL_TIME,Lille,Real Madrid,1,0,7,12,3,6,2,3,12,14,42.2,57.8,166,86,720448
+Champions League,2024/25,Fase campionato,02/10/2024,21:00,si,STATUS_FULL_TIME,Liverpool,Bologna,2,0,9,12,4,2,5,3,10,8,51.4,48.6,364,107,720366
+Champions League,2024/25,Fase campionato,02/10/2024,21:00,si,STATUS_FULL_TIME,RB Leipzig,Juventus,2,3,24,16,7,5,8,2,4,14,44.9,55.1,11420,111,720449
+Champions League,2024/25,Fase campionato,02/10/2024,21:00,si,STATUS_FULL_TIME,SK Sturm Graz,Club Brugge,0,1,8,13,1,4,4,5,14,13,38.2,61.8,3746,570,720450
+Conference League,2024/25,Fase campionato,03/10/2024,18:45,si,STATUS_FULL_TIME,1. FC Heidenheim 1846,Olimpija Ljubljana,2,1,18,14,8,3,6,4,14,15,66.5,33.5,6418,500,720615
+Conference League,2024/25,Fase campionato,03/10/2024,18:45,si,STATUS_FULL_TIME,Cercle Brugge KSV,St. Gallen,6,2,16,14,12,6,6,8,10,14,42.7,57.3,3610,557,720618
+Conference League,2024/25,Fase campionato,03/10/2024,18:45,si,STATUS_FULL_TIME,Dinamo Minsk,Heart of Midlothian,1,2,11,10,4,5,0,7,10,8,49.2,50.8,2539,262,720614
+Conference League,2024/25,Fase campionato,03/10/2024,18:45,si,STATUS_FULL_TIME,FC Astana,FK TSC,1,0,12,24,4,6,3,2,10,8,33.5,66.5,12124,20713,720612
+Conference League,2024/25,Fase campionato,03/10/2024,18:45,si,STATUS_FULL_TIME,FC Noah,Mlada Boleslav,2,0,25,14,8,7,7,6,9,6,54.7,45.3,20712,6758,720616
+Conference League,2024/25,Fase campionato,03/10/2024,18:45,si,STATUS_FULL_TIME,Legia Warsaw,Real Betis,1,0,10,16,2,3,6,6,17,15,31.8,68.2,555,244,720613
+Conference League,2024/25,Fase campionato,03/10/2024,18:45,si,STATUS_FULL_TIME,Molde,Larne,3,0,17,4,9,1,7,0,12,10,66.8,33.2,2715,20039,720611
+Conference League,2024/25,Fase campionato,03/10/2024,18:45,si,STATUS_FULL_TIME,Omonia Nicosia,Vikingur Reykjavik,4,0,12,9,6,4,6,3,10,17,58.9,41.1,617,8249,720617
+Europa League,2024/25,Fase campionato,03/10/2024,18:45,si,STATUS_FULL_TIME,FK Qarabag,Malmö FF,1,2,12,9,1,5,7,1,11,10,55.3,44.7,10414,2720,720535
+Europa League,2024/25,Fase campionato,03/10/2024,18:45,si,STATUS_FULL_TIME,Ferencvaros,Tottenham Hotspur,1,2,15,17,5,7,4,11,11,13,41.8,58.2,622,367,720530
+Europa League,2024/25,Fase campionato,03/10/2024,18:45,si,STATUS_FULL_TIME,Lazio,Nice,4,1,13,11,6,4,6,3,17,9,39.8,60.2,112,2502,720533
+Europa League,2024/25,Fase campionato,03/10/2024,18:45,si,STATUS_FULL_TIME,Maccabi Tel-Aviv,FC Midtjylland,0,2,21,10,4,7,8,2,12,8,60.8,39.2,524,572,720534
+Europa League,2024/25,Fase campionato,03/10/2024,18:45,si,STATUS_FULL_TIME,Olympiacos,Braga,3,0,15,10,6,6,5,4,10,12,44.8,55.2,435,2994,720531
+Europa League,2024/25,Fase campionato,03/10/2024,18:45,si,STATUS_FULL_TIME,Real Sociedad,Anderlecht,1,2,20,15,4,3,9,6,12,7,56.8,43.2,89,441,720529
+Europa League,2024/25,Fase campionato,03/10/2024,18:45,si,STATUS_FULL_TIME,Rigas Futbola Skola,Galatasaray,2,2,8,16,4,7,2,7,14,13,24.5,75.5,12030,432,720528
+Europa League,2024/25,Fase campionato,03/10/2024,18:45,si,STATUS_FULL_TIME,Slavia Prague,Ajax Amsterdam,1,1,19,6,8,2,8,3,21,17,54.8,45.2,494,139,720527
+Europa League,2024/25,Fase campionato,03/10/2024,18:45,si,STATUS_FULL_TIME,TSG Hoffenheim,Dynamo Kyiv,2,0,19,8,6,1,4,7,14,8,48.1,51.9,7911,440,720532
+Conference League,2024/25,Fase campionato,03/10/2024,21:00,si,STATUS_FULL_TIME,Borac Banja Luka,Panathinaikos,1,1,13,17,5,2,5,6,12,10,30.9,69.1,20710,443,720619
+Conference League,2024/25,Fase campionato,03/10/2024,21:00,si,STATUS_FULL_TIME,Chelsea,KAA Gent,4,2,20,9,6,3,10,4,9,7,70,30,363,3611,720626
+Conference League,2024/25,Fase campionato,03/10/2024,21:00,si,STATUS_FULL_TIME,F.C. København,Jagiellonia Bialystok,1,2,20,4,5,3,5,2,11,12,68,32,909,11505,720620
+Conference League,2024/25,Fase campionato,03/10/2024,21:00,si,STATUS_FULL_TIME,FC Lugano,HJK Helsinki,3,0,23,8,8,4,5,2,14,13,61.4,38.6,7672,502,720622
+Conference League,2024/25,Fase campionato,03/10/2024,21:00,si,STATUS_FULL_TIME,Fiorentina,The New Saints,2,0,28,2,10,1,12,0,11,11,79.7,20.3,109,576,720624
+Conference League,2024/25,Fase campionato,03/10/2024,21:00,si,STATUS_FULL_TIME,LASK Linz,Djurgården,2,2,9,10,3,6,3,4,17,14,42.9,57.1,4411,2339,720623
+Conference League,2024/25,Fase campionato,03/10/2024,21:00,si,STATUS_FULL_TIME,Petrocub,Pafos,1,4,6,16,1,10,1,1,11,18,44.2,55.8,19250,22281,720621
+Conference League,2024/25,Fase campionato,03/10/2024,21:00,si,STATUS_FULL_TIME,Shamrock Rovers,Apoel Nicosia,1,1,4,14,3,2,2,8,9,9,32.4,67.6,2564,2497,720625
+Europa League,2024/25,Fase campionato,03/10/2024,21:00,si,STATUS_FULL_TIME,Athletic Club,AZ Alkmaar,2,0,17,5,7,2,4,1,7,12,55.3,44.7,93,140,720541
+Europa League,2024/25,Fase campionato,03/10/2024,21:00,si,STATUS_FULL_TIME,Besiktas,Eintracht Frankfurt,1,3,27,11,11,5,11,1,10,11,65.2,34.8,1895,125,720542
+Europa League,2024/25,Fase campionato,03/10/2024,21:00,si,STATUS_FULL_TIME,FC Porto,Manchester United,3,3,14,29,7,8,5,10,7,7,46.7,53.3,437,360,720539
+Europa League,2024/25,Fase campionato,03/10/2024,21:00,si,STATUS_FULL_TIME,FC Twente,Fenerbahce,1,1,14,6,9,2,4,2,15,16,51.7,48.3,152,436,720538
+Europa League,2024/25,Fase campionato,03/10/2024,21:00,si,STATUS_FULL_TIME,IF Elfsborg,AS Roma,1,0,6,23,4,5,3,5,12,5,24.6,75.4,529,104,720540
+Europa League,2024/25,Fase campionato,03/10/2024,21:00,si,STATUS_FULL_TIME,PAOK,FCSB,0,1,28,6,6,2,13,1,14,13,64.8,35.2,605,484,720537
+Europa League,2024/25,Fase campionato,03/10/2024,21:00,si,STATUS_FULL_TIME,Rangers,Lyon,1,4,16,15,5,8,3,2,13,2,45.4,54.6,257,167,720536
+Europa League,2024/25,Fase campionato,03/10/2024,21:00,si,STATUS_FULL_TIME,Union St.-Gilloise,Bodo/Glimt,0,0,21,9,3,1,4,2,11,9,46.4,53.6,5807,2980,720544
+Europa League,2024/25,Fase campionato,03/10/2024,21:00,si,STATUS_FULL_TIME,Viktoria Plzen,Ludogorets Razgrad,0,0,13,8,5,2,2,1,12,15,48.7,51.3,11706,13018,720543
+Champions League,2024/25,Fase campionato,22/10/2024,18:45,si,STATUS_FULL_TIME,AC Milan,Club Brugge,3,1,15,9,5,5,5,3,7,9,61.7,38.3,103,570,720453
+Champions League,2024/25,Fase campionato,22/10/2024,18:45,si,STATUS_FULL_TIME,AS Monaco,Red Star Belgrade,5,1,27,5,8,2,8,5,16,8,70.2,29.8,174,2290,720452
+Champions League,2024/25,Fase campionato,22/10/2024,21:00,si,STATUS_FULL_TIME,Arsenal,Shakhtar Donetsk,1,0,13,9,5,1,5,3,7,10,55.9,44.1,359,493,720455
+Champions League,2024/25,Fase campionato,22/10/2024,21:00,si,STATUS_FULL_TIME,Aston Villa,Bologna,2,0,16,12,6,4,5,4,13,9,53.3,46.7,362,107,720457
+Champions League,2024/25,Fase campionato,22/10/2024,21:00,si,STATUS_FULL_TIME,Girona,Slovan Bratislava,2,0,15,6,7,2,7,6,19,18,64.1,35.9,9812,521,720454
+Champions League,2024/25,Fase campionato,22/10/2024,21:00,si,STATUS_FULL_TIME,Juventus,VfB Stuttgart,0,1,7,22,1,10,4,10,11,13,49.3,50.7,111,134,720456
+Champions League,2024/25,Fase campionato,22/10/2024,21:00,si,STATUS_FULL_TIME,Paris Saint-Germain,PSV Eindhoven,1,1,26,8,8,3,14,3,11,12,60.7,39.3,160,148,720460
+Champions League,2024/25,Fase campionato,22/10/2024,21:00,si,STATUS_FULL_TIME,Real Madrid,Borussia Dortmund,5,2,26,8,10,7,11,4,10,11,51.5,48.5,86,124,720459
+Champions League,2024/25,Fase campionato,22/10/2024,21:00,si,STATUS_FULL_TIME,SK Sturm Graz,Sporting CP,0,2,11,15,6,5,7,4,8,8,40.5,59.5,3746,2250,720458
+Europa League,2024/25,Fase campionato,23/10/2024,16:30,si,STATUS_FULL_TIME,Braga,Bodo/Glimt,1,2,20,13,11,3,9,2,15,11,52.2,47.8,2994,2980,720546
+Europa League,2024/25,Fase campionato,23/10/2024,16:30,si,STATUS_FULL_TIME,Galatasaray,IF Elfsborg,4,3,23,14,11,6,5,4,5,12,65.7,34.3,432,529,720545
+Champions League,2024/25,Fase campionato,23/10/2024,18:45,si,STATUS_FULL_TIME,Atalanta,Celtic,0,0,22,4,6,2,7,4,5,9,66.2,33.8,105,256,720461
+Champions League,2024/25,Fase campionato,23/10/2024,18:45,si,STATUS_FULL_TIME,Brest,Bayer Leverkusen,1,1,11,8,3,3,2,6,10,12,41.2,58.8,6997,131,720462
+Champions League,2024/25,Fase campionato,23/10/2024,21:00,si,STATUS_FULL_TIME,Atlético Madrid,Lille,1,3,11,8,6,3,6,5,9,11,61.8,38.2,1068,166,720373
+Champions League,2024/25,Fase campionato,23/10/2024,21:00,si,STATUS_FULL_TIME,Barcelona,Bayern Munich,4,1,12,11,4,3,5,5,11,10,39.8,60.2,83,132,720372
+Champions League,2024/25,Fase campionato,23/10/2024,21:00,si,STATUS_FULL_TIME,Benfica,Feyenoord Rotterdam,1,3,16,14,8,6,6,4,13,10,62.7,37.3,1929,142,720463
+Champions League,2024/25,Fase campionato,23/10/2024,21:00,si,STATUS_FULL_TIME,Manchester City,Sparta Prague,5,0,22,5,10,1,7,1,5,4,79.9,20.1,382,433,720374
+Champions League,2024/25,Fase campionato,23/10/2024,21:00,si,STATUS_FULL_TIME,RB Leipzig,Liverpool,0,1,13,17,6,8,5,7,9,7,42.5,57.5,11420,364,720367
+Champions League,2024/25,Fase campionato,23/10/2024,21:00,si,STATUS_FULL_TIME,RB Salzburg,Dinamo Zagreb,0,2,11,18,2,5,7,5,10,10,48.7,51.3,2790,597,720464
+Champions League,2024/25,Fase campionato,23/10/2024,21:00,si,STATUS_FULL_TIME,Young Boys,Internazionale,0,1,20,19,2,6,5,1,20,7,41.7,58.3,2722,110,720371
+Conference League,2024/25,Fase campionato,24/10/2024,16:30,si,STATUS_FULL_TIME,Vikingur Reykjavik,Cercle Brugge KSV,3,1,11,12,6,3,3,5,10,13,53.4,46.6,8249,3610,720638
+Conference League,2024/25,Fase campionato,24/10/2024,18:45,si,STATUS_FULL_TIME,Apoel Nicosia,Borac Banja Luka,0,1,23,4,3,2,6,1,10,14,73.9,26.1,2497,20710,720627
+Conference League,2024/25,Fase campionato,24/10/2024,18:45,si,STATUS_FULL_TIME,Djurgården,Vitória de Guimaraes,1,2,7,14,3,3,3,6,17,17,57.4,42.6,2339,5309,720635
+Conference League,2024/25,Fase campionato,24/10/2024,18:45,si,STATUS_FULL_TIME,Heart of Midlothian,Omonia Nicosia,2,0,12,9,3,1,4,4,18,12,38.3,61.7,262,617,720634
+Conference League,2024/25,Fase campionato,24/10/2024,18:45,si,STATUS_FULL_TIME,Jagiellonia Bialystok,Petrocub,2,0,17,4,6,0,5,1,10,11,59.7,40.3,11505,19250,720633
+Conference League,2024/25,Fase campionato,24/10/2024,18:45,si,STATUS_FULL_TIME,KAA Gent,Molde,2,1,10,9,5,3,5,2,12,14,49.7,50.3,3611,2715,720632
+Conference League,2024/25,Fase campionato,24/10/2024,18:45,si,STATUS_FULL_TIME,Larne,Shamrock Rovers,1,4,9,12,3,6,2,8,16,13,43.2,56.8,20039,2564,720628
+Conference League,2024/25,Fase campionato,24/10/2024,18:45,si,STATUS_FULL_TIME,NK Celje,Istanbul Basaksehir,5,1,18,20,8,6,3,5,18,10,28.1,71.9,3362,7914,720636
+Conference League,2024/25,Fase campionato,24/10/2024,18:45,si,STATUS_FULL_TIME,Panathinaikos,Chelsea,1,4,8,14,3,9,5,6,8,17,40,60,443,363,720631
+Conference League,2024/25,Fase campionato,24/10/2024,18:45,si,STATUS_FULL_TIME,Rapid Vienna,FC Noah,1,0,22,11,7,2,7,2,14,8,55.1,44.9,519,20712,720630
+Conference League,2024/25,Fase campionato,24/10/2024,18:45,si,STATUS_FULL_TIME,St. Gallen,Fiorentina,2,4,8,25,4,15,2,7,10,8,44,56,557,109,720629
+Europa League,2024/25,Fase campionato,24/10/2024,18:45,si,STATUS_FULL_TIME,AS Roma,Dynamo Kyiv,1,0,17,7,5,2,9,2,11,17,61.4,38.6,104,440,720548
+Europa League,2024/25,Fase campionato,24/10/2024,18:45,si,STATUS_FULL_TIME,Eintracht Frankfurt,Rigas Futbola Skola,1,0,20,10,4,1,7,4,12,6,60.1,39.9,125,12030,720553
+Europa League,2024/25,Fase campionato,24/10/2024,18:45,si,STATUS_FULL_TIME,FC Midtjylland,Union St.-Gilloise,1,0,15,13,5,7,6,6,11,15,44.2,55.8,572,5807,720552
+Europa League,2024/25,Fase campionato,24/10/2024,18:45,si,STATUS_FULL_TIME,FK Qarabag,Ajax Amsterdam,0,3,2,14,1,10,4,2,11,21,43.8,56.2,10414,139,720549
+Europa League,2024/25,Fase campionato,24/10/2024,18:45,si,STATUS_FULL_TIME,Ferencvaros,Nice,1,0,15,16,6,4,3,5,13,10,46.7,53.3,622,2502,720547
+Europa League,2024/25,Fase campionato,24/10/2024,18:45,si,STATUS_FULL_TIME,Maccabi Tel-Aviv,Real Sociedad,1,2,12,12,4,5,2,6,8,14,36.7,63.3,524,89,720551
+Europa League,2024/25,Fase campionato,24/10/2024,18:45,si,STATUS_FULL_TIME,PAOK,Viktoria Plzen,2,2,19,11,8,6,8,0,4,10,75,25,605,11706,720550
+Conference League,2024/25,Fase campionato,24/10/2024,21:00,si,STATUS_FULL_TIME,FK TSC,Legia Warsaw,0,3,10,17,2,7,6,2,14,12,72,28,20713,555,720639
+Conference League,2024/25,Fase campionato,24/10/2024,21:00,si,STATUS_FULL_TIME,HJK Helsinki,Dinamo Minsk,1,0,15,21,6,3,4,11,9,20,51.2,48.8,502,2539,720644
+Conference League,2024/25,Fase campionato,24/10/2024,21:00,si,STATUS_FULL_TIME,Mlada Boleslav,FC Lugano,0,1,12,13,5,5,5,3,14,10,38.2,61.8,6758,7672,720642
+Conference League,2024/25,Fase campionato,24/10/2024,21:00,si,STATUS_FULL_TIME,Olimpija Ljubljana,LASK Linz,2,0,11,11,4,5,5,4,9,9,32.6,67.4,500,4411,720641
+Conference League,2024/25,Fase campionato,24/10/2024,21:00,si,STATUS_FULL_TIME,Pafos,1. FC Heidenheim 1846,0,1,15,9,3,3,6,3,15,13,62,38,22281,6418,720637
+Conference League,2024/25,Fase campionato,24/10/2024,21:00,si,STATUS_FULL_TIME,Real Betis,F.C. København,1,1,16,6,5,2,4,1,13,12,54.6,45.4,244,909,720640
+Conference League,2024/25,Fase campionato,24/10/2024,21:00,si,STATUS_FULL_TIME,The New Saints,FC Astana,2,0,15,14,7,3,5,2,6,9,40.4,59.6,576,12124,720643
+Europa League,2024/25,Fase campionato,24/10/2024,21:00,si,STATUS_FULL_TIME,Anderlecht,Ludogorets Razgrad,2,0,17,7,8,2,5,3,17,10,70.1,29.9,441,13018,720555
+Europa League,2024/25,Fase campionato,24/10/2024,21:00,si,STATUS_FULL_TIME,Athletic Club,Slavia Prague,1,0,6,14,3,6,0,8,16,15,39.2,60.8,93,494,720562
+Europa League,2024/25,Fase campionato,24/10/2024,21:00,si,STATUS_FULL_TIME,FC Porto,TSG Hoffenheim,2,0,11,15,4,1,6,9,16,9,45,55,437,7911,720554
+Europa League,2024/25,Fase campionato,24/10/2024,21:00,si,STATUS_FULL_TIME,FC Twente,Lazio,0,2,7,14,2,6,2,4,12,6,32.6,67.4,152,112,720557
+Europa League,2024/25,Fase campionato,24/10/2024,21:00,si,STATUS_FULL_TIME,Fenerbahce,Manchester United,1,1,10,12,5,5,5,3,12,14,51.7,48.3,436,360,720561
+Europa League,2024/25,Fase campionato,24/10/2024,21:00,si,STATUS_FULL_TIME,Lyon,Besiktas,0,1,30,12,9,5,8,0,7,11,58.1,41.9,167,1895,720558
+Europa League,2024/25,Fase campionato,24/10/2024,21:00,si,STATUS_FULL_TIME,Malmö FF,Olympiacos,0,1,16,15,2,5,4,3,9,15,60.5,39.5,2720,435,720556
+Europa League,2024/25,Fase campionato,24/10/2024,21:00,si,STATUS_FULL_TIME,Rangers,FCSB,4,0,23,7,7,1,4,2,19,15,53.7,46.3,257,484,720559
+Europa League,2024/25,Fase campionato,24/10/2024,21:00,si,STATUS_FULL_TIME,Tottenham Hotspur,AZ Alkmaar,1,0,16,9,5,3,6,4,13,17,59.1,40.9,367,140,720560
+Champions League,2024/25,Fase campionato,05/11/2024,18:45,si,STATUS_FULL_TIME,PSV Eindhoven,Girona,4,0,25,7,12,3,7,3,11,10,62.1,37.9,148,9812,720376
+Champions League,2024/25,Fase campionato,05/11/2024,18:45,si,STATUS_FULL_TIME,Slovan Bratislava,Dinamo Zagreb,1,4,19,13,7,5,11,4,6,13,59.7,40.3,521,597,720375
+Champions League,2024/25,Fase campionato,05/11/2024,21:00,si,STATUS_FULL_TIME,Bologna,AS Monaco,0,1,7,10,2,4,3,6,16,14,46.5,53.5,107,174,720382
+Champions League,2024/25,Fase campionato,05/11/2024,21:00,si,STATUS_FULL_TIME,Borussia Dortmund,SK Sturm Graz,1,0,21,7,8,1,11,3,9,15,66.3,33.7,124,3746,720381
+Champions League,2024/25,Fase campionato,05/11/2024,21:00,si,STATUS_FULL_TIME,Celtic,RB Leipzig,3,1,17,10,5,3,7,8,7,13,60.4,39.6,256,11420,720377
+Champions League,2024/25,Fase campionato,05/11/2024,21:00,si,STATUS_FULL_TIME,Lille,Juventus,1,1,6,11,3,3,1,5,13,6,34.1,65.9,166,111,720378
+Champions League,2024/25,Fase campionato,05/11/2024,21:00,si,STATUS_FULL_TIME,Liverpool,Bayer Leverkusen,4,0,22,12,8,4,1,3,15,10,47.1,52.9,364,131,720368
+Champions League,2024/25,Fase campionato,05/11/2024,21:00,si,STATUS_FULL_TIME,Real Madrid,AC Milan,1,3,23,14,10,9,8,5,11,9,56.8,43.2,86,103,720380
+Champions League,2024/25,Fase campionato,05/11/2024,21:00,si,STATUS_FULL_TIME,Sporting CP,Manchester City,4,1,9,20,6,6,1,11,8,10,27.3,72.7,2250,382,720379
+Europa League,2024/25,Fase campionato,06/11/2024,16:30,si,STATUS_FULL_TIME,Besiktas,Malmö FF,2,1,14,16,5,8,2,3,7,9,53.5,46.5,1895,2720,720563
+Champions League,2024/25,Fase campionato,06/11/2024,18:45,si,STATUS_FULL_TIME,Club Brugge,Aston Villa,1,0,13,8,7,1,2,3,12,12,43.9,56.1,570,362,720383
+Champions League,2024/25,Fase campionato,06/11/2024,18:45,si,STATUS_FULL_TIME,Shakhtar Donetsk,Young Boys,2,1,17,10,6,1,9,2,13,12,48.6,51.4,493,2722,720384
+Champions League,2024/25,Fase campionato,06/11/2024,21:00,si,STATUS_FULL_TIME,Feyenoord Rotterdam,RB Salzburg,1,3,14,9,4,3,4,3,15,13,57.8,42.2,142,2790,720386
+Champions League,2024/25,Fase campionato,06/11/2024,21:00,si,STATUS_FULL_TIME,Internazionale,Arsenal,1,0,7,20,1,4,0,13,12,21,37.2,62.8,110,359,720387
+Champions League,2024/25,Fase campionato,06/11/2024,21:00,si,STATUS_FULL_TIME,Paris Saint-Germain,Atlético Madrid,1,2,22,4,9,3,6,0,9,11,71.3,28.7,160,1068,720388
+Champions League,2024/25,Fase campionato,06/11/2024,21:00,si,STATUS_FULL_TIME,Red Star Belgrade,Barcelona,2,5,4,21,2,9,1,7,4,12,30.1,69.9,2290,83,720385
+Champions League,2024/25,Fase campionato,06/11/2024,21:00,si,STATUS_FULL_TIME,Sparta Prague,Brest,1,2,6,18,1,7,3,6,9,7,50.1,49.9,433,6997,720390
+Champions League,2024/25,Fase campionato,06/11/2024,21:00,si,STATUS_FULL_TIME,VfB Stuttgart,Atalanta,0,2,10,9,1,4,4,3,8,17,55.1,44.9,134,105,720391
+Champions League,2024/25,Fase campionato,06/11/2024,21:15,si,STATUS_FULL_TIME,Bayern Munich,Benfica,1,0,24,1,10,0,10,0,8,8,73.5,26.5,132,1929,720389
+Conference League,2024/25,Fase campionato,07/11/2024,15:30,si,STATUS_FULL_TIME,Vikingur Reykjavik,Borac Banja Luka,2,0,13,5,8,3,2,3,15,6,47.4,52.6,8249,20710,720652
+Conference League,2024/25,Fase campionato,07/11/2024,18:45,si,STATUS_FULL_TIME,FK TSC,FC Lugano,4,1,21,9,9,3,2,3,22,13,43.5,56.5,20713,7672,720651
+Conference League,2024/25,Fase campionato,07/11/2024,18:45,si,STATUS_FULL_TIME,HJK Helsinki,Olimpija Ljubljana,0,2,10,5,3,4,5,3,17,17,53.7,46.3,502,500,720646
+Conference League,2024/25,Fase campionato,07/11/2024,18:45,si,STATUS_FULL_TIME,KAA Gent,Omonia Nicosia,1,0,17,13,6,5,11,6,10,10,56.8,43.2,3611,617,720645
+Conference League,2024/25,Fase campionato,07/11/2024,18:45,si,STATUS_FULL_TIME,Legia Warsaw,Dinamo Minsk,4,0,12,10,7,3,5,2,8,15,55.1,44.9,555,2539,720650
+Conference League,2024/25,Fase campionato,07/11/2024,18:45,si,STATUS_FULL_TIME,Pafos,FC Astana,1,0,32,2,13,0,12,2,11,6,66.1,33.9,22281,12124,720649
+Conference League,2024/25,Fase campionato,07/11/2024,18:45,si,STATUS_FULL_TIME,Petrocub,Rapid Vienna,0,3,13,14,4,7,4,2,5,6,38,62,19250,519,720648
+Conference League,2024/25,Fase campionato,07/11/2024,18:45,si,STATUS_FULL_TIME,Shamrock Rovers,The New Saints,2,1,23,10,6,3,4,1,8,9,57.3,42.7,2564,576,720647
+Europa League,2024/25,Fase campionato,07/11/2024,18:45,si,STATUS_FULL_TIME,Bodo/Glimt,FK Qarabag,1,2,23,10,7,6,10,3,11,10,54.9,45.1,2980,10414,720572
+Europa League,2024/25,Fase campionato,07/11/2024,18:45,si,STATUS_FULL_TIME,Eintracht Frankfurt,Slavia Prague,1,0,10,20,5,4,4,7,13,5,47.1,52.9,125,494,720571
+Europa League,2024/25,Fase campionato,07/11/2024,18:45,si,STATUS_FULL_TIME,FCSB,FC Midtjylland,2,0,13,11,5,3,2,4,13,10,43.5,56.5,484,572,720569
+Europa League,2024/25,Fase campionato,07/11/2024,18:45,si,STATUS_FULL_TIME,Galatasaray,Tottenham Hotspur,3,2,28,5,10,3,8,0,14,10,54,46,432,367,720564
+Europa League,2024/25,Fase campionato,07/11/2024,18:45,si,STATUS_FULL_TIME,IF Elfsborg,Braga,1,1,7,11,3,2,3,6,13,8,37.1,62.9,529,2994,720570
+Europa League,2024/25,Fase campionato,07/11/2024,18:45,si,STATUS_FULL_TIME,Ludogorets Razgrad,Athletic Club,1,2,9,19,2,7,3,6,15,17,40.2,59.8,13018,93,720568
+Europa League,2024/25,Fase campionato,07/11/2024,18:45,si,STATUS_FULL_TIME,Nice,FC Twente,2,2,13,14,3,6,6,5,10,14,50.2,49.8,2502,152,720567
+Europa League,2024/25,Fase campionato,07/11/2024,18:45,si,STATUS_FULL_TIME,Olympiacos,Rangers,1,1,14,11,2,6,4,4,11,15,60.5,39.5,435,257,720566
+Europa League,2024/25,Fase campionato,07/11/2024,18:45,si,STATUS_FULL_TIME,Union St.-Gilloise,AS Roma,1,1,14,11,5,5,5,4,22,14,41.7,58.3,5807,104,720565
+Conference League,2024/25,Fase campionato,07/11/2024,21:00,si,STATUS_FULL_TIME,Apoel Nicosia,Fiorentina,2,1,9,14,2,6,2,4,13,14,36.7,63.3,2497,109,720660
+Conference League,2024/25,Fase campionato,07/11/2024,21:00,si,STATUS_FULL_TIME,Chelsea,FC Noah,8,0,31,15,18,7,4,3,9,5,57.9,42.1,363,20712,720659
+Conference League,2024/25,Fase campionato,07/11/2024,21:00,si,STATUS_FULL_TIME,Djurgården,Panathinaikos,2,1,13,6,6,1,3,3,14,12,41.2,58.8,2339,443,720658
+Conference League,2024/25,Fase campionato,07/11/2024,21:00,si,STATUS_FULL_TIME,F.C. København,Istanbul Basaksehir,2,2,23,8,9,4,7,0,14,14,67.4,32.6,909,7914,720662
+Conference League,2024/25,Fase campionato,07/11/2024,21:00,si,STATUS_FULL_TIME,Heart of Midlothian,1. FC Heidenheim 1846,0,2,17,10,4,3,5,1,8,13,47.6,52.4,262,6418,720657
+Conference League,2024/25,Fase campionato,07/11/2024,21:00,si,STATUS_FULL_TIME,Jagiellonia Bialystok,Molde,3,0,14,7,5,2,2,3,10,15,45.2,54.8,11505,2715,720656
+Conference League,2024/25,Fase campionato,07/11/2024,21:00,si,STATUS_FULL_TIME,LASK Linz,Cercle Brugge KSV,0,0,18,4,2,2,5,3,10,7,65.1,34.9,4411,3610,720653
+Conference League,2024/25,Fase campionato,07/11/2024,21:00,si,STATUS_FULL_TIME,Larne,St. Gallen,1,2,1,19,1,6,0,16,6,13,29.4,70.6,20039,557,720654
+Conference League,2024/25,Fase campionato,07/11/2024,21:00,si,STATUS_FULL_TIME,Real Betis,NK Celje,2,1,20,8,6,2,4,1,14,9,52.7,47.3,244,3362,720661
+Conference League,2024/25,Fase campionato,07/11/2024,21:00,si,STATUS_FULL_TIME,Vitória de Guimaraes,Mlada Boleslav,2,1,25,12,12,5,11,4,5,8,52.6,47.4,5309,6758,720655
+Europa League,2024/25,Fase campionato,07/11/2024,21:00,si,STATUS_FULL_TIME,AZ Alkmaar,Fenerbahce,3,1,11,11,3,6,5,3,15,12,47.3,52.7,140,436,720580
+Europa League,2024/25,Fase campionato,07/11/2024,21:00,si,STATUS_FULL_TIME,Ajax Amsterdam,Maccabi Tel-Aviv,5,0,19,11,10,3,4,2,18,15,62.3,37.7,139,524,720579
+Europa League,2024/25,Fase campionato,07/11/2024,21:00,si,STATUS_FULL_TIME,Dynamo Kyiv,Ferencvaros,0,4,10,27,0,13,5,11,3,11,36.5,63.5,440,622,720577
+Europa League,2024/25,Fase campionato,07/11/2024,21:00,si,STATUS_FULL_TIME,Lazio,FC Porto,2,1,11,7,5,1,6,5,11,16,48.2,51.8,112,437,720578
+Europa League,2024/25,Fase campionato,07/11/2024,21:00,si,STATUS_FULL_TIME,Manchester United,PAOK,2,0,16,8,4,4,9,2,10,15,52.4,47.6,360,605,720575
+Europa League,2024/25,Fase campionato,07/11/2024,21:00,si,STATUS_FULL_TIME,Rigas Futbola Skola,Anderlecht,1,1,7,10,3,3,3,9,15,11,32.7,67.3,12030,441,720574
+Europa League,2024/25,Fase campionato,07/11/2024,21:00,si,STATUS_FULL_TIME,TSG Hoffenheim,Lyon,2,2,18,11,12,4,8,9,13,12,43.5,56.5,7911,167,720576
+Europa League,2024/25,Fase campionato,07/11/2024,21:00,si,STATUS_FULL_TIME,Viktoria Plzen,Real Sociedad,2,1,11,16,4,6,5,4,9,9,29.6,70.4,11706,89,720573
+Champions League,2024/25,Fase campionato,26/11/2024,18:45,si,STATUS_FULL_TIME,Slovan Bratislava,AC Milan,2,3,6,15,3,5,4,8,15,12,34.2,65.8,521,103,720393
+Champions League,2024/25,Fase campionato,26/11/2024,18:45,si,STATUS_FULL_TIME,Sparta Prague,Atlético Madrid,0,6,4,24,2,10,0,6,12,9,39.9,60.1,433,1068,720392
+Champions League,2024/25,Fase campionato,26/11/2024,21:00,si,STATUS_FULL_TIME,Barcelona,Brest,3,0,19,2,8,0,4,0,8,19,75.9,24.1,83,6997,720394
+Champions League,2024/25,Fase campionato,26/11/2024,21:00,si,STATUS_FULL_TIME,Bayer Leverkusen,RB Salzburg,5,0,29,7,13,2,6,3,11,11,62.4,37.6,131,2790,720395
+Champions League,2024/25,Fase campionato,26/11/2024,21:00,si,STATUS_FULL_TIME,Bayern Munich,Paris Saint-Germain,1,0,18,11,7,3,4,3,13,10,57.4,42.6,132,160,720396
+Champions League,2024/25,Fase campionato,26/11/2024,21:00,si,STATUS_FULL_TIME,Internazionale,RB Leipzig,1,0,12,7,4,1,6,5,11,12,50.2,49.8,110,11420,720397
+Champions League,2024/25,Fase campionato,26/11/2024,21:00,si,STATUS_FULL_TIME,Manchester City,Feyenoord Rotterdam,3,3,18,10,9,5,10,2,7,13,63.5,36.5,382,142,720398
+Champions League,2024/25,Fase campionato,26/11/2024,21:00,si,STATUS_FULL_TIME,Sporting CP,Arsenal,1,5,19,13,8,9,8,3,6,8,52.2,47.8,2250,359,720399
+Champions League,2024/25,Fase campionato,26/11/2024,21:00,si,STATUS_FULL_TIME,Young Boys,Atalanta,1,6,9,18,1,10,7,9,16,7,44.8,55.2,2722,105,720400
+Conference League,2024/25,Fase campionato,27/11/2024,16:30,si,STATUS_FULL_TIME,Istanbul Basaksehir,Petrocub,1,1,14,5,5,2,5,1,15,13,62.2,37.8,7914,19250,720663
+Champions League,2024/25,Fase campionato,27/11/2024,18:45,si,STATUS_FULL_TIME,Red Star Belgrade,VfB Stuttgart,5,1,11,13,7,2,4,4,14,17,29.1,70.9,2290,134,720402
+Champions League,2024/25,Fase campionato,27/11/2024,18:45,si,STATUS_FULL_TIME,SK Sturm Graz,Girona,1,0,9,9,5,1,1,10,11,16,30.7,69.3,3746,9812,720401
+Champions League,2024/25,Fase campionato,27/11/2024,21:00,si,STATUS_FULL_TIME,AS Monaco,Benfica,2,3,11,18,5,8,4,7,11,8,46.1,53.9,174,1929,720407
+Champions League,2024/25,Fase campionato,27/11/2024,21:00,si,STATUS_FULL_TIME,Aston Villa,Juventus,0,0,11,8,3,2,3,3,13,14,45.6,54.4,362,111,720405
+Champions League,2024/25,Fase campionato,27/11/2024,21:00,si,STATUS_FULL_TIME,Bologna,Lille,1,2,12,15,6,8,2,3,12,9,56.9,43.1,107,166,720403
+Champions League,2024/25,Fase campionato,27/11/2024,21:00,si,STATUS_FULL_TIME,Celtic,Club Brugge,1,1,7,9,3,3,4,5,5,8,60.2,39.8,256,570,720404
+Champions League,2024/25,Fase campionato,27/11/2024,21:00,si,STATUS_FULL_TIME,Dinamo Zagreb,Borussia Dortmund,0,3,5,17,1,6,3,8,12,11,29.5,70.5,597,124,720406
+Champions League,2024/25,Fase campionato,27/11/2024,21:00,si,STATUS_FULL_TIME,Liverpool,Real Madrid,2,0,17,8,7,3,8,5,11,10,62.7,37.3,364,86,720369
+Champions League,2024/25,Fase campionato,27/11/2024,21:00,si,STATUS_FULL_TIME,PSV Eindhoven,Shakhtar Donetsk,3,2,35,12,18,3,12,5,4,2,69.2,30.8,148,493,720408
+Conference League,2024/25,Fase campionato,28/11/2024,16:30,si,STATUS_FULL_TIME,FC Astana,Vitória de Guimaraes,1,1,6,34,4,7,1,12,12,11,35.3,64.7,12124,5309,720664
+Conference League,2024/25,Fase campionato,28/11/2024,18:45,si,STATUS_FULL_TIME,1. FC Heidenheim 1846,Chelsea,0,2,16,17,11,9,3,6,14,10,33.1,66.9,6418,363,720674
+Conference League,2024/25,Fase campionato,28/11/2024,18:45,si,STATUS_FULL_TIME,Borac Banja Luka,LASK Linz,2,1,20,4,8,2,7,2,11,11,63.2,36.8,20710,4411,720665
+Conference League,2024/25,Fase campionato,28/11/2024,18:45,si,STATUS_FULL_TIME,Cercle Brugge KSV,Heart of Midlothian,2,0,12,13,6,6,4,3,19,12,40.2,59.8,3610,262,720666
+Conference League,2024/25,Fase campionato,28/11/2024,18:45,si,STATUS_FULL_TIME,Dinamo Minsk,F.C. København,1,2,9,13,4,4,2,7,17,12,27.8,72.2,2539,909,720673
+Conference League,2024/25,Fase campionato,28/11/2024,18:45,si,STATUS_FULL_TIME,FC Noah,Vikingur Reykjavik,0,0,11,6,5,2,7,3,9,13,55.9,44.1,20712,8249,720671
+Conference League,2024/25,Fase campionato,28/11/2024,18:45,si,STATUS_FULL_TIME,Molde,Apoel Nicosia,0,1,11,5,5,3,6,6,13,12,57.9,42.1,2715,2497,720672
+Conference League,2024/25,Fase campionato,28/11/2024,18:45,si,STATUS_FULL_TIME,NK Celje,Jagiellonia Bialystok,3,3,19,16,6,7,9,3,12,8,58.2,41.8,3362,11505,720667
+Conference League,2024/25,Fase campionato,28/11/2024,18:45,si,STATUS_FULL_TIME,Panathinaikos,HJK Helsinki,1,0,22,6,10,3,11,2,16,18,56.8,43.2,443,502,720670
+Conference League,2024/25,Fase campionato,28/11/2024,18:45,si,STATUS_FULL_TIME,St. Gallen,FK TSC,2,2,24,16,7,4,6,6,11,10,47.3,52.7,557,20713,720669
+Conference League,2024/25,Fase campionato,28/11/2024,18:45,si,STATUS_FULL_TIME,The New Saints,Djurgården,0,1,8,16,0,5,1,6,15,9,40.2,59.8,576,2339,720668
+Europa League,2024/25,Fase campionato,28/11/2024,18:45,si,STATUS_FULL_TIME,AZ Alkmaar,Galatasaray,1,1,12,19,5,5,3,5,15,10,40.1,59.9,140,432,720581
+Europa League,2024/25,Fase campionato,28/11/2024,18:45,si,STATUS_FULL_TIME,Anderlecht,FC Porto,2,2,9,12,5,5,7,5,7,16,52.7,47.3,441,437,720587
+Europa League,2024/25,Fase campionato,28/11/2024,18:45,si,STATUS_FULL_TIME,Athletic Club,IF Elfsborg,3,0,19,2,6,0,10,0,13,13,70.4,29.6,93,529,720582
+Europa League,2024/25,Fase campionato,28/11/2024,18:45,si,STATUS_FULL_TIME,Besiktas,Maccabi Tel-Aviv,1,3,11,19,3,10,2,7,12,10,59,41,1895,524,720583
+Europa League,2024/25,Fase campionato,28/11/2024,18:45,si,STATUS_FULL_TIME,Dynamo Kyiv,Viktoria Plzen,1,2,14,15,6,5,8,1,11,14,62.3,37.7,440,11706,720584
+Europa League,2024/25,Fase campionato,28/11/2024,18:45,si,STATUS_FULL_TIME,FK Qarabag,Lyon,1,4,17,16,4,10,5,3,8,15,56.6,43.4,10414,167,720586
+Europa League,2024/25,Fase campionato,28/11/2024,18:45,si,STATUS_FULL_TIME,Lazio,Ludogorets Razgrad,0,0,20,3,6,0,7,3,10,9,62.1,37.9,112,13018,720585
+Europa League,2024/25,Fase campionato,28/11/2024,18:45,si,STATUS_FULL_TIME,Rigas Futbola Skola,PAOK,0,2,8,15,3,6,6,5,11,9,46,54,12030,605,720588
+Conference League,2024/25,Fase campionato,28/11/2024,21:00,si,STATUS_FULL_TIME,FC Lugano,KAA Gent,2,0,10,17,3,6,3,10,16,14,39.6,60.4,7672,3611,720677
+Conference League,2024/25,Fase campionato,28/11/2024,21:00,si,STATUS_FULL_TIME,Fiorentina,Pafos,3,2,13,9,4,3,4,5,11,18,49,51,109,22281,720678
+Conference League,2024/25,Fase campionato,28/11/2024,21:00,si,STATUS_FULL_TIME,Mlada Boleslav,Real Betis,2,1,18,14,9,4,4,5,11,12,42.3,57.7,6758,244,720676
+Conference League,2024/25,Fase campionato,28/11/2024,21:00,si,STATUS_FULL_TIME,Olimpija Ljubljana,Larne,1,0,17,4,5,1,12,0,9,14,79.6,20.4,500,20039,720679
+Conference League,2024/25,Fase campionato,28/11/2024,21:00,si,STATUS_FULL_TIME,Omonia Nicosia,Legia Warsaw,0,3,8,13,3,4,5,5,8,9,55.5,44.5,617,555,720675
+Conference League,2024/25,Fase campionato,28/11/2024,21:00,si,STATUS_FULL_TIME,Rapid Vienna,Shamrock Rovers,1,1,19,6,3,3,15,2,3,10,74.3,25.7,519,2564,720680
+Europa League,2024/25,Fase campionato,28/11/2024,21:00,si,STATUS_FULL_TIME,Braga,TSG Hoffenheim,3,0,9,15,5,4,1,9,9,13,44.9,55.1,2994,7911,720595
+Europa League,2024/25,Fase campionato,28/11/2024,21:00,si,STATUS_FULL_TIME,FC Midtjylland,Eintracht Frankfurt,1,2,11,17,3,6,6,4,8,7,42.9,57.1,572,125,720594
+Europa League,2024/25,Fase campionato,28/11/2024,21:00,si,STATUS_FULL_TIME,FC Twente,Union St.-Gilloise,0,1,13,18,3,9,4,4,9,12,56.1,43.9,152,5807,720593
+Europa League,2024/25,Fase campionato,28/11/2024,21:00,si,STATUS_FULL_TIME,FCSB,Olympiacos,0,0,10,12,2,2,4,4,10,16,40.7,59.3,484,435,720592
+Europa League,2024/25,Fase campionato,28/11/2024,21:00,si,STATUS_FULL_TIME,Ferencvaros,Malmö FF,4,1,9,11,6,4,1,3,16,11,32.6,67.4,622,2720,720591
+Europa League,2024/25,Fase campionato,28/11/2024,21:00,si,STATUS_FULL_TIME,Manchester United,Bodo/Glimt,3,2,20,7,6,4,2,1,7,7,72.4,27.6,360,2980,720590
+Europa League,2024/25,Fase campionato,28/11/2024,21:00,si,STATUS_FULL_TIME,Nice,Rangers,1,4,19,14,7,8,8,1,5,15,53.7,46.3,2502,257,720596
+Europa League,2024/25,Fase campionato,28/11/2024,21:00,si,STATUS_FULL_TIME,Real Sociedad,Ajax Amsterdam,2,0,12,12,3,3,5,4,20,17,53.2,46.8,89,139,720597
+Europa League,2024/25,Fase campionato,28/11/2024,21:00,si,STATUS_FULL_TIME,Slavia Prague,Fenerbahce,1,2,23,5,6,3,4,2,16,18,53.3,46.7,494,436,720598
+Europa League,2024/25,Fase campionato,28/11/2024,21:00,si,STATUS_FULL_TIME,Tottenham Hotspur,AS Roma,2,2,24,18,12,7,7,6,9,9,49.9,50.1,367,104,720589
+Champions League,2024/25,Fase campionato,10/12/2024,18:45,si,STATUS_FULL_TIME,Dinamo Zagreb,Celtic,0,0,11,7,2,1,4,10,9,9,31.2,68.8,597,256,720409
+Champions League,2024/25,Fase campionato,10/12/2024,18:45,si,STATUS_FULL_TIME,Girona,Liverpool,0,1,13,15,5,7,5,8,11,8,37.5,62.5,9812,364,720370
+Champions League,2024/25,Fase campionato,10/12/2024,21:00,si,STATUS_FULL_TIME,Atalanta,Real Madrid,2,3,20,10,9,6,5,2,15,13,55.6,44.4,105,86,720413
+Champions League,2024/25,Fase campionato,10/12/2024,21:00,si,STATUS_FULL_TIME,Bayer Leverkusen,Internazionale,1,0,17,6,5,0,3,1,10,7,60.7,39.3,131,110,720412
+Champions League,2024/25,Fase campionato,10/12/2024,21:00,si,STATUS_FULL_TIME,Brest,PSV Eindhoven,1,0,11,18,5,5,4,8,14,9,33.4,66.6,6997,148,720411
+Champions League,2024/25,Fase campionato,10/12/2024,21:00,si,STATUS_FULL_TIME,Club Brugge,Sporting CP,2,1,9,8,4,2,4,0,11,13,44,56,570,2250,720410
+Champions League,2024/25,Fase campionato,10/12/2024,21:00,si,STATUS_FULL_TIME,RB Leipzig,Aston Villa,2,3,17,19,6,8,5,7,12,7,46.7,53.3,11420,362,720416
+Champions League,2024/25,Fase campionato,10/12/2024,21:00,si,STATUS_FULL_TIME,RB Salzburg,Paris Saint-Germain,0,3,3,15,1,8,1,5,9,11,30,70,2790,160,720414
+Champions League,2024/25,Fase campionato,10/12/2024,21:00,si,STATUS_FULL_TIME,Shakhtar Donetsk,Bayern Munich,1,5,12,21,5,8,4,5,16,10,34.6,65.4,493,132,720415
+Europa League,2024/25,Fase campionato,11/12/2024,16:30,si,STATUS_FULL_TIME,Fenerbahce,Athletic Club,0,2,4,9,1,5,5,3,12,21,53.2,46.8,436,93,720599
+Champions League,2024/25,Fase campionato,11/12/2024,18:45,si,STATUS_FULL_TIME,Atlético Madrid,Slovan Bratislava,3,1,19,5,6,2,9,1,11,4,59,41,1068,521,720321
+Champions League,2024/25,Fase campionato,11/12/2024,18:45,si,STATUS_FULL_TIME,Lille,SK Sturm Graz,3,2,18,10,9,4,9,2,6,8,66.7,33.3,166,3746,720417
+Champions League,2024/25,Fase campionato,11/12/2024,21:00,si,STATUS_FULL_TIME,AC Milan,Red Star Belgrade,2,1,20,9,10,4,7,4,18,11,51.8,48.2,103,2290,720328
+Champions League,2024/25,Fase campionato,11/12/2024,21:00,si,STATUS_FULL_TIME,Arsenal,AS Monaco,3,0,16,7,8,2,3,1,12,7,54.6,45.4,359,174,720325
+Champions League,2024/25,Fase campionato,11/12/2024,21:00,si,STATUS_FULL_TIME,Benfica,Bologna,0,0,15,6,5,1,10,4,14,13,49,51,1929,107,720324
+Champions League,2024/25,Fase campionato,11/12/2024,21:00,si,STATUS_FULL_TIME,Borussia Dortmund,Barcelona,2,3,12,13,2,8,2,3,9,10,44.8,55.2,124,83,720322
+Champions League,2024/25,Fase campionato,11/12/2024,21:00,si,STATUS_FULL_TIME,Feyenoord Rotterdam,Sparta Prague,4,2,13,13,9,5,6,5,6,16,56.7,43.3,142,433,720323
+Champions League,2024/25,Fase campionato,11/12/2024,21:00,si,STATUS_FULL_TIME,Juventus,Manchester City,2,0,10,12,5,3,2,6,8,7,31.1,68.9,111,382,720326
+Champions League,2024/25,Fase campionato,11/12/2024,21:00,si,STATUS_FULL_TIME,VfB Stuttgart,Young Boys,5,1,20,5,6,1,5,0,10,16,63.8,36.2,134,2722,720327
+Conference League,2024/25,Fase campionato,12/12/2024,14:00,si,STATUS_FULL_TIME,Vikingur Reykjavik,Djurgården,1,2,11,13,1,5,4,1,14,15,60.8,39.2,8249,2339,720694
+Conference League,2024/25,Fase campionato,12/12/2024,16:30,si,STATUS_FULL_TIME,FC Astana,Chelsea,1,3,6,24,3,13,2,4,7,8,30.6,69.4,12124,363,720681
+Conference League,2024/25,Fase campionato,12/12/2024,18:45,si,STATUS_FULL_TIME,Dinamo Minsk,Larne,2,0,11,8,4,2,9,2,21,13,54,46,2539,20039,720686
+Conference League,2024/25,Fase campionato,12/12/2024,18:45,si,STATUS_FULL_TIME,F.C. København,Heart of Midlothian,2,0,19,2,8,0,4,3,11,12,65,35,909,262,720685
+Conference League,2024/25,Fase campionato,12/12/2024,18:45,si,STATUS_FULL_TIME,FC Noah,Apoel Nicosia,1,3,14,9,7,5,5,4,16,13,53.5,46.5,20712,2497,720687
+Conference League,2024/25,Fase campionato,12/12/2024,18:45,si,STATUS_FULL_TIME,Fiorentina,LASK Linz,7,0,23,7,9,3,5,1,14,13,54.3,45.7,109,4411,720684
+Conference League,2024/25,Fase campionato,12/12/2024,18:45,si,STATUS_FULL_TIME,HJK Helsinki,Molde,2,2,10,10,2,2,5,6,10,13,55.5,44.5,502,2715,720683
+Conference League,2024/25,Fase campionato,12/12/2024,18:45,si,STATUS_FULL_TIME,Istanbul Basaksehir,1. FC Heidenheim 1846,3,1,10,16,6,4,9,6,13,16,41.4,58.6,7914,6418,720682
+Conference League,2024/25,Fase campionato,12/12/2024,18:45,si,STATUS_FULL_TIME,Legia Warsaw,FC Lugano,1,2,12,16,2,11,1,2,15,16,34.9,65.1,555,7672,720690
+Conference League,2024/25,Fase campionato,12/12/2024,18:45,si,STATUS_FULL_TIME,Olimpija Ljubljana,Cercle Brugge KSV,1,4,10,16,2,8,3,10,14,15,47.4,52.6,500,3610,720689
+Conference League,2024/25,Fase campionato,12/12/2024,18:45,si,STATUS_FULL_TIME,Petrocub,Real Betis,0,1,3,15,1,4,0,8,19,12,39.6,60.4,19250,244,720688
+Europa League,2024/25,Fase campionato,12/12/2024,18:45,si,STATUS_FULL_TIME,AS Roma,Braga,3,0,34,8,17,0,14,5,9,11,54.1,45.9,104,2994,720604
+Europa League,2024/25,Fase campionato,12/12/2024,18:45,si,STATUS_FULL_TIME,Ludogorets Razgrad,AZ Alkmaar,2,2,14,18,3,8,3,11,6,16,49.6,50.4,13018,140,720602
+Europa League,2024/25,Fase campionato,12/12/2024,18:45,si,STATUS_FULL_TIME,Malmö FF,Galatasaray,2,2,21,9,4,5,7,3,11,11,48.5,51.5,2720,432,720605
+Europa League,2024/25,Fase campionato,12/12/2024,18:45,si,STATUS_FULL_TIME,Olympiacos,FC Twente,0,0,12,7,4,2,7,2,11,13,45.9,54.1,435,152,720600
+Europa League,2024/25,Fase campionato,12/12/2024,18:45,si,STATUS_FULL_TIME,PAOK,Ferencvaros,5,0,13,9,7,2,3,2,11,14,49.5,50.5,605,622,720601
+Europa League,2024/25,Fase campionato,12/12/2024,18:45,si,STATUS_FULL_TIME,TSG Hoffenheim,FCSB,0,0,14,8,3,4,4,2,17,18,68.9,31.1,7911,484,720606
+Europa League,2024/25,Fase campionato,12/12/2024,18:45,si,STATUS_FULL_TIME,Union St.-Gilloise,Nice,2,1,24,13,12,2,8,3,15,6,49.1,50.9,5807,2502,720603
+Europa League,2024/25,Fase campionato,12/12/2024,18:45,si,STATUS_FULL_TIME,Viktoria Plzen,Manchester United,1,2,15,17,2,8,1,5,11,11,31.6,68.4,11706,360,720607
+Conference League,2024/25,Fase campionato,12/12/2024,21:00,si,STATUS_FULL_TIME,KAA Gent,FK TSC,3,0,13,15,6,6,2,4,13,11,48.4,51.6,3611,20713,720696
+Conference League,2024/25,Fase campionato,12/12/2024,21:00,si,STATUS_FULL_TIME,Mlada Boleslav,Jagiellonia Bialystok,1,0,11,13,5,3,4,4,12,11,36.6,63.4,6758,11505,720692
+Conference League,2024/25,Fase campionato,12/12/2024,21:00,si,STATUS_FULL_TIME,Omonia Nicosia,Rapid Vienna,3,1,11,19,7,4,6,6,10,13,38.4,61.6,617,519,720691
+Conference League,2024/25,Fase campionato,12/12/2024,21:00,si,STATUS_FULL_TIME,Pafos,NK Celje,2,0,10,6,4,1,3,4,9,15,49.8,50.2,22281,3362,720693
+Conference League,2024/25,Fase campionato,12/12/2024,21:00,si,STATUS_FULL_TIME,Shamrock Rovers,Borac Banja Luka,3,0,9,6,6,3,4,2,15,10,45.6,54.4,2564,20710,720698
+Conference League,2024/25,Fase campionato,12/12/2024,21:00,si,STATUS_FULL_TIME,St. Gallen,Vitória de Guimaraes,1,4,10,30,4,16,2,8,11,11,47.5,52.5,557,5309,720697
+Conference League,2024/25,Fase campionato,12/12/2024,21:00,si,STATUS_FULL_TIME,The New Saints,Panathinaikos,0,2,9,16,4,8,4,7,8,10,36.2,63.8,576,443,720695
+Europa League,2024/25,Fase campionato,12/12/2024,21:00,si,STATUS_FULL_TIME,Ajax Amsterdam,Lazio,1,3,16,9,6,6,2,0,8,18,54.2,45.8,139,112,720471
+Europa League,2024/25,Fase campionato,12/12/2024,21:00,si,STATUS_FULL_TIME,Bodo/Glimt,Besiktas,2,1,16,14,4,4,11,6,10,9,59.4,40.6,2980,1895,720470
+Europa League,2024/25,Fase campionato,12/12/2024,21:00,si,STATUS_FULL_TIME,FC Porto,FC Midtjylland,2,0,17,5,7,1,3,7,16,11,61.8,38.2,437,572,720472
+Europa League,2024/25,Fase campionato,12/12/2024,21:00,si,STATUS_FULL_TIME,IF Elfsborg,FK Qarabag,1,0,9,14,3,2,2,4,20,7,29.9,70.1,529,10414,720469
+Europa League,2024/25,Fase campionato,12/12/2024,21:00,si,STATUS_FULL_TIME,Lyon,Eintracht Frankfurt,3,2,19,7,6,5,4,0,18,15,43,57,167,125,720468
+Europa League,2024/25,Fase campionato,12/12/2024,21:00,si,STATUS_FULL_TIME,Maccabi Tel-Aviv,Rigas Futbola Skola,2,1,10,14,5,4,1,4,11,14,52.8,47.2,524,12030,720467
+Europa League,2024/25,Fase campionato,12/12/2024,21:00,si,STATUS_FULL_TIME,Rangers,Tottenham Hotspur,1,1,15,12,6,3,7,7,9,9,41.3,58.7,257,367,720466
+Europa League,2024/25,Fase campionato,12/12/2024,21:00,si,STATUS_FULL_TIME,Real Sociedad,Dynamo Kyiv,3,0,27,5,14,1,6,1,10,14,59.2,40.8,89,440,720465
+Europa League,2024/25,Fase campionato,12/12/2024,21:00,si,STATUS_FULL_TIME,Slavia Prague,Anderlecht,1,2,21,7,6,2,9,1,15,13,64,36,494,441,720608
+Conference League,2024/25,Fase campionato,19/12/2024,21:00,si,STATUS_FULL_TIME,1. FC Heidenheim 1846,St. Gallen,1,1,20,7,5,2,9,6,9,17,60.9,39.1,6418,557,720713
+Conference League,2024/25,Fase campionato,19/12/2024,21:00,si,STATUS_FULL_TIME,Apoel Nicosia,FC Astana,1,1,19,11,4,3,2,6,14,17,37.2,62.8,2497,12124,720712
+Conference League,2024/25,Fase campionato,19/12/2024,21:00,si,STATUS_FULL_TIME,Borac Banja Luka,Omonia Nicosia,0,0,8,6,2,2,6,4,10,14,44.6,55.4,20710,617,720710
+Conference League,2024/25,Fase campionato,19/12/2024,21:00,si,STATUS_FULL_TIME,Cercle Brugge KSV,Istanbul Basaksehir,1,1,21,12,9,4,4,3,12,11,42.2,57.8,3610,7914,720709
+Conference League,2024/25,Fase campionato,19/12/2024,21:00,si,STATUS_FULL_TIME,Chelsea,Shamrock Rovers,5,1,20,6,10,4,7,3,7,12,73.2,26.8,363,2564,720708
+Conference League,2024/25,Fase campionato,19/12/2024,21:00,si,STATUS_FULL_TIME,Djurgården,Legia Warsaw,3,1,12,15,6,4,3,6,14,13,54.9,45.1,2339,555,720699
+Conference League,2024/25,Fase campionato,19/12/2024,21:00,si,STATUS_FULL_TIME,FC Lugano,Pafos,2,2,12,15,5,3,2,4,15,7,48.2,51.8,7672,22281,720704
+Conference League,2024/25,Fase campionato,19/12/2024,21:00,si,STATUS_FULL_TIME,FK TSC,FC Noah,4,3,26,10,11,7,8,3,15,12,61.4,38.6,20713,20712,720711
+Conference League,2024/25,Fase campionato,19/12/2024,21:00,si,STATUS_FULL_TIME,Heart of Midlothian,Petrocub,2,2,13,8,4,3,15,0,12,14,68.1,31.9,262,19250,720700
+Conference League,2024/25,Fase campionato,19/12/2024,21:00,si,STATUS_FULL_TIME,Jagiellonia Bialystok,Olimpija Ljubljana,0,0,7,12,2,3,2,8,19,17,39.8,60.2,11505,500,720701
+Conference League,2024/25,Fase campionato,19/12/2024,21:00,si,STATUS_FULL_TIME,LASK Linz,Vikingur Reykjavik,1,1,13,5,5,2,2,4,7,20,60.4,39.6,4411,8249,720702
+Conference League,2024/25,Fase campionato,19/12/2024,21:00,si,STATUS_FULL_TIME,Larne,KAA Gent,1,0,6,16,2,6,2,9,12,15,23.8,76.2,20039,3611,720703
+Conference League,2024/25,Fase campionato,19/12/2024,21:00,si,STATUS_FULL_TIME,Molde,Mlada Boleslav,4,3,21,14,7,6,3,2,7,15,65.2,34.8,2715,6758,720705
+Conference League,2024/25,Fase campionato,19/12/2024,21:00,si,STATUS_FULL_TIME,NK Celje,The New Saints,3,2,25,7,11,2,8,5,10,11,66.6,33.4,3362,576,720716
+Conference League,2024/25,Fase campionato,19/12/2024,21:00,si,STATUS_FULL_TIME,Panathinaikos,Dinamo Minsk,4,0,17,7,8,1,8,4,6,17,67.5,32.5,443,2539,720707
+Conference League,2024/25,Fase campionato,19/12/2024,21:00,si,STATUS_FULL_TIME,Rapid Vienna,F.C. København,3,0,22,12,9,2,7,4,8,13,39.5,60.5,519,909,720714
+Conference League,2024/25,Fase campionato,19/12/2024,21:00,si,STATUS_FULL_TIME,Real Betis,HJK Helsinki,1,0,18,2,8,2,6,1,13,13,57.5,42.5,244,502,720715
+Conference League,2024/25,Fase campionato,19/12/2024,21:00,si,STATUS_FULL_TIME,Vitória de Guimaraes,Fiorentina,1,1,17,12,5,2,2,7,20,7,45.8,54.2,5309,109,720706
+Europa League,2024/25,Fase campionato,21/01/2025,16:30,si,STATUS_FULL_TIME,Galatasaray,Dynamo Kyiv,3,3,24,6,8,3,8,3,6,7,48.1,51.9,432,440,720473
+Champions League,2024/25,Fase campionato,21/01/2025,18:45,si,STATUS_FULL_TIME,AS Monaco,Aston Villa,1,0,12,10,4,5,4,7,14,14,39.1,60.9,174,362,720330
+Champions League,2024/25,Fase campionato,21/01/2025,18:45,si,STATUS_FULL_TIME,Atalanta,SK Sturm Graz,5,0,25,5,9,1,12,1,12,13,61,39,105,3746,720329
+Champions League,2024/25,Fase campionato,21/01/2025,21:00,si,STATUS_FULL_TIME,Atlético Madrid,Bayer Leverkusen,2,1,5,13,2,4,3,4,7,14,30,70,1068,131,720335
+Champions League,2024/25,Fase campionato,21/01/2025,21:00,si,STATUS_FULL_TIME,Benfica,Barcelona,4,5,10,22,5,11,2,6,9,9,25.6,74.4,1929,83,720334
+Champions League,2024/25,Fase campionato,21/01/2025,21:00,si,STATUS_FULL_TIME,Bologna,Borussia Dortmund,2,1,17,3,6,2,6,5,15,18,52.5,47.5,107,124,720333
+Champions League,2024/25,Fase campionato,21/01/2025,21:00,si,STATUS_FULL_TIME,Club Brugge,Juventus,0,0,7,5,0,1,3,4,7,11,42.8,57.2,570,111,720336
+Champions League,2024/25,Fase campionato,21/01/2025,21:00,si,STATUS_FULL_TIME,Liverpool,Lille,2,1,13,4,7,1,3,3,12,9,55.8,44.2,364,166,720331
+Champions League,2024/25,Fase campionato,21/01/2025,21:00,si,STATUS_FULL_TIME,Red Star Belgrade,PSV Eindhoven,2,3,21,13,7,5,7,7,10,12,56.8,43.2,2290,148,720332
+Champions League,2024/25,Fase campionato,21/01/2025,21:00,si,STATUS_FULL_TIME,Slovan Bratislava,VfB Stuttgart,1,3,6,21,2,7,4,19,10,14,40.7,59.3,521,134,720337
+Europa League,2024/25,Fase campionato,22/01/2025,16:30,si,STATUS_FULL_TIME,Besiktas,Athletic Club,4,1,11,10,9,4,4,1,15,15,47,53,1895,93,720474
+Champions League,2024/25,Fase campionato,22/01/2025,18:45,si,STATUS_FULL_TIME,RB Leipzig,Sporting CP,2,1,10,17,6,2,0,9,16,6,47.4,52.6,11420,2250,720339
+Champions League,2024/25,Fase campionato,22/01/2025,18:45,si,STATUS_FULL_TIME,Shakhtar Donetsk,Brest,2,0,9,10,5,4,3,4,17,11,46.8,53.2,493,6997,720338
+Champions League,2024/25,Fase campionato,22/01/2025,21:00,si,STATUS_FULL_TIME,AC Milan,Girona,1,0,17,11,5,4,6,3,12,18,42.2,57.8,103,9812,720346
+Champions League,2024/25,Fase campionato,22/01/2025,21:00,si,STATUS_FULL_TIME,Arsenal,Dinamo Zagreb,3,0,17,5,4,0,11,3,9,7,63,37,359,597,720343
+Champions League,2024/25,Fase campionato,22/01/2025,21:00,si,STATUS_FULL_TIME,Celtic,Young Boys,1,0,16,12,7,4,7,4,12,15,59.3,40.7,256,2722,720342
+Champions League,2024/25,Fase campionato,22/01/2025,21:00,si,STATUS_FULL_TIME,Feyenoord Rotterdam,Bayern Munich,3,0,8,30,3,6,1,13,5,6,20,80,142,132,720341
+Champions League,2024/25,Fase campionato,22/01/2025,21:00,si,STATUS_FULL_TIME,Paris Saint-Germain,Manchester City,4,2,26,9,9,6,11,6,10,10,63.2,36.8,160,382,720344
+Champions League,2024/25,Fase campionato,22/01/2025,21:00,si,STATUS_FULL_TIME,Real Madrid,RB Salzburg,5,1,14,9,6,3,10,3,11,9,70.3,29.7,86,2790,720345
+Champions League,2024/25,Fase campionato,22/01/2025,21:00,si,STATUS_FULL_TIME,Sparta Prague,Internazionale,0,1,10,12,2,4,4,3,11,7,30.5,69.5,433,110,720340
+Europa League,2024/25,Fase campionato,23/01/2025,18:45,si,STATUS_FULL_TIME,AZ Alkmaar,AS Roma,1,0,7,11,1,2,6,1,19,10,36.3,63.7,140,104,720475
+Europa League,2024/25,Fase campionato,23/01/2025,18:45,si,STATUS_FULL_TIME,Bodo/Glimt,Maccabi Tel-Aviv,3,1,14,5,5,3,4,1,6,6,70.9,29.1,2980,524,720476
+Europa League,2024/25,Fase campionato,23/01/2025,18:45,si,STATUS_FULL_TIME,FC Porto,Olympiacos,0,1,16,7,2,2,2,2,10,18,58.3,41.7,437,435,720482
+Europa League,2024/25,Fase campionato,23/01/2025,18:45,si,STATUS_FULL_TIME,FK Qarabag,FCSB,2,3,9,10,1,5,7,4,10,23,63.5,36.5,10414,484,720479
+Europa League,2024/25,Fase campionato,23/01/2025,18:45,si,STATUS_FULL_TIME,Fenerbahce,Lyon,0,0,11,13,2,7,3,7,14,23,44.2,55.8,436,167,720481
+Europa League,2024/25,Fase campionato,23/01/2025,18:45,si,STATUS_FULL_TIME,Malmö FF,FC Twente,2,3,11,7,4,4,9,7,18,17,55.9,44.1,2720,152,720480
+Europa League,2024/25,Fase campionato,23/01/2025,18:45,si,STATUS_FULL_TIME,TSG Hoffenheim,Tottenham Hotspur,2,3,22,8,5,5,6,4,6,6,56,44,7911,367,720478
+Europa League,2024/25,Fase campionato,23/01/2025,18:45,si,STATUS_FULL_TIME,Viktoria Plzen,Anderlecht,2,0,12,6,5,2,3,0,16,6,30,70,11706,441,720477
+Europa League,2024/25,Fase campionato,23/01/2025,21:00,si,STATUS_FULL_TIME,Eintracht Frankfurt,Ferencvaros,2,0,14,1,8,0,7,2,11,5,68.6,31.4,125,622,720484
+Europa League,2024/25,Fase campionato,23/01/2025,21:00,si,STATUS_FULL_TIME,IF Elfsborg,Nice,1,0,9,22,1,6,4,9,5,7,31.6,68.4,529,2502,720485
+Europa League,2024/25,Fase campionato,23/01/2025,21:00,si,STATUS_FULL_TIME,Lazio,Real Sociedad,3,1,19,9,6,4,3,3,10,6,77.5,22.5,112,89,720486
+Europa League,2024/25,Fase campionato,23/01/2025,21:00,si,STATUS_FULL_TIME,Ludogorets Razgrad,FC Midtjylland,0,2,16,11,6,6,8,3,13,15,64.1,35.9,13018,572,720487
+Europa League,2024/25,Fase campionato,23/01/2025,21:00,si,STATUS_FULL_TIME,Manchester United,Rangers,2,1,16,11,6,7,7,5,10,14,67.1,32.9,360,257,720483
+Europa League,2024/25,Fase campionato,23/01/2025,21:00,si,STATUS_FULL_TIME,PAOK,Slavia Prague,2,0,14,15,7,4,6,4,11,16,46.5,53.5,605,494,720490
+Europa League,2024/25,Fase campionato,23/01/2025,21:00,si,STATUS_FULL_TIME,Rigas Futbola Skola,Ajax Amsterdam,1,0,7,13,2,6,1,5,14,7,30.8,69.2,12030,139,720489
+Europa League,2024/25,Fase campionato,23/01/2025,21:00,si,STATUS_FULL_TIME,Union St.-Gilloise,Braga,2,1,6,8,3,4,3,0,18,14,55.9,44.1,5807,2994,720488
+Champions League,2024/25,Fase campionato,29/01/2025,21:00,si,STATUS_FULL_TIME,Aston Villa,Celtic,4,2,20,6,8,4,4,4,4,15,58.4,41.6,362,256,720363
+Champions League,2024/25,Fase campionato,29/01/2025,21:00,si,STATUS_FULL_TIME,Barcelona,Atalanta,2,2,16,8,7,4,7,4,7,13,68.2,31.8,83,105,720362
+Champions League,2024/25,Fase campionato,29/01/2025,21:00,si,STATUS_FULL_TIME,Bayer Leverkusen,Sparta Prague,2,0,26,12,10,1,10,2,5,6,70.7,29.3,131,433,720361
+Champions League,2024/25,Fase campionato,29/01/2025,21:00,si,STATUS_FULL_TIME,Bayern Munich,Slovan Bratislava,3,1,35,9,9,4,9,2,11,7,74.6,25.4,132,521,720357
+Champions League,2024/25,Fase campionato,29/01/2025,21:00,si,STATUS_FULL_TIME,Borussia Dortmund,Shakhtar Donetsk,3,1,15,7,7,2,6,1,10,9,45.4,54.6,124,493,720360
+Champions League,2024/25,Fase campionato,29/01/2025,21:00,si,STATUS_FULL_TIME,Brest,Real Madrid,0,3,23,14,5,6,4,3,11,12,40.7,59.3,6997,86,720364
+Champions League,2024/25,Fase campionato,29/01/2025,21:00,si,STATUS_FULL_TIME,Dinamo Zagreb,AC Milan,2,1,12,14,5,5,5,4,11,16,43.1,56.9,597,103,720358
+Champions League,2024/25,Fase campionato,29/01/2025,21:00,si,STATUS_FULL_TIME,Girona,Arsenal,1,2,7,16,3,6,3,13,13,13,39.4,60.6,9812,359,720355
+Champions League,2024/25,Fase campionato,29/01/2025,21:00,si,STATUS_FULL_TIME,Internazionale,AS Monaco,3,0,20,4,7,0,3,0,12,5,63.9,36.1,110,174,720347
+Champions League,2024/25,Fase campionato,29/01/2025,21:00,si,STATUS_FULL_TIME,Juventus,Benfica,0,2,17,15,4,6,7,3,8,7,66.7,33.3,111,1929,720348
+Champions League,2024/25,Fase campionato,29/01/2025,21:00,si,STATUS_FULL_TIME,Lille,Feyenoord Rotterdam,6,1,14,7,5,3,7,5,6,11,61.7,38.3,166,142,720349
+Champions League,2024/25,Fase campionato,29/01/2025,21:00,si,STATUS_FULL_TIME,Manchester City,Club Brugge,3,1,17,12,6,5,5,1,2,3,73.9,26.1,382,570,720350
+Champions League,2024/25,Fase campionato,29/01/2025,21:00,si,STATUS_FULL_TIME,PSV Eindhoven,Liverpool,3,2,12,9,5,5,9,2,11,11,53.2,46.8,148,364,720351
+Champions League,2024/25,Fase campionato,29/01/2025,21:00,si,STATUS_FULL_TIME,RB Salzburg,Atlético Madrid,1,4,10,12,3,8,4,5,10,10,49.6,50.4,2790,1068,720356
+Champions League,2024/25,Fase campionato,29/01/2025,21:00,si,STATUS_FULL_TIME,SK Sturm Graz,RB Leipzig,1,0,9,15,5,5,3,9,13,10,39.9,60.1,3746,11420,720352
+Champions League,2024/25,Fase campionato,29/01/2025,21:00,si,STATUS_FULL_TIME,Sporting CP,Bologna,1,1,9,11,5,2,5,6,18,29,57.1,42.9,2250,107,720353
+Champions League,2024/25,Fase campionato,29/01/2025,21:00,si,STATUS_FULL_TIME,VfB Stuttgart,Paris Saint-Germain,1,4,10,13,2,6,2,8,10,8,41.6,58.4,134,160,720354
+Champions League,2024/25,Fase campionato,29/01/2025,21:00,si,STATUS_FULL_TIME,Young Boys,Red Star Belgrade,0,1,8,18,3,3,4,10,13,10,41.3,58.7,2722,2290,720359
+Europa League,2024/25,Fase campionato,30/01/2025,21:00,si,STATUS_FULL_TIME,AS Roma,Eintracht Frankfurt,2,0,15,6,3,2,5,2,6,15,47,53,104,125,720505
+Europa League,2024/25,Fase campionato,30/01/2025,21:00,si,STATUS_FULL_TIME,Ajax Amsterdam,Galatasaray,2,1,12,28,6,9,2,10,16,8,38.9,61.1,139,432,720491
+Europa League,2024/25,Fase campionato,30/01/2025,21:00,si,STATUS_FULL_TIME,Anderlecht,TSG Hoffenheim,3,4,0,0,0,0,0,0,0,0,0,0,441,7911,720502
+Europa League,2024/25,Fase campionato,30/01/2025,21:00,si,STATUS_FULL_TIME,Athletic Club,Viktoria Plzen,3,1,19,8,8,2,7,1,11,9,57.8,42.2,93,11706,720508
+Europa League,2024/25,Fase campionato,30/01/2025,21:00,si,STATUS_FULL_TIME,Braga,Lazio,1,0,8,12,4,4,4,7,13,15,50,50,2994,112,720501
+Europa League,2024/25,Fase campionato,30/01/2025,21:00,si,STATUS_FULL_TIME,Dynamo Kyiv,Rigas Futbola Skola,1,0,9,7,3,2,5,5,12,13,69.9,30.1,440,12030,720493
+Europa League,2024/25,Fase campionato,30/01/2025,21:00,si,STATUS_FULL_TIME,FC Midtjylland,Fenerbahce,2,2,13,7,5,4,3,2,12,13,54.1,45.9,572,436,720494
+Europa League,2024/25,Fase campionato,30/01/2025,21:00,si,STATUS_FULL_TIME,FC Twente,Besiktas,1,0,22,8,2,3,11,5,10,12,49.3,50.7,152,1895,720495
+Europa League,2024/25,Fase campionato,30/01/2025,21:00,si,STATUS_FULL_TIME,FCSB,Manchester United,0,2,8,21,3,7,3,6,14,10,30.5,69.5,484,360,720496
+Europa League,2024/25,Fase campionato,30/01/2025,21:00,si,STATUS_FULL_TIME,Ferencvaros,AZ Alkmaar,4,3,11,11,5,4,3,7,9,16,35.5,64.5,622,140,720497
+Europa League,2024/25,Fase campionato,30/01/2025,21:00,si,STATUS_FULL_TIME,Lyon,Ludogorets Razgrad,1,1,13,15,8,6,11,4,13,13,57.5,42.5,167,13018,720498
+Europa League,2024/25,Fase campionato,30/01/2025,21:00,si,STATUS_FULL_TIME,Maccabi Tel-Aviv,FC Porto,0,1,7,9,1,3,9,5,9,13,52.5,47.5,524,437,720499
+Europa League,2024/25,Fase campionato,30/01/2025,21:00,si,STATUS_FULL_TIME,Nice,Bodo/Glimt,1,1,16,18,3,7,5,8,10,5,45.1,54.9,2502,2980,720500
+Europa League,2024/25,Fase campionato,30/01/2025,21:00,si,STATUS_FULL_TIME,Olympiacos,FK Qarabag,3,0,23,3,9,1,7,3,15,13,44.3,55.7,435,10414,720506
+Europa League,2024/25,Fase campionato,30/01/2025,21:00,si,STATUS_FULL_TIME,Rangers,Union St.-Gilloise,2,1,12,14,4,2,4,3,16,9,46.1,53.9,257,5807,720504
+Europa League,2024/25,Fase campionato,30/01/2025,21:00,si,STATUS_FULL_TIME,Real Sociedad,PAOK,2,0,16,12,7,4,4,4,12,8,54.7,45.3,89,605,720492
+Europa League,2024/25,Fase campionato,30/01/2025,21:00,si,STATUS_FULL_TIME,Slavia Prague,Malmö FF,2,2,17,14,6,7,8,4,8,11,59.7,40.3,494,2720,720503
+Europa League,2024/25,Fase campionato,30/01/2025,21:00,si,STATUS_FULL_TIME,Tottenham Hotspur,IF Elfsborg,3,0,21,4,11,0,10,0,5,11,81.6,18.4,367,529,720507
+Champions League,2024/25,Spareggi,11/02/2025,18:45,si,STATUS_FULL_TIME,Brest,Paris Saint-Germain,0,3,16,16,2,7,6,3,7,13,38,62,6997,160,732185
+Champions League,2024/25,Spareggi,11/02/2025,21:00,si,STATUS_FULL_TIME,Juventus,PSV Eindhoven,2,1,12,15,8,2,5,4,14,12,47,53,111,148,732190
+Champions League,2024/25,Spareggi,11/02/2025,21:00,si,STATUS_FULL_TIME,Manchester City,Real Madrid,2,3,11,20,4,8,6,5,9,6,54.4,45.6,382,86,732187
+Champions League,2024/25,Spareggi,11/02/2025,21:00,si,STATUS_FULL_TIME,Sporting CP,Borussia Dortmund,0,3,13,16,6,7,4,8,8,18,45.5,54.5,2250,124,732189
+Champions League,2024/25,Spareggi,12/02/2025,18:45,si,STATUS_FULL_TIME,Club Brugge,Atalanta,2,1,11,12,4,5,4,2,7,11,53.9,46.1,570,105,732192
+Champions League,2024/25,Spareggi,12/02/2025,21:00,si,STATUS_FULL_TIME,AS Monaco,Benfica,0,1,6,23,3,6,2,7,10,14,44.4,55.6,174,1929,732188
+Champions League,2024/25,Spareggi,12/02/2025,21:00,si,STATUS_FULL_TIME,Celtic,Bayern Munich,1,2,9,10,2,5,7,7,4,4,43.1,56.9,256,132,732186
+Champions League,2024/25,Spareggi,12/02/2025,21:00,si,STATUS_FULL_TIME,Feyenoord Rotterdam,AC Milan,1,0,11,12,2,6,5,6,8,9,46.2,53.8,142,103,732191
+Conference League,2024/25,Spareggi,13/02/2025,18:45,si,STATUS_FULL_TIME,FK TSC,Jagiellonia Bialystok,1,3,5,14,1,6,4,2,21,18,51.6,48.4,20713,11505,727375
+Conference League,2024/25,Spareggi,13/02/2025,18:45,si,STATUS_FULL_TIME,Molde,Shamrock Rovers,0,1,4,5,1,2,3,2,14,8,58.7,41.3,2715,2564,727377
+Conference League,2024/25,Spareggi,13/02/2025,18:45,si,STATUS_FULL_TIME,NK Celje,Apoel Nicosia,2,2,8,7,5,5,2,2,17,17,59.8,40.2,3362,2497,727382
+Conference League,2024/25,Spareggi,13/02/2025,18:45,si,STATUS_FULL_TIME,Vikingur Reykjavik,Panathinaikos,2,1,9,15,4,6,2,6,18,10,34.7,65.3,8249,443,727379
+Europa League,2024/25,Spareggi,13/02/2025,18:45,si,STATUS_FULL_TIME,FC Midtjylland,Real Sociedad,1,2,13,9,3,3,8,3,16,22,60.4,39.6,572,89,732202
+Europa League,2024/25,Spareggi,13/02/2025,18:45,si,STATUS_FULL_TIME,Fenerbahce,Anderlecht,3,0,13,15,6,2,6,6,12,11,47.8,52.2,436,441,732206
+Europa League,2024/25,Spareggi,13/02/2025,18:45,si,STATUS_FULL_TIME,Ferencvaros,Viktoria Plzen,1,0,12,17,3,2,8,8,13,16,42.5,57.5,622,11706,732203
+Europa League,2024/25,Spareggi,13/02/2025,18:45,si,STATUS_FULL_TIME,Union St.-Gilloise,Ajax Amsterdam,0,2,13,10,4,7,6,4,10,15,49.5,50.5,5807,139,732205
+Conference League,2024/25,Spareggi,13/02/2025,21:00,si,STATUS_FULL_TIME,Borac Banja Luka,Olimpija Ljubljana,1,0,18,10,4,2,9,1,18,21,54.7,45.3,20710,500,727376
+Conference League,2024/25,Spareggi,13/02/2025,21:00,si,STATUS_FULL_TIME,F.C. København,1. FC Heidenheim 1846,1,2,15,11,7,7,5,4,17,15,60.3,39.7,909,6418,727381
+Conference League,2024/25,Spareggi,13/02/2025,21:00,si,STATUS_FULL_TIME,KAA Gent,Real Betis,0,3,8,18,1,8,5,8,19,14,51.3,48.7,3611,244,727380
+Conference League,2024/25,Spareggi,13/02/2025,21:00,si,STATUS_FULL_TIME,Omonia Nicosia,Pafos,1,1,9,16,2,5,0,9,9,14,39.8,60.2,617,22281,727378
+Europa League,2024/25,Spareggi,13/02/2025,21:00,si,STATUS_FULL_TIME,AZ Alkmaar,Galatasaray,4,1,17,8,9,2,7,1,12,12,54.8,45.2,140,432,732201
+Europa League,2024/25,Spareggi,13/02/2025,21:00,si,STATUS_FULL_TIME,FC Porto,AS Roma,1,1,12,15,2,4,4,6,8,16,57.4,42.6,437,104,732208
+Europa League,2024/25,Spareggi,13/02/2025,21:00,si,STATUS_FULL_TIME,FC Twente,Bodo/Glimt,2,1,14,6,7,2,3,0,12,9,45.1,54.9,152,2980,732207
+Europa League,2024/25,Spareggi,13/02/2025,21:00,si,STATUS_FULL_TIME,PAOK,FCSB,1,2,5,13,2,5,1,2,11,13,48,52,605,484,732204
+Champions League,2024/25,Spareggi,18/02/2025,18:45,si,STATUS_FULL_TIME,AC Milan,Feyenoord Rotterdam,1,1,18,6,7,1,4,3,11,10,56.1,43.9,103,142,732194
+Champions League,2024/25,Spareggi,18/02/2025,21:00,si,STATUS_FULL_TIME,Atalanta,Club Brugge,1,3,30,7,11,4,14,0,8,7,65,35,105,570,732197
+Champions League,2024/25,Spareggi,18/02/2025,21:00,si,STATUS_FULL_TIME,Bayern Munich,Celtic,1,1,23,5,10,3,7,0,2,9,67,33,132,256,732193
+Champions League,2024/25,Spareggi,18/02/2025,21:00,si,STATUS_FULL_TIME,Benfica,AS Monaco,3,3,10,15,7,6,2,3,14,9,40,60,1929,174,732198
+Champions League,2024/25,Spareggi,19/02/2025,18:45,si,STATUS_FULL_TIME,Borussia Dortmund,Sporting CP,0,0,19,7,5,1,6,2,14,5,55.2,44.8,124,2250,732199
+Champions League,2024/25,Spareggi,19/02/2025,21:00,si,STATUS_FINAL_AET,PSV Eindhoven,Juventus,3,1,25,15,10,4,6,5,14,20,59.2,40.8,148,111,732195
+Champions League,2024/25,Spareggi,19/02/2025,21:00,si,STATUS_FULL_TIME,Paris Saint-Germain,Brest,7,0,20,13,9,3,4,5,7,9,68.3,31.7,160,6997,732196
+Champions League,2024/25,Spareggi,19/02/2025,21:00,si,STATUS_FULL_TIME,Real Madrid,Manchester City,3,1,15,12,8,4,7,5,9,9,48.4,51.6,86,382,732200
+Conference League,2024/25,Spareggi,20/02/2025,18:45,si,STATUS_FINAL_AET,1. FC Heidenheim 1846,F.C. København,1,3,22,15,7,6,2,5,18,19,58.8,41.2,6418,909,727387
+Conference League,2024/25,Spareggi,20/02/2025,18:45,si,STATUS_FULL_TIME,Olimpija Ljubljana,Borac Banja Luka,0,0,13,14,2,4,7,7,18,9,63.3,36.7,500,20710,727383
+Conference League,2024/25,Spareggi,20/02/2025,18:45,si,STATUS_FULL_TIME,Pafos,Omonia Nicosia,2,1,20,7,11,2,7,1,12,11,51.2,48.8,22281,617,727384
+Conference League,2024/25,Spareggi,20/02/2025,18:45,si,STATUS_FULL_TIME,Real Betis,KAA Gent,0,1,16,9,7,1,6,4,6,15,52.8,47.2,244,3611,727386
+Europa League,2024/25,Spareggi,20/02/2025,18:45,si,STATUS_FULL_TIME,AS Roma,FC Porto,3,2,19,5,6,1,6,2,12,9,55.5,44.5,104,437,732212
+Europa League,2024/25,Spareggi,20/02/2025,18:45,si,STATUS_FINAL_AET,Bodo/Glimt,FC Twente,5,2,14,10,7,2,9,4,9,10,72,28,2980,152,732214
+Europa League,2024/25,Spareggi,20/02/2025,18:45,si,STATUS_FULL_TIME,FCSB,PAOK,2,0,10,9,4,4,5,7,22,11,46.5,53.5,484,605,732215
+Europa League,2024/25,Spareggi,20/02/2025,18:45,si,STATUS_FULL_TIME,Galatasaray,AZ Alkmaar,2,2,20,26,9,11,5,8,17,16,64.9,35.1,432,140,732209
+Conference League,2024/25,Spareggi,20/02/2025,21:00,si,STATUS_FULL_TIME,Apoel Nicosia,NK Celje,0,2,9,18,4,8,4,7,17,16,50.8,49.2,2497,3362,727388
+Conference League,2024/25,Spareggi,20/02/2025,21:00,si,STATUS_FULL_TIME,Jagiellonia Bialystok,FK TSC,3,1,13,13,7,2,6,6,15,23,36.9,63.1,11505,20713,727389
+Conference League,2024/25,Spareggi,20/02/2025,21:00,si,STATUS_FULL_TIME,Panathinaikos,Vikingur Reykjavik,2,0,17,4,5,2,11,3,12,16,64.2,35.8,443,8249,727385
+Conference League,2024/25,Spareggi,20/02/2025,21:00,si,STATUS_FINAL_PEN,Shamrock Rovers,Molde,0,1,9,11,3,4,9,1,12,19,53.1,46.9,2564,2715,727390
+Europa League,2024/25,Spareggi,20/02/2025,21:00,si,STATUS_FINAL_AET,Ajax Amsterdam,Union St.-Gilloise,1,2,7,34,5,11,1,12,17,21,33.2,66.8,139,5807,732213
+Europa League,2024/25,Spareggi,20/02/2025,21:00,si,STATUS_FULL_TIME,Anderlecht,Fenerbahce,2,2,13,8,6,3,3,2,15,12,57.9,42.1,441,436,732210
+Europa League,2024/25,Spareggi,20/02/2025,21:00,si,STATUS_FULL_TIME,Real Sociedad,FC Midtjylland,5,2,22,8,10,3,7,6,18,11,52.8,47.2,89,572,732211
+Europa League,2024/25,Spareggi,20/02/2025,21:00,si,STATUS_FULL_TIME,Viktoria Plzen,Ferencvaros,3,0,15,11,8,1,8,1,11,19,51.4,48.6,11706,622,732216
+Champions League,2024/25,Ottavi,04/03/2025,18:45,si,STATUS_FULL_TIME,Club Brugge,Aston Villa,1,3,11,7,3,4,3,1,8,10,56,44,570,362,733145
+Champions League,2024/25,Ottavi,04/03/2025,21:00,si,STATUS_FULL_TIME,Borussia Dortmund,Lille,1,1,7,9,1,1,5,1,14,6,43.3,56.7,124,166,733601
+Champions League,2024/25,Ottavi,04/03/2025,21:00,si,STATUS_FULL_TIME,PSV Eindhoven,Arsenal,1,7,12,15,2,8,5,3,9,10,53.2,46.8,148,359,733603
+Champions League,2024/25,Ottavi,04/03/2025,21:00,si,STATUS_FULL_TIME,Real Madrid,Atlético Madrid,2,1,13,6,7,2,6,3,10,13,51.4,48.6,86,1068,733602
+Champions League,2024/25,Ottavi,05/03/2025,18:45,si,STATUS_FULL_TIME,Feyenoord Rotterdam,Internazionale,0,2,8,13,5,7,7,5,15,6,41.8,58.2,142,110,733149
+Champions League,2024/25,Ottavi,05/03/2025,21:00,si,STATUS_FULL_TIME,Bayern Munich,Bayer Leverkusen,3,0,17,3,6,1,5,1,13,9,64.6,35.4,132,131,733147
+Champions League,2024/25,Ottavi,05/03/2025,21:00,si,STATUS_FULL_TIME,Benfica,Barcelona,0,1,26,10,8,5,13,4,18,5,52,48,1929,83,733143
+Champions League,2024/25,Ottavi,05/03/2025,21:00,si,STATUS_FULL_TIME,Paris Saint-Germain,Liverpool,0,1,27,2,10,1,14,2,3,7,70.4,29.6,160,364,733600
+Conference League,2024/25,Ottavi,06/03/2025,18:45,si,STATUS_FULL_TIME,F.C. København,Chelsea,1,2,5,5,2,2,1,0,10,5,37.6,62.4,909,363,733654
+Conference League,2024/25,Ottavi,06/03/2025,18:45,si,STATUS_FULL_TIME,Molde,Legia Warsaw,3,2,12,16,7,6,2,10,10,15,55.9,44.1,2715,555,733653
+Conference League,2024/25,Ottavi,06/03/2025,18:45,si,STATUS_FULL_TIME,Panathinaikos,Fiorentina,3,2,12,14,6,5,4,6,9,12,51.2,48.8,443,109,733652
+Conference League,2024/25,Ottavi,06/03/2025,18:45,si,STATUS_FULL_TIME,Real Betis,Vitória de Guimaraes,2,2,14,8,6,2,7,2,17,9,47,53,244,5309,733655
+Europa League,2024/25,Ottavi,06/03/2025,18:45,si,STATUS_FULL_TIME,AZ Alkmaar,Tottenham Hotspur,1,0,12,7,5,1,7,2,14,12,38.4,61.6,140,367,733622
+Europa League,2024/25,Ottavi,06/03/2025,18:45,si,STATUS_FULL_TIME,FCSB,Lyon,1,3,11,17,4,5,5,6,15,9,33.4,66.6,484,167,733624
+Europa League,2024/25,Ottavi,06/03/2025,18:45,si,STATUS_FULL_TIME,Fenerbahce,Rangers,1,3,23,8,7,6,11,3,8,10,64.1,35.9,436,257,733621
+Europa League,2024/25,Ottavi,06/03/2025,18:45,si,STATUS_FULL_TIME,Real Sociedad,Manchester United,1,1,13,13,3,5,6,2,11,13,54.9,45.1,89,360,733625
+Conference League,2024/25,Ottavi,06/03/2025,21:00,si,STATUS_FULL_TIME,Borac Banja Luka,Rapid Vienna,1,1,14,15,5,3,4,4,8,18,45.9,54.1,20710,519,733656
+Conference League,2024/25,Ottavi,06/03/2025,21:00,si,STATUS_FULL_TIME,Jagiellonia Bialystok,Cercle Brugge KSV,3,0,17,9,7,4,3,2,12,16,53.7,46.3,11505,3610,733651
+Conference League,2024/25,Ottavi,06/03/2025,21:00,si,STATUS_FULL_TIME,NK Celje,FC Lugano,1,0,6,14,3,5,6,5,14,12,45.8,54.2,3362,7672,733650
+Conference League,2024/25,Ottavi,06/03/2025,21:00,si,STATUS_FULL_TIME,Pafos,Djurgården,1,0,16,11,6,3,6,2,13,7,65.8,34.2,22281,2339,733657
+Europa League,2024/25,Ottavi,06/03/2025,21:00,si,STATUS_FULL_TIME,AS Roma,Athletic Club,2,1,12,16,5,1,1,3,12,15,58.5,41.5,104,93,733626
+Europa League,2024/25,Ottavi,06/03/2025,21:00,si,STATUS_FULL_TIME,Ajax Amsterdam,Eintracht Frankfurt,1,2,12,17,3,5,7,4,8,10,52.1,47.9,139,125,733628
+Europa League,2024/25,Ottavi,06/03/2025,21:00,si,STATUS_FULL_TIME,Bodo/Glimt,Olympiacos,3,0,9,18,6,5,8,7,8,6,48,52,2980,435,733623
+Europa League,2024/25,Ottavi,06/03/2025,21:00,si,STATUS_FULL_TIME,Viktoria Plzen,Lazio,1,2,12,10,5,4,7,2,17,13,56.5,43.5,11706,112,733627
+Champions League,2024/25,Ottavi,11/03/2025,18:45,si,STATUS_FULL_TIME,Barcelona,Benfica,3,1,20,8,6,2,1,6,4,8,65.1,34.9,83,1929,733144
+Champions League,2024/25,Ottavi,11/03/2025,21:00,si,STATUS_FULL_TIME,Bayer Leverkusen,Bayern Munich,0,2,17,12,3,5,14,6,24,13,53.3,46.7,131,132,733148
+Champions League,2024/25,Ottavi,11/03/2025,21:00,si,STATUS_FULL_TIME,Internazionale,Feyenoord Rotterdam,2,1,12,14,5,4,6,3,10,8,55.7,44.3,110,142,733150
+Champions League,2024/25,Ottavi,11/03/2025,21:00,si,STATUS_FINAL_PEN,Liverpool,Paris Saint-Germain,0,1,0,0,0,0,0,0,0,0,0,0,364,160,733605
+Champions League,2024/25,Ottavi,12/03/2025,18:45,si,STATUS_FULL_TIME,Lille,Borussia Dortmund,1,2,11,17,4,8,4,3,11,12,49.6,50.4,166,124,733604
+Champions League,2024/25,Ottavi,12/03/2025,21:00,si,STATUS_FULL_TIME,Arsenal,PSV Eindhoven,2,2,9,13,7,5,5,4,9,9,51.1,48.9,359,148,733607
+Champions League,2024/25,Ottavi,12/03/2025,21:00,si,STATUS_FULL_TIME,Aston Villa,Club Brugge,3,0,14,4,10,1,3,1,7,8,53.3,46.7,362,570,733146
+Champions League,2024/25,Ottavi,12/03/2025,21:00,si,STATUS_FINAL_PEN,Atlético Madrid,Real Madrid,1,0,17,10,8,3,10,10,11,16,38,62,1068,86,733606
+Conference League,2024/25,Ottavi,13/03/2025,18:45,si,STATUS_FULL_TIME,Cercle Brugge KSV,Jagiellonia Bialystok,2,0,23,5,7,2,17,2,10,18,57.3,42.7,3610,11505,733660
+Conference League,2024/25,Ottavi,13/03/2025,18:45,si,STATUS_FULL_TIME,Djurgården,Pafos,3,0,14,13,8,2,4,4,21,17,47.8,52.2,2339,22281,733665
+Conference League,2024/25,Ottavi,13/03/2025,18:45,si,STATUS_FINAL_PEN,FC Lugano,NK Celje,5,4,16,16,8,7,5,2,19,20,42.3,57.7,7672,3362,733659
+Conference League,2024/25,Ottavi,13/03/2025,18:45,si,STATUS_FINAL_AET,Rapid Vienna,Borac Banja Luka,2,1,35,4,11,1,19,0,17,20,52.4,47.6,519,20710,733664
+Europa League,2024/25,Ottavi,13/03/2025,18:45,si,STATUS_FULL_TIME,Athletic Club,AS Roma,3,1,22,5,8,2,9,2,11,4,69.8,30.2,93,104,733636
+Europa League,2024/25,Ottavi,13/03/2025,18:45,si,STATUS_FULL_TIME,Eintracht Frankfurt,Ajax Amsterdam,4,1,16,12,9,5,2,6,8,7,53.3,46.7,125,139,733630
+Europa League,2024/25,Ottavi,13/03/2025,18:45,si,STATUS_FULL_TIME,Lazio,Viktoria Plzen,1,1,15,11,5,3,12,4,12,13,53.1,46.9,112,11706,733634
+Europa League,2024/25,Ottavi,13/03/2025,18:45,si,STATUS_FULL_TIME,Olympiacos,Bodo/Glimt,2,1,27,2,9,1,11,0,12,13,69.2,30.8,435,2980,733631
+Conference League,2024/25,Ottavi,13/03/2025,21:00,si,STATUS_FULL_TIME,Chelsea,F.C. København,1,0,11,10,5,1,1,6,9,7,53.8,46.2,363,909,733663
+Conference League,2024/25,Ottavi,13/03/2025,21:00,si,STATUS_FULL_TIME,Fiorentina,Panathinaikos,3,1,16,18,9,2,5,5,26,19,50.2,49.8,109,443,733658
+Conference League,2024/25,Ottavi,13/03/2025,21:00,si,STATUS_FINAL_AET,Legia Warsaw,Molde,2,0,18,18,6,4,7,8,18,11,35.6,64.4,555,2715,733661
+Conference League,2024/25,Ottavi,13/03/2025,21:00,si,STATUS_FULL_TIME,Vitória de Guimaraes,Real Betis,0,4,7,8,2,6,3,3,16,18,61.9,38.1,5309,244,733662
+Europa League,2024/25,Ottavi,13/03/2025,21:00,si,STATUS_FULL_TIME,Lyon,FCSB,4,0,18,9,6,2,2,2,8,11,65.4,34.6,167,484,733633
+Europa League,2024/25,Ottavi,13/03/2025,21:00,si,STATUS_FULL_TIME,Manchester United,Real Sociedad,4,1,25,8,10,3,6,4,6,13,59.9,40.1,360,89,733635
+Europa League,2024/25,Ottavi,13/03/2025,21:00,si,STATUS_FINAL_PEN,Rangers,Fenerbahce,0,2,23,21,9,3,5,1,19,10,40.2,59.8,257,436,733629
+Europa League,2024/25,Ottavi,13/03/2025,21:00,si,STATUS_FULL_TIME,Tottenham Hotspur,AZ Alkmaar,3,1,17,10,4,2,5,2,6,12,60.3,39.7,367,140,733632
+Champions League,2024/25,Quarti,08/04/2025,21:00,si,STATUS_FULL_TIME,Arsenal,Real Madrid,3,0,12,9,11,3,5,3,8,9,53.4,46.6,359,86,733608
+Champions League,2024/25,Quarti,08/04/2025,21:00,si,STATUS_FULL_TIME,Bayern Munich,Internazionale,1,2,20,10,7,4,5,1,9,9,58.2,41.8,132,110,733611
+Champions League,2024/25,Quarti,09/04/2025,21:00,si,STATUS_FULL_TIME,Barcelona,Borussia Dortmund,4,0,18,13,10,3,4,6,5,12,60.2,39.8,83,124,733610
+Champions League,2024/25,Quarti,09/04/2025,21:00,si,STATUS_FULL_TIME,Paris Saint-Germain,Aston Villa,3,1,29,7,10,2,10,1,9,8,75.4,24.6,160,362,733609
+Conference League,2024/25,Quarti,10/04/2025,18:45,si,STATUS_FULL_TIME,Legia Warsaw,Chelsea,0,3,8,23,1,10,6,8,7,5,27.7,72.3,555,363,733668
+Europa League,2024/25,Quarti,10/04/2025,18:45,si,STATUS_FULL_TIME,Bodo/Glimt,Lazio,2,0,18,6,6,1,1,4,9,13,58.2,41.8,2980,112,733638
+Conference League,2024/25,Quarti,10/04/2025,21:00,si,STATUS_FULL_TIME,Djurgården,Rapid Vienna,0,1,13,14,5,4,8,8,10,16,59.9,40.1,2339,519,734501
+Conference League,2024/25,Quarti,10/04/2025,21:00,si,STATUS_FULL_TIME,NK Celje,Fiorentina,1,2,12,10,4,2,4,1,13,17,54,46,3362,109,733666
+Conference League,2024/25,Quarti,10/04/2025,21:00,si,STATUS_FULL_TIME,Real Betis,Jagiellonia Bialystok,2,0,27,4,8,1,6,1,7,11,64.6,35.4,244,11505,733667
+Europa League,2024/25,Quarti,10/04/2025,21:00,si,STATUS_FULL_TIME,Lyon,Manchester United,2,2,16,13,5,5,5,8,10,14,54.3,45.7,167,360,734500
+Europa League,2024/25,Quarti,10/04/2025,21:00,si,STATUS_FULL_TIME,Rangers,Athletic Club,0,0,4,19,0,3,2,9,6,12,28.9,71.1,257,93,733639
+Europa League,2024/25,Quarti,10/04/2025,21:00,si,STATUS_FULL_TIME,Tottenham Hotspur,Eintracht Frankfurt,1,1,10,4,6,2,9,3,14,15,56.3,43.7,367,125,733637
+Champions League,2024/25,Quarti,15/04/2025,21:00,si,STATUS_FULL_TIME,Aston Villa,Paris Saint-Germain,3,2,17,14,9,7,5,5,15,3,34.3,65.7,362,160,733613
+Champions League,2024/25,Quarti,15/04/2025,21:00,si,STATUS_FULL_TIME,Borussia Dortmund,Barcelona,3,1,18,7,11,2,8,4,14,11,46.5,53.5,124,83,733614
+Champions League,2024/25,Quarti,16/04/2025,21:00,si,STATUS_FULL_TIME,Internazionale,Bayern Munich,2,2,15,20,6,6,5,6,10,16,37.7,62.3,110,132,733615
+Champions League,2024/25,Quarti,16/04/2025,21:00,si,STATUS_FULL_TIME,Real Madrid,Arsenal,1,2,18,12,3,6,10,4,18,15,66.2,33.8,86,359,733612
+Conference League,2024/25,Quarti,17/04/2025,18:45,si,STATUS_FULL_TIME,Fiorentina,NK Celje,2,2,10,12,5,4,6,4,17,10,36.5,63.5,109,3362,733670
+Conference League,2024/25,Quarti,17/04/2025,18:45,si,STATUS_FULL_TIME,Jagiellonia Bialystok,Real Betis,1,1,8,12,1,5,4,5,10,6,42.3,57.7,11505,244,733669
+Conference League,2024/25,Quarti,17/04/2025,21:00,si,STATUS_FULL_TIME,Chelsea,Legia Warsaw,1,2,16,13,8,5,2,3,9,6,70.2,29.8,363,555,733671
+Conference League,2024/25,Quarti,17/04/2025,21:00,si,STATUS_FINAL_AET,Rapid Vienna,Djurgården,1,4,16,30,5,12,4,5,14,19,44.7,55.3,519,2339,734502
+Europa League,2024/25,Quarti,17/04/2025,21:00,si,STATUS_FULL_TIME,Athletic Club,Rangers,2,0,22,7,4,2,6,3,15,9,55.8,44.2,93,257,733643
+Europa League,2024/25,Quarti,17/04/2025,21:00,si,STATUS_FULL_TIME,Eintracht Frankfurt,Tottenham Hotspur,0,1,14,12,5,3,8,7,7,9,60.6,39.4,125,367,733641
+Europa League,2024/25,Quarti,17/04/2025,21:00,si,STATUS_FINAL_PEN,Lazio,Bodo/Glimt,3,1,33,12,11,8,15,3,14,15,53.3,46.7,112,2980,733642
+Europa League,2024/25,Quarti,17/04/2025,21:00,si,STATUS_FINAL_AET,Manchester United,Lyon,5,4,21,21,8,9,7,3,17,14,41.3,58.7,360,167,734499
+Champions League,2024/25,Semifinali,29/04/2025,21:00,si,STATUS_FULL_TIME,Arsenal,Paris Saint-Germain,0,1,10,11,5,4,3,1,15,15,47.9,52.1,359,160,733616
+Champions League,2024/25,Semifinali,30/04/2025,21:00,si,STATUS_FULL_TIME,Barcelona,Internazionale,3,3,19,7,9,3,7,2,10,11,71.5,28.5,83,110,733617
+Conference League,2024/25,Semifinali,01/05/2025,21:00,si,STATUS_FULL_TIME,Djurgården,Chelsea,1,4,16,12,5,7,3,4,10,8,41.6,58.4,2339,363,733673
+Conference League,2024/25,Semifinali,01/05/2025,21:00,si,STATUS_FULL_TIME,Real Betis,Fiorentina,2,1,14,7,5,2,6,2,19,16,45.4,54.6,244,109,733672
+Europa League,2024/25,Semifinali,01/05/2025,21:00,si,STATUS_FULL_TIME,Athletic Club,Manchester United,0,3,9,14,3,7,4,5,19,7,27.4,72.6,93,360,733646
+Europa League,2024/25,Semifinali,01/05/2025,21:00,si,STATUS_FULL_TIME,Tottenham Hotspur,Bodo/Glimt,3,1,24,3,7,1,13,1,12,7,41.7,58.3,367,2980,733645
+Champions League,2024/25,Semifinali,06/05/2025,21:00,si,STATUS_FINAL_AET,Internazionale,Barcelona,4,3,13,22,7,10,5,7,14,10,28.8,71.2,110,83,733619
+Champions League,2024/25,Semifinali,07/05/2025,21:00,si,STATUS_FULL_TIME,Paris Saint-Germain,Arsenal,2,1,11,19,6,4,2,6,11,11,45.9,54.1,160,359,733618
+Conference League,2024/25,Semifinali,08/05/2025,21:00,si,STATUS_FULL_TIME,Chelsea,Djurgården,1,0,17,12,5,3,7,3,5,20,65,35,363,2339,733675
+Conference League,2024/25,Semifinali,08/05/2025,21:00,si,STATUS_FINAL_AET,Fiorentina,Real Betis,2,2,23,28,7,10,12,9,14,19,56.2,43.8,109,244,733674
+Europa League,2024/25,Semifinali,08/05/2025,21:00,si,STATUS_FULL_TIME,Bodo/Glimt,Tottenham Hotspur,0,2,7,8,2,3,3,8,8,10,68.7,31.3,2980,367,733647
+Europa League,2024/25,Semifinali,08/05/2025,21:00,si,STATUS_FULL_TIME,Manchester United,Athletic Club,4,1,11,11,5,1,0,2,10,17,51.3,48.7,360,93,733648
+Europa League,2024/25,Finale,21/05/2025,21:00,si,STATUS_FULL_TIME,Tottenham Hotspur,Manchester United,1,0,3,16,1,6,4,5,22,10,26.7,73.3,367,360,733649
+Conference League,2024/25,Finale,28/05/2025,21:00,si,STATUS_FULL_TIME,Real Betis,Chelsea,1,4,13,11,3,7,4,4,16,12,33.6,66.4,244,363,733676
+Champions League,2024/25,Finale,31/05/2025,21:00,si,STATUS_FULL_TIME,Paris Saint-Germain,Internazionale,5,0,23,8,8,2,4,6,13,7,59.3,40.7,160,110,733620

@@ -1,0 +1,531 @@
+coppa,stagione,fase,data_ita,ora_ita,giocata,stato,casa,ospite,gol_casa,gol_ospite,tiri_casa,tiri_ospite,porta_casa,porta_ospite,corner_casa,corner_ospite,falli_casa,falli_ospite,possesso_casa,possesso_ospite,casa_id,ospite_id,id_evento
+Champions League,2025/26,Fase campionato,16/09/2025,18:45,si,STATUS_FULL_TIME,Athletic Club,Arsenal,0,2,11,11,2,6,2,2,18,15,38.4,61.6,93,359,757653
+Champions League,2025/26,Fase campionato,16/09/2025,18:45,si,STATUS_FULL_TIME,PSV Eindhoven,Union St.-Gilloise,1,3,10,18,3,8,7,7,9,9,62.7,37.3,148,5807,757654
+Champions League,2025/26,Fase campionato,16/09/2025,21:00,si,STATUS_FULL_TIME,Benfica,FK Qarabag,2,3,14,10,3,5,8,3,11,6,52.9,47.1,1929,10414,757657
+Champions League,2025/26,Fase campionato,16/09/2025,21:00,si,STATUS_FULL_TIME,Juventus,Borussia Dortmund,4,4,19,10,7,5,4,2,13,8,51.6,48.4,111,124,757656
+Champions League,2025/26,Fase campionato,16/09/2025,21:00,si,STATUS_FULL_TIME,Real Madrid,Marseille,2,1,28,15,15,5,9,4,9,14,43.2,56.8,86,176,757655
+Champions League,2025/26,Fase campionato,16/09/2025,21:00,si,STATUS_FULL_TIME,Tottenham Hotspur,Villarreal,1,0,9,10,1,0,3,3,14,13,58.2,41.8,367,102,757658
+Champions League,2025/26,Fase campionato,17/09/2025,18:45,si,STATUS_FULL_TIME,Olympiacos,Pafos,0,0,18,6,3,1,9,0,15,14,69.4,30.6,435,22281,757659
+Champions League,2025/26,Fase campionato,17/09/2025,18:45,si,STATUS_FULL_TIME,Slavia Prague,Bodo/Glimt,2,2,26,11,11,10,8,4,13,11,46.4,53.6,494,2980,757660
+Champions League,2025/26,Fase campionato,17/09/2025,21:00,si,STATUS_FULL_TIME,Ajax Amsterdam,Internazionale,0,2,7,14,2,4,3,5,15,17,56.4,43.6,139,110,757664
+Champions League,2025/26,Fase campionato,17/09/2025,21:00,si,STATUS_FULL_TIME,Bayern Munich,Chelsea,3,1,16,9,5,3,6,2,12,7,55.7,44.3,132,363,757663
+Champions League,2025/26,Fase campionato,17/09/2025,21:00,si,STATUS_FULL_TIME,Liverpool,Atlético Madrid,3,2,20,10,6,4,7,6,7,9,55.9,44.1,364,1068,757662
+Champions League,2025/26,Fase campionato,17/09/2025,21:00,si,STATUS_FULL_TIME,Paris Saint-Germain,Atalanta,4,0,22,7,13,2,6,1,5,11,66.9,33.1,160,105,757661
+Champions League,2025/26,Fase campionato,18/09/2025,18:45,si,STATUS_FULL_TIME,Club Brugge,AS Monaco,4,1,26,13,10,5,4,5,11,9,48.8,51.2,570,174,757665
+Champions League,2025/26,Fase campionato,18/09/2025,18:45,si,STATUS_FULL_TIME,F.C. København,Bayer Leverkusen,2,2,12,15,7,4,4,5,14,13,36.4,63.6,909,131,757666
+Champions League,2025/26,Fase campionato,18/09/2025,21:00,si,STATUS_FULL_TIME,Eintracht Frankfurt,Galatasaray,5,1,11,14,5,5,4,3,10,13,38.1,61.9,125,432,757668
+Champions League,2025/26,Fase campionato,18/09/2025,21:00,si,STATUS_FULL_TIME,Manchester City,Napoli,2,0,23,1,8,1,9,2,3,4,73.8,26.2,382,114,757667
+Champions League,2025/26,Fase campionato,18/09/2025,21:00,si,STATUS_FULL_TIME,Newcastle United,Barcelona,1,2,10,19,6,5,6,4,11,12,35.9,64.1,361,83,757669
+Champions League,2025/26,Fase campionato,18/09/2025,21:00,si,STATUS_FULL_TIME,Sporting CP,Kairat Almaty,4,1,21,9,8,4,8,3,14,11,63.8,36.2,2250,2528,757670
+Europa League,2025/26,Fase campionato,24/09/2025,18:45,si,STATUS_FULL_TIME,FC Midtjylland,SK Sturm Graz,2,0,7,11,5,4,4,3,16,16,53.1,46.9,572,3746,757798
+Europa League,2025/26,Fase campionato,24/09/2025,18:45,si,STATUS_FULL_TIME,PAOK,Maccabi Tel-Aviv,0,0,18,9,5,3,9,3,14,18,54.9,45.1,605,524,757797
+Europa League,2025/26,Fase campionato,24/09/2025,21:00,si,STATUS_FULL_TIME,Braga,Feyenoord Rotterdam,1,0,8,5,2,1,7,2,10,15,45.4,54.6,2994,142,757801
+Europa League,2025/26,Fase campionato,24/09/2025,21:00,si,STATUS_FULL_TIME,Dinamo Zagreb,Fenerbahce,3,1,11,6,3,2,5,6,7,8,42,58,597,436,757800
+Europa League,2025/26,Fase campionato,24/09/2025,21:00,si,STATUS_FULL_TIME,Malmö FF,Ludogorets Razgrad,1,2,10,21,5,8,2,3,9,14,60.1,39.9,2720,13018,757803
+Europa League,2025/26,Fase campionato,24/09/2025,21:00,si,STATUS_FULL_TIME,Nice,AS Roma,1,2,7,12,2,4,3,5,9,19,42.9,57.1,2502,104,757804
+Europa League,2025/26,Fase campionato,24/09/2025,21:00,si,STATUS_FULL_TIME,Real Betis,Nottingham Forest,2,2,9,16,4,6,3,3,16,16,56.2,43.8,244,393,757805
+Europa League,2025/26,Fase campionato,24/09/2025,21:00,si,STATUS_FULL_TIME,Red Star Belgrade,Celtic,1,1,16,8,4,6,8,4,12,10,46.5,53.5,2290,256,757799
+Europa League,2025/26,Fase campionato,24/09/2025,21:00,si,STATUS_FULL_TIME,SC Freiburg,FC Basel,2,1,15,15,5,4,4,4,10,16,48.3,51.7,126,989,757802
+Europa League,2025/26,Fase campionato,25/09/2025,18:45,si,STATUS_FULL_TIME,Go Ahead Eagles,FCSB,0,1,17,8,7,6,7,1,9,14,73.4,26.6,3706,484,757807
+Europa League,2025/26,Fase campionato,25/09/2025,18:45,si,STATUS_FULL_TIME,Lille,SK Brann,2,1,17,12,4,3,11,4,7,12,54.8,45.2,166,620,757806
+Europa League,2025/26,Fase campionato,25/09/2025,21:00,si,STATUS_FULL_TIME,Aston Villa,Bologna,1,0,12,17,4,7,8,3,16,14,47.1,52.9,362,107,757808
+Europa League,2025/26,Fase campionato,25/09/2025,21:00,si,STATUS_FULL_TIME,FC Utrecht,Lyon,0,1,11,12,2,4,4,5,19,14,37.8,62.2,153,167,757813
+Europa League,2025/26,Fase campionato,25/09/2025,21:00,si,STATUS_FULL_TIME,Ferencvaros,Viktoria Plzen,1,1,10,9,2,3,3,3,21,17,53.3,46.7,622,11706,757812
+Europa League,2025/26,Fase campionato,25/09/2025,21:00,si,STATUS_FULL_TIME,RB Salzburg,FC Porto,0,1,15,15,4,3,2,8,14,8,42.8,57.2,2790,437,757811
+Europa League,2025/26,Fase campionato,25/09/2025,21:00,si,STATUS_FULL_TIME,Rangers,Racing Genk,0,1,11,18,2,4,4,2,13,16,53.4,46.6,257,938,757810
+Europa League,2025/26,Fase campionato,25/09/2025,21:00,si,STATUS_FULL_TIME,VfB Stuttgart,Celta Vigo,2,1,19,8,6,1,9,2,12,13,58.8,41.2,134,85,757809
+Europa League,2025/26,Fase campionato,25/09/2025,21:00,si,STATUS_FULL_TIME,Young Boys,Panathinaikos,1,4,19,18,3,6,9,4,14,6,58.7,41.3,2722,443,757814
+Champions League,2025/26,Fase campionato,30/09/2025,18:45,si,STATUS_FULL_TIME,Atalanta,Club Brugge,2,1,20,7,3,2,7,1,8,10,48.2,51.8,105,570,757672
+Champions League,2025/26,Fase campionato,30/09/2025,18:45,si,STATUS_FULL_TIME,Kairat Almaty,Real Madrid,0,5,11,20,4,12,3,6,6,9,32.8,67.2,2528,86,757671
+Champions League,2025/26,Fase campionato,30/09/2025,21:00,si,STATUS_FULL_TIME,Atlético Madrid,Eintracht Frankfurt,5,1,18,6,12,2,5,2,11,6,51.4,48.6,1068,125,757673
+Champions League,2025/26,Fase campionato,30/09/2025,21:00,si,STATUS_FULL_TIME,Bodo/Glimt,Tottenham Hotspur,2,2,18,8,4,3,4,5,11,7,52,48,2980,367,757674
+Champions League,2025/26,Fase campionato,30/09/2025,21:00,si,STATUS_FULL_TIME,Chelsea,Benfica,1,0,8,9,3,3,3,5,13,14,56.1,43.9,363,1929,757675
+Champions League,2025/26,Fase campionato,30/09/2025,21:00,si,STATUS_FULL_TIME,Galatasaray,Liverpool,1,0,9,16,4,4,3,7,12,14,33.4,66.6,432,364,757676
+Champions League,2025/26,Fase campionato,30/09/2025,21:00,si,STATUS_FULL_TIME,Internazionale,Slavia Prague,3,0,21,3,6,1,5,0,13,17,57.1,42.9,110,494,757678
+Champions League,2025/26,Fase campionato,30/09/2025,21:00,si,STATUS_FULL_TIME,Marseille,Ajax Amsterdam,4,0,9,13,6,2,1,7,18,12,48,52,176,139,757679
+Champions League,2025/26,Fase campionato,30/09/2025,21:00,si,STATUS_FULL_TIME,Pafos,Bayern Munich,1,5,6,26,2,15,2,6,11,9,33.2,66.8,22281,132,757677
+Champions League,2025/26,Fase campionato,01/10/2025,18:45,si,STATUS_FULL_TIME,FK Qarabag,F.C. København,2,0,10,12,6,4,4,7,10,20,49.2,50.8,10414,909,757680
+Champions League,2025/26,Fase campionato,01/10/2025,18:45,si,STATUS_FULL_TIME,Union St.-Gilloise,Newcastle United,0,4,17,13,6,6,7,5,15,8,43.2,56.8,5807,361,757681
+Champions League,2025/26,Fase campionato,01/10/2025,21:00,si,STATUS_FULL_TIME,AS Monaco,Manchester City,2,2,8,18,3,6,7,3,9,13,28.7,71.3,174,382,757686
+Champions League,2025/26,Fase campionato,01/10/2025,21:00,si,STATUS_FULL_TIME,Arsenal,Olympiacos,2,0,16,10,5,3,3,5,14,17,61,39,359,435,757688
+Champions League,2025/26,Fase campionato,01/10/2025,21:00,si,STATUS_FULL_TIME,Barcelona,Paris Saint-Germain,1,2,12,16,3,7,4,9,12,14,46.9,53.1,83,160,757687
+Champions League,2025/26,Fase campionato,01/10/2025,21:00,si,STATUS_FULL_TIME,Bayer Leverkusen,PSV Eindhoven,1,1,14,6,4,1,7,4,8,11,46.4,53.6,131,148,757684
+Champions League,2025/26,Fase campionato,01/10/2025,21:00,si,STATUS_FULL_TIME,Borussia Dortmund,Athletic Club,4,1,13,6,8,3,4,0,14,15,52.3,47.7,124,93,757683
+Champions League,2025/26,Fase campionato,01/10/2025,21:00,si,STATUS_FULL_TIME,Napoli,Sporting CP,2,1,12,8,3,4,7,2,16,9,51.1,48.9,114,2250,757685
+Champions League,2025/26,Fase campionato,01/10/2025,21:00,si,STATUS_FULL_TIME,Villarreal,Juventus,2,2,17,13,6,4,4,3,7,19,44.5,55.5,102,111,757682
+Conference League,2025/26,Fase campionato,02/10/2025,18:45,si,STATUS_FULL_TIME,Dynamo Kyiv,Crystal Palace,0,2,10,13,1,7,3,5,7,14,46.4,53.6,440,384,757971
+Conference League,2025/26,Fase campionato,02/10/2025,18:45,si,STATUS_FULL_TIME,FC Noah,Rijeka,1,0,15,2,3,1,2,1,18,16,57.5,42.5,20712,2988,757966
+Conference League,2025/26,Fase campionato,02/10/2025,18:45,si,STATUS_FULL_TIME,Jagiellonia Bialystok,Hamrun Spartans,1,0,19,8,7,4,7,5,16,11,62.7,37.3,11505,7858,757967
+Conference League,2025/26,Fase campionato,02/10/2025,18:45,si,STATUS_FULL_TIME,KuPS Kuopio,Drita Gjilan,1,1,6,12,3,4,1,2,16,10,65.1,34.9,8169,19243,757970
+Conference League,2025/26,Fase campionato,02/10/2025,18:45,si,STATUS_FULL_TIME,Lausanne Sports,Breidablik,3,0,16,13,8,2,2,7,12,6,55.6,44.4,11551,8250,757968
+Conference League,2025/26,Fase campionato,02/10/2025,18:45,si,STATUS_FULL_TIME,Lech Poznan,Rapid Vienna,4,1,18,9,9,2,2,4,9,18,51.8,48.2,2990,519,757965
+Conference League,2025/26,Fase campionato,02/10/2025,18:45,si,STATUS_FULL_TIME,Omonia Nicosia,Mainz,0,1,8,17,3,2,4,8,8,9,44.4,55.6,617,2950,757973
+Conference League,2025/26,Fase campionato,02/10/2025,18:45,si,STATUS_FULL_TIME,Rayo Vallecano,KF Shkëndija,2,0,20,1,10,1,12,0,20,6,68.8,31.2,101,8151,757972
+Conference League,2025/26,Fase campionato,02/10/2025,18:45,si,STATUS_FULL_TIME,Zrinjski Mostar,Lincoln Red Imps,5,0,24,8,10,0,4,4,16,11,50.6,49.4,5239,17856,757969
+Europa League,2025/26,Fase campionato,02/10/2025,18:45,si,STATUS_FULL_TIME,AS Roma,Lille,0,1,20,9,6,5,6,3,19,13,49.7,50.3,104,166,757820
+Europa League,2025/26,Fase campionato,02/10/2025,18:45,si,STATUS_FULL_TIME,Bologna,SC Freiburg,1,1,8,12,3,6,2,8,16,18,54.7,45.3,107,126,757822
+Europa League,2025/26,Fase campionato,02/10/2025,18:45,si,STATUS_FULL_TIME,Celtic,Braga,0,2,9,13,3,6,7,5,15,9,56.2,43.8,256,2994,757815
+Europa League,2025/26,Fase campionato,02/10/2025,18:45,si,STATUS_FULL_TIME,FCSB,Young Boys,0,2,17,16,3,9,8,3,11,18,50.9,49.1,484,2722,757816
+Europa League,2025/26,Fase campionato,02/10/2025,18:45,si,STATUS_FULL_TIME,Fenerbahce,Nice,2,1,17,10,5,3,3,4,12,17,59.2,40.8,436,2502,757817
+Europa League,2025/26,Fase campionato,02/10/2025,18:45,si,STATUS_FULL_TIME,Ludogorets Razgrad,Real Betis,0,2,13,12,2,2,6,5,8,15,53.4,46.6,13018,244,757818
+Europa League,2025/26,Fase campionato,02/10/2025,18:45,si,STATUS_FULL_TIME,Panathinaikos,Go Ahead Eagles,1,2,33,7,9,4,14,3,8,12,64.1,35.9,443,3706,757823
+Europa League,2025/26,Fase campionato,02/10/2025,18:45,si,STATUS_FULL_TIME,SK Brann,FC Utrecht,1,0,11,6,3,2,4,3,16,11,44.7,55.3,620,153,757819
+Europa League,2025/26,Fase campionato,02/10/2025,18:45,si,STATUS_FULL_TIME,Viktoria Plzen,Malmö FF,3,0,14,8,7,1,3,6,12,16,58.8,41.2,11706,2720,757821
+Conference League,2025/26,Fase campionato,02/10/2025,21:00,si,STATUS_FULL_TIME,AEK Larnaca,AZ Alkmaar,4,0,23,6,10,2,6,2,13,8,69,31,4039,140,757978
+Conference League,2025/26,Fase campionato,02/10/2025,21:00,si,STATUS_FULL_TIME,Aberdeen,Shakhtar Donetsk,2,3,12,11,5,4,4,6,12,9,27.7,72.3,263,493,757976
+Conference League,2025/26,Fase campionato,02/10/2025,21:00,si,STATUS_FULL_TIME,Fiorentina,Sigma Olomouc,2,0,14,7,4,4,8,0,19,18,54.3,45.7,109,609,757977
+Conference League,2025/26,Fase campionato,02/10/2025,21:00,si,STATUS_FULL_TIME,Legia Warsaw,Samsunspor,0,1,19,6,2,2,8,2,7,10,63.4,36.6,555,11429,757974
+Conference League,2025/26,Fase campionato,02/10/2025,21:00,si,STATUS_FULL_TIME,NK Celje,AEK Athens,3,1,21,9,9,5,9,4,15,11,60.4,39.6,3362,887,757982
+Conference League,2025/26,Fase campionato,02/10/2025,21:00,si,STATUS_FULL_TIME,Raków Czestochowa,Universitatea Craiova,2,0,22,4,10,0,10,1,7,16,56.5,43.5,21005,8089,757975
+Conference League,2025/26,Fase campionato,02/10/2025,21:00,si,STATUS_FULL_TIME,Shelbourne,BK Häcken,0,0,7,11,1,3,3,5,10,8,35.2,64.8,20297,7834,757980
+Conference League,2025/26,Fase campionato,02/10/2025,21:00,si,STATUS_FULL_TIME,Slovan Bratislava,Strasbourg,1,2,22,5,6,4,6,1,9,10,56.6,43.4,521,180,757981
+Conference League,2025/26,Fase campionato,02/10/2025,21:00,si,STATUS_FULL_TIME,Sparta Prague,Shamrock Rovers,4,1,19,2,8,1,7,2,10,11,74.9,25.1,433,2564,757979
+Europa League,2025/26,Fase campionato,02/10/2025,21:00,si,STATUS_FULL_TIME,Celta Vigo,PAOK,3,1,15,5,9,2,5,1,9,13,63.3,36.7,85,605,757824
+Europa League,2025/26,Fase campionato,02/10/2025,21:00,si,STATUS_FULL_TIME,FC Basel,VfB Stuttgart,2,0,12,29,4,7,1,9,19,10,35,65,989,134,757827
+Europa League,2025/26,Fase campionato,02/10/2025,21:00,si,STATUS_FULL_TIME,FC Porto,Red Star Belgrade,2,1,18,9,4,2,5,3,11,8,50.2,49.8,437,2290,757828
+Europa League,2025/26,Fase campionato,02/10/2025,21:00,si,STATUS_FULL_TIME,Feyenoord Rotterdam,Aston Villa,0,2,19,6,8,3,8,1,17,10,41,59,142,362,757831
+Europa League,2025/26,Fase campionato,02/10/2025,21:00,si,STATUS_FULL_TIME,Lyon,RB Salzburg,2,0,15,11,6,5,2,1,10,14,64.9,35.1,167,2790,757825
+Europa League,2025/26,Fase campionato,02/10/2025,21:00,si,STATUS_FULL_TIME,Maccabi Tel-Aviv,Dinamo Zagreb,1,3,11,6,4,5,5,3,8,11,49.5,50.5,524,597,757826
+Europa League,2025/26,Fase campionato,02/10/2025,21:00,si,STATUS_FULL_TIME,Nottingham Forest,FC Midtjylland,2,3,22,8,9,5,10,8,14,15,61.4,38.6,393,572,757830
+Europa League,2025/26,Fase campionato,02/10/2025,21:00,si,STATUS_FULL_TIME,Racing Genk,Ferencvaros,0,1,13,8,3,5,5,3,8,16,63.1,36.9,938,622,757829
+Europa League,2025/26,Fase campionato,02/10/2025,21:00,si,STATUS_FULL_TIME,SK Sturm Graz,Rangers,2,1,16,16,8,10,3,7,20,13,41,59,3746,257,757832
+Champions League,2025/26,Fase campionato,21/10/2025,18:45,si,STATUS_FULL_TIME,Barcelona,Olympiacos,6,1,14,5,7,2,7,2,7,10,72.5,27.5,83,435,757690
+Champions League,2025/26,Fase campionato,21/10/2025,18:45,si,STATUS_FULL_TIME,Kairat Almaty,Pafos,0,0,22,9,2,6,6,4,11,9,69,31,2528,22281,757689
+Champions League,2025/26,Fase campionato,21/10/2025,21:00,si,STATUS_FULL_TIME,Arsenal,Atlético Madrid,4,0,19,11,8,1,3,4,14,10,51.5,48.5,359,1068,757697
+Champions League,2025/26,Fase campionato,21/10/2025,21:00,si,STATUS_FULL_TIME,Bayer Leverkusen,Paris Saint-Germain,2,7,6,24,3,8,3,4,8,6,29.1,70.9,131,160,757693
+Champions League,2025/26,Fase campionato,21/10/2025,21:00,si,STATUS_FULL_TIME,F.C. København,Borussia Dortmund,2,4,11,9,4,5,4,7,10,7,35.7,64.3,909,124,757695
+Champions League,2025/26,Fase campionato,21/10/2025,21:00,si,STATUS_FULL_TIME,Newcastle United,Benfica,3,0,19,7,10,2,12,8,16,7,52.2,47.8,361,1929,757696
+Champions League,2025/26,Fase campionato,21/10/2025,21:00,si,STATUS_FULL_TIME,PSV Eindhoven,Napoli,6,2,19,10,8,2,4,8,11,9,58.6,41.4,148,114,757691
+Champions League,2025/26,Fase campionato,21/10/2025,21:00,si,STATUS_FULL_TIME,Union St.-Gilloise,Internazionale,0,4,15,21,6,7,3,4,15,6,30.3,69.7,5807,110,757692
+Champions League,2025/26,Fase campionato,21/10/2025,21:00,si,STATUS_FULL_TIME,Villarreal,Manchester City,0,2,11,10,2,7,1,3,17,15,34.1,65.9,102,382,757694
+Champions League,2025/26,Fase campionato,22/10/2025,18:45,si,STATUS_FULL_TIME,Athletic Club,FK Qarabag,3,1,21,9,5,4,8,3,14,5,59.7,40.3,93,10414,757699
+Champions League,2025/26,Fase campionato,22/10/2025,18:45,si,STATUS_FULL_TIME,Galatasaray,Bodo/Glimt,3,1,23,8,11,2,7,4,10,7,37.9,62.1,432,2980,757698
+Champions League,2025/26,Fase campionato,22/10/2025,21:00,si,STATUS_FULL_TIME,AS Monaco,Tottenham Hotspur,0,0,23,11,8,2,5,4,13,12,56.2,43.8,174,367,757704
+Champions League,2025/26,Fase campionato,22/10/2025,21:00,si,STATUS_FULL_TIME,Atalanta,Slavia Prague,0,0,22,16,5,4,6,3,8,15,55.8,44.2,105,494,757700
+Champions League,2025/26,Fase campionato,22/10/2025,21:00,si,STATUS_FULL_TIME,Bayern Munich,Club Brugge,4,0,26,5,13,2,9,1,14,3,63.3,36.7,132,570,757703
+Champions League,2025/26,Fase campionato,22/10/2025,21:00,si,STATUS_FULL_TIME,Chelsea,Ajax Amsterdam,5,1,22,2,10,1,11,0,15,6,65.6,34.4,363,139,757701
+Champions League,2025/26,Fase campionato,22/10/2025,21:00,si,STATUS_FULL_TIME,Eintracht Frankfurt,Liverpool,1,5,4,18,1,14,2,10,4,5,35.2,64.8,125,364,757702
+Champions League,2025/26,Fase campionato,22/10/2025,21:00,si,STATUS_FULL_TIME,Real Madrid,Juventus,1,0,28,13,10,4,14,7,10,18,65.6,34.4,86,111,757705
+Champions League,2025/26,Fase campionato,22/10/2025,21:00,si,STATUS_FULL_TIME,Sporting CP,Marseille,2,1,14,10,7,3,3,1,11,16,52.5,47.5,2250,176,757706
+Conference League,2025/26,Fase campionato,23/10/2025,18:45,si,STATUS_FULL_TIME,AEK Athens,Aberdeen,6,0,27,8,10,2,5,2,11,13,73.3,26.7,887,263,757987
+Conference League,2025/26,Fase campionato,23/10/2025,18:45,si,STATUS_FULL_TIME,AZ Alkmaar,Slovan Bratislava,1,0,30,3,11,1,12,0,16,12,62,38,140,521,757997
+Conference League,2025/26,Fase campionato,23/10/2025,18:45,si,STATUS_FULL_TIME,BK Häcken,Rayo Vallecano,2,2,10,11,4,4,10,5,11,13,40.5,59.5,7834,101,757990
+Conference League,2025/26,Fase campionato,23/10/2025,18:45,si,STATUS_FULL_TIME,Breidablik,KuPS Kuopio,0,0,16,8,3,2,10,6,6,11,43.4,56.6,8250,8169,757988
+Conference League,2025/26,Fase campionato,23/10/2025,18:45,si,STATUS_FULL_TIME,Drita Gjilan,Omonia Nicosia,1,1,4,13,2,5,2,8,15,20,38.9,61.1,19243,617,757989
+Conference League,2025/26,Fase campionato,23/10/2025,18:45,si,STATUS_FULL_TIME,KF Shkëndija,Shelbourne,1,0,13,9,1,1,4,1,14,16,58,42,8151,20297,757991
+Conference League,2025/26,Fase campionato,23/10/2025,18:45,si,STATUS_FULL_TIME,Rapid Vienna,Fiorentina,0,3,13,17,3,7,2,5,15,14,42.7,57.3,519,109,757985
+Conference League,2025/26,Fase campionato,23/10/2025,18:45,si,STATUS_FULL_TIME,Shakhtar Donetsk,Legia Warsaw,1,2,11,11,3,3,3,3,9,8,69.9,30.1,493,555,757984
+Conference League,2025/26,Fase campionato,23/10/2025,18:45,si,STATUS_FULL_TIME,Strasbourg,Jagiellonia Bialystok,1,1,25,3,7,2,9,0,15,9,66.8,33.2,180,11505,757983
+Europa League,2025/26,Fase campionato,23/10/2025,18:45,si,STATUS_FULL_TIME,Braga,Red Star Belgrade,2,0,11,9,4,3,2,2,13,5,50,50,2994,2290,757835
+Europa League,2025/26,Fase campionato,23/10/2025,18:45,si,STATUS_FULL_TIME,FCSB,Bologna,1,2,9,21,6,7,4,10,18,20,45.9,54.1,484,107,757840
+Europa League,2025/26,Fase campionato,23/10/2025,18:45,si,STATUS_FULL_TIME,Fenerbahce,VfB Stuttgart,1,0,19,12,7,2,4,7,11,15,34.8,65.2,436,134,757841
+Europa League,2025/26,Fase campionato,23/10/2025,18:45,si,STATUS_FULL_TIME,Go Ahead Eagles,Aston Villa,2,1,5,18,3,7,1,10,13,9,30.4,69.6,3706,362,757837
+Europa League,2025/26,Fase campionato,23/10/2025,18:45,si,STATUS_FULL_TIME,Lyon,FC Basel,2,0,18,10,6,3,4,2,12,12,60.7,39.3,167,989,757836
+Europa League,2025/26,Fase campionato,23/10/2025,18:45,si,STATUS_FULL_TIME,RB Salzburg,Ferencvaros,2,3,16,13,4,7,5,2,12,13,53.6,46.4,2790,622,757839
+Europa League,2025/26,Fase campionato,23/10/2025,18:45,si,STATUS_FULL_TIME,Racing Genk,Real Betis,0,0,5,10,1,3,2,1,12,12,44,56,938,244,757833
+Europa League,2025/26,Fase campionato,23/10/2025,18:45,si,STATUS_FULL_TIME,SK Brann,Rangers,3,0,13,9,5,1,3,5,10,10,52.9,47.1,620,257,757838
+Conference League,2025/26,Fase campionato,23/10/2025,21:00,si,STATUS_FULL_TIME,Crystal Palace,AEK Larnaca,0,1,15,4,1,2,8,2,16,16,67.9,32.1,384,4039,758000
+Conference League,2025/26,Fase campionato,23/10/2025,21:00,si,STATUS_FULL_TIME,Hamrun Spartans,Lausanne Sports,0,1,15,10,1,5,6,4,13,17,52.4,47.6,7858,11551,757992
+Conference League,2025/26,Fase campionato,23/10/2025,21:00,si,STATUS_FULL_TIME,Lincoln Red Imps,Lech Poznan,2,1,12,21,3,5,4,6,15,17,38,62,17856,2990,757999
+Conference League,2025/26,Fase campionato,23/10/2025,21:00,si,STATUS_FULL_TIME,Mainz,Zrinjski Mostar,1,0,15,2,4,0,7,2,13,13,60.8,39.2,2950,5239,757998
+Conference League,2025/26,Fase campionato,23/10/2025,21:00,si,STATUS_FULL_TIME,Samsunspor,Dynamo Kyiv,3,0,14,5,5,0,4,6,6,10,48.5,51.5,11429,440,757993
+Conference League,2025/26,Fase campionato,23/10/2025,21:00,si,STATUS_FULL_TIME,Shamrock Rovers,NK Celje,0,2,12,14,4,4,4,3,14,14,42.5,57.5,2564,3362,757994
+Conference League,2025/26,Fase campionato,23/10/2025,21:00,si,STATUS_FULL_TIME,Sigma Olomouc,Raków Czestochowa,1,1,8,14,1,6,3,2,14,9,46.3,53.7,609,21005,757995
+Conference League,2025/26,Fase campionato,23/10/2025,21:00,si,STATUS_FULL_TIME,Universitatea Craiova,FC Noah,1,1,6,16,2,4,2,4,23,8,47.8,52.2,8089,20712,757996
+Europa League,2025/26,Fase campionato,23/10/2025,21:00,si,STATUS_FULL_TIME,AS Roma,Viktoria Plzen,1,2,20,6,8,2,10,3,12,19,68,32,104,11706,757843
+Europa League,2025/26,Fase campionato,23/10/2025,21:00,si,STATUS_FULL_TIME,Celta Vigo,Nice,2,1,25,9,6,3,7,5,20,7,64.9,35.1,85,2502,757845
+Europa League,2025/26,Fase campionato,23/10/2025,21:00,si,STATUS_FULL_TIME,Celtic,SK Sturm Graz,2,1,20,8,7,1,9,2,16,16,66.2,33.8,256,3746,757850
+Europa League,2025/26,Fase campionato,23/10/2025,21:00,si,STATUS_FULL_TIME,Feyenoord Rotterdam,Panathinaikos,3,1,18,12,8,5,3,2,18,9,49.5,50.5,142,443,757834
+Europa League,2025/26,Fase campionato,23/10/2025,21:00,si,STATUS_FULL_TIME,Lille,PAOK,3,4,22,8,11,7,13,2,7,15,64.8,35.2,166,605,757849
+Europa League,2025/26,Fase campionato,23/10/2025,21:00,si,STATUS_FULL_TIME,Maccabi Tel-Aviv,FC Midtjylland,0,3,12,12,3,4,4,6,10,14,44.2,55.8,524,572,757848
+Europa League,2025/26,Fase campionato,23/10/2025,21:00,si,STATUS_FULL_TIME,Malmö FF,Dinamo Zagreb,1,1,6,21,3,5,3,10,6,9,25.4,74.6,2720,597,757847
+Europa League,2025/26,Fase campionato,23/10/2025,21:00,si,STATUS_FULL_TIME,Nottingham Forest,FC Porto,2,0,8,10,3,2,3,8,13,15,50.8,49.2,393,437,757846
+Europa League,2025/26,Fase campionato,23/10/2025,21:00,si,STATUS_FULL_TIME,SC Freiburg,FC Utrecht,2,0,14,11,7,2,5,4,12,11,51.9,48.1,126,153,757844
+Europa League,2025/26,Fase campionato,23/10/2025,21:00,si,STATUS_FULL_TIME,Young Boys,Ludogorets Razgrad,3,2,15,15,6,4,3,2,9,9,59.2,40.8,2722,13018,757842
+Champions League,2025/26,Fase campionato,04/11/2025,18:45,si,STATUS_FULL_TIME,Napoli,Eintracht Frankfurt,0,0,18,7,3,3,5,3,12,10,63.6,36.4,114,125,757708
+Champions League,2025/26,Fase campionato,04/11/2025,18:45,si,STATUS_FULL_TIME,Slavia Prague,Arsenal,0,3,9,14,1,8,4,7,24,12,43.1,56.9,494,359,757707
+Champions League,2025/26,Fase campionato,04/11/2025,21:00,si,STATUS_FULL_TIME,Atlético Madrid,Union St.-Gilloise,3,1,14,8,6,3,9,1,10,13,66.6,33.4,1068,5807,757711
+Champions League,2025/26,Fase campionato,04/11/2025,21:00,si,STATUS_FULL_TIME,Bodo/Glimt,AS Monaco,0,1,17,9,4,2,4,4,14,16,64,36,2980,174,757712
+Champions League,2025/26,Fase campionato,04/11/2025,21:00,si,STATUS_FULL_TIME,Juventus,Sporting CP,1,1,18,4,9,1,6,0,15,14,49.7,50.3,111,2250,757710
+Champions League,2025/26,Fase campionato,04/11/2025,21:00,si,STATUS_FULL_TIME,Liverpool,Real Madrid,1,0,17,8,9,2,4,2,16,11,38.8,61.2,364,86,757714
+Champions League,2025/26,Fase campionato,04/11/2025,21:00,si,STATUS_FULL_TIME,Olympiacos,PSV Eindhoven,1,1,18,10,4,2,3,6,7,9,39.6,60.4,435,148,757713
+Champions League,2025/26,Fase campionato,04/11/2025,21:00,si,STATUS_FULL_TIME,Paris Saint-Germain,Bayern Munich,1,2,25,9,9,5,9,1,7,9,71,29,160,132,757709
+Champions League,2025/26,Fase campionato,04/11/2025,21:00,si,STATUS_FULL_TIME,Tottenham Hotspur,F.C. København,4,0,14,12,6,4,3,6,10,11,61.2,38.8,367,909,757715
+Champions League,2025/26,Fase campionato,05/11/2025,18:45,si,STATUS_FULL_TIME,FK Qarabag,Chelsea,2,2,9,16,3,4,2,8,9,19,38.6,61.4,10414,363,757716
+Champions League,2025/26,Fase campionato,05/11/2025,18:45,si,STATUS_FULL_TIME,Pafos,Villarreal,1,0,5,18,2,5,2,3,12,13,40.8,59.2,22281,102,757717
+Champions League,2025/26,Fase campionato,05/11/2025,21:00,si,STATUS_FULL_TIME,Ajax Amsterdam,Galatasaray,0,3,8,14,2,8,3,2,12,15,48,52,139,432,757721
+Champions League,2025/26,Fase campionato,05/11/2025,21:00,si,STATUS_FULL_TIME,Benfica,Bayer Leverkusen,0,1,21,7,6,3,6,0,7,9,53.4,46.6,1929,131,757720
+Champions League,2025/26,Fase campionato,05/11/2025,21:00,si,STATUS_FULL_TIME,Club Brugge,Barcelona,3,3,10,23,6,6,0,4,11,6,23.7,76.3,570,83,757723
+Champions League,2025/26,Fase campionato,05/11/2025,21:00,si,STATUS_FULL_TIME,Internazionale,Kairat Almaty,2,1,23,7,9,3,9,3,9,16,65.6,34.4,110,2528,757722
+Champions League,2025/26,Fase campionato,05/11/2025,21:00,si,STATUS_FULL_TIME,Manchester City,Borussia Dortmund,4,1,18,12,11,4,4,4,11,17,49.9,50.1,382,124,757718
+Champions League,2025/26,Fase campionato,05/11/2025,21:00,si,STATUS_FULL_TIME,Marseille,Atalanta,0,1,15,8,4,3,7,3,13,17,53.1,46.9,176,105,757724
+Champions League,2025/26,Fase campionato,05/11/2025,21:00,si,STATUS_FULL_TIME,Newcastle United,Athletic Club,2,0,8,12,4,5,2,5,11,13,58.5,41.5,361,93,757719
+Conference League,2025/26,Fase campionato,06/11/2025,18:45,si,STATUS_FULL_TIME,AEK Athens,Shamrock Rovers,1,1,30,1,8,1,10,0,8,11,80.2,19.8,887,2564,758006
+Conference League,2025/26,Fase campionato,06/11/2025,18:45,si,STATUS_FULL_TIME,AEK Larnaca,Aberdeen,0,0,11,5,2,0,5,5,6,8,67.8,32.2,4039,263,758003
+Conference League,2025/26,Fase campionato,06/11/2025,18:45,si,STATUS_FULL_TIME,FC Noah,Sigma Olomouc,1,2,5,17,2,4,0,4,20,18,65.6,34.4,20712,609,758008
+Conference League,2025/26,Fase campionato,06/11/2025,18:45,si,STATUS_FULL_TIME,KuPS Kuopio,Slovan Bratislava,3,1,18,7,7,2,6,0,10,12,54.9,45.1,8169,521,758004
+Conference League,2025/26,Fase campionato,06/11/2025,18:45,si,STATUS_FULL_TIME,Mainz,Fiorentina,2,1,13,12,4,4,3,2,19,12,44,56,2950,109,758009
+Conference League,2025/26,Fase campionato,06/11/2025,18:45,si,STATUS_FULL_TIME,NK Celje,Legia Warsaw,2,1,11,17,5,9,3,6,10,14,58.9,41.1,3362,555,758007
+Conference League,2025/26,Fase campionato,06/11/2025,18:45,si,STATUS_FULL_TIME,Samsunspor,Hamrun Spartans,3,0,16,4,8,1,4,1,16,14,55.7,44.3,11429,7858,758001
+Conference League,2025/26,Fase campionato,06/11/2025,18:45,si,STATUS_FULL_TIME,Shakhtar Donetsk,Breidablik,2,0,16,5,4,0,8,2,7,8,73.5,26.5,493,8250,758002
+Conference League,2025/26,Fase campionato,06/11/2025,18:45,si,STATUS_FULL_TIME,Sparta Prague,Raków Czestochowa,0,0,11,6,5,1,7,2,13,8,62.1,37.9,433,21005,758005
+Europa League,2025/26,Fase campionato,06/11/2025,18:45,si,STATUS_FULL_TIME,Dinamo Zagreb,Celta Vigo,0,3,10,8,5,3,5,2,6,12,59.4,40.6,597,85,757853
+Europa League,2025/26,Fase campionato,06/11/2025,18:45,si,STATUS_FULL_TIME,FC Basel,FCSB,3,1,25,14,9,7,8,5,13,15,67,33,989,484,757857
+Europa League,2025/26,Fase campionato,06/11/2025,18:45,si,STATUS_FULL_TIME,FC Midtjylland,Celtic,3,1,24,5,12,3,4,4,13,14,60.4,39.6,572,256,757858
+Europa League,2025/26,Fase campionato,06/11/2025,18:45,si,STATUS_FULL_TIME,FC Utrecht,FC Porto,1,1,11,19,3,8,2,7,16,12,25.3,74.7,153,437,757851
+Europa League,2025/26,Fase campionato,06/11/2025,18:45,si,STATUS_FULL_TIME,Malmö FF,Panathinaikos,0,1,12,11,2,4,4,2,12,17,56.8,43.2,2720,443,757854
+Europa League,2025/26,Fase campionato,06/11/2025,18:45,si,STATUS_FULL_TIME,Nice,SC Freiburg,1,3,17,16,4,7,5,4,9,14,59.7,40.3,2502,126,757855
+Europa League,2025/26,Fase campionato,06/11/2025,18:45,si,STATUS_FULL_TIME,RB Salzburg,Go Ahead Eagles,2,0,17,10,8,2,3,4,7,7,43.3,56.7,2790,3706,757852
+Europa League,2025/26,Fase campionato,06/11/2025,18:45,si,STATUS_FULL_TIME,Red Star Belgrade,Lille,1,0,11,11,3,3,5,3,17,15,39.6,60.4,2290,166,757856
+Europa League,2025/26,Fase campionato,06/11/2025,18:45,si,STATUS_FULL_TIME,SK Sturm Graz,Nottingham Forest,0,0,3,9,2,2,0,4,17,13,42.2,57.8,3746,393,757859
+Conference League,2025/26,Fase campionato,06/11/2025,21:00,si,STATUS_FULL_TIME,BK Häcken,Strasbourg,1,2,17,9,5,6,6,3,9,7,40.7,59.3,7834,180,758016
+Conference League,2025/26,Fase campionato,06/11/2025,21:00,si,STATUS_FULL_TIME,Crystal Palace,AZ Alkmaar,3,1,21,9,7,4,2,1,14,14,35.4,64.6,384,140,758018
+Conference League,2025/26,Fase campionato,06/11/2025,21:00,si,STATUS_FULL_TIME,Dynamo Kyiv,Zrinjski Mostar,6,0,10,10,7,3,4,6,11,8,65.6,34.4,440,5239,758015
+Conference League,2025/26,Fase campionato,06/11/2025,21:00,si,STATUS_FULL_TIME,KF Shkëndija,Jagiellonia Bialystok,1,1,7,8,3,3,2,4,16,23,30.7,69.3,8151,11505,758010
+Conference League,2025/26,Fase campionato,06/11/2025,21:00,si,STATUS_FULL_TIME,Lausanne Sports,Omonia Nicosia,1,1,21,7,6,3,6,4,10,12,62.1,37.9,11551,617,758014
+Conference League,2025/26,Fase campionato,06/11/2025,21:00,si,STATUS_FULL_TIME,Lincoln Red Imps,Rijeka,1,1,12,10,5,5,4,2,11,16,40.3,59.7,17856,2988,758017
+Conference League,2025/26,Fase campionato,06/11/2025,21:00,si,STATUS_FULL_TIME,Rapid Vienna,Universitatea Craiova,0,1,10,17,1,8,3,3,12,20,52.1,47.9,519,8089,758012
+Conference League,2025/26,Fase campionato,06/11/2025,21:00,si,STATUS_FULL_TIME,Rayo Vallecano,Lech Poznan,3,2,29,9,6,3,7,6,8,1,65,35,101,2990,758013
+Conference League,2025/26,Fase campionato,06/11/2025,21:00,si,STATUS_FULL_TIME,Shelbourne,Drita Gjilan,0,1,11,20,2,5,6,3,12,7,38.5,61.5,20297,19243,758011
+Europa League,2025/26,Fase campionato,06/11/2025,21:00,si,STATUS_FULL_TIME,Aston Villa,Maccabi Tel-Aviv,2,0,14,6,8,3,3,1,12,18,66.3,33.7,362,524,757861
+Europa League,2025/26,Fase campionato,06/11/2025,21:00,si,STATUS_FULL_TIME,Bologna,SK Brann,0,0,16,9,3,0,11,3,6,14,54.6,45.4,107,620,757862
+Europa League,2025/26,Fase campionato,06/11/2025,21:00,si,STATUS_FULL_TIME,Braga,Racing Genk,3,4,20,9,6,8,9,2,6,14,63.4,36.6,2994,938,757867
+Europa League,2025/26,Fase campionato,06/11/2025,21:00,si,STATUS_FULL_TIME,Ferencvaros,Ludogorets Razgrad,3,1,19,14,7,2,7,5,13,9,49.1,50.9,622,13018,757864
+Europa League,2025/26,Fase campionato,06/11/2025,21:00,si,STATUS_FULL_TIME,PAOK,Young Boys,4,0,23,7,10,1,7,0,10,10,65.3,34.7,605,2722,757868
+Europa League,2025/26,Fase campionato,06/11/2025,21:00,si,STATUS_FULL_TIME,Rangers,AS Roma,0,2,11,14,2,3,2,6,11,17,39.6,60.4,257,104,757865
+Europa League,2025/26,Fase campionato,06/11/2025,21:00,si,STATUS_FULL_TIME,Real Betis,Lyon,2,0,9,10,6,3,2,6,10,12,33.5,66.5,244,167,757866
+Europa League,2025/26,Fase campionato,06/11/2025,21:00,si,STATUS_FULL_TIME,VfB Stuttgart,Feyenoord Rotterdam,2,0,13,12,6,4,2,5,26,22,52.6,47.4,134,142,757860
+Europa League,2025/26,Fase campionato,06/11/2025,21:00,si,STATUS_FULL_TIME,Viktoria Plzen,Fenerbahce,0,0,18,10,6,4,11,2,11,7,39.8,60.2,11706,436,757863
+Champions League,2025/26,Fase campionato,25/11/2025,18:45,si,STATUS_FULL_TIME,Ajax Amsterdam,Benfica,0,2,7,11,3,4,10,4,15,8,62.3,37.7,139,1929,757725
+Champions League,2025/26,Fase campionato,25/11/2025,18:45,si,STATUS_FULL_TIME,Galatasaray,Union St.-Gilloise,0,1,15,16,3,5,4,5,9,17,66,34,432,5807,757726
+Champions League,2025/26,Fase campionato,25/11/2025,21:00,si,STATUS_FULL_TIME,Bodo/Glimt,Juventus,2,3,18,23,6,16,6,8,6,17,57.6,42.4,2980,111,757731
+Champions League,2025/26,Fase campionato,25/11/2025,21:00,si,STATUS_FULL_TIME,Borussia Dortmund,Villarreal,4,0,13,10,8,2,3,2,17,12,67,33,124,102,757727
+Champions League,2025/26,Fase campionato,25/11/2025,21:00,si,STATUS_FULL_TIME,Chelsea,Barcelona,3,0,15,5,6,2,4,0,18,12,55.5,44.5,363,83,757732
+Champions League,2025/26,Fase campionato,25/11/2025,21:00,si,STATUS_FULL_TIME,Manchester City,Bayer Leverkusen,0,2,19,7,7,2,9,3,4,8,55.2,44.8,382,131,757730
+Champions League,2025/26,Fase campionato,25/11/2025,21:00,si,STATUS_FULL_TIME,Marseille,Newcastle United,2,1,18,20,7,9,11,5,10,8,57.6,42.4,176,361,757729
+Champions League,2025/26,Fase campionato,25/11/2025,21:00,si,STATUS_FULL_TIME,Napoli,FK Qarabag,2,0,17,11,8,3,6,4,18,6,54.9,45.1,114,10414,757728
+Champions League,2025/26,Fase campionato,25/11/2025,21:00,si,STATUS_FULL_TIME,Slavia Prague,Athletic Club,0,0,8,12,3,4,2,5,21,22,51.9,48.1,494,93,757733
+Champions League,2025/26,Fase campionato,26/11/2025,18:45,si,STATUS_FULL_TIME,F.C. København,Kairat Almaty,3,2,18,13,9,4,5,0,19,10,53.6,46.4,909,2528,757735
+Champions League,2025/26,Fase campionato,26/11/2025,18:45,si,STATUS_FULL_TIME,Pafos,AS Monaco,2,2,17,14,4,6,5,3,14,9,48.2,51.8,22281,174,757734
+Champions League,2025/26,Fase campionato,26/11/2025,21:00,si,STATUS_FULL_TIME,Arsenal,Bayern Munich,3,1,13,8,8,2,6,1,16,13,40,60,359,132,757742
+Champions League,2025/26,Fase campionato,26/11/2025,21:00,si,STATUS_FULL_TIME,Atlético Madrid,Internazionale,2,1,15,17,6,6,7,6,12,8,48.5,51.5,1068,110,757740
+Champions League,2025/26,Fase campionato,26/11/2025,21:00,si,STATUS_FULL_TIME,Eintracht Frankfurt,Atalanta,0,3,9,21,3,7,5,6,7,7,46.1,53.9,125,105,757739
+Champions League,2025/26,Fase campionato,26/11/2025,21:00,si,STATUS_FULL_TIME,Liverpool,PSV Eindhoven,1,4,27,9,10,6,11,4,9,9,63.4,36.6,364,148,757738
+Champions League,2025/26,Fase campionato,26/11/2025,21:00,si,STATUS_FULL_TIME,Olympiacos,Real Madrid,3,4,18,15,8,7,3,5,12,7,41.1,58.9,435,86,757737
+Champions League,2025/26,Fase campionato,26/11/2025,21:00,si,STATUS_FULL_TIME,Paris Saint-Germain,Tottenham Hotspur,5,3,15,11,6,5,5,5,10,16,67.2,32.8,160,367,757736
+Champions League,2025/26,Fase campionato,26/11/2025,21:00,si,STATUS_FULL_TIME,Sporting CP,Club Brugge,3,0,19,8,9,1,3,5,8,14,45.5,54.5,2250,570,757741
+Conference League,2025/26,Fase campionato,27/11/2025,18:45,si,STATUS_FULL_TIME,AZ Alkmaar,Shelbourne,2,0,22,5,9,2,8,6,6,18,73.2,26.8,140,20297,758019
+Conference League,2025/26,Fase campionato,27/11/2025,18:45,si,STATUS_FULL_TIME,Hamrun Spartans,Lincoln Red Imps,3,1,22,10,11,4,8,1,24,11,59.5,40.5,7858,17856,758020
+Conference League,2025/26,Fase campionato,27/11/2025,18:45,si,STATUS_FULL_TIME,Lech Poznan,Lausanne Sports,2,0,6,16,3,5,3,8,9,13,55.1,44.9,2990,11551,758021
+Conference League,2025/26,Fase campionato,27/11/2025,18:45,si,STATUS_FULL_TIME,Omonia Nicosia,Dynamo Kyiv,2,0,11,13,5,4,4,8,6,13,42.6,57.4,617,440,758022
+Conference League,2025/26,Fase campionato,27/11/2025,18:45,si,STATUS_FULL_TIME,Raków Czestochowa,Rapid Vienna,4,1,15,10,5,3,8,2,10,12,54.9,45.1,21005,519,758023
+Conference League,2025/26,Fase campionato,27/11/2025,18:45,si,STATUS_FULL_TIME,Sigma Olomouc,NK Celje,2,1,21,11,7,4,3,5,28,8,31.5,68.5,609,3362,758025
+Conference League,2025/26,Fase campionato,27/11/2025,18:45,si,STATUS_FULL_TIME,Slovan Bratislava,Rayo Vallecano,2,1,9,23,3,7,10,5,13,17,49,51,521,101,758024
+Conference League,2025/26,Fase campionato,27/11/2025,18:45,si,STATUS_FULL_TIME,Universitatea Craiova,Mainz,1,0,8,9,2,1,1,6,17,18,42.9,57.1,8089,2950,758026
+Conference League,2025/26,Fase campionato,27/11/2025,18:45,si,STATUS_FULL_TIME,Zrinjski Mostar,BK Häcken,2,1,12,14,6,3,3,7,10,8,37.7,62.3,5239,7834,758027
+Europa League,2025/26,Fase campionato,27/11/2025,18:45,si,STATUS_FULL_TIME,AS Roma,FC Midtjylland,2,1,13,12,6,2,6,6,13,20,54,46,104,572,757876
+Europa League,2025/26,Fase campionato,27/11/2025,18:45,si,STATUS_FULL_TIME,Aston Villa,Young Boys,2,1,19,6,8,1,7,0,11,12,60.4,39.6,362,2722,757869
+Europa League,2025/26,Fase campionato,27/11/2025,18:45,si,STATUS_FULL_TIME,FC Porto,Nice,3,0,6,8,3,0,4,3,16,13,55.7,44.3,437,2502,757870
+Europa League,2025/26,Fase campionato,27/11/2025,18:45,si,STATUS_FULL_TIME,Fenerbahce,Ferencvaros,1,1,19,5,6,1,7,4,7,17,66.1,33.9,436,622,757871
+Europa League,2025/26,Fase campionato,27/11/2025,18:45,si,STATUS_FULL_TIME,Feyenoord Rotterdam,Celtic,1,3,14,6,4,4,6,2,11,9,48.6,51.4,142,256,757872
+Europa League,2025/26,Fase campionato,27/11/2025,18:45,si,STATUS_FULL_TIME,Lille,Dinamo Zagreb,4,0,17,3,9,0,5,1,12,6,64.2,35.8,166,597,757873
+Europa League,2025/26,Fase campionato,27/11/2025,18:45,si,STATUS_FULL_TIME,Ludogorets Razgrad,Celta Vigo,3,2,7,19,4,7,1,7,7,16,43.2,56.8,13018,85,757874
+Europa League,2025/26,Fase campionato,27/11/2025,18:45,si,STATUS_FULL_TIME,PAOK,SK Brann,1,1,16,9,7,5,6,8,12,9,44.9,55.1,605,620,757875
+Europa League,2025/26,Fase campionato,27/11/2025,18:45,si,STATUS_FULL_TIME,Viktoria Plzen,SC Freiburg,0,0,19,10,7,6,7,3,15,11,49.7,50.3,11706,126,757877
+Conference League,2025/26,Fase campionato,27/11/2025,21:00,si,STATUS_FULL_TIME,Aberdeen,FC Noah,1,1,9,10,3,3,1,7,11,13,46.9,53.1,263,20712,758028
+Conference League,2025/26,Fase campionato,27/11/2025,21:00,si,STATUS_FULL_TIME,Breidablik,Samsunspor,2,2,12,18,4,6,5,7,7,12,38.1,61.9,8250,11429,758029
+Conference League,2025/26,Fase campionato,27/11/2025,21:00,si,STATUS_FULL_TIME,Drita Gjilan,KF Shkëndija,1,0,5,19,2,3,2,10,16,15,37.7,62.3,19243,8151,758036
+Conference League,2025/26,Fase campionato,27/11/2025,21:00,si,STATUS_FULL_TIME,Fiorentina,AEK Athens,0,1,9,12,3,4,7,3,13,16,52.1,47.9,109,887,758030
+Conference League,2025/26,Fase campionato,27/11/2025,21:00,si,STATUS_FULL_TIME,Jagiellonia Bialystok,KuPS Kuopio,1,0,17,6,9,0,7,5,10,6,43.3,56.7,11505,8169,758033
+Conference League,2025/26,Fase campionato,27/11/2025,21:00,si,STATUS_FULL_TIME,Legia Warsaw,Sparta Prague,0,1,12,12,5,2,3,10,14,8,45.8,54.2,555,433,758032
+Conference League,2025/26,Fase campionato,27/11/2025,21:00,si,STATUS_FULL_TIME,Rijeka,AEK Larnaca,0,0,23,6,5,1,7,1,19,14,63.3,36.7,2988,4039,758031
+Conference League,2025/26,Fase campionato,27/11/2025,21:00,si,STATUS_FULL_TIME,Shamrock Rovers,Shakhtar Donetsk,1,2,6,19,3,8,4,8,7,7,31.8,68.2,2564,493,758035
+Conference League,2025/26,Fase campionato,27/11/2025,21:00,si,STATUS_FULL_TIME,Strasbourg,Crystal Palace,2,1,13,16,6,4,4,5,5,13,59.5,40.5,180,384,758034
+Europa League,2025/26,Fase campionato,27/11/2025,21:00,si,STATUS_FULL_TIME,Bologna,RB Salzburg,4,1,30,9,14,4,6,2,10,8,51.9,48.1,107,2790,757886
+Europa League,2025/26,Fase campionato,27/11/2025,21:00,si,STATUS_FULL_TIME,Go Ahead Eagles,VfB Stuttgart,0,4,6,20,2,9,2,5,9,6,39.4,60.6,3706,134,757879
+Europa League,2025/26,Fase campionato,27/11/2025,21:00,si,STATUS_FULL_TIME,Maccabi Tel-Aviv,Lyon,0,6,5,18,0,8,0,3,12,12,32.9,67.1,524,167,757884
+Europa League,2025/26,Fase campionato,27/11/2025,21:00,si,STATUS_FULL_TIME,Nottingham Forest,Malmö FF,3,0,22,1,10,1,7,0,14,10,65.4,34.6,393,2720,757885
+Europa League,2025/26,Fase campionato,27/11/2025,21:00,si,STATUS_FULL_TIME,Panathinaikos,SK Sturm Graz,2,1,8,7,4,2,7,3,9,21,54.1,45.9,443,3746,757882
+Europa League,2025/26,Fase campionato,27/11/2025,21:00,si,STATUS_FULL_TIME,Racing Genk,FC Basel,2,1,13,13,7,4,2,6,13,11,46.6,53.4,938,989,757880
+Europa League,2025/26,Fase campionato,27/11/2025,21:00,si,STATUS_FULL_TIME,Rangers,Braga,1,1,12,9,6,5,8,3,20,18,48.3,51.7,257,2994,757878
+Europa League,2025/26,Fase campionato,27/11/2025,21:00,si,STATUS_FULL_TIME,Real Betis,FC Utrecht,2,1,18,6,7,3,3,3,12,11,64.6,35.4,244,153,757883
+Europa League,2025/26,Fase campionato,27/11/2025,21:00,si,STATUS_FULL_TIME,Red Star Belgrade,FCSB,1,0,14,13,5,2,6,5,9,15,39.2,60.8,2290,484,757881
+Champions League,2025/26,Fase campionato,09/12/2025,16:30,si,STATUS_FULL_TIME,Kairat Almaty,Olympiacos,0,1,5,20,1,8,1,8,12,14,46.5,53.5,2528,435,757743
+Champions League,2025/26,Fase campionato,09/12/2025,18:45,si,STATUS_FULL_TIME,Bayern Munich,Sporting CP,3,1,23,4,9,0,4,3,11,5,61.6,38.4,132,2250,757744
+Champions League,2025/26,Fase campionato,09/12/2025,21:00,si,STATUS_FULL_TIME,AS Monaco,Galatasaray,1,0,19,13,5,2,8,3,12,15,41.7,58.3,174,432,757751
+Champions League,2025/26,Fase campionato,09/12/2025,21:00,si,STATUS_FULL_TIME,Atalanta,Chelsea,2,1,14,10,4,5,2,5,6,14,49.4,50.6,105,363,757747
+Champions League,2025/26,Fase campionato,09/12/2025,21:00,si,STATUS_FULL_TIME,Barcelona,Eintracht Frankfurt,2,1,19,6,7,4,5,0,10,11,75.4,24.6,83,125,757746
+Champions League,2025/26,Fase campionato,09/12/2025,21:00,si,STATUS_FULL_TIME,Internazionale,Liverpool,0,1,9,12,2,5,6,3,14,11,50,50,110,364,757745
+Champions League,2025/26,Fase campionato,09/12/2025,21:00,si,STATUS_FULL_TIME,PSV Eindhoven,Atlético Madrid,2,3,13,15,3,9,9,5,11,15,52.7,47.3,148,1068,757750
+Champions League,2025/26,Fase campionato,09/12/2025,21:00,si,STATUS_FULL_TIME,Tottenham Hotspur,Slavia Prague,3,0,16,12,10,5,8,3,12,13,53.1,46.9,367,494,757749
+Champions League,2025/26,Fase campionato,09/12/2025,21:00,si,STATUS_FULL_TIME,Union St.-Gilloise,Marseille,2,3,8,10,6,5,2,3,10,10,40.5,59.5,5807,176,757748
+Champions League,2025/26,Fase campionato,10/12/2025,18:45,si,STATUS_FULL_TIME,FK Qarabag,Ajax Amsterdam,2,4,17,20,6,8,4,6,3,14,47.1,52.9,10414,139,757752
+Champions League,2025/26,Fase campionato,10/12/2025,18:45,si,STATUS_FULL_TIME,Villarreal,F.C. København,2,3,19,8,5,4,6,4,14,15,52,48,102,909,757753
+Champions League,2025/26,Fase campionato,10/12/2025,21:00,si,STATUS_FULL_TIME,Athletic Club,Paris Saint-Germain,0,0,9,18,1,5,4,6,21,4,27.6,72.4,93,160,757759
+Champions League,2025/26,Fase campionato,10/12/2025,21:00,si,STATUS_FULL_TIME,Bayer Leverkusen,Newcastle United,2,2,17,13,7,5,9,6,9,11,50.7,49.3,131,361,757758
+Champions League,2025/26,Fase campionato,10/12/2025,21:00,si,STATUS_FULL_TIME,Benfica,Napoli,2,0,13,9,5,2,2,6,11,21,39.7,60.3,1929,114,757754
+Champions League,2025/26,Fase campionato,10/12/2025,21:00,si,STATUS_FULL_TIME,Borussia Dortmund,Bodo/Glimt,2,2,22,7,9,3,10,4,5,6,63.3,36.7,124,2980,757755
+Champions League,2025/26,Fase campionato,10/12/2025,21:00,si,STATUS_FULL_TIME,Club Brugge,Arsenal,0,3,18,20,7,11,1,5,10,9,49.3,50.7,570,359,757757
+Champions League,2025/26,Fase campionato,10/12/2025,21:00,si,STATUS_FULL_TIME,Juventus,Pafos,2,0,25,12,5,3,13,4,8,9,61.2,38.8,111,22281,757756
+Champions League,2025/26,Fase campionato,10/12/2025,21:00,si,STATUS_FULL_TIME,Real Madrid,Manchester City,1,2,16,12,1,8,3,3,14,17,51.7,48.3,86,382,757760
+Conference League,2025/26,Fase campionato,11/12/2025,18:45,si,STATUS_FULL_TIME,BK Häcken,AEK Larnaca,1,1,18,8,4,4,3,4,11,13,58.9,41.1,7834,4039,758038
+Conference League,2025/26,Fase campionato,11/12/2025,18:45,si,STATUS_FULL_TIME,Breidablik,Shamrock Rovers,3,1,10,7,4,2,5,5,17,9,39.3,60.7,8250,2564,758041
+Conference League,2025/26,Fase campionato,11/12/2025,18:45,si,STATUS_FULL_TIME,Drita Gjilan,AZ Alkmaar,0,3,6,25,1,9,4,6,10,11,32.3,67.7,19243,140,758042
+Conference League,2025/26,Fase campionato,11/12/2025,18:45,si,STATUS_FULL_TIME,FC Noah,Legia Warsaw,2,1,21,11,5,3,6,5,11,15,63.8,36.2,20712,555,758043
+Conference League,2025/26,Fase campionato,11/12/2025,18:45,si,STATUS_FULL_TIME,Fiorentina,Dynamo Kyiv,2,1,20,9,8,2,5,5,13,10,41.5,58.5,109,440,758044
+Conference League,2025/26,Fase campionato,11/12/2025,18:45,si,STATUS_FULL_TIME,Jagiellonia Bialystok,Rayo Vallecano,1,2,12,11,2,3,2,8,18,22,50.7,49.3,11505,101,758037
+Conference League,2025/26,Fase campionato,11/12/2025,18:45,si,STATUS_FULL_TIME,KF Shkëndija,Slovan Bratislava,2,0,11,8,4,0,2,4,12,16,43.4,56.6,8151,521,758045
+Conference League,2025/26,Fase campionato,11/12/2025,18:45,si,STATUS_FULL_TIME,Samsunspor,AEK Athens,1,2,17,13,4,3,7,4,8,9,53.2,46.8,11429,887,758039
+Conference League,2025/26,Fase campionato,11/12/2025,18:45,si,STATUS_FULL_TIME,Universitatea Craiova,Sparta Prague,1,2,7,15,4,3,0,9,11,13,41.3,58.7,8089,433,758040
+Europa League,2025/26,Fase campionato,11/12/2025,18:45,si,STATUS_FULL_TIME,Dinamo Zagreb,Real Betis,1,3,8,15,2,5,5,4,17,11,41.8,58.2,597,244,757891
+Europa League,2025/26,Fase campionato,11/12/2025,18:45,si,STATUS_FULL_TIME,FC Midtjylland,Racing Genk,1,0,14,11,7,4,5,5,18,14,49.2,50.8,572,938,757895
+Europa League,2025/26,Fase campionato,11/12/2025,18:45,si,STATUS_FULL_TIME,FC Utrecht,Nottingham Forest,1,2,10,19,3,11,7,5,14,14,43.4,56.6,153,393,757888
+Europa League,2025/26,Fase campionato,11/12/2025,18:45,si,STATUS_FULL_TIME,Ferencvaros,Rangers,2,1,16,7,3,2,5,5,15,13,55.5,44.5,622,257,757893
+Europa League,2025/26,Fase campionato,11/12/2025,18:45,si,STATUS_FULL_TIME,Ludogorets Razgrad,PAOK,3,3,15,16,3,8,2,4,16,10,43.3,56.7,13018,605,757894
+Europa League,2025/26,Fase campionato,11/12/2025,18:45,si,STATUS_FULL_TIME,Nice,Braga,0,1,11,9,4,4,7,3,8,15,37.4,62.6,2502,2994,757892
+Europa League,2025/26,Fase campionato,11/12/2025,18:45,si,STATUS_FULL_TIME,SK Sturm Graz,Red Star Belgrade,0,1,16,15,1,2,7,5,14,21,58.9,41.1,3746,2290,757889
+Europa League,2025/26,Fase campionato,11/12/2025,18:45,si,STATUS_FULL_TIME,VfB Stuttgart,Maccabi Tel-Aviv,4,1,15,7,7,2,7,2,19,14,66.8,33.2,134,524,757890
+Europa League,2025/26,Fase campionato,11/12/2025,18:45,si,STATUS_FULL_TIME,Young Boys,Lille,1,0,11,10,5,1,1,3,8,5,45.1,54.9,2722,166,757887
+Conference League,2025/26,Fase campionato,11/12/2025,21:00,si,STATUS_FULL_TIME,Aberdeen,Strasbourg,0,1,11,9,2,6,9,7,18,11,39.6,60.4,263,180,758052
+Conference League,2025/26,Fase campionato,11/12/2025,21:00,si,STATUS_FULL_TIME,Hamrun Spartans,Shakhtar Donetsk,0,2,5,18,2,8,3,4,10,8,39.4,60.6,7858,493,758053
+Conference League,2025/26,Fase campionato,11/12/2025,21:00,si,STATUS_FULL_TIME,KuPS Kuopio,Lausanne Sports,0,0,14,21,1,2,4,4,11,8,50.4,49.6,8169,11551,758054
+Conference League,2025/26,Fase campionato,11/12/2025,21:00,si,STATUS_FULL_TIME,Lech Poznan,Mainz,1,1,20,13,8,5,2,5,14,12,67.5,32.5,2990,2950,758050
+Conference League,2025/26,Fase campionato,11/12/2025,21:00,si,STATUS_FULL_TIME,Lincoln Red Imps,Sigma Olomouc,2,1,9,18,3,3,1,3,17,22,48.1,51.9,17856,609,758046
+Conference League,2025/26,Fase campionato,11/12/2025,21:00,si,STATUS_FULL_TIME,Raków Czestochowa,Zrinjski Mostar,1,0,13,14,3,7,7,3,10,16,58.4,41.6,21005,5239,758047
+Conference League,2025/26,Fase campionato,11/12/2025,21:00,si,STATUS_FULL_TIME,Rapid Vienna,Omonia Nicosia,0,1,16,4,7,2,3,1,24,14,61,39,519,617,758051
+Conference League,2025/26,Fase campionato,11/12/2025,21:00,si,STATUS_FULL_TIME,Rijeka,NK Celje,3,0,21,8,10,3,5,2,14,11,49.8,50.2,2988,3362,758048
+Conference League,2025/26,Fase campionato,11/12/2025,21:00,si,STATUS_FULL_TIME,Shelbourne,Crystal Palace,0,3,5,28,1,10,2,9,8,15,38.4,61.6,20297,384,758049
+Europa League,2025/26,Fase campionato,11/12/2025,21:00,si,STATUS_FULL_TIME,Celta Vigo,Bologna,1,2,3,15,1,4,0,5,12,15,50,50,85,107,757901
+Europa League,2025/26,Fase campionato,11/12/2025,21:00,si,STATUS_FULL_TIME,Celtic,AS Roma,0,3,9,12,2,5,4,4,10,9,56.9,43.1,256,104,757902
+Europa League,2025/26,Fase campionato,11/12/2025,21:00,si,STATUS_FULL_TIME,FC Basel,Aston Villa,1,2,11,7,4,4,2,4,12,14,42.8,57.2,989,362,757904
+Europa League,2025/26,Fase campionato,11/12/2025,21:00,si,STATUS_FULL_TIME,FC Porto,Malmö FF,2,1,22,7,11,2,5,0,13,16,59.2,40.8,437,2720,757903
+Europa League,2025/26,Fase campionato,11/12/2025,21:00,si,STATUS_FULL_TIME,FCSB,Feyenoord Rotterdam,4,3,7,14,4,5,3,4,12,6,44.2,55.8,484,142,757899
+Europa League,2025/26,Fase campionato,11/12/2025,21:00,si,STATUS_FULL_TIME,Lyon,Go Ahead Eagles,2,1,17,7,6,3,7,1,6,8,61.7,38.3,167,3706,757898
+Europa League,2025/26,Fase campionato,11/12/2025,21:00,si,STATUS_FULL_TIME,Panathinaikos,Viktoria Plzen,0,0,20,5,4,2,9,2,14,9,70.6,29.4,443,11706,757897
+Europa League,2025/26,Fase campionato,11/12/2025,21:00,si,STATUS_FULL_TIME,SC Freiburg,RB Salzburg,1,0,28,6,5,3,10,2,11,11,59.2,40.8,126,2790,757896
+Europa League,2025/26,Fase campionato,11/12/2025,21:00,si,STATUS_FULL_TIME,SK Brann,Fenerbahce,0,4,6,20,2,10,1,10,8,10,30.9,69.1,620,436,757900
+Conference League,2025/26,Fase campionato,18/12/2025,21:00,si,STATUS_FULL_TIME,AEK Athens,Universitatea Craiova,3,2,19,15,5,5,7,4,8,18,52,48,887,8089,758056
+Conference League,2025/26,Fase campionato,18/12/2025,21:00,si,STATUS_FULL_TIME,AEK Larnaca,KF Shkëndija,1,0,17,3,3,1,5,4,5,6,72,28,4039,8151,758057
+Conference League,2025/26,Fase campionato,18/12/2025,21:00,si,STATUS_FULL_TIME,AZ Alkmaar,Jagiellonia Bialystok,0,0,14,4,2,1,8,5,13,11,65.3,34.7,140,11505,758058
+Conference League,2025/26,Fase campionato,18/12/2025,21:00,si,STATUS_FULL_TIME,Crystal Palace,KuPS Kuopio,2,2,13,3,6,2,10,1,10,14,56.3,43.7,384,8169,758060
+Conference League,2025/26,Fase campionato,18/12/2025,21:00,si,STATUS_FULL_TIME,Dynamo Kyiv,FC Noah,2,0,7,8,4,2,5,4,14,5,44,56,440,20712,758061
+Conference League,2025/26,Fase campionato,18/12/2025,21:00,si,STATUS_FULL_TIME,Lausanne Sports,Fiorentina,1,0,17,11,5,4,6,7,11,15,46.4,53.6,11551,109,758062
+Conference League,2025/26,Fase campionato,18/12/2025,21:00,si,STATUS_FULL_TIME,Legia Warsaw,Lincoln Red Imps,4,1,31,4,9,2,10,1,16,5,61.2,38.8,555,17856,758063
+Conference League,2025/26,Fase campionato,18/12/2025,21:00,si,STATUS_FULL_TIME,Mainz,Samsunspor,2,0,13,7,5,2,5,3,10,10,46.1,53.9,2950,11429,758055
+Conference League,2025/26,Fase campionato,18/12/2025,21:00,si,STATUS_FULL_TIME,NK Celje,Shelbourne,0,0,23,13,7,4,8,5,10,12,70,30,3362,20297,758059
+Conference League,2025/26,Fase campionato,18/12/2025,21:00,si,STATUS_FULL_TIME,Omonia Nicosia,Raków Czestochowa,0,1,13,11,2,6,1,1,14,16,56.5,43.5,617,21005,758064
+Conference League,2025/26,Fase campionato,18/12/2025,21:00,si,STATUS_FULL_TIME,Rayo Vallecano,Drita Gjilan,3,0,17,8,5,2,3,4,9,11,75.1,24.9,101,19243,758065
+Conference League,2025/26,Fase campionato,18/12/2025,21:00,si,STATUS_FULL_TIME,Shakhtar Donetsk,Rijeka,0,0,9,4,5,1,2,2,10,10,63.5,36.5,493,2988,758067
+Conference League,2025/26,Fase campionato,18/12/2025,21:00,si,STATUS_FULL_TIME,Shamrock Rovers,Hamrun Spartans,3,1,26,10,14,3,7,4,15,10,59.1,40.9,2564,7858,758071
+Conference League,2025/26,Fase campionato,18/12/2025,21:00,si,STATUS_FULL_TIME,Sigma Olomouc,Lech Poznan,1,2,18,7,2,4,4,0,15,5,40.7,59.3,609,2990,758070
+Conference League,2025/26,Fase campionato,18/12/2025,21:00,si,STATUS_FULL_TIME,Slovan Bratislava,BK Häcken,1,0,17,18,10,1,8,7,7,14,43.1,56.9,521,7834,758066
+Conference League,2025/26,Fase campionato,18/12/2025,21:00,si,STATUS_FULL_TIME,Sparta Prague,Aberdeen,3,0,13,3,6,0,6,1,13,8,61.3,38.7,433,263,758069
+Conference League,2025/26,Fase campionato,18/12/2025,21:00,si,STATUS_FULL_TIME,Strasbourg,Breidablik,3,1,22,9,11,2,8,3,4,12,70.3,29.7,180,8250,758068
+Conference League,2025/26,Fase campionato,18/12/2025,21:00,si,STATUS_FULL_TIME,Zrinjski Mostar,Rapid Vienna,1,1,19,9,5,4,6,2,14,17,58.6,41.4,5239,519,758072
+Champions League,2025/26,Fase campionato,20/01/2026,16:30,si,STATUS_FULL_TIME,Kairat Almaty,Club Brugge,1,4,8,17,2,6,1,3,9,12,47,53,2528,570,757761
+Champions League,2025/26,Fase campionato,20/01/2026,18:45,si,STATUS_FULL_TIME,Bodo/Glimt,Manchester City,3,1,8,16,5,5,2,9,6,9,34.2,65.8,2980,382,757762
+Champions League,2025/26,Fase campionato,20/01/2026,21:00,si,STATUS_FULL_TIME,F.C. København,Napoli,1,1,5,19,4,5,1,11,13,15,29.7,70.3,909,114,757767
+Champions League,2025/26,Fase campionato,20/01/2026,21:00,si,STATUS_FULL_TIME,Internazionale,Arsenal,1,3,18,17,4,6,4,7,9,17,51.3,48.7,110,359,757763
+Champions League,2025/26,Fase campionato,20/01/2026,21:00,si,STATUS_FULL_TIME,Olympiacos,Bayer Leverkusen,2,0,6,17,2,6,2,8,13,9,28.3,71.7,435,131,757765
+Champions League,2025/26,Fase campionato,20/01/2026,21:00,si,STATUS_FULL_TIME,Real Madrid,AS Monaco,6,1,25,20,5,6,10,6,9,11,49.1,50.9,86,174,757764
+Champions League,2025/26,Fase campionato,20/01/2026,21:00,si,STATUS_FULL_TIME,Sporting CP,Paris Saint-Germain,2,1,10,28,4,6,2,10,10,11,25.4,74.6,2250,160,757768
+Champions League,2025/26,Fase campionato,20/01/2026,21:00,si,STATUS_FULL_TIME,Tottenham Hotspur,Borussia Dortmund,2,0,16,6,5,1,4,2,14,12,53.5,46.5,367,124,757769
+Champions League,2025/26,Fase campionato,20/01/2026,21:00,si,STATUS_FULL_TIME,Villarreal,Ajax Amsterdam,1,2,19,15,8,5,7,5,11,10,38.4,61.6,102,139,757766
+Champions League,2025/26,Fase campionato,21/01/2026,18:45,si,STATUS_FULL_TIME,FK Qarabag,Eintracht Frankfurt,3,2,11,8,5,5,7,1,8,12,58.2,41.8,10414,125,757770
+Champions League,2025/26,Fase campionato,21/01/2026,18:45,si,STATUS_FULL_TIME,Galatasaray,Atlético Madrid,1,1,7,15,2,5,4,7,11,11,45.5,54.5,432,1068,757771
+Champions League,2025/26,Fase campionato,21/01/2026,21:00,si,STATUS_FULL_TIME,Atalanta,Athletic Club,2,3,14,4,4,3,5,2,8,16,70.1,29.9,105,93,757772
+Champions League,2025/26,Fase campionato,21/01/2026,21:00,si,STATUS_FULL_TIME,Bayern Munich,Union St.-Gilloise,2,0,14,5,4,1,4,1,9,8,73.7,26.3,132,5807,757774
+Champions League,2025/26,Fase campionato,21/01/2026,21:00,si,STATUS_FULL_TIME,Chelsea,Pafos,1,0,21,4,7,2,15,2,6,10,71.4,28.6,363,22281,757773
+Champions League,2025/26,Fase campionato,21/01/2026,21:00,si,STATUS_FULL_TIME,Juventus,Benfica,2,0,12,16,4,3,4,7,14,10,45.6,54.4,111,1929,757775
+Champions League,2025/26,Fase campionato,21/01/2026,21:00,si,STATUS_FULL_TIME,Marseille,Liverpool,0,3,15,11,4,3,7,4,8,12,58.1,41.9,176,364,757776
+Champions League,2025/26,Fase campionato,21/01/2026,21:00,si,STATUS_FULL_TIME,Newcastle United,PSV Eindhoven,3,0,11,6,4,1,3,1,4,11,53.7,46.3,361,148,757777
+Champions League,2025/26,Fase campionato,21/01/2026,21:00,si,STATUS_FULL_TIME,Slavia Prague,Barcelona,2,4,12,20,2,12,5,4,9,11,40.7,59.3,494,83,757778
+Europa League,2025/26,Fase campionato,22/01/2026,18:45,si,STATUS_FULL_TIME,Bologna,Celtic,2,2,36,8,10,5,16,2,8,11,70.9,29.1,107,256,757913
+Europa League,2025/26,Fase campionato,22/01/2026,18:45,si,STATUS_FULL_TIME,Fenerbahce,Aston Villa,0,1,13,12,8,4,5,5,13,15,62.9,37.1,436,362,757908
+Europa League,2025/26,Fase campionato,22/01/2026,18:45,si,STATUS_FULL_TIME,Feyenoord Rotterdam,SK Sturm Graz,3,0,18,4,6,2,5,2,13,12,59.9,40.1,142,3746,757911
+Europa League,2025/26,Fase campionato,22/01/2026,18:45,si,STATUS_FULL_TIME,Malmö FF,Red Star Belgrade,0,1,4,11,0,3,3,7,13,12,41.3,58.7,2720,2290,757907
+Europa League,2025/26,Fase campionato,22/01/2026,18:45,si,STATUS_FULL_TIME,PAOK,Real Betis,2,0,12,19,4,2,5,9,14,11,42.9,57.1,605,244,757905
+Europa League,2025/26,Fase campionato,22/01/2026,18:45,si,STATUS_FULL_TIME,SC Freiburg,Maccabi Tel-Aviv,1,0,21,4,6,3,5,4,9,14,58.9,41.1,126,524,757912
+Europa League,2025/26,Fase campionato,22/01/2026,18:45,si,STATUS_FULL_TIME,SK Brann,FC Midtjylland,3,3,23,10,11,7,11,4,9,17,50.1,49.9,620,572,757910
+Europa League,2025/26,Fase campionato,22/01/2026,18:45,si,STATUS_FULL_TIME,Viktoria Plzen,FC Porto,1,1,10,19,2,8,2,7,11,12,33.1,66.9,11706,437,757909
+Europa League,2025/26,Fase campionato,22/01/2026,18:45,si,STATUS_FULL_TIME,Young Boys,Lyon,0,1,7,13,1,4,3,3,11,10,38.7,61.3,2722,167,757906
+Europa League,2025/26,Fase campionato,22/01/2026,21:00,si,STATUS_FULL_TIME,AS Roma,VfB Stuttgart,2,0,12,15,4,5,2,4,12,12,50.6,49.4,104,134,757920
+Europa League,2025/26,Fase campionato,22/01/2026,21:00,si,STATUS_FULL_TIME,Braga,Nottingham Forest,1,0,6,12,0,5,3,1,10,18,56.7,43.3,2994,393,757921
+Europa League,2025/26,Fase campionato,22/01/2026,21:00,si,STATUS_FULL_TIME,Celta Vigo,Lille,2,1,7,20,4,4,3,7,9,11,25.9,74.1,85,166,757914
+Europa League,2025/26,Fase campionato,22/01/2026,21:00,si,STATUS_FULL_TIME,Dinamo Zagreb,FCSB,4,1,16,7,7,3,4,6,17,11,46.8,53.2,597,484,757915
+Europa League,2025/26,Fase campionato,22/01/2026,21:00,si,STATUS_FULL_TIME,Ferencvaros,Panathinaikos,1,1,10,12,2,3,5,5,17,9,47.2,52.8,622,443,757917
+Europa League,2025/26,Fase campionato,22/01/2026,21:00,si,STATUS_FULL_TIME,Nice,Go Ahead Eagles,3,1,19,17,6,5,6,12,8,9,34.7,65.3,2502,3706,757922
+Europa League,2025/26,Fase campionato,22/01/2026,21:00,si,STATUS_FULL_TIME,RB Salzburg,FC Basel,3,1,21,9,8,3,8,2,12,9,61.3,38.7,2790,989,757918
+Europa League,2025/26,Fase campionato,22/01/2026,21:00,si,STATUS_FULL_TIME,Rangers,Ludogorets Razgrad,1,0,14,12,7,4,6,2,17,13,50.1,49.9,257,13018,757919
+Europa League,2025/26,Fase campionato,22/01/2026,21:50,si,STATUS_FULL_TIME,FC Utrecht,Racing Genk,0,2,17,12,7,5,2,3,11,12,57.5,42.5,153,938,757916
+Champions League,2025/26,Fase campionato,28/01/2026,21:00,si,STATUS_FULL_TIME,AS Monaco,Juventus,0,0,11,5,5,0,6,0,13,19,50.2,49.8,174,111,757791
+Champions League,2025/26,Fase campionato,28/01/2026,21:00,si,STATUS_FULL_TIME,Ajax Amsterdam,Olympiacos,1,2,11,11,4,3,5,4,11,8,63.4,36.6,139,435,757779
+Champions League,2025/26,Fase campionato,28/01/2026,21:00,si,STATUS_FULL_TIME,Arsenal,Kairat Almaty,3,2,25,4,11,2,11,0,14,10,65.6,34.4,359,2528,757780
+Champions League,2025/26,Fase campionato,28/01/2026,21:00,si,STATUS_FULL_TIME,Athletic Club,Sporting CP,2,3,9,9,2,6,6,7,22,8,35.2,64.8,93,2250,757781
+Champions League,2025/26,Fase campionato,28/01/2026,21:00,si,STATUS_FULL_TIME,Atlético Madrid,Bodo/Glimt,1,2,27,11,8,7,12,1,9,4,64.6,35.4,1068,2980,757782
+Champions League,2025/26,Fase campionato,28/01/2026,21:00,si,STATUS_FULL_TIME,Barcelona,F.C. København,4,1,28,6,13,1,10,1,12,11,76.4,23.6,83,909,757783
+Champions League,2025/26,Fase campionato,28/01/2026,21:00,si,STATUS_FULL_TIME,Bayer Leverkusen,Villarreal,3,0,15,5,7,2,4,1,7,15,65.1,34.9,131,102,757784
+Champions League,2025/26,Fase campionato,28/01/2026,21:00,si,STATUS_FULL_TIME,Benfica,Real Madrid,4,2,22,16,12,6,6,5,11,15,32.8,67.2,1929,86,757785
+Champions League,2025/26,Fase campionato,28/01/2026,21:00,si,STATUS_FULL_TIME,Borussia Dortmund,Internazionale,0,2,9,12,1,5,5,3,12,14,45.2,54.8,124,110,757786
+Champions League,2025/26,Fase campionato,28/01/2026,21:00,si,STATUS_FULL_TIME,Club Brugge,Marseille,3,0,11,18,5,9,4,10,10,9,37.4,62.6,570,176,757787
+Champions League,2025/26,Fase campionato,28/01/2026,21:00,si,STATUS_FULL_TIME,Eintracht Frankfurt,Tottenham Hotspur,0,2,4,15,1,6,0,6,12,8,44.6,55.4,125,367,757788
+Champions League,2025/26,Fase campionato,28/01/2026,21:00,si,STATUS_FULL_TIME,Liverpool,FK Qarabag,6,0,38,5,12,1,14,1,13,3,56.2,43.8,364,10414,757789
+Champions League,2025/26,Fase campionato,28/01/2026,21:00,si,STATUS_FULL_TIME,Manchester City,Galatasaray,2,0,10,4,5,4,4,4,8,10,50.3,49.7,382,432,757790
+Champions League,2025/26,Fase campionato,28/01/2026,21:00,si,STATUS_FULL_TIME,Napoli,Chelsea,2,3,8,11,5,5,4,1,15,15,46,54,114,363,757792
+Champions League,2025/26,Fase campionato,28/01/2026,21:00,si,STATUS_FULL_TIME,PSV Eindhoven,Bayern Munich,1,2,13,17,7,8,5,6,11,10,42.7,57.3,148,132,757793
+Champions League,2025/26,Fase campionato,28/01/2026,21:00,si,STATUS_FULL_TIME,Pafos,Slavia Prague,4,1,17,13,8,3,8,2,11,16,44.8,55.2,22281,494,757794
+Champions League,2025/26,Fase campionato,28/01/2026,21:00,si,STATUS_FULL_TIME,Paris Saint-Germain,Newcastle United,1,1,25,10,7,4,5,1,8,8,67.1,32.9,160,361,757795
+Champions League,2025/26,Fase campionato,28/01/2026,21:00,si,STATUS_FULL_TIME,Union St.-Gilloise,Atalanta,1,0,8,13,4,2,0,6,10,11,35.7,64.3,5807,105,757796
+Europa League,2025/26,Fase campionato,29/01/2026,21:00,si,STATUS_FULL_TIME,Aston Villa,RB Salzburg,3,2,14,14,9,7,4,2,8,13,64.5,35.5,362,2790,757939
+Europa League,2025/26,Fase campionato,29/01/2026,21:00,si,STATUS_FULL_TIME,Celtic,FC Utrecht,4,2,10,6,5,3,9,5,12,7,51.9,48.1,256,153,757937
+Europa League,2025/26,Fase campionato,29/01/2026,21:00,si,STATUS_FULL_TIME,FC Basel,Viktoria Plzen,0,1,13,15,3,3,6,7,14,16,44.7,55.3,989,11706,757935
+Europa League,2025/26,Fase campionato,29/01/2026,21:00,si,STATUS_FULL_TIME,FC Midtjylland,Dinamo Zagreb,2,0,10,10,5,3,5,5,18,14,60.1,39.9,572,597,757940
+Europa League,2025/26,Fase campionato,29/01/2026,21:00,si,STATUS_FULL_TIME,FC Porto,Rangers,3,1,12,5,3,2,4,3,17,13,41.4,58.6,437,257,757934
+Europa League,2025/26,Fase campionato,29/01/2026,21:00,si,STATUS_FULL_TIME,FCSB,Fenerbahce,1,1,15,17,8,8,7,5,11,11,33.9,66.1,484,436,757933
+Europa League,2025/26,Fase campionato,29/01/2026,21:00,si,STATUS_FULL_TIME,Go Ahead Eagles,Braga,0,0,4,9,0,1,1,3,11,5,47.2,52.8,3706,2994,757931
+Europa League,2025/26,Fase campionato,29/01/2026,21:00,si,STATUS_FULL_TIME,Lille,SC Freiburg,1,0,10,4,4,0,8,2,16,17,64.7,35.3,166,126,757923
+Europa League,2025/26,Fase campionato,29/01/2026,21:00,si,STATUS_FULL_TIME,Ludogorets Razgrad,Nice,1,0,19,19,8,4,5,8,12,13,49.2,50.8,13018,2502,757924
+Europa League,2025/26,Fase campionato,29/01/2026,21:00,si,STATUS_FULL_TIME,Lyon,PAOK,4,2,19,5,8,3,3,2,15,12,62.1,37.9,167,605,757925
+Europa League,2025/26,Fase campionato,29/01/2026,21:00,si,STATUS_FULL_TIME,Maccabi Tel-Aviv,Bologna,0,3,5,24,1,11,5,9,16,21,40.5,59.5,524,107,757926
+Europa League,2025/26,Fase campionato,29/01/2026,21:00,si,STATUS_FULL_TIME,Nottingham Forest,Ferencvaros,4,0,20,9,10,3,6,4,10,14,55.3,44.7,393,622,757930
+Europa League,2025/26,Fase campionato,29/01/2026,21:00,si,STATUS_FULL_TIME,Panathinaikos,AS Roma,1,1,11,11,1,4,6,4,10,17,65.4,34.6,443,104,757929
+Europa League,2025/26,Fase campionato,29/01/2026,21:00,si,STATUS_FULL_TIME,Racing Genk,Malmö FF,2,1,25,8,9,3,8,6,8,13,62.2,37.8,938,2720,757932
+Europa League,2025/26,Fase campionato,29/01/2026,21:00,si,STATUS_FULL_TIME,Real Betis,Feyenoord Rotterdam,2,1,16,14,5,5,2,4,13,13,62.1,37.9,244,142,757928
+Europa League,2025/26,Fase campionato,29/01/2026,21:00,si,STATUS_FULL_TIME,Red Star Belgrade,Celta Vigo,1,1,12,5,2,3,4,1,12,18,56.8,43.2,2290,85,757936
+Europa League,2025/26,Fase campionato,29/01/2026,21:00,si,STATUS_FULL_TIME,SK Sturm Graz,SK Brann,1,0,15,17,5,6,2,4,21,4,51.1,48.9,3746,620,757927
+Europa League,2025/26,Fase campionato,29/01/2026,21:00,si,STATUS_FULL_TIME,VfB Stuttgart,Young Boys,3,2,28,12,10,4,8,4,7,3,60.8,39.2,134,2722,757938
+Champions League,2025/26,Spareggi,17/02/2026,18:45,si,STATUS_FULL_TIME,Galatasaray,Juventus,5,2,22,7,9,3,5,5,8,18,61.8,38.2,432,111,401858759
+Champions League,2025/26,Spareggi,17/02/2026,21:00,si,STATUS_FULL_TIME,AS Monaco,Paris Saint-Germain,2,3,7,30,4,10,1,8,11,4,19.6,80.4,174,160,401858758
+Champions League,2025/26,Spareggi,17/02/2026,21:00,si,STATUS_FULL_TIME,Benfica,Real Madrid,0,1,10,16,3,7,3,6,6,9,41.7,58.3,1929,86,401858735
+Champions League,2025/26,Spareggi,17/02/2026,21:15,si,STATUS_FULL_TIME,Borussia Dortmund,Atalanta,2,0,9,7,2,3,3,2,11,13,44.4,55.6,124,105,401858761
+Champions League,2025/26,Spareggi,18/02/2026,18:45,si,STATUS_FULL_TIME,FK Qarabag,Newcastle United,1,6,8,22,2,14,8,6,10,10,42,58,10414,361,401858736
+Champions League,2025/26,Spareggi,18/02/2026,21:00,si,STATUS_FULL_TIME,Bodo/Glimt,Internazionale,3,1,8,15,6,4,3,3,12,6,42.4,57.6,2980,110,401858734
+Champions League,2025/26,Spareggi,18/02/2026,21:00,si,STATUS_FULL_TIME,Club Brugge,Atlético Madrid,3,3,17,13,10,4,4,6,5,8,57.7,42.3,570,1068,401858760
+Champions League,2025/26,Spareggi,18/02/2026,21:00,si,STATUS_FULL_TIME,Olympiacos,Bayer Leverkusen,0,2,13,8,1,5,3,3,7,9,42.1,57.9,435,131,401858737
+Conference League,2025/26,Spareggi,19/02/2026,18:45,si,STATUS_FULL_TIME,FC Noah,AZ Alkmaar,1,0,13,9,4,3,1,6,10,15,29.6,70.4,20712,140,401854526
+Conference League,2025/26,Spareggi,19/02/2026,18:45,si,STATUS_FULL_TIME,KuPS Kuopio,Lech Poznan,0,2,2,28,0,12,1,8,9,7,39.9,60.1,8169,2990,401854525
+Conference League,2025/26,Spareggi,19/02/2026,18:45,si,STATUS_FULL_TIME,Sigma Olomouc,Lausanne Sports,1,1,21,9,6,2,8,3,14,10,55.8,44.2,609,11551,401854529
+Conference League,2025/26,Spareggi,19/02/2026,18:45,si,STATUS_FULL_TIME,Zrinjski Mostar,Crystal Palace,1,1,5,11,3,5,0,3,9,11,28.1,71.9,5239,384,401854522
+Europa League,2025/26,Spareggi,19/02/2026,18:45,si,STATUS_FULL_TIME,Dinamo Zagreb,Racing Genk,1,3,8,12,2,6,4,3,4,6,54.9,45.1,597,938,401858777
+Europa League,2025/26,Spareggi,19/02/2026,18:45,si,STATUS_FULL_TIME,Fenerbahce,Nottingham Forest,0,3,6,23,2,7,3,10,10,14,56.7,43.3,436,393,401858776
+Europa League,2025/26,Spareggi,19/02/2026,18:45,si,STATUS_FULL_TIME,PAOK,Celta Vigo,1,2,5,9,2,8,3,3,10,11,57.5,42.5,605,85,401858773
+Europa League,2025/26,Spareggi,19/02/2026,18:45,si,STATUS_FULL_TIME,SK Brann,Bologna,0,1,4,13,2,5,7,4,14,20,65.2,34.8,620,107,401858770
+Conference League,2025/26,Spareggi,19/02/2026,21:00,si,STATUS_FULL_TIME,Drita Gjilan,NK Celje,2,3,18,13,5,6,7,3,17,12,39.3,60.7,19243,3362,401854523
+Conference League,2025/26,Spareggi,19/02/2026,21:00,si,STATUS_FULL_TIME,Jagiellonia Bialystok,Fiorentina,0,3,11,13,0,6,3,4,19,15,70.7,29.3,11505,109,401854524
+Conference League,2025/26,Spareggi,19/02/2026,21:00,si,STATUS_FULL_TIME,KF Shkëndija,Samsunspor,0,1,3,17,1,7,0,2,10,16,30.3,69.7,8151,11429,401854528
+Conference League,2025/26,Spareggi,19/02/2026,21:00,si,STATUS_FULL_TIME,Omonia Nicosia,Rijeka,0,1,14,8,5,4,7,2,11,20,50.3,49.7,617,2988,401854527
+Europa League,2025/26,Spareggi,19/02/2026,21:00,si,STATUS_FULL_TIME,Celtic,VfB Stuttgart,1,4,11,16,2,5,4,2,8,7,52.5,47.5,256,134,401858771
+Europa League,2025/26,Spareggi,19/02/2026,21:00,si,STATUS_FULL_TIME,Lille,Red Star Belgrade,0,1,7,8,1,4,6,7,15,15,52.6,47.4,166,2290,401858775
+Europa League,2025/26,Spareggi,19/02/2026,21:00,si,STATUS_FULL_TIME,Ludogorets Razgrad,Ferencvaros,2,1,10,17,4,4,4,4,11,17,42.8,57.2,13018,622,401858774
+Europa League,2025/26,Spareggi,19/02/2026,21:00,si,STATUS_FULL_TIME,Panathinaikos,Viktoria Plzen,2,2,11,14,5,7,4,0,7,17,51.1,48.9,443,11706,401858772
+Champions League,2025/26,Spareggi,24/02/2026,18:45,si,STATUS_FULL_TIME,Atlético Madrid,Club Brugge,4,1,14,11,5,6,2,7,5,8,45.3,54.7,1068,570,401858768
+Champions League,2025/26,Spareggi,24/02/2026,21:00,si,STATUS_FULL_TIME,Bayer Leverkusen,Olympiacos,0,0,7,7,1,1,4,5,6,8,46.7,53.3,131,435,401858767
+Champions League,2025/26,Spareggi,24/02/2026,21:00,si,STATUS_FULL_TIME,Internazionale,Bodo/Glimt,1,2,30,7,7,5,16,1,11,9,70.8,29.2,110,2980,401858766
+Champions League,2025/26,Spareggi,24/02/2026,21:00,si,STATUS_FULL_TIME,Newcastle United,FK Qarabag,3,2,19,13,8,6,9,6,10,4,65.4,34.6,361,10414,401858764
+Champions League,2025/26,Spareggi,25/02/2026,18:45,si,STATUS_FULL_TIME,Atalanta,Borussia Dortmund,4,1,15,7,9,4,5,1,17,10,43.7,56.3,105,124,401858762
+Champions League,2025/26,Spareggi,25/02/2026,21:00,si,STATUS_FINAL_AET,Juventus,Galatasaray,3,2,28,16,9,8,9,4,17,14,47.2,52.8,111,432,401858765
+Champions League,2025/26,Spareggi,25/02/2026,21:00,si,STATUS_FULL_TIME,Paris Saint-Germain,AS Monaco,2,2,21,10,6,4,8,4,8,12,72.6,27.4,160,174,401858763
+Champions League,2025/26,Spareggi,25/02/2026,21:00,si,STATUS_FULL_TIME,Real Madrid,Benfica,2,1,14,12,4,4,4,7,16,10,55.8,44.2,86,1929,401858769
+Conference League,2025/26,Spareggi,26/02/2026,18:45,si,STATUS_FINAL_AET,Fiorentina,Jagiellonia Bialystok,2,4,22,15,8,10,6,3,20,22,50.2,49.8,109,11505,401854534
+Conference League,2025/26,Spareggi,26/02/2026,18:45,si,STATUS_FULL_TIME,NK Celje,Drita Gjilan,3,2,13,17,9,7,4,5,18,22,49.6,50.4,3362,19243,401854532
+Conference League,2025/26,Spareggi,26/02/2026,18:45,si,STATUS_FULL_TIME,Rijeka,Omonia Nicosia,3,1,13,15,5,6,1,7,9,12,58.1,41.9,2988,617,401854530
+Conference League,2025/26,Spareggi,26/02/2026,18:45,si,STATUS_FULL_TIME,Samsunspor,KF Shkëndija,4,0,17,7,9,0,6,1,18,15,63.5,36.5,11429,8151,401854535
+Europa League,2025/26,Spareggi,26/02/2026,18:45,si,STATUS_FULL_TIME,Ferencvaros,Ludogorets Razgrad,2,0,16,13,8,3,3,6,9,14,39.5,60.5,622,13018,401858782
+Europa League,2025/26,Spareggi,26/02/2026,18:45,si,STATUS_FINAL_AET,Red Star Belgrade,Lille,0,2,15,16,3,8,8,8,17,13,56.1,43.9,2290,166,401858783
+Europa League,2025/26,Spareggi,26/02/2026,18:45,si,STATUS_FULL_TIME,VfB Stuttgart,Celtic,0,1,24,3,8,2,13,7,6,13,65.8,34.2,134,256,401858779
+Europa League,2025/26,Spareggi,26/02/2026,18:45,si,STATUS_FINAL_PEN,Viktoria Plzen,Panathinaikos,1,1,17,10,2,3,7,3,22,15,59.2,40.8,11706,443,401858785
+Conference League,2025/26,Spareggi,26/02/2026,21:00,si,STATUS_FULL_TIME,AZ Alkmaar,FC Noah,4,0,16,4,7,1,7,1,19,8,61.4,38.6,140,20712,401854531
+Conference League,2025/26,Spareggi,26/02/2026,21:00,si,STATUS_FULL_TIME,Crystal Palace,Zrinjski Mostar,2,0,14,4,5,0,5,3,12,10,64.5,35.5,384,5239,401854533
+Conference League,2025/26,Spareggi,26/02/2026,21:00,si,STATUS_FULL_TIME,Lausanne Sports,Sigma Olomouc,1,2,14,7,3,3,7,5,11,17,67.5,32.5,11551,609,401854537
+Conference League,2025/26,Spareggi,26/02/2026,21:00,si,STATUS_FULL_TIME,Lech Poznan,KuPS Kuopio,1,0,17,9,5,1,6,1,10,11,56.7,43.3,2990,8169,401854536
+Europa League,2025/26,Spareggi,26/02/2026,21:00,si,STATUS_FULL_TIME,Bologna,SK Brann,1,0,16,7,5,3,13,1,15,9,60.8,39.2,107,620,401858778
+Europa League,2025/26,Spareggi,26/02/2026,21:00,si,STATUS_FULL_TIME,Celta Vigo,PAOK,1,0,14,4,3,0,6,2,9,9,55.4,44.6,85,605,401858784
+Europa League,2025/26,Spareggi,26/02/2026,21:00,si,STATUS_FULL_TIME,Nottingham Forest,Fenerbahce,1,2,13,11,4,4,5,3,12,8,53.8,46.2,393,436,401858780
+Europa League,2025/26,Spareggi,26/02/2026,21:00,si,STATUS_FINAL_AET,Racing Genk,Dinamo Zagreb,3,3,22,17,7,6,8,7,12,12,47,53,938,597,401858781
+Champions League,2025/26,Ottavi,10/03/2026,18:45,si,STATUS_FULL_TIME,Galatasaray,Liverpool,1,0,15,15,4,6,7,4,11,18,46.2,53.8,432,364,401862667
+Champions League,2025/26,Ottavi,10/03/2026,21:00,si,STATUS_FULL_TIME,Atalanta,Bayern Munich,1,6,11,25,3,13,2,7,11,11,30.8,69.2,105,132,401862641
+Champions League,2025/26,Ottavi,10/03/2026,21:00,si,STATUS_FULL_TIME,Atlético Madrid,Tottenham Hotspur,5,2,11,11,7,5,4,2,15,12,58,42,1068,367,401862579
+Champions League,2025/26,Ottavi,10/03/2026,21:00,si,STATUS_FULL_TIME,Newcastle United,Barcelona,1,1,16,9,4,2,9,4,14,9,45.6,54.4,361,83,401862577
+Champions League,2025/26,Ottavi,11/03/2026,18:45,si,STATUS_FULL_TIME,Bayer Leverkusen,Arsenal,1,1,10,6,3,2,2,3,9,10,45.3,54.7,131,359,401862578
+Champions League,2025/26,Ottavi,11/03/2026,21:00,si,STATUS_FULL_TIME,Bodo/Glimt,Sporting CP,3,0,10,9,5,2,4,5,15,11,48.6,51.4,2980,2250,401862583
+Champions League,2025/26,Ottavi,11/03/2026,21:00,si,STATUS_FULL_TIME,Paris Saint-Germain,Chelsea,5,2,9,9,8,4,2,3,14,7,58.2,41.8,160,363,401862646
+Champions League,2025/26,Ottavi,11/03/2026,21:00,si,STATUS_FULL_TIME,Real Madrid,Manchester City,3,0,12,8,7,4,1,10,11,13,40.2,59.8,86,382,401862645
+Conference League,2025/26,Ottavi,12/03/2026,18:45,si,STATUS_FULL_TIME,AZ Alkmaar,Sparta Prague,2,1,27,6,7,3,8,2,11,15,56,44,140,433,401862855
+Conference League,2025/26,Ottavi,12/03/2026,18:45,si,STATUS_FULL_TIME,Lech Poznan,Shakhtar Donetsk,1,3,8,16,3,7,0,1,11,8,43.9,56.1,2990,493,401862853
+Conference League,2025/26,Ottavi,12/03/2026,18:45,si,STATUS_FULL_TIME,Rijeka,Strasbourg,1,2,19,13,8,6,9,3,16,15,50.4,49.6,2988,180,401862848
+Conference League,2025/26,Ottavi,12/03/2026,18:45,si,STATUS_FULL_TIME,Samsunspor,Rayo Vallecano,1,3,11,8,5,5,2,2,13,10,62.5,37.5,11429,101,401862847
+Europa League,2025/26,Ottavi,12/03/2026,18:45,si,STATUS_FULL_TIME,Bologna,AS Roma,1,1,13,8,4,2,7,3,13,18,51.4,48.6,107,104,401862871
+Europa League,2025/26,Ottavi,12/03/2026,18:45,si,STATUS_FULL_TIME,Lille,Aston Villa,0,1,7,9,3,1,3,2,11,12,48.8,51.2,166,362,401862754
+Europa League,2025/26,Ottavi,12/03/2026,18:45,si,STATUS_FULL_TIME,Panathinaikos,Real Betis,1,0,7,13,1,6,5,7,12,16,31.5,68.5,443,244,401862753
+Europa League,2025/26,Ottavi,12/03/2026,18:45,si,STATUS_FULL_TIME,VfB Stuttgart,FC Porto,1,2,14,14,7,6,1,3,18,9,60,40,134,437,401862752
+Conference League,2025/26,Ottavi,12/03/2026,21:00,si,STATUS_FULL_TIME,Crystal Palace,AEK Larnaca,0,0,13,2,4,0,6,3,11,7,71.2,28.8,384,4039,401862854
+Conference League,2025/26,Ottavi,12/03/2026,21:00,si,STATUS_FULL_TIME,Fiorentina,Raków Czestochowa,2,1,18,7,6,3,8,3,12,14,58.3,41.7,109,21005,401862846
+Conference League,2025/26,Ottavi,12/03/2026,21:00,si,STATUS_FULL_TIME,NK Celje,AEK Athens,0,4,8,20,1,11,8,5,14,10,58.6,41.4,3362,887,401862845
+Conference League,2025/26,Ottavi,12/03/2026,21:00,si,STATUS_FULL_TIME,Sigma Olomouc,Mainz,0,0,8,5,1,2,1,2,9,13,52.4,47.6,609,2950,401862856
+Europa League,2025/26,Ottavi,12/03/2026,21:00,si,STATUS_FULL_TIME,Celta Vigo,Lyon,1,1,5,20,3,6,0,7,11,14,28.7,71.3,85,167,401862872
+Europa League,2025/26,Ottavi,12/03/2026,21:00,si,STATUS_FULL_TIME,Ferencvaros,Braga,2,0,12,8,3,4,2,11,12,10,29.6,70.4,622,2994,401862755
+Europa League,2025/26,Ottavi,12/03/2026,21:00,si,STATUS_FULL_TIME,Nottingham Forest,FC Midtjylland,0,1,22,6,6,2,7,2,9,13,57.5,42.5,393,572,401862770
+Europa League,2025/26,Ottavi,12/03/2026,21:00,si,STATUS_FULL_TIME,Racing Genk,SC Freiburg,1,0,17,5,3,2,5,7,16,9,49.5,50.5,938,126,401862769
+Champions League,2025/26,Ottavi,17/03/2026,18:45,si,STATUS_FINAL_AET,Sporting CP,Bodo/Glimt,5,0,38,9,14,3,16,4,17,11,66,34,2250,2980,401862584
+Champions League,2025/26,Ottavi,17/03/2026,21:00,si,STATUS_FULL_TIME,Arsenal,Bayer Leverkusen,2,0,21,9,12,2,10,8,4,8,41.5,58.5,359,131,401862581
+Champions League,2025/26,Ottavi,17/03/2026,21:00,si,STATUS_FULL_TIME,Chelsea,Paris Saint-Germain,0,3,18,8,9,5,9,3,8,10,45.4,54.6,363,160,401862648
+Champions League,2025/26,Ottavi,17/03/2026,21:00,si,STATUS_FULL_TIME,Manchester City,Real Madrid,1,2,22,14,8,7,9,6,6,7,47.3,52.7,382,86,401862647
+Europa League,2025/26,Ottavi,18/03/2026,16:30,si,STATUS_FULL_TIME,Braga,Ferencvaros,4,0,9,4,6,3,4,1,18,15,48.9,51.1,2994,622,401862758
+Champions League,2025/26,Ottavi,18/03/2026,18:45,si,STATUS_FULL_TIME,Barcelona,Newcastle United,7,2,18,8,13,5,6,2,9,13,62.8,37.2,83,361,401862582
+Champions League,2025/26,Ottavi,18/03/2026,21:00,si,STATUS_FULL_TIME,Bayern Munich,Atalanta,4,1,25,14,8,8,6,3,8,4,70.4,29.6,132,105,401862642
+Champions League,2025/26,Ottavi,18/03/2026,21:00,si,STATUS_FULL_TIME,Liverpool,Galatasaray,4,0,32,4,16,1,6,2,15,7,62.1,37.9,364,432,401862668
+Champions League,2025/26,Ottavi,18/03/2026,21:00,si,STATUS_FULL_TIME,Tottenham Hotspur,Atlético Madrid,3,2,18,18,11,6,7,7,16,8,51.3,48.7,367,1068,401862580
+Conference League,2025/26,Ottavi,19/03/2026,18:45,si,STATUS_FULL_TIME,AEK Athens,NK Celje,0,2,14,6,5,3,11,1,10,13,42.8,57.2,887,3362,401862851
+Conference League,2025/26,Ottavi,19/03/2026,18:45,si,STATUS_FINAL_AET,AEK Larnaca,Crystal Palace,1,2,6,28,3,7,1,10,7,21,30.1,69.9,4039,384,401862858
+Conference League,2025/26,Ottavi,19/03/2026,18:45,si,STATUS_FULL_TIME,Mainz,Sigma Olomouc,2,0,18,6,6,1,5,1,14,15,54,46,2950,609,401862859
+Conference League,2025/26,Ottavi,19/03/2026,18:45,si,STATUS_FULL_TIME,Raków Czestochowa,Fiorentina,1,2,14,21,2,7,2,5,10,11,49.4,50.6,21005,109,401862849
+Europa League,2025/26,Ottavi,19/03/2026,18:45,si,STATUS_FINAL_PEN,FC Midtjylland,Nottingham Forest,1,2,12,20,3,8,4,11,22,16,51.6,48.4,572,393,401862875
+Europa League,2025/26,Ottavi,19/03/2026,18:45,si,STATUS_FULL_TIME,Lyon,Celta Vigo,0,2,4,14,1,8,1,6,11,20,35.3,64.7,167,85,401862876
+Europa League,2025/26,Ottavi,19/03/2026,18:45,si,STATUS_FULL_TIME,SC Freiburg,Racing Genk,5,1,15,13,6,3,3,5,13,7,46.4,53.6,126,938,401862873
+Conference League,2025/26,Ottavi,19/03/2026,21:00,si,STATUS_FULL_TIME,Rayo Vallecano,Samsunspor,0,1,19,9,6,2,13,1,16,9,43.1,56.9,101,11429,401862852
+Conference League,2025/26,Ottavi,19/03/2026,21:00,si,STATUS_FULL_TIME,Shakhtar Donetsk,Lech Poznan,1,2,10,15,1,7,4,5,10,7,55.6,44.4,493,2990,401862860
+Conference League,2025/26,Ottavi,19/03/2026,21:00,si,STATUS_FULL_TIME,Sparta Prague,AZ Alkmaar,0,4,6,16,1,5,5,7,8,11,43.5,56.5,433,140,401862857
+Conference League,2025/26,Ottavi,19/03/2026,21:00,si,STATUS_FULL_TIME,Strasbourg,Rijeka,1,1,15,18,4,2,4,8,9,15,57.2,42.8,180,2988,401862850
+Europa League,2025/26,Ottavi,19/03/2026,21:00,si,STATUS_FINAL_AET,AS Roma,Bologna,3,4,24,14,7,9,8,4,21,27,60.7,39.3,104,107,401862874
+Europa League,2025/26,Ottavi,19/03/2026,21:00,si,STATUS_FULL_TIME,Aston Villa,Lille,2,0,8,8,3,3,5,5,7,10,52,48,362,166,401862759
+Europa League,2025/26,Ottavi,19/03/2026,21:00,si,STATUS_FULL_TIME,FC Porto,VfB Stuttgart,2,0,10,20,4,6,4,11,6,16,36.2,63.8,437,134,401862756
+Europa League,2025/26,Ottavi,19/03/2026,21:00,si,STATUS_FULL_TIME,Real Betis,Panathinaikos,4,0,22,4,11,2,4,1,4,10,62.4,37.6,244,443,401862757
+Champions League,2025/26,Quarti,07/04/2026,21:00,si,STATUS_FULL_TIME,Real Madrid,Bayern Munich,1,2,20,20,9,8,8,11,12,12,48,52,86,132,401862886
+Champions League,2025/26,Quarti,07/04/2026,21:00,si,STATUS_FULL_TIME,Sporting CP,Arsenal,0,1,11,8,5,4,3,4,11,10,44.2,55.8,2250,359,401862888
+Europa League,2025/26,Quarti,08/04/2026,18:45,si,STATUS_FULL_TIME,Braga,Real Betis,1,1,7,11,3,6,4,1,13,13,63.5,36.5,2994,244,401862899
+Champions League,2025/26,Quarti,08/04/2026,21:00,si,STATUS_FULL_TIME,Barcelona,Atlético Madrid,0,2,18,5,7,3,7,1,6,17,58.3,41.7,83,1068,401862887
+Champions League,2025/26,Quarti,08/04/2026,21:00,si,STATUS_FULL_TIME,Paris Saint-Germain,Liverpool,2,0,18,3,6,0,3,1,8,12,74,26,160,364,401862885
+Conference League,2025/26,Quarti,09/04/2026,18:45,si,STATUS_FULL_TIME,Rayo Vallecano,AEK Athens,3,0,10,11,4,2,1,8,15,15,45.7,54.3,101,887,401862919
+Conference League,2025/26,Quarti,09/04/2026,21:00,si,STATUS_FULL_TIME,Crystal Palace,Fiorentina,3,0,17,8,6,2,3,1,16,11,52.4,47.6,384,109,401862917
+Conference League,2025/26,Quarti,09/04/2026,21:00,si,STATUS_FULL_TIME,Mainz,Strasbourg,2,0,18,9,6,2,8,4,16,10,34.2,65.8,2950,180,401862920
+Conference League,2025/26,Quarti,09/04/2026,21:00,si,STATUS_FULL_TIME,Shakhtar Donetsk,AZ Alkmaar,3,0,12,9,6,3,4,7,11,7,51.6,48.4,493,140,401862918
+Europa League,2025/26,Quarti,09/04/2026,21:00,si,STATUS_FULL_TIME,Bologna,Aston Villa,1,3,19,8,4,4,4,3,19,15,58,42,107,362,401862902
+Europa League,2025/26,Quarti,09/04/2026,21:00,si,STATUS_FULL_TIME,FC Porto,Nottingham Forest,1,1,16,6,8,2,5,2,4,11,51.8,48.2,437,393,401862901
+Europa League,2025/26,Quarti,09/04/2026,21:00,si,STATUS_FULL_TIME,SC Freiburg,Celta Vigo,3,0,13,4,7,0,3,0,9,12,51.9,48.1,126,85,401862900
+Champions League,2025/26,Quarti,14/04/2026,21:00,si,STATUS_FULL_TIME,Atlético Madrid,Barcelona,1,2,15,15,5,8,2,4,15,8,28.9,71.1,1068,83,401862892
+Champions League,2025/26,Quarti,14/04/2026,21:00,si,STATUS_FULL_TIME,Liverpool,Paris Saint-Germain,0,2,21,12,5,6,8,2,9,10,52.7,47.3,364,160,401862889
+Champions League,2025/26,Quarti,15/04/2026,21:00,si,STATUS_FULL_TIME,Arsenal,Sporting CP,0,0,15,8,1,1,8,3,7,11,50.4,49.6,359,2250,401862890
+Champions League,2025/26,Quarti,15/04/2026,21:00,si,STATUS_FULL_TIME,Bayern Munich,Real Madrid,4,3,21,12,9,5,9,2,10,12,68.5,31.5,132,86,401862891
+Conference League,2025/26,Quarti,16/04/2026,18:45,si,STATUS_FULL_TIME,AZ Alkmaar,Shakhtar Donetsk,2,2,8,14,3,6,3,3,19,17,53.7,46.3,140,493,401862922
+Europa League,2025/26,Quarti,16/04/2026,18:45,si,STATUS_FULL_TIME,Celta Vigo,SC Freiburg,1,3,15,9,3,6,6,3,21,12,56.3,43.7,85,126,401862904
+Conference League,2025/26,Quarti,16/04/2026,21:00,si,STATUS_FULL_TIME,AEK Athens,Rayo Vallecano,3,1,21,10,9,4,8,2,15,17,64.4,35.6,887,101,401862923
+Conference League,2025/26,Quarti,16/04/2026,21:00,si,STATUS_FULL_TIME,Fiorentina,Crystal Palace,2,1,16,9,6,3,6,1,14,14,66.7,33.3,109,384,401862921
+Conference League,2025/26,Quarti,16/04/2026,21:00,si,STATUS_FULL_TIME,Strasbourg,Mainz,4,0,10,7,7,1,5,4,11,12,60.2,39.8,180,2950,401862924
+Europa League,2025/26,Quarti,16/04/2026,21:00,si,STATUS_FULL_TIME,Aston Villa,Bologna,4,0,13,11,7,4,4,2,13,17,45.6,54.4,362,107,401862906
+Europa League,2025/26,Quarti,16/04/2026,21:00,si,STATUS_FULL_TIME,Nottingham Forest,FC Porto,1,0,20,10,5,1,8,1,16,11,60.7,39.3,393,437,401862905
+Europa League,2025/26,Quarti,16/04/2026,21:00,si,STATUS_FULL_TIME,Real Betis,Braga,2,4,11,6,5,5,5,1,12,16,53.8,46.2,244,2994,401862903
+Champions League,2025/26,Semifinali,28/04/2026,21:00,si,STATUS_FULL_TIME,Paris Saint-Germain,Bayern Munich,5,4,12,10,5,8,2,5,14,4,42.6,57.4,160,132,401862893
+Champions League,2025/26,Semifinali,29/04/2026,21:00,si,STATUS_FULL_TIME,Atlético Madrid,Arsenal,1,1,18,11,4,2,6,1,7,11,51.5,48.5,1068,359,401862894
+Conference League,2025/26,Semifinali,30/04/2026,21:00,si,STATUS_FULL_TIME,Rayo Vallecano,Strasbourg,1,0,24,5,8,0,5,1,15,14,53.4,46.6,101,180,401862926
+Conference League,2025/26,Semifinali,30/04/2026,21:00,si,STATUS_FULL_TIME,Shakhtar Donetsk,Crystal Palace,1,3,16,10,1,7,13,1,7,13,70.7,29.3,493,384,401862925
+Europa League,2025/26,Semifinali,30/04/2026,21:00,si,STATUS_FULL_TIME,Braga,SC Freiburg,2,1,13,10,6,2,3,1,12,14,58.5,41.5,2994,126,401862907
+Europa League,2025/26,Semifinali,30/04/2026,21:00,si,STATUS_FULL_TIME,Nottingham Forest,Aston Villa,1,0,11,10,5,4,5,7,7,11,50.1,49.9,393,362,401862908
+Champions League,2025/26,Semifinali,05/05/2026,21:00,si,STATUS_FULL_TIME,Arsenal,Atlético Madrid,1,0,13,9,2,2,5,2,10,13,53.4,46.6,359,1068,401862896
+Champions League,2025/26,Semifinali,06/05/2026,21:00,si,STATUS_FULL_TIME,Bayern Munich,Paris Saint-Germain,1,1,18,15,6,7,1,8,11,12,65.5,34.5,132,160,401862895
+Conference League,2025/26,Semifinali,07/05/2026,21:00,si,STATUS_FULL_TIME,Crystal Palace,Shakhtar Donetsk,2,1,11,17,5,6,1,5,8,10,33.5,66.5,384,493,401862927
+Conference League,2025/26,Semifinali,07/05/2026,21:00,si,STATUS_FULL_TIME,Strasbourg,Rayo Vallecano,0,1,11,22,3,8,5,6,7,19,49.1,50.9,180,101,401862928
+Europa League,2025/26,Semifinali,07/05/2026,21:00,si,STATUS_FULL_TIME,Aston Villa,Nottingham Forest,4,0,18,7,10,2,6,3,13,12,50.9,49.1,362,393,401862910
+Europa League,2025/26,Semifinali,07/05/2026,21:00,si,STATUS_FULL_TIME,SC Freiburg,Braga,3,1,19,14,8,5,4,8,16,10,66.1,33.9,126,2994,401862909
+Europa League,2025/26,Finale,20/05/2026,21:00,si,STATUS_FULL_TIME,SC Freiburg,Aston Villa,0,3,4,17,2,6,1,8,15,15,50.7,49.3,126,362,401862911
+Conference League,2025/26,Finale,27/05/2026,21:00,si,STATUS_FULL_TIME,Crystal Palace,Rayo Vallecano,1,0,11,10,3,1,4,1,16,15,42.2,57.8,384,101,401862929
+Champions League,2025/26,Finale,30/05/2026,18:00,si,STATUS_FINAL_PEN,Paris Saint-Germain,Arsenal,1,1,21,7,4,1,11,4,11,17,75.3,24.7,160,359,401862897

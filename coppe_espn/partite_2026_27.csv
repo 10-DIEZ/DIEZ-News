@@ -1,0 +1,325 @@
+coppa,stagione,fase,data_ita,ora_ita,giocata,stato,casa,ospite,gol_casa,gol_ospite,tiri_casa,tiri_ospite,porta_casa,porta_ospite,corner_casa,corner_ospite,falli_casa,falli_ospite,possesso_casa,possesso_ospite,casa_id,ospite_id,id_evento
+Champions League,2026/27,Fase campionato,08/09/2026,18:45,si,STATUS_FULL_TIME,AEK Athens,LASK Linz,1,0,18,11,4,3,7,3,7,15,49.1,50.9,887,4411,401915452
+Champions League,2026/27,Fase campionato,08/09/2026,18:45,si,STATUS_FULL_TIME,Club Brugge,Aston Villa,2,3,14,21,7,9,4,5,17,14,64.1,35.9,570,362,401915426
+Champions League,2026/27,Fase campionato,08/09/2026,21:00,si,STATUS_FULL_TIME,Borussia Dortmund,Villarreal,3,2,18,13,6,6,9,7,15,10,52,48,124,102,401915449
+Champions League,2026/27,Fase campionato,08/09/2026,21:00,si,STATUS_FULL_TIME,FC Porto,Manchester City,0,2,5,20,0,10,2,5,10,17,35.5,64.5,437,382,401915425
+Champions League,2026/27,Fase campionato,08/09/2026,21:00,si,STATUS_FULL_TIME,Lille,Real Betis,2,3,6,20,2,5,5,5,11,13,44.6,55.4,166,244,401915450
+Champions League,2026/27,Fase campionato,08/09/2026,21:00,si,STATUS_FULL_TIME,Real Madrid,Internazionale,2,1,16,21,8,7,4,11,12,10,35.6,64.4,86,110,401915451
+Champions League,2026/27,Fase campionato,09/09/2026,18:45,si,STATUS_FULL_TIME,Barcelona,Feyenoord Rotterdam,5,1,24,4,9,2,4,1,10,12,71.6,28.4,83,142,401915424
+Champions League,2026/27,Fase campionato,09/09/2026,18:45,si,STATUS_FULL_TIME,VfB Stuttgart,Viking FK,3,1,17,9,3,3,4,5,13,13,61.9,38.1,134,510,401915448
+Champions League,2026/27,Fase campionato,09/09/2026,21:00,si,STATUS_FULL_TIME,Liverpool,Atlético Madrid,2,1,14,9,5,4,7,5,11,10,45.3,54.7,364,1068,401915446
+Champions League,2026/27,Fase campionato,09/09/2026,21:00,si,STATUS_FULL_TIME,Napoli,Arsenal,0,1,5,26,3,8,0,6,12,11,42.3,57.7,114,359,401915423
+Champions League,2026/27,Fase campionato,09/09/2026,21:00,si,STATUS_FULL_TIME,Paris Saint-Germain,Slovan Bratislava,6,1,35,9,14,4,7,2,8,6,72.1,27.9,160,521,401915445
+Champions League,2026/27,Fase campionato,09/09/2026,21:00,si,STATUS_FULL_TIME,Sporting CP,Galatasaray,3,1,8,10,5,3,1,4,13,11,38.3,61.7,2250,432,401915447
+Champions League,2026/27,Fase campionato,10/09/2026,18:45,si,STATUS_FULL_TIME,Fenerbahce,AS Roma,1,1,11,8,5,3,1,3,12,19,41.7,58.3,436,104,401915444
+Champions League,2026/27,Fase campionato,10/09/2026,18:45,si,STATUS_FULL_TIME,PSV Eindhoven,Shakhtar Donetsk,1,1,10,8,2,2,3,3,14,15,53.6,46.4,148,493,401915422
+Champions League,2026/27,Fase campionato,10/09/2026,21:00,si,STATUS_FULL_TIME,Bayern Munich,Bodo/Glimt,5,0,25,3,12,0,6,3,5,8,65.6,34.4,132,2980,401915443
+Champions League,2026/27,Fase campionato,10/09/2026,21:00,si,STATUS_FULL_TIME,Como,RB Leipzig,4,1,14,14,6,4,1,5,9,10,50.3,49.7,2572,11420,401915441
+Champions League,2026/27,Fase campionato,10/09/2026,21:00,si,STATUS_FULL_TIME,Manchester United,Sabah FK,4,0,21,11,10,0,7,2,12,13,57.8,42.2,360,21922,401915442
+Champions League,2026/27,Fase campionato,10/09/2026,21:00,si,STATUS_FULL_TIME,Slavia Prague,Lens,2,3,18,26,5,8,6,9,8,8,37.3,62.7,494,175,401915440
+Europa League,2026/27,Fase campionato,16/09/2026,18:45,si,STATUS_FULL_TIME,Ararat-Armenia,Sparta Prague,1,4,13,23,2,8,2,13,16,19,41.6,58.4,20024,433,401915594
+Europa League,2026/27,Fase campionato,16/09/2026,18:45,si,STATUS_FULL_TIME,Omonia Nicosia,Celta Vigo,1,0,10,19,4,5,3,12,4,15,46.3,53.7,617,85,401915611
+Europa League,2026/27,Fase campionato,16/09/2026,21:00,si,STATUS_FULL_TIME,AC Milan,Benfica,0,2,17,11,4,4,10,1,14,12,60.5,39.5,103,1929,401915586
+Europa League,2026/27,Fase campionato,16/09/2026,21:00,si,STATUS_FULL_TIME,Anderlecht,Lyon,1,2,14,13,5,10,6,4,14,12,57.8,42.2,441,167,401915590
+Europa League,2026/27,Fase campionato,16/09/2026,21:00,si,STATUS_FULL_TIME,Bayer Leverkusen,NK Celje,2,0,17,5,8,3,6,2,16,10,56,44,131,3362,401915587
+Europa League,2026/27,Fase campionato,16/09/2026,21:00,si,STATUS_FULL_TIME,Hapoel Be'er,Dinamo Zagreb,0,0,15,7,2,1,6,2,10,13,66,34,13083,597,401915589
+Europa League,2026/27,Fase campionato,16/09/2026,21:00,si,STATUS_FULL_TIME,Olympiacos,Jagiellonia Bialystok,2,1,26,4,6,3,13,0,10,13,58.2,41.8,435,11505,401915588
+Europa League,2026/27,Fase campionato,16/09/2026,21:00,si,STATUS_FULL_TIME,SK Sturm Graz,Stade Rennais,0,0,11,23,4,5,5,4,12,6,37.7,62.3,3746,169,401915593
+Europa League,2026/27,Fase campionato,16/09/2026,21:00,si,STATUS_FULL_TIME,Sunderland,AZ Alkmaar,1,0,20,11,5,2,12,5,14,13,44.8,55.2,366,140,401915592
+Europa League,2026/27,Fase campionato,17/09/2026,18:45,si,STATUS_FULL_TIME,Levski Sofia,RB Salzburg,0,1,14,12,0,7,5,4,9,21,49.9,50.1,490,2790,401915584
+Europa League,2026/27,Fase campionato,17/09/2026,18:45,si,STATUS_FULL_TIME,OFI Crete,TSG Hoffenheim,2,0,9,21,3,5,4,8,8,23,32.8,67.2,1010,7911,401915585
+Europa League,2026/27,Fase campionato,17/09/2026,21:00,si,STATUS_FULL_TIME,Besiktas,Marseille,4,1,18,14,7,3,3,3,10,12,54.3,45.7,1895,176,401915591
+Europa League,2026/27,Fase campionato,17/09/2026,21:00,si,STATUS_FULL_TIME,Celtic,Ferencvaros,1,3,16,14,4,6,11,3,18,14,62.8,37.2,256,622,401915581
+Europa League,2026/27,Fase campionato,17/09/2026,21:00,si,STATUS_FULL_TIME,Crystal Palace,Lech Poznan,4,0,16,17,6,6,6,5,11,7,52.7,47.3,384,2990,401915569
+Europa League,2026/27,Fase campionato,17/09/2026,21:00,si,STATUS_FULL_TIME,Juventus,NEC Nijmegen,5,0,11,11,7,3,0,1,9,19,47.9,52.1,111,147,401915582
+Europa League,2026/27,Fase campionato,17/09/2026,21:00,si,STATUS_FULL_TIME,Lillestrom,Torreense,1,2,25,11,6,3,11,2,14,14,67,33,987,21615,401915570
+Europa League,2026/27,Fase campionato,17/09/2026,21:00,si,STATUS_FULL_TIME,Real Sociedad,AFC Bournemouth,1,2,16,11,5,3,10,3,14,13,61.7,38.3,89,349,401915583
+Europa League,2026/27,Fase campionato,17/09/2026,21:00,si,STATUS_FULL_TIME,Viktoria Plzen,Union St.-Gilloise,0,3,14,22,5,13,5,1,13,11,48.6,51.4,11706,5807,401915580
+Champions League,2026/27,Fase campionato,13/10/2026,18:45,si,STATUS_FULL_TIME,Lens,Sporting CP,0,2,21,11,6,5,6,3,8,12,55.9,44.1,175,2250,401915418
+Champions League,2026/27,Fase campionato,13/10/2026,18:45,si,STATUS_FULL_TIME,Sabah FK,Slavia Prague,2,0,13,18,6,8,4,6,15,14,44.8,55.2,21922,494,401915436
+Champions League,2026/27,Fase campionato,13/10/2026,21:00,si,STATUS_FULL_TIME,Arsenal,Lille,3,0,16,4,8,0,7,0,13,9,58,42,359,166,401915417
+Champions League,2026/27,Fase campionato,13/10/2026,21:00,si,STATUS_FULL_TIME,Atlético Madrid,Manchester United,2,0,11,9,5,4,2,5,11,13,57.8,42.2,1068,360,401915412
+Champions League,2026/27,Fase campionato,13/10/2026,21:00,si,STATUS_FULL_TIME,Galatasaray,Barcelona,1,4,5,22,3,11,1,6,12,10,29,71,432,83,401915435
+Champions League,2026/27,Fase campionato,13/10/2026,21:00,si,STATUS_FULL_TIME,Internazionale,Club Brugge,3,4,30,18,12,8,4,4,6,13,53.3,46.7,110,570,401915413
+Champions League,2026/27,Fase campionato,13/10/2026,21:00,si,STATUS_FULL_TIME,RB Leipzig,PSV Eindhoven,1,0,19,11,7,5,6,13,13,12,43,57,11420,148,401915434
+Champions League,2026/27,Fase campionato,13/10/2026,21:00,si,STATUS_FULL_TIME,Viking FK,Bayern Munich,3,3,8,25,5,8,7,15,12,8,34.5,65.5,510,132,401915411
+Champions League,2026/27,Fase campionato,13/10/2026,21:00,si,STATUS_FULL_TIME,Villarreal,Napoli,3,1,17,11,4,3,4,4,8,15,52,48,102,114,401915410
+Champions League,2026/27,Fase campionato,14/10/2026,18:45,si,STATUS_FULL_TIME,Feyenoord Rotterdam,Como,3,2,13,11,5,5,5,1,19,18,47.8,52.2,142,2572,401915416
+Champions League,2026/27,Fase campionato,14/10/2026,18:45,si,STATUS_FULL_TIME,LASK Linz,Liverpool,3,6,12,26,4,9,3,11,7,4,35.8,64.2,4411,364,401915415
+Champions League,2026/27,Fase campionato,14/10/2026,21:00,si,STATUS_FULL_TIME,AS Roma,Real Madrid,3,4,14,16,7,8,5,9,15,8,54,46,104,86,401915414
+Champions League,2026/27,Fase campionato,14/10/2026,21:00,si,STATUS_FULL_TIME,Aston Villa,Fenerbahce,6,0,20,15,11,4,9,7,12,6,44.8,55.2,362,436,401915409
+Champions League,2026/27,Fase campionato,14/10/2026,21:00,si,STATUS_FULL_TIME,Bodo/Glimt,Borussia Dortmund,1,0,11,9,3,4,4,10,7,8,47.8,52.2,2980,124,401915393
+Champions League,2026/27,Fase campionato,14/10/2026,21:00,si,STATUS_FULL_TIME,Manchester City,Paris Saint-Germain,2,4,27,15,9,10,11,2,10,11,53.9,46.1,382,160,401915407
+Champions League,2026/27,Fase campionato,14/10/2026,21:00,si,STATUS_FULL_TIME,Real Betis,FC Porto,3,2,17,11,7,5,5,1,14,15,56,44,244,437,401915408
+Champions League,2026/27,Fase campionato,14/10/2026,21:00,si,STATUS_FULL_TIME,Shakhtar Donetsk,AEK Athens,3,1,12,13,4,3,5,2,16,17,54.5,45.5,493,887,401915406
+Champions League,2026/27,Fase campionato,14/10/2026,21:00,si,STATUS_FULL_TIME,Slovan Bratislava,VfB Stuttgart,0,3,15,16,1,8,1,8,11,15,35.9,64.1,521,134,401915405
+Conference League,2026/27,Fase campionato,15/10/2026,18:45,si,STATUS_FULL_TIME,CSKA Sofia,AS Monaco,1,2,21,10,5,5,12,1,13,12,49.7,50.3,10834,174,401915855
+Conference League,2026/27,Fase campionato,15/10/2026,18:45,si,STATUS_FULL_TIME,Egnatia,FC Midtjylland,1,1,12,13,5,5,2,6,12,14,52.4,47.6,21943,572,401915859
+Conference League,2026/27,Fase campionato,15/10/2026,18:45,si,STATUS_FULL_TIME,FC Lugano,Red Star Belgrade,3,2,18,20,5,5,5,3,9,11,41.4,58.6,7672,2290,401915748
+Conference League,2026/27,Fase campionato,15/10/2026,18:45,si,STATUS_FULL_TIME,Hajduk Split,Ajax Amsterdam,2,1,14,12,8,4,4,5,20,13,43.4,56.6,489,139,401915861
+Conference League,2026/27,Fase campionato,15/10/2026,18:45,si,STATUS_FULL_TIME,KAA Gent,AGF,1,0,22,4,4,1,11,2,10,15,52.4,47.6,3611,7853,401915860
+Conference League,2026/27,Fase campionato,15/10/2026,18:45,si,STATUS_FULL_TIME,KuPS Kuopio,Trabzonspor,2,4,15,22,8,8,9,6,13,12,45,55,8169,997,401915858
+Conference League,2026/27,Fase campionato,15/10/2026,18:45,si,STATUS_FULL_TIME,Mjällby AIF,Inter D'Escaldes,2,0,13,9,7,0,6,3,9,14,43.9,56.1,20301,20703,401915857
+Conference League,2026/27,Fase campionato,15/10/2026,18:45,si,STATUS_FULL_TIME,Panathinaikos,Borac Banja Luka,2,1,31,4,9,2,11,0,19,17,62.8,37.2,443,20710,401915856
+Conference League,2026/27,Fase campionato,15/10/2026,18:45,si,STATUS_FULL_TIME,Riga FC,Kairat Almaty,1,1,18,14,8,4,2,3,8,16,63.7,36.3,19246,2528,401915747
+Conference League,2026/27,Fase campionato,15/10/2026,18:45,si,STATUS_FULL_TIME,Universitatea Craiova,Getafe,1,1,12,13,4,3,4,4,14,13,43.2,56.8,8089,2922,401915854
+Europa League,2026/27,Fase campionato,15/10/2026,18:45,si,STATUS_FULL_TIME,AZ Alkmaar,Hapoel Be'er,2,1,15,6,7,4,5,1,14,17,58.6,41.4,140,13083,401915573
+Europa League,2026/27,Fase campionato,15/10/2026,18:45,si,STATUS_FULL_TIME,Lech Poznan,Bayer Leverkusen,0,4,10,22,3,10,4,5,5,16,39.1,60.9,2990,131,401915576
+Europa League,2026/27,Fase campionato,15/10/2026,18:45,si,STATUS_FULL_TIME,Lyon,Crystal Palace,3,2,11,12,4,4,5,3,4,8,50.1,49.9,167,384,401915566
+Europa League,2026/27,Fase campionato,15/10/2026,18:45,si,STATUS_FULL_TIME,NK Celje,Omonia Nicosia,0,3,13,14,2,6,3,6,9,9,61.2,38.8,3362,617,401915577
+Europa League,2026/27,Fase campionato,15/10/2026,18:45,si,STATUS_FULL_TIME,RB Salzburg,AC Milan,0,4,14,15,2,10,3,2,13,12,52.4,47.6,2790,103,401915568
+Europa League,2026/27,Fase campionato,15/10/2026,18:45,si,STATUS_FULL_TIME,Sparta Prague,Lillestrom,1,1,15,6,8,2,6,1,12,9,52.6,47.4,433,987,401915567
+Europa League,2026/27,Fase campionato,15/10/2026,18:45,si,STATUS_FULL_TIME,Torreense,Sunderland,1,2,3,22,1,5,2,9,13,19,39.1,60.9,21615,366,401915575
+Europa League,2026/27,Fase campionato,15/10/2026,18:45,si,STATUS_FULL_TIME,Union St.-Gilloise,Real Sociedad,1,1,16,5,5,1,4,2,15,13,44.1,55.9,5807,89,401915574
+Conference League,2026/27,Fase campionato,15/10/2026,21:00,si,STATUS_FULL_TIME,Atalanta,Pafos,3,1,20,8,7,5,6,2,13,11,64.8,35.2,105,22281,401915746
+Conference League,2026/27,Fase campionato,15/10/2026,21:00,si,STATUS_FULL_TIME,Brighton & Hove Albion,Kauno Zalgiris,4,0,35,4,9,1,13,1,11,8,77.8,22.2,331,20028,401915853
+Conference League,2026/27,Fase campionato,15/10/2026,21:00,si,STATUS_FULL_TIME,F.C. København,Braga,3,0,9,6,6,1,3,3,15,18,35.5,64.5,909,2994,401915852
+Conference League,2026/27,Fase campionato,15/10/2026,21:00,si,STATUS_FULL_TIME,FC Twente,FC Thun,1,0,22,6,5,0,6,1,6,19,73.1,26.9,152,3024,401915851
+Conference League,2026/27,Fase campionato,15/10/2026,21:00,si,STATUS_FULL_TIME,Heart of Midlothian,FC Nordsjælland,1,1,20,11,7,3,6,7,14,14,43.5,56.5,262,3101,401915850
+Conference League,2026/27,Fase campionato,15/10/2026,21:00,si,STATUS_FULL_TIME,SC Freiburg,Jablonec,3,2,23,11,9,2,5,1,19,14,60.4,39.6,126,7922,401915848
+Conference League,2026/27,Fase campionato,15/10/2026,21:00,si,STATUS_FULL_TIME,SK Brann,Lincoln Red Imps,2,1,19,7,10,3,17,2,12,15,72.2,27.8,620,17856,401915847
+Conference League,2026/27,Fase campionato,15/10/2026,21:00,si,STATUS_FULL_TIME,Sint-Truidense,Iberia 1999,2,0,20,4,5,1,4,0,24,11,57.5,42.5,936,20025,401915849
+Europa League,2026/27,Fase campionato,15/10/2026,21:00,si,STATUS_FULL_TIME,AFC Bournemouth,SK Sturm Graz,3,0,23,6,7,1,7,3,11,18,61.9,38.1,349,3746,401915571
+Europa League,2026/27,Fase campionato,15/10/2026,21:00,si,STATUS_FULL_TIME,Benfica,Celtic,4,1,26,14,7,7,8,6,9,7,52.8,47.2,1929,256,401915562
+Europa League,2026/27,Fase campionato,15/10/2026,21:00,si,STATUS_FULL_TIME,Celta Vigo,Juventus,1,2,9,22,2,6,2,7,12,19,47,53,85,111,401915560
+Europa League,2026/27,Fase campionato,15/10/2026,21:00,si,STATUS_FULL_TIME,Dinamo Zagreb,Anderlecht,1,0,13,10,3,6,6,2,21,13,45.3,54.7,597,441,401915549
+Europa League,2026/27,Fase campionato,15/10/2026,21:00,si,STATUS_FULL_TIME,Ferencvaros,Viktoria Plzen,2,1,12,18,6,7,7,3,11,15,53.4,46.6,622,11706,401915564
+Europa League,2026/27,Fase campionato,15/10/2026,21:00,si,STATUS_FULL_TIME,Jagiellonia Bialystok,Ararat-Armenia,3,1,13,15,5,4,2,3,22,14,42.5,57.5,11505,20024,401915561
+Europa League,2026/27,Fase campionato,15/10/2026,21:00,si,STATUS_FULL_TIME,Marseille,Olympiacos,0,1,11,9,5,4,9,1,15,11,55.8,44.2,176,435,401915550
+Europa League,2026/27,Fase campionato,15/10/2026,21:00,si,STATUS_FULL_TIME,NEC Nijmegen,Levski Sofia,1,1,18,8,9,2,6,1,14,14,50.8,49.2,147,490,401915565
+Europa League,2026/27,Fase campionato,15/10/2026,21:00,si,STATUS_FULL_TIME,Stade Rennais,OFI Crete,2,1,25,2,9,1,13,3,13,11,67.3,32.7,169,1010,401915572
+Europa League,2026/27,Fase campionato,15/10/2026,21:00,si,STATUS_FULL_TIME,TSG Hoffenheim,Besiktas,2,3,13,19,3,5,7,5,18,8,53.8,46.2,7911,1895,401915563
+Champions League,2026/27,Fase campionato,20/10/2026,18:45,si,STATUS_FULL_TIME,Fenerbahce,Slavia Prague,2,2,15,15,4,4,3,5,12,15,49,51,436,494,401915403
+Champions League,2026/27,Fase campionato,20/10/2026,18:45,si,STATUS_FULL_TIME,Sabah FK,Borussia Dortmund,1,2,13,22,4,9,4,9,8,12,44.9,55.1,21922,124,401915404
+Champions League,2026/27,Fase campionato,20/10/2026,21:00,si,STATUS_FULL_TIME,AS Roma,Slovan Bratislava,4,0,26,1,10,0,8,1,10,10,72.7,27.3,104,521,401915402
+Champions League,2026/27,Fase campionato,20/10/2026,21:00,si,STATUS_FULL_TIME,FC Porto,PSV Eindhoven,0,1,14,18,4,3,2,3,7,9,40.4,59.6,437,148,401915398
+Champions League,2026/27,Fase campionato,20/10/2026,21:00,si,STATUS_FULL_TIME,Liverpool,Villarreal,4,3,22,14,7,5,8,2,12,10,52.5,47.5,364,102,401915397
+Champions League,2026/27,Fase campionato,20/10/2026,21:00,si,STATUS_FULL_TIME,Manchester City,AEK Athens,5,1,17,11,7,3,8,3,6,10,63.6,36.4,382,887,401915401
+Champions League,2026/27,Fase campionato,20/10/2026,21:00,si,STATUS_FULL_TIME,Napoli,Bodo/Glimt,4,3,17,15,8,6,2,5,7,5,43.2,56.8,114,2980,401915400
+Champions League,2026/27,Fase campionato,20/10/2026,21:00,si,STATUS_FULL_TIME,Paris Saint-Germain,Barcelona,4,2,22,18,14,5,2,3,11,10,47.1,52.9,160,83,401915399
+Champions League,2026/27,Fase campionato,20/10/2026,21:00,si,STATUS_FULL_TIME,VfB Stuttgart,Atlético Madrid,1,1,18,10,5,3,9,4,15,7,54.1,45.9,134,1068,401915392
+Champions League,2026/27,Fase campionato,21/10/2026,18:45,si,STATUS_FULL_TIME,Como,Manchester United,4,1,11,13,8,4,1,4,10,11,54.8,45.2,2572,360,401915395
+Champions League,2026/27,Fase campionato,21/10/2026,18:45,si,STATUS_FULL_TIME,Lille,Galatasaray,2,4,15,10,5,4,3,3,9,10,55.9,44.1,166,432,401915396
+Champions League,2026/27,Fase campionato,21/10/2026,21:00,si,STATUS_FULL_TIME,Aston Villa,Viking FK,3,1,21,10,10,3,8,6,7,14,54.4,45.6,362,510,401915394
+Champions League,2026/27,Fase campionato,21/10/2026,21:00,si,STATUS_FULL_TIME,Bayern Munich,Arsenal,2,2,13,14,5,5,3,5,15,6,46.1,53.9,132,359,401915312
+Champions League,2026/27,Fase campionato,21/10/2026,21:00,si,STATUS_FULL_TIME,Club Brugge,Lens,3,0,11,19,5,7,1,5,6,10,56.7,43.3,570,175,401915388
+Champions League,2026/27,Fase campionato,21/10/2026,21:00,si,STATUS_FULL_TIME,Internazionale,Shakhtar Donetsk,1,0,13,12,5,4,5,4,9,10,44.9,55.1,110,493,401915390
+Champions League,2026/27,Fase campionato,21/10/2026,21:00,si,STATUS_FULL_TIME,Real Betis,Feyenoord Rotterdam,1,0,23,12,10,2,4,4,8,10,47.3,52.7,244,142,401915389
+Champions League,2026/27,Fase campionato,21/10/2026,21:00,si,STATUS_FULL_TIME,Real Madrid,RB Leipzig,4,1,18,11,11,6,7,1,13,12,64.4,35.6,86,11420,401915313
+Champions League,2026/27,Fase campionato,21/10/2026,21:00,si,STATUS_FULL_TIME,Sporting CP,LASK Linz,2,3,16,11,4,7,7,4,10,22,62.3,37.7,2250,4411,401915391
+Conference League,2026/27,Fase campionato,22/10/2026,16:30,si,STATUS_FULL_TIME,Kairat Almaty,Panathinaikos,1,5,12,11,2,6,5,4,13,15,42.7,57.3,2528,443,401915846
+Conference League,2026/27,Fase campionato,22/10/2026,18:45,si,STATUS_FULL_TIME,FC Nordsjælland,CSKA Sofia,2,2,13,18,6,7,5,2,13,14,53.4,46.6,3101,10834,401915844
+Conference League,2026/27,Fase campionato,22/10/2026,18:45,si,STATUS_FULL_TIME,Getafe,FC Lugano,2,5,26,10,8,7,15,2,6,23,60.2,39.8,2922,7672,401915840
+Conference League,2026/27,Fase campionato,22/10/2026,18:45,si,STATUS_FULL_TIME,Iberia 1999,Mjällby AIF,1,1,7,23,1,5,2,7,13,15,43.8,56.2,20025,20301,401915845
+Conference League,2026/27,Fase campionato,22/10/2026,18:45,si,STATUS_FULL_TIME,Inter D'Escaldes,Universitatea Craiova,1,3,7,16,5,7,3,6,20,9,64.4,35.6,20703,8089,401915839
+Conference League,2026/27,Fase campionato,22/10/2026,18:45,si,STATUS_FULL_TIME,Jablonec,Brighton & Hove Albion,0,0,9,26,4,4,2,7,6,13,27.9,72.1,7922,331,401915842
+Conference League,2026/27,Fase campionato,22/10/2026,18:45,si,STATUS_FULL_TIME,Kauno Zalgiris,SK Brann,1,4,12,21,2,8,1,4,12,18,33,67,20028,620,401915841
+Conference League,2026/27,Fase campionato,22/10/2026,18:45,si,STATUS_FULL_TIME,Pafos,Riga FC,1,1,17,16,4,3,10,4,9,16,51.4,48.6,22281,19246,401915838
+Conference League,2026/27,Fase campionato,22/10/2026,18:45,si,STATUS_FULL_TIME,Red Star Belgrade,F.C. København,2,2,12,8,5,2,4,6,9,13,58,42,2290,909,401915843
+Conference League,2026/27,Fase campionato,22/10/2026,18:45,si,STATUS_FULL_TIME,Trabzonspor,Heart of Midlothian,2,0,11,10,5,1,6,1,12,15,60.7,39.3,997,262,401915745
+Europa League,2026/27,Fase campionato,22/10/2026,18:45,si,STATUS_FULL_TIME,Ararat-Armenia,AZ Alkmaar,0,4,9,17,4,9,5,6,9,15,39.2,60.8,20024,140,401915548
+Europa League,2026/27,Fase campionato,22/10/2026,18:45,si,STATUS_FULL_TIME,Dinamo Zagreb,NEC Nijmegen,2,4,16,15,10,5,5,2,11,18,58.6,41.4,597,147,401915556
+Europa League,2026/27,Fase campionato,22/10/2026,18:45,si,STATUS_FULL_TIME,Ferencvaros,Torreense,4,1,14,8,5,4,7,4,18,11,57.7,42.3,622,21615,401915558
+Europa League,2026/27,Fase campionato,22/10/2026,18:45,si,STATUS_FULL_TIME,Juventus,Stade Rennais,2,2,14,16,4,5,7,5,14,10,53.9,46.1,111,169,401915547
+Europa League,2026/27,Fase campionato,22/10/2026,18:45,si,STATUS_FULL_TIME,Lech Poznan,Sunderland,1,1,16,25,6,11,3,6,7,13,43.3,56.7,2990,366,401915546
+Europa League,2026/27,Fase campionato,22/10/2026,18:45,si,STATUS_FULL_TIME,OFI Crete,Bayer Leverkusen,0,2,6,33,2,15,5,10,5,21,37.2,62.8,1010,131,401915559
+Europa League,2026/27,Fase campionato,22/10/2026,18:45,si,STATUS_FULL_TIME,SK Sturm Graz,Marseille,1,0,13,14,5,1,2,4,23,9,28.4,71.6,3746,176,401915557
+Europa League,2026/27,Fase campionato,22/10/2026,18:45,si,STATUS_FULL_TIME,Union St.-Gilloise,Hapoel Be'er,4,0,29,6,15,4,4,0,6,13,50.7,49.3,5807,13083,401915545
+Conference League,2026/27,Fase campionato,22/10/2026,21:00,si,STATUS_FULL_TIME,AGF,Egnatia,1,1,9,13,2,7,5,5,11,14,33.6,66.4,7853,21943,401915744
+Conference League,2026/27,Fase campionato,22/10/2026,21:00,si,STATUS_FULL_TIME,AS Monaco,SC Freiburg,3,0,11,12,7,1,6,11,14,10,47.6,52.4,174,126,401915836
+Conference League,2026/27,Fase campionato,22/10/2026,21:00,si,STATUS_FULL_TIME,Ajax Amsterdam,Atalanta,2,0,21,16,7,1,8,9,8,8,60.6,39.4,139,105,401915837
+Conference League,2026/27,Fase campionato,22/10/2026,21:00,si,STATUS_FULL_TIME,Borac Banja Luka,KuPS Kuopio,2,0,24,12,12,3,10,2,17,10,40.2,59.8,20710,8169,401915743
+Conference League,2026/27,Fase campionato,22/10/2026,21:00,si,STATUS_FULL_TIME,Braga,KAA Gent,2,0,22,10,10,1,6,3,11,9,52.2,47.8,2994,3611,401915832
+Conference League,2026/27,Fase campionato,22/10/2026,21:00,si,STATUS_FULL_TIME,FC Midtjylland,Sint-Truidense,0,1,19,18,4,7,6,7,12,10,42,58,572,936,401915835
+Conference League,2026/27,Fase campionato,22/10/2026,21:00,si,STATUS_FULL_TIME,FC Thun,Hajduk Split,0,1,12,11,4,4,2,3,23,16,54.2,45.8,3024,489,401915834
+Conference League,2026/27,Fase campionato,22/10/2026,21:00,si,STATUS_FULL_TIME,Lincoln Red Imps,FC Twente,1,4,5,26,2,8,1,6,8,17,28.7,71.3,17856,152,401915833
+Europa League,2026/27,Fase campionato,22/10/2026,21:00,si,STATUS_FULL_TIME,AFC Bournemouth,AC Milan,3,0,20,3,7,0,6,4,18,15,64.1,35.9,349,103,401915552
+Europa League,2026/27,Fase campionato,22/10/2026,21:00,si,STATUS_FULL_TIME,Besiktas,Crystal Palace,2,2,5,8,2,3,1,3,11,16,59.1,40.9,1895,384,401915553
+Europa League,2026/27,Fase campionato,22/10/2026,21:00,si,STATUS_FULL_TIME,Celtic,Celta Vigo,1,2,8,22,4,4,2,6,10,5,43.7,56.3,256,85,401915555
+Europa League,2026/27,Fase campionato,22/10/2026,21:00,si,STATUS_FULL_TIME,Jagiellonia Bialystok,Anderlecht,0,3,6,15,1,8,4,4,12,20,41.2,58.8,11505,441,401915542
+Europa League,2026/27,Fase campionato,22/10/2026,21:00,si,STATUS_FULL_TIME,Lillestrom,Real Sociedad,0,6,14,16,2,8,3,4,8,6,43.6,56.4,987,89,401915540
+Europa League,2026/27,Fase campionato,22/10/2026,21:00,si,STATUS_FULL_TIME,NK Celje,RB Salzburg,2,2,9,15,3,4,2,3,14,10,50.3,49.7,3362,2790,401915541
+Europa League,2026/27,Fase campionato,22/10/2026,21:00,si,STATUS_FULL_TIME,Olympiacos,Sparta Prague,1,0,23,14,2,1,14,3,7,13,60,40,435,433,401915554
+Europa League,2026/27,Fase campionato,22/10/2026,21:00,si,STATUS_FULL_TIME,Omonia Nicosia,Benfica,1,4,7,23,5,10,4,5,12,11,35.7,64.3,617,1929,401915544
+Europa League,2026/27,Fase campionato,22/10/2026,21:00,si,STATUS_FULL_TIME,TSG Hoffenheim,Lyon,3,0,21,8,8,2,11,9,20,6,43.2,56.8,7911,167,401915543
+Europa League,2026/27,Fase campionato,22/10/2026,21:00,si,STATUS_FULL_TIME,Viktoria Plzen,Levski Sofia,1,2,13,6,2,3,4,1,9,11,50.2,49.8,11706,490,401915539
+Champions League,2026/27,Fase campionato,03/11/2026,18:45,si,STATUS_FULL_TIME,Galatasaray,VfB Stuttgart,2,0,13,13,4,5,6,4,13,16,52.2,47.8,432,134,401915311
+Champions League,2026/27,Fase campionato,03/11/2026,18:45,si,STATUS_FULL_TIME,Shakhtar Donetsk,Sporting CP,0,1,14,11,4,3,7,2,10,18,54.4,45.6,493,2250,401915310
+Champions League,2026/27,Fase campionato,03/11/2026,21:00,si,STATUS_FULL_TIME,Atlético Madrid,Bayern Munich,0,2,9,19,3,5,4,4,13,3,41.5,58.5,1068,132,401915386
+Champions League,2026/27,Fase campionato,03/11/2026,21:00,si,STATUS_FULL_TIME,Barcelona,Aston Villa,3,0,16,9,8,1,4,8,14,9,64.8,35.2,83,362,401915387
+Champions League,2026/27,Fase campionato,03/11/2026,21:00,si,STATUS_FULL_TIME,Bodo/Glimt,Lille,0,0,4,9,4,2,3,4,12,8,50.8,49.2,2980,166,401915384
+Champions League,2026/27,Fase campionato,03/11/2026,21:00,si,STATUS_FULL_TIME,Feyenoord Rotterdam,Internazionale,0,3,11,11,2,6,5,4,7,13,53.1,46.9,142,110,401915307
+Champions League,2026/27,Fase campionato,03/11/2026,21:00,si,STATUS_FULL_TIME,LASK Linz,Slovan Bratislava,4,0,29,7,10,5,8,2,5,9,60,40,4411,521,401915385
+Champions League,2026/27,Fase campionato,03/11/2026,21:00,si,STATUS_FULL_TIME,Manchester United,AS Roma,3,2,15,7,6,4,3,1,11,14,52.4,47.6,360,104,401915308
+Champions League,2026/27,Fase campionato,03/11/2026,21:00,si,STATUS_FULL_TIME,Villarreal,Paris Saint-Germain,0,6,14,22,2,12,4,8,19,4,29.4,70.6,102,160,401915309
+Europa League,2026/27,Fase campionato,04/11/2026,16:30,si,STATUS_FULL_TIME,Stade Rennais,Olympiacos,0,0,9,12,4,3,3,3,15,11,42,58,169,435,401915551
+Champions League,2026/27,Fase campionato,04/11/2026,18:45,si,STATUS_FULL_TIME,AEK Athens,Real Madrid,2,3,9,24,5,8,0,7,9,16,30.4,69.6,887,86,401915383
+Champions League,2026/27,Fase campionato,04/11/2026,18:45,si,STATUS_FULL_TIME,Fenerbahce,Liverpool,3,2,17,22,6,6,4,12,13,12,32.4,67.6,436,364,401915382
+Champions League,2026/27,Fase campionato,04/11/2026,21:00,si,STATUS_FULL_TIME,Borussia Dortmund,Real Betis,2,1,15,11,6,4,2,5,15,13,52.6,47.4,124,244,401915304
+Champions League,2026/27,Fase campionato,04/11/2026,21:00,si,STATUS_FULL_TIME,FC Porto,Napoli,4,1,19,11,8,6,6,5,8,11,51.6,48.4,437,114,401915301
+Champions League,2026/27,Fase campionato,04/11/2026,21:00,si,STATUS_FULL_TIME,Lens,Como,1,9,11,18,3,12,5,5,12,11,42.7,57.3,175,2572,401915305
+Champions League,2026/27,Fase campionato,04/11/2026,21:00,si,STATUS_FULL_TIME,PSV Eindhoven,Club Brugge,1,2,27,10,9,3,8,5,8,10,62.1,37.9,148,570,401915303
+Champions League,2026/27,Fase campionato,04/11/2026,21:00,si,STATUS_FULL_TIME,RB Leipzig,Manchester City,2,3,14,12,6,5,5,3,20,7,35.4,64.6,11420,382,401915306
+Champions League,2026/27,Fase campionato,04/11/2026,21:00,si,STATUS_FULL_TIME,Slavia Prague,Arsenal,1,2,18,12,6,5,4,2,15,10,43.5,56.5,494,359,401915381
+Champions League,2026/27,Fase campionato,04/11/2026,21:00,si,STATUS_FULL_TIME,Viking FK,Sabah FK,4,1,21,16,8,4,10,6,5,9,50.5,49.5,510,21922,401915302
+Conference League,2026/27,Fase campionato,05/11/2026,18:45,si,STATUS_FULL_TIME,AGF,Braga,0,0,14,26,5,8,2,7,7,14,55,45,7853,2994,401915831
+Conference League,2026/27,Fase campionato,05/11/2026,18:45,si,STATUS_FULL_TIME,Atalanta,Kairat Almaty,1,1,16,7,7,3,9,2,15,10,69.9,30.1,105,2528,401915830
+Conference League,2026/27,Fase campionato,05/11/2026,18:45,si,STATUS_FULL_TIME,FC Midtjylland,Ajax Amsterdam,1,6,10,24,4,11,1,8,10,8,29.4,70.6,572,139,401915829
+Conference League,2026/27,Fase campionato,05/11/2026,18:45,si,STATUS_FULL_TIME,FC Thun,Heart of Midlothian,3,1,18,15,8,4,4,5,26,8,46.4,53.6,3024,262,401915828
+Conference League,2026/27,Fase campionato,05/11/2026,18:45,si,STATUS_FULL_TIME,KuPS Kuopio,KAA Gent,0,0,6,20,1,3,3,7,18,11,52.5,47.5,8169,3611,401915826
+Conference League,2026/27,Fase campionato,05/11/2026,18:45,si,STATUS_FULL_TIME,Lincoln Red Imps,Hajduk Split,1,0,5,15,0,1,0,8,21,22,34.2,65.8,17856,489,401915742
+Conference League,2026/27,Fase campionato,05/11/2026,18:45,si,STATUS_FULL_TIME,Mjällby AIF,Borac Banja Luka,2,0,11,15,5,4,4,6,16,12,35.4,64.6,20301,20710,401915741
+Conference League,2026/27,Fase campionato,05/11/2026,18:45,si,STATUS_FULL_TIME,Red Star Belgrade,Inter D'Escaldes,2,1,29,6,8,3,6,3,12,15,55.3,44.7,2290,20703,401915827
+Conference League,2026/27,Fase campionato,05/11/2026,18:45,si,STATUS_FULL_TIME,Trabzonspor,SC Freiburg,0,1,15,12,2,5,7,4,10,19,63,37,997,126,401915825
+Europa League,2026/27,Fase campionato,05/11/2026,18:45,si,STATUS_FULL_TIME,AC Milan,Ferencvaros,0,2,15,12,2,8,2,4,9,13,70.1,29.9,103,622,401915534
+Europa League,2026/27,Fase campionato,05/11/2026,18:45,si,STATUS_FULL_TIME,Anderlecht,RB Salzburg,2,0,12,8,7,3,5,4,14,20,44.4,55.6,441,2790,401915538
+Europa League,2026/27,Fase campionato,05/11/2026,18:45,si,STATUS_FULL_TIME,Crystal Palace,TSG Hoffenheim,1,1,13,15,5,5,5,5,13,15,54.7,45.3,384,7911,401915526
+Europa League,2026/27,Fase campionato,05/11/2026,18:45,si,STATUS_FULL_TIME,Levski Sofia,Jagiellonia Bialystok,1,0,13,10,5,2,4,5,8,13,47.9,52.1,490,11505,401915536
+Europa League,2026/27,Fase campionato,05/11/2026,18:45,si,STATUS_FULL_TIME,Lillestrom,Viktoria Plzen,0,1,15,17,4,11,3,6,7,10,64.1,35.9,987,11706,401915527
+Europa League,2026/27,Fase campionato,05/11/2026,18:45,si,STATUS_FULL_TIME,NEC Nijmegen,Omonia Nicosia,3,1,19,6,9,3,5,2,11,12,63.3,36.7,147,617,401915535
+Europa League,2026/27,Fase campionato,05/11/2026,18:45,si,STATUS_FULL_TIME,Real Sociedad,Lyon,1,1,11,12,4,4,5,6,23,10,46.6,53.4,89,167,401915537
+Europa League,2026/27,Fase campionato,05/11/2026,18:45,si,STATUS_FULL_TIME,Sparta Prague,AFC Bournemouth,1,3,12,20,3,9,3,10,10,11,41.3,58.7,433,349,401915528
+Conference League,2026/27,Fase campionato,05/11/2026,21:00,si,STATUS_FULL_TIME,AS Monaco,FC Nordsjælland,2,0,11,3,5,1,4,3,6,7,57.6,42.4,174,3101,401915824
+Conference League,2026/27,Fase campionato,05/11/2026,21:00,si,STATUS_FULL_TIME,F.C. København,Iberia 1999,2,1,12,5,4,2,3,2,15,17,52.5,47.5,909,20025,401915740
+Conference League,2026/27,Fase campionato,05/11/2026,21:00,si,STATUS_FULL_TIME,FC Lugano,Kauno Zalgiris,3,0,14,5,5,1,4,2,8,14,65.1,34.9,7672,20028,401915823
+Conference League,2026/27,Fase campionato,05/11/2026,21:00,si,STATUS_FULL_TIME,FC Twente,Pafos,3,1,29,6,13,4,12,1,13,9,76.1,23.9,152,22281,401915822
+Conference League,2026/27,Fase campionato,05/11/2026,21:00,si,STATUS_FULL_TIME,Getafe,Brighton & Hove Albion,0,1,8,15,4,3,5,5,10,13,38.5,61.5,2922,331,401915821
+Conference League,2026/27,Fase campionato,05/11/2026,21:00,si,STATUS_FULL_TIME,Panathinaikos,CSKA Sofia,2,1,24,9,12,5,12,4,12,16,62.6,37.4,443,10834,401915819
+Conference League,2026/27,Fase campionato,05/11/2026,21:00,si,STATUS_FULL_TIME,Riga FC,Jablonec,1,1,13,11,2,3,5,5,17,7,59.4,40.6,19246,7922,401915818
+Conference League,2026/27,Fase campionato,05/11/2026,21:00,si,STATUS_FULL_TIME,Sint-Truidense,SK Brann,1,1,17,9,5,5,4,7,13,10,43.1,56.9,936,620,401915820
+Conference League,2026/27,Fase campionato,05/11/2026,21:00,si,STATUS_FULL_TIME,Universitatea Craiova,Egnatia,2,0,19,9,9,4,5,6,12,8,54.4,45.6,8089,21943,401915817
+Europa League,2026/27,Fase campionato,05/11/2026,21:00,si,STATUS_FULL_TIME,AZ Alkmaar,Juventus,1,2,18,9,3,3,4,2,13,20,56.4,43.6,140,111,401915529
+Europa League,2026/27,Fase campionato,05/11/2026,21:00,si,STATUS_FULL_TIME,Bayer Leverkusen,Marseille,0,1,10,8,3,2,6,2,7,12,58.2,41.8,131,176,401915533
+Europa League,2026/27,Fase campionato,05/11/2026,21:00,si,STATUS_FULL_TIME,Benfica,Lech Poznan,3,1,24,6,11,5,6,3,15,11,56.5,43.5,1929,2990,401915525
+Europa League,2026/27,Fase campionato,05/11/2026,21:00,si,STATUS_FULL_TIME,Celta Vigo,Union St.-Gilloise,1,2,13,15,4,3,11,1,17,11,59.3,40.7,85,5807,401915531
+Europa League,2026/27,Fase campionato,05/11/2026,21:00,si,STATUS_FULL_TIME,Celtic,Besiktas,3,2,10,15,6,4,5,7,10,11,38.5,61.5,256,1895,401915522
+Europa League,2026/27,Fase campionato,05/11/2026,21:00,si,STATUS_FULL_TIME,Hapoel Be'er,OFI Crete,0,2,16,11,4,3,4,2,15,10,62.5,37.5,13083,1010,401915532
+Europa League,2026/27,Fase campionato,05/11/2026,21:00,si,STATUS_FULL_TIME,SK Sturm Graz,NK Celje,2,3,30,8,7,7,12,2,16,13,61.3,38.7,3746,3362,401915524
+Europa League,2026/27,Fase campionato,05/11/2026,21:00,si,STATUS_FULL_TIME,Sunderland,Dinamo Zagreb,0,2,17,9,7,4,5,3,9,17,62.2,37.8,366,597,401915523
+Europa League,2026/27,Fase campionato,05/11/2026,21:00,si,STATUS_FULL_TIME,Torreense,Ararat-Armenia,3,2,12,19,5,8,4,6,13,11,41.5,58.5,21615,20024,401915530
+Champions League,2026/27,Fase campionato,24/11/2026,18:45,si,STATUS_FULL_TIME,Bodo/Glimt,LASK Linz,1,0,9,5,2,0,4,0,5,14,65.8,34.2,2980,4411,401915380
+Champions League,2026/27,Fase campionato,24/11/2026,18:45,si,STATUS_FULL_TIME,Galatasaray,Aston Villa,1,0,9,4,2,0,5,1,13,12,45.4,54.6,432,362,401915300
+Champions League,2026/27,Fase campionato,24/11/2026,21:00,si,STATUS_FULL_TIME,Arsenal,Borussia Dortmund,1,1,30,13,4,4,8,5,7,13,63.2,36.8,359,124,401915295
+Champions League,2026/27,Fase campionato,24/11/2026,21:00,si,STATUS_FULL_TIME,Como,AEK Athens,1,0,19,7,4,3,2,1,15,17,60.9,39.1,2572,887,401915296
+Champions League,2026/27,Fase campionato,24/11/2026,21:00,si,STATUS_FULL_TIME,Feyenoord Rotterdam,FC Porto,0,1,21,9,7,3,8,4,10,13,56.6,43.4,142,437,401915294
+Champions League,2026/27,Fase campionato,24/11/2026,21:00,si,STATUS_FULL_TIME,Manchester City,Napoli,2,2,18,9,7,3,9,3,9,9,62.7,37.3,382,114,401915379
+Champions League,2026/27,Fase campionato,24/11/2026,21:00,si,STATUS_FULL_TIME,RB Leipzig,Lens,3,1,16,11,7,3,10,4,12,13,58.6,41.4,11420,175,401915299
+Champions League,2026/27,Fase campionato,24/11/2026,21:00,si,STATUS_FULL_TIME,Real Madrid,PSV Eindhoven,5,1,24,10,9,1,4,1,6,11,61.5,38.5,86,148,401915298
+Champions League,2026/27,Fase campionato,24/11/2026,21:00,si,STATUS_FULL_TIME,Slovan Bratislava,Real Betis,0,2,12,18,2,6,1,4,12,6,31.6,68.4,521,244,401915297
+Champions League,2026/27,Fase campionato,25/11/2026,18:45,si,STATUS_FULL_TIME,Sabah FK,Barcelona,1,4,8,25,3,14,4,6,9,8,28.6,71.4,21922,83,401915378
+Champions League,2026/27,Fase campionato,25/11/2026,18:45,si,STATUS_FULL_TIME,Slavia Prague,Villarreal,0,1,13,7,1,5,13,0,12,15,51.9,48.1,494,102,401915293
+Champions League,2026/27,Fase campionato,25/11/2026,21:00,si,STATUS_FULL_TIME,Atlético Madrid,Viking FK,2,0,20,9,9,1,6,1,7,9,48.4,51.6,1068,510,401915291
+Champions League,2026/27,Fase campionato,25/11/2026,21:00,si,STATUS_FULL_TIME,Club Brugge,Liverpool,0,3,17,13,5,4,8,4,9,13,53.5,46.5,570,364,401915292
+Champions League,2026/27,Fase campionato,25/11/2026,21:00,si,STATUS_FULL_TIME,Internazionale,VfB Stuttgart,2,0,20,13,5,2,11,6,9,10,50.8,49.2,110,134,401915376
+Champions League,2026/27,Fase campionato,25/11/2026,21:00,si,STATUS_FULL_TIME,Lille,Bayern Munich,2,1,15,12,3,7,3,4,2,11,35.2,64.8,166,132,401915377
+Champions League,2026/27,Fase campionato,25/11/2026,21:00,si,STATUS_FULL_TIME,Paris Saint-Germain,AS Roma,2,2,15,13,4,4,3,4,5,18,66,34,160,104,401915374
+Champions League,2026/27,Fase campionato,25/11/2026,21:00,si,STATUS_FULL_TIME,Shakhtar Donetsk,Fenerbahce,0,1,8,13,2,5,3,5,12,14,54.2,45.8,493,436,401915375
+Champions League,2026/27,Fase campionato,25/11/2026,21:00,si,STATUS_FULL_TIME,Sporting CP,Manchester United,2,2,11,7,4,2,3,2,18,13,50.8,49.2,2250,360,401915373
+Conference League,2026/27,Fase campionato,26/11/2026,16:30,si,STATUS_FULL_TIME,Kairat Almaty,Mjällby AIF,1,0,16,14,6,6,3,5,19,9,44.3,55.7,2528,20301,401915816
+Conference League,2026/27,Fase campionato,26/11/2026,18:45,si,STATUS_FULL_TIME,Ajax Amsterdam,FC Thun,4,0,21,11,9,4,6,5,15,21,64.8,35.2,139,3024,401915815
+Conference League,2026/27,Fase campionato,26/11/2026,18:45,si,STATUS_FULL_TIME,Brighton & Hove Albion,Universitatea Craiova,4,0,27,4,10,2,9,0,12,7,74.9,25.1,331,8089,401915814
+Conference League,2026/27,Fase campionato,26/11/2026,18:45,si,STATUS_FULL_TIME,Egnatia,Lincoln Red Imps,2,1,19,6,9,3,10,0,20,10,63.8,36.2,21943,17856,401915810
+Conference League,2026/27,Fase campionato,26/11/2026,18:45,si,STATUS_FULL_TIME,Heart of Midlothian,AS Monaco,2,3,15,16,7,6,4,7,7,13,46.5,53.5,262,174,401915811
+Conference League,2026/27,Fase campionato,26/11/2026,18:45,si,STATUS_FULL_TIME,Iberia 1999,Getafe,1,0,12,18,6,5,3,5,17,23,35.2,64.8,20025,2922,401915813
+Conference League,2026/27,Fase campionato,26/11/2026,18:45,si,STATUS_FULL_TIME,Jablonec,FC Lugano,2,0,19,14,4,4,6,3,17,8,31.1,68.9,7922,7672,401915812
+Conference League,2026/27,Fase campionato,26/11/2026,18:45,si,STATUS_FULL_TIME,Kauno Zalgiris,Riga FC,2,0,14,9,7,3,4,3,11,17,57.8,42.2,20028,19246,401915739
+Conference League,2026/27,Fase campionato,26/11/2026,18:45,si,STATUS_FULL_TIME,Pafos,FC Midtjylland,0,2,14,15,3,9,5,5,12,20,58.1,41.9,22281,572,401915809
+Conference League,2026/27,Fase campionato,26/11/2026,18:45,si,STATUS_FULL_TIME,SK Brann,AGF,1,4,12,14,3,6,3,5,9,15,55.9,44.1,620,7853,401915808
+Europa League,2026/27,Fase campionato,26/11/2026,18:45,si,STATUS_FULL_TIME,Besiktas,Hapoel Be'er,2,1,28,9,10,9,11,4,10,13,54.4,45.6,1895,13083,401915506
+Europa League,2026/27,Fase campionato,26/11/2026,18:45,si,STATUS_FULL_TIME,Celta Vigo,AFC Bournemouth,1,2,20,10,5,6,6,5,16,12,64.5,35.5,85,349,401915519
+Europa League,2026/27,Fase campionato,26/11/2026,18:45,si,STATUS_FULL_TIME,Dinamo Zagreb,Bayer Leverkusen,0,2,14,9,3,2,6,6,16,3,37.8,62.2,597,131,401915517
+Europa League,2026/27,Fase campionato,26/11/2026,18:45,si,STATUS_FULL_TIME,Marseille,Levski Sofia,1,0,12,8,5,1,3,2,7,15,51.8,48.2,176,490,401915507
+Europa League,2026/27,Fase campionato,26/11/2026,18:45,si,STATUS_FULL_TIME,Olympiacos,AC Milan,2,4,18,12,5,6,6,1,13,15,40.5,59.5,435,103,401915521
+Europa League,2026/27,Fase campionato,26/11/2026,18:45,si,STATUS_FULL_TIME,RB Salzburg,Ararat-Armenia,2,0,24,8,8,1,9,3,15,9,62.5,37.5,2790,20024,401915520
+Europa League,2026/27,Fase campionato,26/11/2026,18:45,si,STATUS_FULL_TIME,Union St.-Gilloise,Lech Poznan,2,2,24,5,10,2,9,0,15,14,58.6,41.4,5807,2990,401915508
+Europa League,2026/27,Fase campionato,26/11/2026,18:45,si,STATUS_FULL_TIME,Viktoria Plzen,Benfica,4,0,15,16,11,2,4,10,15,8,30.7,69.3,11706,1929,401915518
+Conference League,2026/27,Fase campionato,26/11/2026,21:00,si,STATUS_FULL_TIME,Borac Banja Luka,Atalanta,2,3,13,22,2,7,4,6,15,14,35.3,64.7,20710,105,401915806
+Conference League,2026/27,Fase campionato,26/11/2026,21:00,si,STATUS_FULL_TIME,Braga,KuPS Kuopio,4,0,23,4,10,2,7,3,17,8,59.5,40.5,2994,8169,401915802
+Conference League,2026/27,Fase campionato,26/11/2026,21:00,si,STATUS_FULL_TIME,CSKA Sofia,Trabzonspor,1,2,17,10,4,6,4,1,19,9,50,50,10834,997,401915803
+Conference League,2026/27,Fase campionato,26/11/2026,21:00,si,STATUS_FULL_TIME,FC Nordsjælland,Panathinaikos,3,2,12,17,2,8,5,3,15,14,41.3,58.7,3101,443,401915807
+Conference League,2026/27,Fase campionato,26/11/2026,21:00,si,STATUS_FULL_TIME,Hajduk Split,Sint-Truidense,0,2,9,9,4,4,6,2,18,10,50.2,49.8,489,936,401915805
+Conference League,2026/27,Fase campionato,26/11/2026,21:00,si,STATUS_FULL_TIME,Inter D'Escaldes,F.C. København,2,0,4,5,2,2,1,5,10,15,70,30,20703,909,401915738
+Conference League,2026/27,Fase campionato,26/11/2026,21:00,si,STATUS_FULL_TIME,KAA Gent,Red Star Belgrade,1,1,10,25,3,3,3,10,12,12,29,71,3611,2290,401915804
+Conference League,2026/27,Fase campionato,26/11/2026,21:00,si,STATUS_FULL_TIME,SC Freiburg,FC Twente,2,1,15,10,4,5,2,2,8,13,42.5,57.5,126,152,401915801
+Europa League,2026/27,Fase campionato,26/11/2026,21:00,si,STATUS_FULL_TIME,Crystal Palace,Real Sociedad,2,1,16,19,4,7,2,7,10,10,43.4,56.6,384,89,401915504
+Europa League,2026/27,Fase campionato,26/11/2026,21:00,si,STATUS_FULL_TIME,Ferencvaros,NK Celje,0,0,27,6,6,2,6,2,13,16,48.8,51.2,622,3362,401915516
+Europa League,2026/27,Fase campionato,26/11/2026,21:00,si,STATUS_FULL_TIME,Juventus,Omonia Nicosia,4,1,23,13,9,5,5,3,8,3,60.1,39.9,111,617,401915502
+Europa League,2026/27,Fase campionato,26/11/2026,21:00,si,STATUS_FULL_TIME,Lyon,Lillestrom,0,0,22,10,7,1,9,6,10,15,63.5,36.5,167,987,401915501
+Europa League,2026/27,Fase campionato,26/11/2026,21:00,si,STATUS_FULL_TIME,NEC Nijmegen,Stade Rennais,3,1,16,21,4,8,1,5,18,11,52.2,47.8,147,169,401915505
+Europa League,2026/27,Fase campionato,26/11/2026,21:00,si,STATUS_FULL_TIME,OFI Crete,Anderlecht,1,3,6,17,2,8,3,7,10,14,48.5,51.5,1010,441,401915503
+Europa League,2026/27,Fase campionato,26/11/2026,21:00,si,STATUS_FULL_TIME,Sparta Prague,AZ Alkmaar,2,4,19,18,5,6,2,0,13,10,38,62,433,140,401915514
+Europa League,2026/27,Fase campionato,26/11/2026,21:00,si,STATUS_FULL_TIME,Sunderland,Jagiellonia Bialystok,1,1,16,12,7,5,8,3,15,11,50.1,49.9,366,11505,401915513
+Europa League,2026/27,Fase campionato,26/11/2026,21:00,si,STATUS_FULL_TIME,TSG Hoffenheim,SK Sturm Graz,3,1,24,12,7,6,10,4,13,16,61.6,38.4,7911,3746,401915515
+Europa League,2026/27,Fase campionato,26/11/2026,21:00,si,STATUS_FULL_TIME,Torreense,Celtic,1,2,11,14,3,6,3,7,11,16,38.2,61.8,21615,256,401915512
+Champions League,2026/27,Fase campionato,08/12/2026,18:45,no,STATUS_SCHEDULED,Viking FK,Feyenoord Rotterdam,,,,,,,,,,,,,510,142,401915290
+Champions League,2026/27,Fase campionato,08/12/2026,18:45,no,STATUS_SCHEDULED,Villarreal,Sabah FK,,,,,,,,,,,,,102,21922,401915372
+Champions League,2026/27,Fase campionato,08/12/2026,21:00,no,STATUS_SCHEDULED,AEK Athens,Galatasaray,,,,,,,,,,,,,887,432,401915289
+Champions League,2026/27,Fase campionato,08/12/2026,21:00,no,STATUS_SCHEDULED,AS Roma,Sporting CP,,,,,,,,,,,,,104,2250,401915288
+Champions League,2026/27,Fase campionato,08/12/2026,21:00,no,STATUS_SCHEDULED,Aston Villa,Paris Saint-Germain,,,,,,,,,,,,,362,160,401915286
+Champions League,2026/27,Fase campionato,08/12/2026,21:00,no,STATUS_SCHEDULED,Barcelona,Manchester City,,,,,,,,,,,,,83,382,401915285
+Champions League,2026/27,Fase campionato,08/12/2026,21:00,no,STATUS_SCHEDULED,Bayern Munich,Slavia Prague,,,,,,,,,,,,,132,494,401915284
+Champions League,2026/27,Fase campionato,08/12/2026,21:00,no,STATUS_SCHEDULED,Manchester United,RB Leipzig,,,,,,,,,,,,,360,11420,401915371
+Champions League,2026/27,Fase campionato,08/12/2026,21:00,no,STATUS_SCHEDULED,Napoli,Club Brugge,,,,,,,,,,,,,114,570,401915287
+Champions League,2026/27,Fase campionato,09/12/2026,18:45,no,STATUS_SCHEDULED,Real Betis,Como,,,,,,,,,,,,,244,2572,401915283
+Champions League,2026/27,Fase campionato,09/12/2026,18:45,no,STATUS_SCHEDULED,Slovan Bratislava,Shakhtar Donetsk,,,,,,,,,,,,,521,493,401915282
+Champions League,2026/27,Fase campionato,09/12/2026,21:00,no,STATUS_SCHEDULED,Arsenal,Real Madrid,,,,,,,,,,,,,359,86,401915367
+Champions League,2026/27,Fase campionato,09/12/2026,21:00,no,STATUS_SCHEDULED,Borussia Dortmund,Internazionale,,,,,,,,,,,,,124,110,401915368
+Champions League,2026/27,Fase campionato,09/12/2026,21:00,no,STATUS_SCHEDULED,LASK Linz,Fenerbahce,,,,,,,,,,,,,4411,436,401915281
+Champions League,2026/27,Fase campionato,09/12/2026,21:00,no,STATUS_SCHEDULED,Lens,Bodo/Glimt,,,,,,,,,,,,,175,2980,401915370
+Champions League,2026/27,Fase campionato,09/12/2026,21:00,no,STATUS_SCHEDULED,Liverpool,FC Porto,,,,,,,,,,,,,364,437,401915369
+Champions League,2026/27,Fase campionato,09/12/2026,21:00,no,STATUS_SCHEDULED,PSV Eindhoven,Atlético Madrid,,,,,,,,,,,,,148,1068,401915366
+Champions League,2026/27,Fase campionato,09/12/2026,21:00,no,STATUS_SCHEDULED,VfB Stuttgart,Lille,,,,,,,,,,,,,134,166,401915365
+Conference League,2026/27,Fase campionato,10/12/2026,16:30,no,STATUS_SCHEDULED,Kairat Almaty,Universitatea Craiova,,,,,,,,,,,,,2528,8089,401915737
+Conference League,2026/27,Fase campionato,10/12/2026,18:45,no,STATUS_SCHEDULED,F.C. København,FC Lugano,,,,,,,,,,,,,909,7672,401915800
+Conference League,2026/27,Fase campionato,10/12/2026,18:45,no,STATUS_SCHEDULED,Getafe,Inter D'Escaldes,,,,,,,,,,,,,2922,20703,401915736
+Conference League,2026/27,Fase campionato,10/12/2026,18:45,no,STATUS_SCHEDULED,Iberia 1999,Red Star Belgrade,,,,,,,,,,,,,20025,2290,401915799
+Conference League,2026/27,Fase campionato,10/12/2026,18:45,no,STATUS_SCHEDULED,KuPS Kuopio,CSKA Sofia,,,,,,,,,,,,,8169,10834,401915735
+Conference League,2026/27,Fase campionato,10/12/2026,18:45,no,STATUS_SCHEDULED,Lincoln Red Imps,FC Midtjylland,,,,,,,,,,,,,17856,572,401915798
+Conference League,2026/27,Fase campionato,10/12/2026,18:45,no,STATUS_SCHEDULED,Riga FC,Atalanta,,,,,,,,,,,,,19246,105,401915734
+Conference League,2026/27,Fase campionato,10/12/2026,18:45,no,STATUS_SCHEDULED,SC Freiburg,Panathinaikos,,,,,,,,,,,,,126,443,401915733
+Conference League,2026/27,Fase campionato,10/12/2026,18:45,no,STATUS_SCHEDULED,SK Brann,Braga,,,,,,,,,,,,,620,2994,401915797
+Conference League,2026/27,Fase campionato,10/12/2026,18:45,no,STATUS_SCHEDULED,Trabzonspor,Jablonec,,,,,,,,,,,,,997,7922,401915796
+Europa League,2026/27,Fase campionato,10/12/2026,18:45,no,STATUS_SCHEDULED,AZ Alkmaar,SK Sturm Graz,,,,,,,,,,,,,140,3746,401915494
+Europa League,2026/27,Fase campionato,10/12/2026,18:45,no,STATUS_SCHEDULED,Anderlecht,TSG Hoffenheim,,,,,,,,,,,,,441,7911,401915511
+Europa League,2026/27,Fase campionato,10/12/2026,18:45,no,STATUS_SCHEDULED,Ararat-Armenia,NEC Nijmegen,,,,,,,,,,,,,20024,147,401915500
+Europa League,2026/27,Fase campionato,10/12/2026,18:45,no,STATUS_SCHEDULED,Hapoel Be'er,Juventus,,,,,,,,,,,,,13083,111,401915499
+Europa League,2026/27,Fase campionato,10/12/2026,18:45,no,STATUS_SCHEDULED,Jagiellonia Bialystok,Crystal Palace,,,,,,,,,,,,,11505,384,401915496
+Europa League,2026/27,Fase campionato,10/12/2026,18:45,no,STATUS_SCHEDULED,Marseille,Celta Vigo,,,,,,,,,,,,,176,85,401915495
+Europa League,2026/27,Fase campionato,10/12/2026,18:45,no,STATUS_SCHEDULED,NK Celje,Olympiacos,,,,,,,,,,,,,3362,435,401915487
+Europa League,2026/27,Fase campionato,10/12/2026,18:45,no,STATUS_SCHEDULED,Omonia Nicosia,Celtic,,,,,,,,,,,,,617,256,401915498
+Europa League,2026/27,Fase campionato,10/12/2026,18:45,no,STATUS_SCHEDULED,Stade Rennais,Dinamo Zagreb,,,,,,,,,,,,,169,597,401915497
+Conference League,2026/27,Fase campionato,10/12/2026,21:00,no,STATUS_SCHEDULED,AGF,FC Twente,,,,,,,,,,,,,7853,152,401915795
+Conference League,2026/27,Fase campionato,10/12/2026,21:00,no,STATUS_SCHEDULED,Brighton & Hove Albion,AS Monaco,,,,,,,,,,,,,331,174,401915732
+Conference League,2026/27,Fase campionato,10/12/2026,21:00,no,STATUS_SCHEDULED,Egnatia,Kauno Zalgiris,,,,,,,,,,,,,21943,20028,401915629
+Conference League,2026/27,Fase campionato,10/12/2026,21:00,no,STATUS_SCHEDULED,FC Thun,KAA Gent,,,,,,,,,,,,,3024,3611,401915794
+Conference League,2026/27,Fase campionato,10/12/2026,21:00,no,STATUS_SCHEDULED,Hajduk Split,FC Nordsjælland,,,,,,,,,,,,,489,3101,401915792
+Conference League,2026/27,Fase campionato,10/12/2026,21:00,no,STATUS_SCHEDULED,Heart of Midlothian,Borac Banja Luka,,,,,,,,,,,,,262,20710,401915793
+Conference League,2026/27,Fase campionato,10/12/2026,21:00,no,STATUS_SCHEDULED,Mjällby AIF,Pafos,,,,,,,,,,,,,20301,22281,401915628
+Conference League,2026/27,Fase campionato,10/12/2026,21:00,no,STATUS_SCHEDULED,Sint-Truidense,Ajax Amsterdam,,,,,,,,,,,,,936,139,401915630
+Europa League,2026/27,Fase campionato,10/12/2026,21:00,no,STATUS_SCHEDULED,AC Milan,Sunderland,,,,,,,,,,,,,103,366,401915493
+Europa League,2026/27,Fase campionato,10/12/2026,21:00,no,STATUS_SCHEDULED,AFC Bournemouth,Viktoria Plzen,,,,,,,,,,,,,349,11706,401915488
+Europa League,2026/27,Fase campionato,10/12/2026,21:00,no,STATUS_SCHEDULED,Bayer Leverkusen,Besiktas,,,,,,,,,,,,,131,1895,401915492
+Europa League,2026/27,Fase campionato,10/12/2026,21:00,no,STATUS_SCHEDULED,Benfica,OFI Crete,,,,,,,,,,,,,1929,1010,401915491
+Europa League,2026/27,Fase campionato,10/12/2026,21:00,no,STATUS_SCHEDULED,Lech Poznan,Ferencvaros,,,,,,,,,,,,,2990,622,401915486
+Europa League,2026/27,Fase campionato,10/12/2026,21:00,no,STATUS_SCHEDULED,Levski Sofia,Lillestrom,,,,,,,,,,,,,490,987,401915510
+Europa League,2026/27,Fase campionato,10/12/2026,21:00,no,STATUS_SCHEDULED,Lyon,Union St.-Gilloise,,,,,,,,,,,,,167,5807,401915485
+Europa League,2026/27,Fase campionato,10/12/2026,21:00,no,STATUS_SCHEDULED,RB Salzburg,Sparta Prague,,,,,,,,,,,,,2790,433,401915489
+Europa League,2026/27,Fase campionato,10/12/2026,21:00,no,STATUS_SCHEDULED,Real Sociedad,Torreense,,,,,,,,,,,,,89,21615,401915490
+Conference League,2026/27,Fase campionato,17/12/2026,21:00,no,STATUS_SCHEDULED,AS Monaco,Lincoln Red Imps,,,,,,,,,,,,,174,17856,401915627
+Conference League,2026/27,Fase campionato,17/12/2026,21:00,no,STATUS_SCHEDULED,Ajax Amsterdam,Getafe,,,,,,,,,,,,,139,2922,401915731
+Conference League,2026/27,Fase campionato,17/12/2026,21:00,no,STATUS_SCHEDULED,Atalanta,Mjällby AIF,,,,,,,,,,,,,105,20301,401915626
+Conference League,2026/27,Fase campionato,17/12/2026,21:00,no,STATUS_SCHEDULED,Borac Banja Luka,Riga FC,,,,,,,,,,,,,20710,19246,401915623
+Conference League,2026/27,Fase campionato,17/12/2026,21:00,no,STATUS_SCHEDULED,Braga,Egnatia,,,,,,,,,,,,,2994,21943,401915614
+Conference League,2026/27,Fase campionato,17/12/2026,21:00,no,STATUS_SCHEDULED,CSKA Sofia,FC Thun,,,,,,,,,,,,,10834,3024,401915615
+Conference League,2026/27,Fase campionato,17/12/2026,21:00,no,STATUS_SCHEDULED,FC Lugano,Sint-Truidense,,,,,,,,,,,,,7672,936,401915625
+Conference League,2026/27,Fase campionato,17/12/2026,21:00,no,STATUS_SCHEDULED,FC Midtjylland,Hajduk Split,,,,,,,,,,,,,572,489,401915730
+Conference League,2026/27,Fase campionato,17/12/2026,21:00,no,STATUS_SCHEDULED,FC Nordsjælland,KuPS Kuopio,,,,,,,,,,,,,3101,8169,401915729
+Conference League,2026/27,Fase campionato,17/12/2026,21:00,no,STATUS_SCHEDULED,FC Twente,Kairat Almaty,,,,,,,,,,,,,152,2528,401915624
+Conference League,2026/27,Fase campionato,17/12/2026,21:00,no,STATUS_SCHEDULED,Inter D'Escaldes,AGF,,,,,,,,,,,,,20703,7853,401915619
+Conference League,2026/27,Fase campionato,17/12/2026,21:00,no,STATUS_SCHEDULED,Jablonec,Iberia 1999,,,,,,,,,,,,,7922,20025,401915621
+Conference League,2026/27,Fase campionato,17/12/2026,21:00,no,STATUS_SCHEDULED,KAA Gent,SK Brann,,,,,,,,,,,,,3611,620,401915618
+Conference League,2026/27,Fase campionato,17/12/2026,21:00,no,STATUS_SCHEDULED,Kauno Zalgiris,SC Freiburg,,,,,,,,,,,,,20028,126,401915620
+Conference League,2026/27,Fase campionato,17/12/2026,21:00,no,STATUS_SCHEDULED,Pafos,Heart of Midlothian,,,,,,,,,,,,,22281,262,401915617
+Conference League,2026/27,Fase campionato,17/12/2026,21:00,no,STATUS_SCHEDULED,Panathinaikos,Brighton & Hove Albion,,,,,,,,,,,,,443,331,401915616
+Conference League,2026/27,Fase campionato,17/12/2026,21:00,no,STATUS_SCHEDULED,Red Star Belgrade,Trabzonspor,,,,,,,,,,,,,2290,997,401915622
+Conference League,2026/27,Fase campionato,17/12/2026,21:00,no,STATUS_SCHEDULED,Universitatea Craiova,F.C. København,,,,,,,,,,,,,8089,909,401915613
