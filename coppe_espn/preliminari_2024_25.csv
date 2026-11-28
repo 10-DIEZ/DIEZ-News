@@ -1,0 +1,427 @@
+coppa,stagione,fase,data_ita,ora_ita,giocata,stato,casa,ospite,gol_casa,gol_ospite,tiri_casa,tiri_ospite,porta_casa,porta_ospite,corner_casa,corner_ospite,falli_casa,falli_ospite,possesso_casa,possesso_ospite,casa_id,ospite_id,id_evento
+Champions League,2024/25,first-round,09/07/2024,17:30,si,STATUS_FULL_TIME,Panevezys,HJK Helsinki,3,0,3,0,3,0,0,0,0,0,100,0,21004,502,705126
+Champions League,2024/25,first-round,09/07/2024,18:45,si,STATUS_FULL_TIME,Hamrun Spartans,Lincoln Red Imps,0,1,0,1,0,1,0,0,0,0,0,0,7858,17856,705122
+Champions League,2024/25,first-round,09/07/2024,20:00,si,STATUS_FULL_TIME,The New Saints,Decic,3,0,3,0,3,0,0,0,0,0,100,0,576,21001,705129
+Champions League,2024/25,first-round,09/07/2024,20:00,si,STATUS_FULL_TIME,UE Santa Coloma,Ballkani,1,2,1,2,1,2,0,0,0,0,0,100,11441,21526,705118
+Champions League,2024/25,first-round,09/07/2024,20:45,si,STATUS_FULL_TIME,Vikingur Reykjavik,Shamrock Rovers,0,0,0,0,0,0,0,0,0,0,0,0,8249,2564,705130
+Champions League,2024/25,first-round,09/07/2024,21:00,si,STATUS_FULL_TIME,AC Virtus,FCSB,1,7,1,7,1,7,0,0,0,0,20,80,22292,484,705131
+Champions League,2024/25,first-round,10/07/2024,17:00,si,STATUS_FULL_TIME,Ordabasy Shymkent,Petrocub,0,0,0,0,0,0,0,0,0,0,0,0,7962,19250,705125
+Champions League,2024/25,first-round,10/07/2024,18:00,si,STATUS_FULL_TIME,Flora,NK Celje,0,5,0,6,0,5,0,0,0,0,0,100,12146,3362,705121
+Champions League,2024/25,first-round,10/07/2024,19:00,si,STATUS_FULL_TIME,Rigas Futbola Skola,Larne,3,0,3,0,3,0,0,0,0,0,100,0,12030,20039,705127
+Champions League,2024/25,first-round,10/07/2024,19:00,si,STATUS_FULL_TIME,Slovan Bratislava,Struga,4,2,4,2,4,2,0,0,0,0,100,0,521,20999,705128
+Champions League,2024/25,first-round,10/07/2024,20:00,si,STATUS_FULL_TIME,KI Klaksvik,FC Differdange 03,2,0,2,0,2,0,0,0,0,0,100,0,2547,7759,705123
+Champions League,2024/25,first-round,10/07/2024,20:00,si,STATUS_FULL_TIME,Ludogorets Razgrad,Dinamo Batumi,3,1,3,1,3,1,0,0,0,0,66.7,33.3,13018,12344,705124
+Conference League,2024/25,first-round,10/07/2024,20:00,si,STATUS_FULL_TIME,Velez Mostar,Inter D'Escaldes,1,1,,,,,,,,,,,8070,20703,705146
+Champions League,2024/25,first-round,10/07/2024,20:45,si,STATUS_FULL_TIME,Dinamo Minsk,Pyunik,0,0,0,0,0,0,0,0,0,0,0,0,2539,2493,705120
+Champions League,2024/25,first-round,10/07/2024,21:00,si,STATUS_FULL_TIME,Borac Banja Luka,Egnatia,1,0,1,0,1,0,0,0,0,0,100,0,20710,21943,705119
+Conference League,2024/25,first-round,10/07/2024,21:00,si,STATUS_FULL_TIME,FK Auda,B36 Torshavn,2,0,,,,,,,,,,,21948,2510,705172
+Conference League,2024/25,first-round,11/07/2024,17:00,si,STATUS_FULL_TIME,Aktobe,FK Sarajevo,0,1,0,1,0,1,0,0,0,0,0,0,6733,551,705180
+Conference League,2024/25,first-round,11/07/2024,17:00,si,STATUS_FULL_TIME,FA Siauliai,FC Levadia Tallinn,0,2,0,2,0,2,0,0,0,0,0,0,22284,2540,705152
+Conference League,2024/25,first-round,11/07/2024,17:00,si,STATUS_FULL_TIME,FK Liepaja,Víkingur,1,1,,,,,,,,,,,18283,13238,705185
+Conference League,2024/25,first-round,11/07/2024,17:00,si,STATUS_FULL_TIME,KF Malisheva,Buducnost Podgorica,1,0,1,0,1,0,0,0,0,0,0,0,22287,7822,705166
+Conference League,2024/25,first-round,11/07/2024,18:00,si,STATUS_FULL_TIME,FC Noah,KF Shkëndija,2,0,2,0,2,0,0,0,0,0,0,0,20712,8151,705186
+Conference League,2024/25,first-round,11/07/2024,18:00,si,STATUS_FULL_TIME,Magpies,Derry City,2,0,2,0,2,0,0,0,0,0,0,0,21529,2712,705164
+Conference League,2024/25,first-round,11/07/2024,18:00,si,STATUS_FULL_TIME,NK Bravo,Connah's Quay,0,1,0,1,0,1,0,0,0,0,0,0,22288,7591,705182
+Conference League,2024/25,first-round,11/07/2024,18:30,si,STATUS_FULL_TIME,Atlètic Club d'Escaldes,F91 Dudelange,0,1,,,,,,,,,,,21528,2512,705168
+Conference League,2024/25,first-round,11/07/2024,18:30,si,STATUS_FULL_TIME,JK Tallinna Kalev,FC Urartu,1,2,1,2,1,2,0,0,0,0,0,0,22286,2719,705160
+Conference League,2024/25,first-round,11/07/2024,19:00,si,STATUS_FULL_TIME,Floriana FC,Tre Penne,3,1,3,1,3,1,0,0,0,0,0,0,7857,8592,705148
+Conference League,2024/25,first-round,11/07/2024,19:00,si,STATUS_FULL_TIME,Torpedo Kutaisi,SK Tirana,1,1,,,,,,,,,,,612,526,705176
+Conference League,2024/25,first-round,11/07/2024,19:00,si,STATUS_FULL_TIME,Torpedo Zhodino,FC Milsami,2,4,,,,,,,,,,,8142,11440,705150
+Conference League,2024/25,first-round,11/07/2024,19:00,si,STATUS_FULL_TIME,UNA Strassen,KuPS Kuopio,0,0,,,,,,,,,,,22291,8169,705192
+Conference League,2024/25,first-round,11/07/2024,19:00,si,STATUS_FULL_TIME,VPS Vaasa,Zalgiris Vilnius,1,2,1,2,1,2,0,0,0,0,0,0,4401,523,705194
+Europa League,2024/25,first-round,11/07/2024,19:00,si,STATUS_FULL_TIME,IF Elfsborg,Pafos,3,0,4,0,3,0,0,0,0,0,100,0,529,22281,705106
+Europa League,2024/25,first-round,11/07/2024,19:00,si,STATUS_FULL_TIME,MFK Ruzomberok,Tobol Kostanay,5,2,5,2,5,2,0,0,0,0,66.7,33.3,12207,6748,705110
+Europa League,2024/25,first-round,11/07/2024,19:00,si,STATUS_FULL_TIME,Paksi SE,Corvinul Hunedoara,0,4,12,15,4,7,3,5,15,11,52.9,47.1,11523,22282,705107
+Europa League,2024/25,first-round,11/07/2024,19:00,si,STATUS_FULL_TIME,Sheriff Tiraspol,Zira FK,0,1,0,1,0,1,0,0,0,0,0,0,614,18754,705109
+Conference League,2024/25,first-round,11/07/2024,19:30,si,STATUS_FULL_TIME,Caernarfon,Crusaders,2,0,2,0,2,0,0,0,0,0,0,0,7590,7599,705158
+Conference League,2024/25,first-round,11/07/2024,20:00,si,STATUS_FULL_TIME,Bala Town,Paide Linnameeskond,1,2,1,2,1,2,0,0,0,0,0,0,10496,20718,705154
+Conference League,2024/25,first-round,11/07/2024,20:00,si,STATUS_FULL_TIME,Partizani Tirana,Marsaxlokk FC,1,1,1,1,1,1,0,0,0,0,0,0,2551,2948,705171
+Europa League,2024/25,first-round,11/07/2024,20:00,si,STATUS_FULL_TIME,Botev Plovdiv,NK Maribor,2,1,2,1,2,1,0,0,0,0,100,0,7293,619,705111
+Conference League,2024/25,first-round,11/07/2024,20:30,si,STATUS_FULL_TIME,Tikvesh,Breidablik,3,2,3,2,3,2,0,0,0,0,0,0,22289,8250,705188
+Europa League,2024/25,first-round,11/07/2024,20:30,si,STATUS_FULL_TIME,Wisla Krakow,Llapi,2,0,17,6,5,3,9,3,12,13,54.9,45.1,488,21000,705108
+Conference League,2024/25,first-round,11/07/2024,20:45,si,STATUS_FULL_TIME,Fiorita,Isloch Minsk,0,1,0,1,0,1,0,0,0,0,0,0,8594,22285,705157
+Conference League,2024/25,first-round,11/07/2024,20:45,si,STATUS_FULL_TIME,Mornar,Dinamo Tbilisi,2,1,2,1,2,1,0,0,0,0,0,0,22290,498,705190
+Conference League,2024/25,first-round,11/07/2024,20:45,si,STATUS_FULL_TIME,Shelbourne,St. Joseph's,2,1,2,1,2,1,0,0,0,0,0,0,20297,18751,705178
+Conference League,2024/25,first-round,11/07/2024,21:00,si,STATUS_FULL_TIME,Stjarnan,Linfield,2,0,2,0,2,0,0,0,0,0,0,0,7949,2555,705174
+Conference League,2024/25,first-round,11/07/2024,21:00,si,STATUS_FULL_TIME,Valur Reykjavik,Vllaznia Shkoder,2,2,2,2,2,2,0,0,0,0,0,0,6742,2716,705162
+Champions League,2024/25,first-round,16/07/2024,16:30,si,STATUS_FINAL_PEN,Ballkani,UE Santa Coloma,1,2,1,1,1,1,0,0,0,0,50,50,21526,11441,705139
+Champions League,2024/25,first-round,16/07/2024,18:00,si,STATUS_FULL_TIME,HJK Helsinki,Panevezys,1,1,1,1,1,1,0,0,0,0,100,0,502,21004,705138
+Champions League,2024/25,first-round,16/07/2024,18:00,si,STATUS_FINAL_PEN,Lincoln Red Imps,Hamrun Spartans,0,1,0,1,0,1,0,0,0,0,0,100,17856,7858,705141
+Champions League,2024/25,first-round,16/07/2024,18:00,si,STATUS_FULL_TIME,Pyunik,Dinamo Minsk,0,1,0,1,0,1,0,0,0,0,0,0,2493,2539,705143
+Champions League,2024/25,first-round,16/07/2024,19:00,si,STATUS_FULL_TIME,NK Celje,Flora,2,1,2,1,2,1,0,0,0,0,50,50,3362,12146,705132
+Champions League,2024/25,first-round,16/07/2024,19:30,si,STATUS_FULL_TIME,FCSB,AC Virtus,4,0,4,0,4,0,0,0,0,0,100,0,484,22292,705145
+Champions League,2024/25,first-round,16/07/2024,21:00,si,STATUS_FULL_TIME,Decic,The New Saints,1,1,1,1,1,1,0,0,0,0,0,0,21001,576,705133
+Champions League,2024/25,first-round,16/07/2024,21:00,si,STATUS_FULL_TIME,Shamrock Rovers,Vikingur Reykjavik,2,1,2,2,2,1,0,0,0,0,66.7,33.3,2564,8249,705144
+Champions League,2024/25,first-round,17/07/2024,17:00,si,STATUS_FULL_TIME,Struga,Slovan Bratislava,1,2,1,1,1,1,0,0,0,0,50,50,20999,521,705137
+Champions League,2024/25,first-round,17/07/2024,19:00,si,STATUS_FULL_TIME,Dinamo Batumi,Ludogorets Razgrad,1,0,1,0,1,0,0,0,0,0,0,0,12344,13018,705135
+Champions League,2024/25,first-round,17/07/2024,19:00,si,STATUS_FULL_TIME,FC Differdange 03,KI Klaksvik,0,0,0,0,0,0,0,0,0,0,0,0,7759,2547,705134
+Champions League,2024/25,first-round,17/07/2024,19:00,si,STATUS_FULL_TIME,Petrocub,Ordabasy Shymkent,1,0,1,0,1,0,0,0,0,0,0,0,19250,7962,705142
+Conference League,2024/25,first-round,17/07/2024,19:00,si,STATUS_FULL_TIME,B36 Torshavn,FK Auda,0,1,0,1,0,1,0,0,0,0,0,0,2510,21948,705173
+Conference League,2024/25,first-round,17/07/2024,20:45,si,STATUS_FINAL_PEN,Crusaders,Caernarfon,3,1,3,1,3,1,0,0,0,0,0,0,7599,7590,705159
+Champions League,2024/25,first-round,17/07/2024,21:00,si,STATUS_FINAL_PEN,Egnatia,Borac Banja Luka,2,1,2,1,2,1,0,0,0,0,100,0,21943,20710,705136
+Champions League,2024/25,first-round,17/07/2024,21:00,si,STATUS_FULL_TIME,Larne,Rigas Futbola Skola,0,4,0,4,0,4,0,0,0,0,0,100,20039,12030,705140
+Europa League,2024/25,first-round,18/07/2024,16:30,si,STATUS_FULL_TIME,Llapi,Wisla Krakow,1,2,13,11,4,6,10,1,12,15,67.4,32.6,21000,488,705113
+Conference League,2024/25,first-round,18/07/2024,17:00,si,STATUS_FULL_TIME,FC Urartu,JK Tallinna Kalev,2,0,2,0,2,0,0,0,0,0,0,0,2719,22286,705161
+Conference League,2024/25,first-round,18/07/2024,17:00,si,STATUS_FULL_TIME,KuPS Kuopio,UNA Strassen,5,0,5,0,5,0,0,0,0,0,0,0,8169,22291,705193
+Europa League,2024/25,first-round,18/07/2024,17:00,si,STATUS_FULL_TIME,Tobol Kostanay,MFK Ruzomberok,1,0,1,0,1,0,0,0,0,0,100,0,6748,12207,705112
+Conference League,2024/25,first-round,18/07/2024,18:00,si,STATUS_FULL_TIME,FC Levadia Tallinn,FA Siauliai,0,0,0,0,0,0,0,0,0,0,0,0,2540,22284,705153
+Conference League,2024/25,first-round,18/07/2024,18:00,si,STATUS_FULL_TIME,FC Milsami,Torpedo Zhodino,0,0,0,0,0,0,0,0,0,0,0,0,11440,8142,705151
+Conference League,2024/25,first-round,18/07/2024,18:00,si,STATUS_FULL_TIME,Inter D'Escaldes,Velez Mostar,5,1,5,1,5,1,0,0,0,0,0,0,20703,8070,705147
+Conference League,2024/25,first-round,18/07/2024,18:00,si,STATUS_FULL_TIME,St. Joseph's,Shelbourne,1,1,1,1,1,1,0,0,0,0,0,0,18751,20297,705179
+Conference League,2024/25,first-round,18/07/2024,18:00,si,STATUS_FULL_TIME,Zalgiris Vilnius,VPS Vaasa,1,0,1,0,1,0,0,0,0,0,0,0,523,4401,705195
+Europa League,2024/25,first-round,18/07/2024,18:00,si,STATUS_FULL_TIME,Pafos,IF Elfsborg,2,5,1,5,1,5,0,0,0,0,20,80,22281,529,705116
+Europa League,2024/25,first-round,18/07/2024,18:00,si,STATUS_FINAL_PEN,Zira FK,Sheriff Tiraspol,1,2,1,2,1,2,0,0,0,0,33.3,66.7,18754,614,705114
+Conference League,2024/25,first-round,18/07/2024,18:30,si,STATUS_FINAL_AET,Paide Linnameeskond,Bala Town,1,1,1,1,1,1,0,0,0,0,0,0,20718,10496,705155
+Conference League,2024/25,first-round,18/07/2024,19:00,si,STATUS_FULL_TIME,Dinamo Tbilisi,Mornar,1,1,1,1,1,1,0,0,0,0,100,0,498,22290,705191
+Conference League,2024/25,first-round,18/07/2024,19:00,si,STATUS_FULL_TIME,F91 Dudelange,Atlètic Club d'Escaldes,2,0,2,0,2,0,0,0,0,0,0,0,2512,21528,705169
+Conference League,2024/25,first-round,18/07/2024,19:00,si,STATUS_FULL_TIME,Marsaxlokk FC,Partizani Tirana,1,2,1,2,1,2,0,0,0,0,0,0,2948,2551,705170
+Conference League,2024/25,first-round,18/07/2024,19:30,si,STATUS_FINAL_AET,Connah's Quay,NK Bravo,0,2,0,2,0,2,0,0,0,0,0,0,7591,22288,705183
+Conference League,2024/25,first-round,18/07/2024,19:30,si,STATUS_FINAL_PEN,Isloch Minsk,Fiorita,0,1,0,1,0,1,0,0,0,0,0,0,22285,8594,705156
+Conference League,2024/25,first-round,18/07/2024,20:00,si,STATUS_FULL_TIME,KF Shkëndija,FC Noah,1,2,1,2,1,2,0,0,0,0,0,0,8151,20712,705187
+Conference League,2024/25,first-round,18/07/2024,20:00,si,STATUS_FULL_TIME,SK Tirana,Torpedo Kutaisi,0,1,0,1,0,1,0,0,0,0,0,0,526,612,705177
+Conference League,2024/25,first-round,18/07/2024,20:00,si,STATUS_FULL_TIME,Víkingur,FK Liepaja,2,0,2,0,2,0,0,0,0,0,0,0,13238,18283,705184
+Europa League,2024/25,first-round,18/07/2024,20:00,si,STATUS_FULL_TIME,Corvinul Hunedoara,Paksi SE,0,2,10,19,3,5,4,7,4,14,42,58,22282,11523,705117
+Europa League,2024/25,first-round,18/07/2024,20:15,si,STATUS_FULL_TIME,NK Maribor,Botev Plovdiv,2,2,2,2,2,2,0,0,0,0,50,50,619,7293,705115
+Conference League,2024/25,first-round,18/07/2024,20:30,si,STATUS_FULL_TIME,Vllaznia Shkoder,Valur Reykjavik,0,4,0,4,0,4,0,0,0,0,0,0,2716,6742,705163
+Conference League,2024/25,first-round,18/07/2024,20:45,si,STATUS_FINAL_AET,Derry City,Magpies,2,1,2,1,2,1,0,0,0,0,0,0,2712,21529,705165
+Conference League,2024/25,first-round,18/07/2024,20:45,si,STATUS_FULL_TIME,Linfield,Stjarnan,3,2,2,2,2,2,0,0,0,0,0,0,2555,7949,705175
+Conference League,2024/25,first-round,18/07/2024,20:45,si,STATUS_FULL_TIME,Tre Penne,Floriana FC,1,1,1,1,1,1,0,0,0,0,0,0,8592,7857,705149
+Conference League,2024/25,first-round,18/07/2024,21:00,si,STATUS_FULL_TIME,Buducnost Podgorica,KF Malisheva,3,0,3,0,3,0,0,0,0,0,0,0,7822,22287,705167
+Conference League,2024/25,first-round,18/07/2024,21:00,si,STATUS_FINAL_PEN,FK Sarajevo,Aktobe,2,3,2,3,2,3,0,0,0,0,0,0,551,6733,705181
+Conference League,2024/25,first-round,18/07/2024,21:15,si,STATUS_FULL_TIME,Breidablik,Tikvesh,3,1,2,1,2,1,0,0,0,0,0,0,8250,22289,705189
+Champions League,2024/25,second-round,23/07/2024,17:00,si,STATUS_FULL_TIME,Bodo/Glimt,Rigas Futbola Skola,4,0,4,0,4,0,0,0,0,0,100,0,2980,12030,715880
+Champions League,2024/25,second-round,23/07/2024,17:30,si,STATUS_FULL_TIME,Panevezys,Jagiellonia Bialystok,0,4,0,4,0,4,0,0,0,0,0,100,21004,11505,715882
+Champions League,2024/25,second-round,23/07/2024,18:00,si,STATUS_FULL_TIME,Lincoln Red Imps,FK Qarabag,0,2,0,2,0,2,0,0,0,0,0,100,17856,10414,715883
+Conference League,2024/25,second-round,23/07/2024,18:00,si,STATUS_FULL_TIME,Ballkani,Hamrun Spartans,0,0,0,0,0,0,0,0,0,0,0,0,21526,7858,716273
+Champions League,2024/25,second-round,23/07/2024,19:00,si,STATUS_FULL_TIME,Apoel Nicosia,Petrocub,1,0,1,0,1,0,0,0,0,0,0,0,2497,19250,715892
+Champions League,2024/25,second-round,23/07/2024,19:00,si,STATUS_FULL_TIME,Malmö FF,KI Klaksvik,4,1,4,1,4,1,0,0,0,0,100,0,2720,2547,715891
+Conference League,2024/25,second-round,23/07/2024,19:00,si,STATUS_FULL_TIME,FC Differdange 03,Ordabasy Shymkent,1,0,1,0,1,0,0,0,0,0,0,0,7759,7962,716263
+Champions League,2024/25,second-round,23/07/2024,19:30,si,STATUS_FULL_TIME,FCSB,Maccabi Tel-Aviv,1,1,1,1,1,1,0,0,0,0,100,0,484,524,715896
+Champions League,2024/25,second-round,23/07/2024,20:00,si,STATUS_FULL_TIME,Dynamo Kyiv,Partizan Belgrade,6,2,6,2,6,2,0,0,0,0,100,0,440,541,715897
+Champions League,2024/25,second-round,23/07/2024,20:00,si,STATUS_FULL_TIME,Ferencvaros,The New Saints,5,0,13,5,7,1,3,1,6,9,63.3,36.7,622,576,715898
+Champions League,2024/25,second-round,23/07/2024,20:00,si,STATUS_FULL_TIME,UE Santa Coloma,FC Midtjylland,0,3,10,17,3,9,4,6,8,13,44,56,11441,572,715902
+Champions League,2024/25,second-round,23/07/2024,20:30,si,STATUS_FULL_TIME,FC Lugano,Fenerbahce,3,4,12,10,4,6,2,4,12,8,55.1,44.9,7672,436,715903
+Champions League,2024/25,second-round,23/07/2024,21:00,si,STATUS_FULL_TIME,Shamrock Rovers,Sparta Prague,0,2,0,2,0,2,0,0,0,0,0,100,2564,433,715886
+Conference League,2024/25,second-round,23/07/2024,21:00,si,STATUS_FULL_TIME,AC Virtus,Flora,0,0,0,0,0,0,0,0,0,0,0,0,22292,12146,716267
+Conference League,2024/25,second-round,24/07/2024,17:00,si,STATUS_FULL_TIME,Struga,Pyunik,2,1,2,1,2,1,0,0,0,0,0,0,20999,2493,716269
+Conference League,2024/25,second-round,24/07/2024,18:00,si,STATUS_FULL_TIME,Riga FC,Slask Wroclaw,1,0,1,0,1,0,0,0,0,0,0,0,19246,9659,716325
+Conference League,2024/25,second-round,24/07/2024,19:00,si,STATUS_FULL_TIME,Dinamo Batumi,Decic,0,2,0,2,0,2,0,0,0,0,0,0,12344,21001,716271
+Champions League,2024/25,second-round,24/07/2024,19:30,si,STATUS_FULL_TIME,PAOK,Borac Banja Luka,3,2,3,2,3,2,0,0,0,0,66.7,33.3,605,20710,715904
+Champions League,2024/25,second-round,24/07/2024,20:00,si,STATUS_FULL_TIME,Ludogorets Razgrad,Dinamo Minsk,2,0,2,0,2,0,0,0,0,0,100,0,13018,2539,715887
+Conference League,2024/25,second-round,24/07/2024,20:00,si,STATUS_FULL_TIME,AEK Athens,Inter D'Escaldes,4,3,4,2,4,2,0,0,0,0,0,0,887,20703,716285
+Champions League,2024/25,second-round,24/07/2024,20:15,si,STATUS_FULL_TIME,NK Celje,Slovan Bratislava,1,1,1,1,1,1,0,0,0,0,0,100,3362,521,715890
+Conference League,2024/25,second-round,24/07/2024,20:45,si,STATUS_FULL_TIME,Cliftonville,FK Auda,1,2,1,2,1,2,0,0,0,0,0,0,7597,21948,716331
+Conference League,2024/25,second-round,25/07/2024,17:00,si,STATUS_FULL_TIME,KuPS Kuopio,Tromso,0,1,0,1,0,1,0,0,0,0,0,0,8169,5270,716287
+Conference League,2024/25,second-round,25/07/2024,18:00,si,STATUS_FULL_TIME,FC Ilves,Austria Vienna,2,1,11,17,5,4,1,11,15,13,35.1,64.9,19248,1382,716293
+Conference League,2024/25,second-round,25/07/2024,18:00,si,STATUS_FULL_TIME,FC Milsami,FC Astana,1,1,1,1,1,1,0,0,0,0,0,0,11440,12124,716359
+Conference League,2024/25,second-round,25/07/2024,18:00,si,STATUS_FULL_TIME,FC Noah,Sliema Wanderers,7,0,6,0,6,0,0,0,0,0,0,0,20712,543,716337
+Conference League,2024/25,second-round,25/07/2024,18:00,si,STATUS_FULL_TIME,Iberia 1999,Partizani Tirana,2,0,2,0,2,0,0,0,0,0,0,0,20025,2551,716357
+Conference League,2024/25,second-round,25/07/2024,18:00,si,STATUS_FULL_TIME,Magpies,F.C. København,0,3,3,24,0,8,1,10,8,7,24,76,21529,909,716303
+Conference League,2024/25,second-round,25/07/2024,18:00,si,STATUS_FULL_TIME,Mlada Boleslav,TransINVEST Vilnius,2,0,2,0,2,0,0,0,0,0,0,0,6758,22293,716335
+Conference League,2024/25,second-round,25/07/2024,18:00,si,STATUS_FULL_TIME,Sumgayit,Fehérvár,1,2,8,22,3,7,2,4,8,12,50.3,49.7,20715,6740,716291
+Conference League,2024/25,second-round,25/07/2024,18:00,si,STATUS_FULL_TIME,Zalgiris Vilnius,Pafos,2,1,2,0,2,0,0,0,0,0,0,0,523,22281,716311
+Europa League,2024/25,second-round,25/07/2024,18:00,si,STATUS_FULL_TIME,Wisla Krakow,Rapid Vienna,1,2,20,14,6,4,7,4,11,14,50.9,49.1,488,519,716245
+Conference League,2024/25,second-round,25/07/2024,18:30,si,STATUS_FULL_TIME,Go Ahead Eagles,SK Brann,0,0,13,12,2,3,5,3,6,11,40.8,59.2,3706,620,716275
+Conference League,2024/25,second-round,25/07/2024,18:30,si,STATUS_FULL_TIME,Omonia Nicosia,Torpedo Kutaisi,3,1,3,1,3,1,0,0,0,0,0,0,617,612,716277
+Conference League,2024/25,second-round,25/07/2024,18:30,si,STATUS_FULL_TIME,Zira FK,Dunajska Streda,4,0,4,0,4,0,0,0,0,0,0,0,18754,19247,716297
+Europa League,2024/25,second-round,25/07/2024,18:30,si,STATUS_FULL_TIME,MFK Ruzomberok,Trabzonspor,0,2,0,2,0,2,0,0,0,0,0,100,12207,997,716246
+Conference League,2024/25,second-round,25/07/2024,18:45,si,STATUS_FULL_TIME,Zimbru Chisinau,Ararat-Armenia,0,3,0,3,0,3,0,0,0,0,0,0,540,20024,716347
+Conference League,2024/25,second-round,25/07/2024,19:00,si,STATUS_FULL_TIME,Banik Ostrava,FC Urartu,5,1,5,1,5,1,0,0,0,0,0,0,2959,2719,716339
+Conference League,2024/25,second-round,25/07/2024,19:00,si,STATUS_FULL_TIME,Brøndby IF,Llapi,6,0,21,3,7,0,7,2,15,13,70.3,29.7,575,21000,716343
+Conference League,2024/25,second-round,25/07/2024,19:00,si,STATUS_FULL_TIME,Djurgården,Progres Niederkorn,3,0,3,0,3,0,0,0,0,0,0,0,2339,17861,716313
+Conference League,2024/25,second-round,25/07/2024,19:00,si,STATUS_FULL_TIME,F91 Dudelange,BK Häcken,2,6,2,6,2,6,0,0,0,0,0,0,2512,7834,716317
+Conference League,2024/25,second-round,25/07/2024,19:00,si,STATUS_FULL_TIME,FC Zürich,Shelbourne,3,0,26,1,8,1,9,1,13,6,66,34,3019,20297,716341
+Conference League,2024/25,second-round,25/07/2024,19:00,si,STATUS_FULL_TIME,Floriana FC,Vitória de Guimaraes,0,1,0,1,0,1,0,0,0,0,0,0,7857,5309,716327
+Conference League,2024/25,second-round,25/07/2024,19:00,si,STATUS_FULL_TIME,Hapoel Be'er,Cherno More,0,0,0,0,0,0,0,0,0,0,0,0,13083,7837,716319
+Conference League,2024/25,second-round,25/07/2024,19:00,si,STATUS_FULL_TIME,Olimpija Ljubljana,Polissya Zhitomir,2,0,2,0,2,0,0,0,0,0,0,0,500,22294,716283
+Conference League,2024/25,second-round,25/07/2024,19:00,si,STATUS_FULL_TIME,SC Dnipro-1,Puskas Akademia,0,3,,,,,,,,,,,21633,20711,716309
+Europa League,2024/25,second-round,25/07/2024,19:00,si,STATUS_FULL_TIME,Corvinul Hunedoara,Rijeka,0,0,0,0,0,0,0,0,0,0,0,0,22282,2988,716249
+Europa League,2024/25,second-round,25/07/2024,19:00,si,STATUS_FULL_TIME,Molde,Silkeborg IF,3,1,15,14,4,4,6,5,11,6,50.6,49.4,2715,607,716247
+Europa League,2024/25,second-round,25/07/2024,19:00,si,STATUS_FULL_TIME,Sheriff Tiraspol,IF Elfsborg,0,1,0,1,0,1,0,0,0,0,0,0,614,529,716248
+Conference League,2024/25,second-round,25/07/2024,19:15,si,STATUS_FULL_TIME,Maccabi Haifa,Sabah FK,0,3,0,3,0,3,0,0,0,0,0,0,611,21922,716353
+Conference League,2024/25,second-round,25/07/2024,19:30,si,STATUS_FULL_TIME,CFR Cluj-Napoca,Neman Grodno,0,0,0,0,0,0,0,0,0,0,0,0,5260,12305,716345
+Conference League,2024/25,second-round,25/07/2024,19:30,si,STATUS_FULL_TIME,CSKA 1948 Sofia,Buducnost Podgorica,1,0,1,0,1,0,0,0,0,0,0,0,21947,7822,716295
+Conference League,2024/25,second-round,25/07/2024,19:45,si,STATUS_FULL_TIME,Istanbul Basaksehir,Fiorita,6,1,6,1,6,1,0,0,0,0,0,0,7914,8594,716305
+Conference League,2024/25,second-round,25/07/2024,20:00,si,STATUS_FULL_TIME,KAA Gent,Víkingur,4,1,4,1,4,1,0,0,0,0,0,0,3611,13238,716315
+Conference League,2024/25,second-round,25/07/2024,20:00,si,STATUS_FULL_TIME,Osijek,FC Levadia Tallinn,5,1,5,1,5,1,0,0,0,0,0,0,567,2540,716281
+Conference League,2024/25,second-round,25/07/2024,20:00,si,STATUS_FULL_TIME,Paksi SE,AEK Larnaca,3,0,3,0,3,0,0,0,0,0,0,0,11523,4039,716355
+Conference League,2024/25,second-round,25/07/2024,20:00,si,STATUS_FULL_TIME,Radnicki 1923,Mornar,1,0,1,0,1,0,0,0,0,0,0,0,22295,22290,716349
+Conference League,2024/25,second-round,25/07/2024,20:00,si,STATUS_FULL_TIME,St. Gallen,Tobol Kostanay,4,1,19,11,13,3,10,2,11,15,57.8,42.2,557,6748,716333
+Europa League,2024/25,second-round,25/07/2024,20:00,si,STATUS_FULL_TIME,Panathinaikos,Botev Plovdiv,2,1,2,1,2,1,0,0,0,0,50,50,443,7293,716250
+Conference League,2024/25,second-round,25/07/2024,20:15,si,STATUS_FULL_TIME,NK Maribor,Universitatea Craiova,2,0,2,0,2,0,0,0,0,0,0,0,619,8089,716299
+Europa League,2024/25,second-round,25/07/2024,20:30,si,STATUS_FULL_TIME,Ajax Amsterdam,Vojvodina,1,0,19,12,10,3,10,3,12,14,63.7,36.3,139,7825,716251
+Europa League,2024/25,second-round,25/07/2024,20:30,si,STATUS_FULL_TIME,Kilmarnock,Cercle Brugge KSV,1,1,1,1,1,1,0,0,0,0,50,50,260,3610,716252
+Conference League,2024/25,second-round,25/07/2024,20:45,si,STATUS_FULL_TIME,Legia Warsaw,Caernarfon,6,0,5,0,5,0,0,0,0,0,0,0,555,7590,716307
+Conference League,2024/25,second-round,25/07/2024,20:45,si,STATUS_FULL_TIME,St Patrick's Athletic,FC Vaduz,3,1,3,1,3,1,0,0,0,0,0,0,7588,562,716301
+Conference League,2024/25,second-round,25/07/2024,20:45,si,STATUS_FULL_TIME,Valur Reykjavik,St Mirren,0,0,0,0,0,0,0,0,0,0,0,0,6742,250,716289
+Conference League,2024/25,second-round,25/07/2024,20:45,si,STATUS_FULL_TIME,Vikingur Reykjavik,Egnatia,0,1,0,1,0,1,0,0,0,0,0,0,8249,21943,716265
+Conference League,2024/25,second-round,25/07/2024,21:00,si,STATUS_FULL_TIME,FK Sarajevo,FC Spartak Trnava,0,0,0,0,0,0,0,0,0,0,0,0,551,3929,716351
+Conference League,2024/25,second-round,25/07/2024,21:00,si,STATUS_FULL_TIME,Hajduk Split,HB Torshavn,2,0,2,0,2,0,0,0,0,0,0,0,489,566,716321
+Conference League,2024/25,second-round,25/07/2024,21:00,si,STATUS_FULL_TIME,Stjarnan,Paide Linnameeskond,2,1,2,1,2,1,0,0,0,0,0,0,7949,20718,716329
+Conference League,2024/25,second-round,25/07/2024,21:00,si,STATUS_FULL_TIME,Zrinjski Mostar,NK Bravo,0,1,0,1,0,1,0,0,0,0,0,0,5239,22288,716323
+Conference League,2024/25,second-round,25/07/2024,21:15,si,STATUS_FULL_TIME,Breidablik,Drita Gjilan,1,2,1,2,1,2,0,0,0,0,0,0,8250,19243,716279
+Europa League,2024/25,second-round,25/07/2024,21:30,si,STATUS_FULL_TIME,Braga,Maccabi Petah-Tikva,2,0,2,0,2,0,0,0,0,0,0,0,2994,2983,716253
+Conference League,2024/25,second-round,30/07/2024,17:00,si,STATUS_FULL_TIME,Drita Gjilan,Breidablik,1,0,1,0,1,0,0,0,0,0,0,0,19243,8250,716280
+Champions League,2024/25,second-round,30/07/2024,18:00,si,STATUS_FULL_TIME,FK Qarabag,Lincoln Red Imps,5,0,5,0,5,0,0,0,0,0,100,0,10414,17856,715884
+Conference League,2024/25,second-round,30/07/2024,18:00,si,STATUS_FINAL_AET,Flora,AC Virtus,5,2,5,2,5,2,0,0,0,0,0,0,12146,22292,716268
+Conference League,2024/25,second-round,30/07/2024,18:00,si,STATUS_FULL_TIME,Pyunik,Struga,3,1,3,1,3,1,0,0,0,0,0,0,2493,20999,716270
+Champions League,2024/25,second-round,30/07/2024,19:00,si,STATUS_FULL_TIME,Fenerbahce,FC Lugano,2,1,10,10,4,4,4,3,10,20,45.6,54.4,436,7672,715906
+Champions League,2024/25,second-round,30/07/2024,19:00,si,STATUS_FULL_TIME,Petrocub,Apoel Nicosia,1,1,1,1,1,1,0,0,0,0,50,50,19250,2497,715894
+Champions League,2024/25,second-round,30/07/2024,19:00,si,STATUS_FULL_TIME,Sparta Prague,Shamrock Rovers,4,2,4,2,4,2,0,0,0,0,66.7,33.3,433,2564,715889
+Champions League,2024/25,second-round,30/07/2024,20:00,si,STATUS_FULL_TIME,The New Saints,Ferencvaros,1,2,6,5,2,2,0,2,12,17,40.5,59.5,576,622,715899
+Conference League,2024/25,second-round,30/07/2024,20:00,si,STATUS_FULL_TIME,Hamrun Spartans,Ballkani,0,2,0,2,0,2,0,0,0,0,0,0,7858,21526,716274
+Champions League,2024/25,second-round,30/07/2024,20:30,si,STATUS_FULL_TIME,Slovan Bratislava,NK Celje,5,0,5,0,5,0,0,0,0,0,100,0,521,3362,715895
+Champions League,2024/25,second-round,30/07/2024,20:45,si,STATUS_FULL_TIME,KI Klaksvik,Malmö FF,3,2,3,2,3,2,0,0,0,0,50,50,2547,2720,715893
+Conference League,2024/25,second-round,30/07/2024,21:00,si,STATUS_FULL_TIME,Decic,Dinamo Batumi,0,0,0,0,0,0,0,0,0,0,0,0,21001,12344,716272
+Conference League,2024/25,second-round,31/07/2024,17:00,si,STATUS_FULL_TIME,FK Auda,Cliftonville,2,0,2,0,2,0,0,0,0,0,0,0,21948,7597,716332
+Champions League,2024/25,second-round,31/07/2024,19:00,si,STATUS_FULL_TIME,Rigas Futbola Skola,Bodo/Glimt,1,3,1,3,1,3,0,0,0,0,33.3,66.7,12030,2980,715881
+Conference League,2024/25,second-round,31/07/2024,19:00,si,STATUS_FULL_TIME,BK Häcken,F91 Dudelange,6,1,6,1,6,1,0,0,0,0,0,0,7834,2512,716318
+Conference League,2024/25,second-round,31/07/2024,19:00,si,STATUS_FULL_TIME,Fehérvár,Sumgayit,0,0,19,9,3,1,10,5,14,11,34.4,65.6,6740,20715,716292
+Champions League,2024/25,second-round,31/07/2024,19:15,si,STATUS_FULL_TIME,FC Midtjylland,UE Santa Coloma,1,0,20,6,2,3,5,4,13,23,64.4,35.6,572,11441,715907
+Champions League,2024/25,second-round,31/07/2024,20:00,si,STATUS_FULL_TIME,Maccabi Tel-Aviv,FCSB,0,1,0,1,0,1,0,0,0,0,0,100,524,484,715900
+Champions League,2024/25,second-round,31/07/2024,20:00,si,STATUS_FULL_TIME,Partizan Belgrade,Dynamo Kyiv,0,3,0,3,0,3,0,0,0,0,0,100,541,440,715901
+Champions League,2024/25,second-round,31/07/2024,20:30,si,STATUS_FULL_TIME,Jagiellonia Bialystok,Panevezys,3,1,2,1,2,1,0,0,0,0,0,0,11505,21004,715885
+Conference League,2024/25,second-round,31/07/2024,20:30,si,STATUS_FINAL_PEN,Austria Vienna,FC Ilves,4,3,11,15,6,8,2,6,15,8,39.2,60.8,1382,19248,716294
+Conference League,2024/25,second-round,31/07/2024,20:30,si,STATUS_FULL_TIME,FC Spartak Trnava,FK Sarajevo,3,0,3,0,3,0,0,0,0,0,0,0,3929,551,716352
+Champions League,2024/25,second-round,31/07/2024,20:45,si,STATUS_FULL_TIME,Dinamo Minsk,Ludogorets Razgrad,1,0,1,0,1,0,0,0,0,0,100,0,2539,13018,715888
+Conference League,2024/25,second-round,31/07/2024,20:45,si,STATUS_FINAL_PEN,Mornar,Radnicki 1923,2,1,2,1,2,1,0,0,0,0,0,0,22290,22295,716350
+Champions League,2024/25,second-round,31/07/2024,21:00,si,STATUS_FULL_TIME,Borac Banja Luka,PAOK,0,1,0,1,0,1,0,0,0,0,0,100,20710,605,715905
+Conference League,2024/25,second-round,01/08/2024,16:00,si,STATUS_FULL_TIME,FC Astana,FC Milsami,1,0,1,0,1,0,0,0,0,0,0,0,12124,11440,716360
+Conference League,2024/25,second-round,01/08/2024,17:00,si,STATUS_FULL_TIME,Ararat-Armenia,Zimbru Chisinau,3,1,3,1,3,1,0,0,0,0,0,0,20024,540,716348
+Conference League,2024/25,second-round,01/08/2024,17:00,si,STATUS_FULL_TIME,FC Urartu,Banik Ostrava,0,2,0,2,0,2,0,0,0,0,0,0,2719,2959,716340
+Conference League,2024/25,second-round,01/08/2024,17:00,si,STATUS_FULL_TIME,Llapi,Brøndby IF,2,2,14,16,5,6,6,8,15,13,40.6,59.4,21000,575,716344
+Conference League,2024/25,second-round,01/08/2024,17:00,si,STATUS_FULL_TIME,NK Bravo,Zrinjski Mostar,1,3,1,3,1,3,0,0,0,0,0,0,22288,5239,716324
+Conference League,2024/25,second-round,01/08/2024,17:00,si,STATUS_FINAL_PEN,Ordabasy Shymkent,FC Differdange 03,4,3,3,3,3,3,0,0,0,0,0,0,7962,7759,716264
+Conference League,2024/25,second-round,01/08/2024,18:00,si,STATUS_FULL_TIME,AEK Larnaca,Paksi SE,0,2,0,2,0,2,0,0,0,0,0,0,4039,11523,716356
+Conference League,2024/25,second-round,01/08/2024,18:00,si,STATUS_FULL_TIME,FC Levadia Tallinn,Osijek,0,1,0,1,0,1,0,0,0,0,0,0,2540,567,716282
+Conference League,2024/25,second-round,01/08/2024,18:00,si,STATUS_FINAL_AET,Pafos,Zalgiris Vilnius,3,0,3,0,3,0,0,0,0,0,0,0,22281,523,716312
+Conference League,2024/25,second-round,01/08/2024,18:00,si,STATUS_FULL_TIME,Polissya Zhitomir,Olimpija Ljubljana,1,2,1,2,1,2,0,0,0,0,0,0,22294,500,716284
+Conference League,2024/25,second-round,01/08/2024,18:00,si,STATUS_FINAL_PEN,Sabah FK,Maccabi Haifa,3,6,3,6,3,6,0,0,0,0,0,0,21922,611,716354
+Conference League,2024/25,second-round,01/08/2024,18:00,si,STATUS_FULL_TIME,Tobol Kostanay,St. Gallen,0,1,9,14,2,5,2,3,13,14,40.6,59.4,6748,557,716334
+Conference League,2024/25,second-round,01/08/2024,18:00,si,STATUS_FULL_TIME,TransINVEST Vilnius,Mlada Boleslav,0,1,0,1,0,1,0,0,0,0,0,0,22293,6758,716336
+Conference League,2024/25,second-round,01/08/2024,18:30,si,STATUS_FULL_TIME,Inter D'Escaldes,AEK Athens,0,4,0,4,0,4,0,0,0,0,0,0,20703,887,716286
+Conference League,2024/25,second-round,01/08/2024,18:30,si,STATUS_FULL_TIME,Paide Linnameeskond,Stjarnan,4,0,4,0,4,0,0,0,0,0,0,0,20718,7949,716330
+Conference League,2024/25,second-round,01/08/2024,19:00,si,STATUS_FULL_TIME,Caernarfon,Legia Warsaw,0,5,0,5,0,5,0,0,0,0,0,0,7590,555,716308
+Conference League,2024/25,second-round,01/08/2024,19:00,si,STATUS_FULL_TIME,F.C. København,Magpies,5,1,30,5,9,1,8,0,6,8,70.9,29.1,909,21529,716304
+Conference League,2024/25,second-round,01/08/2024,19:00,si,STATUS_FULL_TIME,Progres Niederkorn,Djurgården,1,0,1,0,1,0,0,0,0,0,0,0,17861,2339,716314
+Conference League,2024/25,second-round,01/08/2024,19:00,si,STATUS_FULL_TIME,SK Brann,Go Ahead Eagles,2,1,12,6,4,6,8,3,15,15,53.1,46.9,620,3706,716276
+Conference League,2024/25,second-round,01/08/2024,19:00,si,STATUS_FULL_TIME,Sliema Wanderers,FC Noah,0,0,0,0,0,0,0,0,0,0,0,0,543,20712,716338
+Conference League,2024/25,second-round,01/08/2024,19:00,si,STATUS_FULL_TIME,Torpedo Kutaisi,Omonia Nicosia,1,2,1,2,1,2,0,0,0,0,0,0,612,617,716278
+Conference League,2024/25,second-round,01/08/2024,19:00,si,STATUS_FULL_TIME,Tromso,KuPS Kuopio,1,0,1,0,1,0,0,0,0,0,0,0,5270,8169,716288
+Conference League,2024/25,second-round,01/08/2024,19:00,si,STATUS_FULL_TIME,Universitatea Craiova,NK Maribor,3,2,3,2,3,2,0,0,0,0,0,0,8089,619,716300
+Europa League,2024/25,second-round,01/08/2024,19:00,si,STATUS_FULL_TIME,IF Elfsborg,Sheriff Tiraspol,2,0,20,5,8,1,7,3,20,9,53.7,46.3,529,614,716255
+Europa League,2024/25,second-round,01/08/2024,19:15,si,STATUS_FULL_TIME,Silkeborg IF,Molde,3,2,9,13,4,6,5,8,8,11,63.4,36.6,607,2715,716256
+Conference League,2024/25,second-round,01/08/2024,19:30,si,STATUS_FULL_TIME,Cherno More,Hapoel Be'er,1,2,1,2,1,2,0,0,0,0,0,0,7837,13083,716320
+Conference League,2024/25,second-round,01/08/2024,19:30,si,STATUS_FULL_TIME,FC Vaduz,St Patrick's Athletic,2,2,2,2,2,2,0,0,0,0,0,0,562,7588,716302
+Europa League,2024/25,second-round,01/08/2024,19:30,si,STATUS_FULL_TIME,Maccabi Petah-Tikva,Braga,0,5,0,4,0,4,0,0,0,0,0,100,2983,2994,716262
+Europa League,2024/25,second-round,01/08/2024,19:30,si,STATUS_FULL_TIME,Trabzonspor,MFK Ruzomberok,1,0,1,0,1,0,0,0,0,0,100,0,997,12207,716257
+Conference League,2024/25,second-round,01/08/2024,20:00,si,STATUS_FULL_TIME,Egnatia,Vikingur Reykjavik,0,2,0,1,0,1,0,0,0,0,0,0,21943,8249,716266
+Conference League,2024/25,second-round,01/08/2024,20:00,si,STATUS_FULL_TIME,Neman Grodno,CFR Cluj-Napoca,0,5,0,5,0,5,0,0,0,0,0,0,12305,5260,716346
+Conference League,2024/25,second-round,01/08/2024,20:00,si,STATUS_FULL_TIME,Partizani Tirana,Iberia 1999,0,0,0,0,0,0,0,0,0,0,0,0,2551,20025,716358
+Conference League,2024/25,second-round,01/08/2024,20:00,si,STATUS_FULL_TIME,Víkingur,KAA Gent,0,3,0,3,0,3,0,0,0,0,0,0,13238,3611,716316
+Europa League,2024/25,second-round,01/08/2024,20:00,si,STATUS_FULL_TIME,Botev Plovdiv,Panathinaikos,0,4,0,3,0,3,0,0,0,0,0,100,7293,443,716254
+Europa League,2024/25,second-round,01/08/2024,20:00,si,STATUS_FULL_TIME,Cercle Brugge KSV,Kilmarnock,1,0,2,0,2,0,0,0,0,0,0,0,3610,260,716258
+Europa League,2024/25,second-round,01/08/2024,20:00,si,STATUS_FULL_TIME,Rijeka,Corvinul Hunedoara,1,0,1,1,1,0,0,0,0,0,100,0,2988,22282,716259
+Europa League,2024/25,second-round,01/08/2024,20:00,si,STATUS_FULL_TIME,Vojvodina,Ajax Amsterdam,1,3,5,19,1,9,1,9,9,18,46.4,53.6,7825,139,716260
+Conference League,2024/25,second-round,01/08/2024,20:30,si,STATUS_FULL_TIME,Dunajska Streda,Zira FK,1,2,1,2,1,2,0,0,0,0,0,0,19247,18754,716298
+Conference League,2024/25,second-round,01/08/2024,20:30,si,STATUS_FULL_TIME,Slask Wroclaw,Riga FC,3,1,3,1,3,1,0,0,0,0,0,0,9659,19246,716326
+Europa League,2024/25,second-round,01/08/2024,20:30,si,STATUS_FULL_TIME,Rapid Vienna,Wisla Krakow,6,1,25,10,14,5,7,1,12,5,57.9,42.1,519,488,716261
+Conference League,2024/25,second-round,01/08/2024,20:45,si,STATUS_FULL_TIME,Fiorita,Istanbul Basaksehir,0,4,0,4,0,4,0,0,0,0,0,0,8594,7914,716306
+Conference League,2024/25,second-round,01/08/2024,20:45,si,STATUS_FULL_TIME,Shelbourne,FC Zürich,0,0,8,19,0,6,3,3,8,14,33.9,66.1,20297,3019,716342
+Conference League,2024/25,second-round,01/08/2024,20:45,si,STATUS_FULL_TIME,St Mirren,Valur Reykjavik,4,1,4,1,4,1,0,0,0,0,0,0,250,6742,716290
+Conference League,2024/25,second-round,01/08/2024,21:00,si,STATUS_FINAL_AET,Buducnost Podgorica,CSKA 1948 Sofia,1,1,1,1,1,1,0,0,0,0,0,0,7822,21947,716296
+Conference League,2024/25,second-round,01/08/2024,21:00,si,STATUS_FULL_TIME,HB Torshavn,Hajduk Split,0,0,0,0,0,0,0,0,0,0,0,0,566,489,716322
+Conference League,2024/25,second-round,01/08/2024,21:00,si,STATUS_FULL_TIME,Puskas Akademia,SC Dnipro-1,0,0,,,,,,,,,,,20711,21633,716310
+Conference League,2024/25,second-round,01/08/2024,21:15,si,STATUS_FULL_TIME,Vitória de Guimaraes,Floriana FC,4,0,4,0,4,0,0,0,0,0,0,0,5309,7857,716328
+Champions League,2024/25,third-round,06/08/2024,18:00,si,STATUS_FULL_TIME,FK Qarabag,Ludogorets Razgrad,1,2,1,2,1,2,0,0,0,0,0,100,10414,13018,717729
+Conference League,2024/25,third-round,06/08/2024,18:00,si,STATUS_FULL_TIME,FC Noah,AEK Athens,3,1,3,1,3,1,0,0,0,0,0,0,20712,887,717803
+Europa League,2024/25,third-round,06/08/2024,18:30,si,STATUS_FULL_TIME,Panevezys,Maccabi Tel-Aviv,1,2,1,2,1,2,0,0,0,0,33.3,66.7,21004,524,717753
+Champions League,2024/25,third-round,06/08/2024,19:00,si,STATUS_FULL_TIME,Malmö FF,PAOK,2,2,2,2,2,2,0,0,0,0,33.3,66.7,2720,605,717731
+Europa League,2024/25,third-round,06/08/2024,19:00,si,STATUS_FULL_TIME,Petrocub,The New Saints,1,0,0,0,0,0,0,0,0,0,0,0,19250,576,717743
+Champions League,2024/25,third-round,06/08/2024,19:15,si,STATUS_FULL_TIME,FC Midtjylland,Ferencvaros,2,0,17,15,7,2,5,9,10,13,38.7,61.3,572,622,717733
+Champions League,2024/25,third-round,06/08/2024,20:00,si,STATUS_FULL_TIME,Dynamo Kyiv,Rangers,1,1,1,1,1,1,0,0,0,0,50,50,440,257,717340
+Champions League,2024/25,third-round,06/08/2024,20:00,si,STATUS_FULL_TIME,Sparta Prague,FCSB,1,1,1,1,1,1,0,0,0,0,50,50,433,484,717735
+Champions League,2024/25,third-round,06/08/2024,20:30,si,STATUS_FULL_TIME,Lille,Fenerbahce,2,1,15,9,6,5,2,3,14,10,57.1,42.9,166,436,717337
+Champions League,2024/25,third-round,06/08/2024,20:45,si,STATUS_FULL_TIME,RB Salzburg,FC Twente,2,1,14,6,5,3,5,2,6,13,65.5,34.5,2790,152,717338
+Champions League,2024/25,third-round,07/08/2024,19:00,si,STATUS_FULL_TIME,Slavia Prague,Union St.-Gilloise,3,1,3,0,3,0,0,0,0,0,100,0,494,5807,717339
+Conference League,2024/25,third-round,07/08/2024,19:00,si,STATUS_FULL_TIME,BK Häcken,Paide Linnameeskond,6,1,6,1,6,1,0,0,0,0,0,0,7834,20718,717766
+Conference League,2024/25,third-round,07/08/2024,19:00,si,STATUS_FULL_TIME,F.C. København,Banik Ostrava,1,0,18,10,2,6,4,0,6,11,67.6,32.4,909,2959,717779
+Conference League,2024/25,third-round,07/08/2024,19:00,si,STATUS_FULL_TIME,Paksi SE,Mornar,3,0,11,8,5,4,1,5,20,9,62,38,11523,22290,717768
+Champions League,2024/25,third-round,07/08/2024,20:30,si,STATUS_FULL_TIME,Slovan Bratislava,Apoel Nicosia,2,0,1,0,1,0,0,0,0,0,100,0,521,2497,717737
+Conference League,2024/25,third-round,07/08/2024,20:30,si,STATUS_FULL_TIME,St. Gallen,Slask Wroclaw,2,0,13,23,6,8,3,7,11,5,54.4,45.6,557,9659,717795
+Champions League,2024/25,third-round,07/08/2024,20:45,si,STATUS_FULL_TIME,Jagiellonia Bialystok,Bodo/Glimt,0,1,0,0,0,0,0,0,0,0,0,0,11505,2980,717739
+Conference League,2024/25,third-round,08/08/2024,17:00,si,STATUS_FULL_TIME,Ararat-Armenia,Puskas Akademia,0,1,14,10,5,4,7,3,11,20,54.9,45.1,20024,20711,717331
+Conference League,2024/25,third-round,08/08/2024,17:00,si,STATUS_FULL_TIME,FK Auda,Drita Gjilan,1,0,1,0,1,0,0,0,0,0,0,0,21948,19243,717741
+Conference League,2024/25,third-round,08/08/2024,17:00,si,STATUS_FULL_TIME,Ordabasy Shymkent,Pyunik,0,1,0,1,0,1,0,0,0,0,0,0,7962,2493,717771
+Conference League,2024/25,third-round,08/08/2024,18:00,si,STATUS_FULL_TIME,FC Ilves,Djurgården,1,1,1,1,1,1,0,0,0,0,0,0,19248,2339,717769
+Conference League,2024/25,third-round,08/08/2024,18:00,si,STATUS_FULL_TIME,HJK Helsinki,Decic,1,0,1,0,1,0,0,0,0,0,0,0,502,21001,717333
+Conference League,2024/25,third-round,08/08/2024,18:00,si,STATUS_FULL_TIME,Iberia 1999,Istanbul Basaksehir,0,1,0,1,0,1,0,0,0,0,0,0,20025,7914,717809
+Conference League,2024/25,third-round,08/08/2024,18:00,si,STATUS_FULL_TIME,Mlada Boleslav,Hapoel Be'er,1,1,1,1,1,1,0,0,0,0,0,0,6758,13083,717805
+Conference League,2024/25,third-round,08/08/2024,18:30,si,STATUS_FULL_TIME,MFK Ruzomberok,Hajduk Split,0,0,0,0,0,0,0,0,0,0,0,0,12207,489,717789
+Conference League,2024/25,third-round,08/08/2024,18:30,si,STATUS_FULL_TIME,Silkeborg IF,KAA Gent,2,2,2,1,2,1,0,0,0,0,0,0,607,3611,717781
+Conference League,2024/25,third-round,08/08/2024,19:00,si,STATUS_FULL_TIME,Brøndby IF,Legia Warsaw,2,3,13,9,5,5,1,1,15,7,64,36,575,555,717813
+Conference League,2024/25,third-round,08/08/2024,19:00,si,STATUS_FULL_TIME,FC Zürich,Vitória de Guimaraes,0,3,9,20,1,6,4,12,14,10,36.7,63.3,3019,5309,717815
+Conference League,2024/25,third-round,08/08/2024,19:00,si,STATUS_FULL_TIME,Olimpija Ljubljana,Sheriff Tiraspol,3,0,3,0,3,0,0,0,0,0,0,0,500,614,717801
+Conference League,2024/25,third-round,08/08/2024,19:00,si,STATUS_FULL_TIME,Omonia Nicosia,Fehérvár,1,0,26,8,7,3,8,1,9,9,59.1,40.9,617,6740,717765
+Europa League,2024/25,third-round,08/08/2024,19:00,si,STATUS_FULL_TIME,KI Klaksvik,Borac Banja Luka,2,1,2,0,2,0,0,0,0,0,100,0,2547,20710,717745
+Europa League,2024/25,third-round,08/08/2024,19:00,si,STATUS_FULL_TIME,Molde,Cercle Brugge KSV,3,0,4,0,3,0,0,0,0,0,100,0,2715,3610,717759
+Europa League,2024/25,third-round,08/08/2024,19:00,si,STATUS_FULL_TIME,Trabzonspor,Rapid Vienna,0,1,9,19,4,4,3,5,4,7,57.5,42.5,997,519,717761
+Conference League,2024/25,third-round,08/08/2024,19:30,si,STATUS_FULL_TIME,CSKA 1948 Sofia,Pafos,2,1,2,1,2,1,0,0,0,0,0,0,21947,22281,717811
+Conference League,2024/25,third-round,08/08/2024,20:00,si,STATUS_FULL_TIME,Ballkani,Larne,0,1,0,1,0,1,0,0,0,0,0,0,21526,20039,717332
+Conference League,2024/25,third-round,08/08/2024,20:00,si,STATUS_FULL_TIME,Botev Plovdiv,Zrinjski Mostar,2,1,2,1,2,1,0,0,0,0,0,0,7293,5239,717783
+Conference League,2024/25,third-round,08/08/2024,20:00,si,STATUS_FULL_TIME,Corvinul Hunedoara,FC Astana,1,2,1,2,1,2,0,0,0,0,0,0,22282,12124,717787
+Conference League,2024/25,third-round,08/08/2024,20:00,si,STATUS_FULL_TIME,Kilmarnock,Tromso,2,2,2,2,2,2,0,0,0,0,0,0,260,5270,717785
+Conference League,2024/25,third-round,08/08/2024,20:00,si,STATUS_FULL_TIME,Maccabi Petah-Tikva,CFR Cluj-Napoca,0,1,0,1,0,1,0,0,0,0,0,0,2983,5260,717791
+Conference League,2024/25,third-round,08/08/2024,20:00,si,STATUS_FULL_TIME,Osijek,Zira FK,1,1,1,1,1,1,0,0,0,0,0,0,567,18754,717799
+Europa League,2024/25,third-round,08/08/2024,20:00,si,STATUS_FULL_TIME,Kryvbas KR,Viktoria Plzen,1,2,1,2,1,2,0,0,0,0,33.3,66.7,22332,11706,717404
+Europa League,2024/25,third-round,08/08/2024,20:00,si,STATUS_FULL_TIME,Panathinaikos,Ajax Amsterdam,0,1,10,9,5,4,4,3,18,18,48.7,51.3,443,139,717757
+Europa League,2024/25,third-round,08/08/2024,20:00,si,STATUS_FULL_TIME,Partizan Belgrade,FC Lugano,0,1,11,13,3,7,4,4,16,12,28.7,71.3,541,7672,717747
+Europa League,2024/25,third-round,08/08/2024,20:00,si,STATUS_FULL_TIME,Rijeka,IF Elfsborg,1,1,1,1,1,1,0,0,0,0,50,50,2988,529,717760
+Europa League,2024/25,third-round,08/08/2024,20:00,si,STATUS_FULL_TIME,UE Santa Coloma,Rigas Futbola Skola,0,2,0,3,0,2,0,0,0,0,0,100,11441,12030,717751
+Conference League,2024/25,third-round,08/08/2024,20:15,si,STATUS_FULL_TIME,NK Maribor,Vojvodina,2,1,2,1,2,1,0,0,0,0,0,0,619,7825,717807
+Conference League,2024/25,third-round,08/08/2024,20:15,si,STATUS_FULL_TIME,Vikingur Reykjavik,Flora,1,1,1,1,1,1,0,0,0,0,0,0,8249,12146,717770
+Europa League,2024/25,third-round,08/08/2024,20:15,si,STATUS_FULL_TIME,NK Celje,Shamrock Rovers,1,0,1,0,1,0,0,0,0,0,100,0,3362,2564,717755
+Conference League,2024/25,third-round,08/08/2024,20:30,si,STATUS_FULL_TIME,FC Spartak Trnava,Wisla Krakow,3,1,3,1,3,1,0,0,0,0,0,0,3929,488,717767
+Conference League,2024/25,third-round,08/08/2024,20:45,si,STATUS_FULL_TIME,St Mirren,SK Brann,1,1,1,1,1,1,0,0,0,0,0,0,250,620,717793
+Conference League,2024/25,third-round,08/08/2024,20:45,si,STATUS_FULL_TIME,St Patrick's Athletic,Sabah FK,1,0,1,0,1,0,0,0,0,0,0,0,7588,21922,717797
+Europa League,2024/25,third-round,08/08/2024,20:45,si,STATUS_FULL_TIME,Dinamo Minsk,Lincoln Red Imps,2,0,2,0,2,0,0,0,0,0,100,0,2539,17856,717749
+Europa League,2024/25,third-round,08/08/2024,21:30,si,STATUS_FULL_TIME,Braga,Servette,0,0,8,8,3,3,5,3,7,10,62.9,37.1,2994,20032,717403
+Conference League,2024/25,third-round,13/08/2024,18:30,si,STATUS_FULL_TIME,Paide Linnameeskond,BK Häcken,1,1,1,1,1,1,0,0,0,0,0,0,20718,7834,717772
+Champions League,2024/25,third-round,13/08/2024,19:00,si,STATUS_FULL_TIME,Apoel Nicosia,Slovan Bratislava,0,0,0,0,0,0,0,0,0,0,0,0,2497,521,717738
+Champions League,2024/25,third-round,13/08/2024,19:00,si,STATUS_FULL_TIME,Bodo/Glimt,Jagiellonia Bialystok,4,1,4,0,4,0,0,0,0,0,100,0,2980,11505,717740
+Champions League,2024/25,third-round,13/08/2024,19:00,si,STATUS_FULL_TIME,FC Twente,RB Salzburg,3,3,14,9,5,6,7,2,14,11,51.2,48.8,152,2790,717342
+Champions League,2024/25,third-round,13/08/2024,19:00,si,STATUS_FINAL_AET,Fenerbahce,Lille,1,1,15,17,7,4,9,2,16,16,43.6,56.4,436,166,717344
+Champions League,2024/25,third-round,13/08/2024,19:30,si,STATUS_FINAL_AET,PAOK,Malmö FF,3,4,3,4,3,4,0,0,0,0,25,75,605,2720,717732
+Europa League,2024/25,third-round,13/08/2024,19:30,si,STATUS_FULL_TIME,The New Saints,Petrocub,0,0,0,0,0,0,0,0,0,0,0,0,576,19250,717744
+Champions League,2024/25,third-round,13/08/2024,20:00,si,STATUS_FULL_TIME,Ferencvaros,FC Midtjylland,1,1,22,13,10,5,6,5,18,15,53.2,46.8,622,572,717734
+Champions League,2024/25,third-round,13/08/2024,20:00,si,STATUS_FINAL_AET,Ludogorets Razgrad,FK Qarabag,2,7,2,7,2,7,0,0,0,0,0,100,13018,10414,717730
+Champions League,2024/25,third-round,13/08/2024,20:30,si,STATUS_FULL_TIME,FCSB,Sparta Prague,2,3,2,3,2,3,0,0,0,0,66.7,33.3,484,433,717736
+Champions League,2024/25,third-round,13/08/2024,20:30,si,STATUS_FULL_TIME,Union St.-Gilloise,Slavia Prague,0,1,0,1,0,1,0,0,0,0,0,100,5807,494,717341
+Champions League,2024/25,third-round,13/08/2024,20:45,si,STATUS_FULL_TIME,Rangers,Dynamo Kyiv,0,2,0,2,0,2,0,0,0,0,0,100,257,440,717343
+Conference League,2024/25,third-round,13/08/2024,20:45,si,STATUS_FULL_TIME,Mornar,Paksi SE,2,2,16,6,3,1,7,4,8,13,60.5,39.5,22290,11523,717775
+Conference League,2024/25,third-round,14/08/2024,16:00,si,STATUS_FULL_TIME,FC Astana,Corvinul Hunedoara,6,1,6,1,6,1,0,0,0,0,0,0,12124,22282,717788
+Conference League,2024/25,third-round,14/08/2024,18:00,si,STATUS_FULL_TIME,Fehérvár,Omonia Nicosia,0,2,15,16,2,10,7,12,11,5,45.3,54.7,6740,617,717774
+Europa League,2024/25,third-round,14/08/2024,18:00,si,STATUS_FULL_TIME,Rigas Futbola Skola,UE Santa Coloma,7,0,7,0,7,0,0,0,0,0,100,0,12030,11441,717752
+Conference League,2024/25,third-round,15/08/2024,18:00,si,STATUS_FULL_TIME,Flora,Vikingur Reykjavik,1,2,1,2,1,2,0,0,0,0,0,0,12146,8249,717778
+Conference League,2024/25,third-round,15/08/2024,18:00,si,STATUS_FULL_TIME,Legia Warsaw,Brøndby IF,1,1,5,18,1,7,1,8,9,19,32.9,67.1,555,575,717814
+Conference League,2024/25,third-round,15/08/2024,18:00,si,STATUS_FULL_TIME,Pyunik,Ordabasy Shymkent,1,0,1,0,1,0,0,0,0,0,0,0,2493,7962,717777
+Conference League,2024/25,third-round,15/08/2024,18:00,si,STATUS_FULL_TIME,Sabah FK,St Patrick's Athletic,0,1,0,1,0,1,0,0,0,0,0,0,21922,7588,717798
+Europa League,2024/25,third-round,15/08/2024,18:00,si,STATUS_FULL_TIME,Lincoln Red Imps,Dinamo Minsk,2,1,1,1,1,1,0,0,0,0,50,50,17856,2539,717750
+Europa League,2024/25,third-round,15/08/2024,18:00,si,STATUS_FULL_TIME,Rapid Vienna,Trabzonspor,2,0,18,5,10,2,8,3,14,11,46.9,53.1,519,997,717764
+Conference League,2024/25,third-round,15/08/2024,18:30,si,STATUS_FINAL_PEN,Zira FK,Osijek,2,2,2,2,2,2,0,0,0,0,0,0,18754,567,717800
+Conference League,2024/25,third-round,15/08/2024,19:00,si,STATUS_FINAL_PEN,Banik Ostrava,F.C. København,1,0,20,11,4,1,7,7,11,16,47,53,2959,909,717780
+Conference League,2024/25,third-round,15/08/2024,19:00,si,STATUS_FULL_TIME,CFR Cluj-Napoca,Maccabi Petah-Tikva,1,0,1,0,1,0,0,0,0,0,0,0,5260,2983,717792
+Conference League,2024/25,third-round,15/08/2024,19:00,si,STATUS_FULL_TIME,Djurgården,FC Ilves,3,1,3,1,3,1,0,0,0,0,0,0,2339,19248,717776
+Conference League,2024/25,third-round,15/08/2024,19:00,si,STATUS_FULL_TIME,Hapoel Be'er,Mlada Boleslav,2,4,2,4,2,4,0,0,0,0,0,0,13083,6758,717806
+Conference League,2024/25,third-round,15/08/2024,19:00,si,STATUS_FINAL_AET,Pafos,CSKA 1948 Sofia,4,0,3,0,3,0,0,0,0,0,0,0,22281,21947,717812
+Conference League,2024/25,third-round,15/08/2024,19:00,si,STATUS_FULL_TIME,SK Brann,St Mirren,3,1,3,1,3,1,0,0,0,0,0,0,620,250,717794
+Conference League,2024/25,third-round,15/08/2024,19:00,si,STATUS_FULL_TIME,Sheriff Tiraspol,Olimpija Ljubljana,0,1,0,1,0,1,0,0,0,0,0,0,614,500,717802
+Conference League,2024/25,third-round,15/08/2024,19:00,si,STATUS_FULL_TIME,Tromso,Kilmarnock,0,1,0,0,0,0,0,0,0,0,0,0,5270,260,717786
+Europa League,2024/25,third-round,15/08/2024,19:00,si,STATUS_FULL_TIME,IF Elfsborg,Rijeka,2,0,2,0,2,0,0,0,0,0,100,0,529,2988,717762
+Europa League,2024/25,third-round,15/08/2024,19:00,si,STATUS_FULL_TIME,Viktoria Plzen,Kryvbas KR,1,0,1,0,1,0,0,0,0,0,100,0,11706,22332,717406
+Conference League,2024/25,third-round,15/08/2024,19:30,si,STATUS_FULL_TIME,AEK Athens,FC Noah,1,0,0,0,0,0,0,0,0,0,0,0,887,20712,717804
+Conference League,2024/25,third-round,15/08/2024,19:45,si,STATUS_FULL_TIME,Istanbul Basaksehir,Iberia 1999,2,0,2,0,2,0,0,0,0,0,0,0,7914,20025,717810
+Conference League,2024/25,third-round,15/08/2024,20:00,si,STATUS_FINAL_AET,Drita Gjilan,FK Auda,3,1,3,1,3,1,0,0,0,0,0,0,19243,21948,717742
+Conference League,2024/25,third-round,15/08/2024,20:00,si,STATUS_FINAL_PEN,Vojvodina,NK Maribor,1,0,1,0,1,0,0,0,0,0,0,0,7825,619,717808
+Conference League,2024/25,third-round,15/08/2024,20:00,si,STATUS_FULL_TIME,Zrinjski Mostar,Botev Plovdiv,2,0,2,0,2,0,0,0,0,0,0,0,5239,7293,717784
+Europa League,2024/25,third-round,15/08/2024,20:00,si,STATUS_FULL_TIME,Cercle Brugge KSV,Molde,1,0,1,0,1,0,0,0,0,0,0,0,3610,2715,717763
+Europa League,2024/25,third-round,15/08/2024,20:15,si,STATUS_FINAL_PEN,Ajax Amsterdam,Panathinaikos,0,1,20,21,7,4,6,4,18,17,53.9,46.1,139,443,717758
+Conference League,2024/25,third-round,15/08/2024,20:30,si,STATUS_FINAL_AET,KAA Gent,Silkeborg IF,3,2,3,2,3,2,0,0,0,0,0,0,3611,607,717782
+Conference League,2024/25,third-round,15/08/2024,20:30,si,STATUS_FULL_TIME,Slask Wroclaw,St. Gallen,3,2,9,13,3,4,2,7,13,15,34,66,9659,557,717796
+Conference League,2024/25,third-round,15/08/2024,20:30,si,STATUS_FINAL_PEN,Wisla Krakow,FC Spartak Trnava,3,1,3,1,3,1,0,0,0,0,0,0,488,3929,717773
+Europa League,2024/25,third-round,15/08/2024,20:30,si,STATUS_FINAL_AET,FC Lugano,Partizan Belgrade,2,2,17,21,5,7,6,9,20,14,54.6,45.4,7672,541,717748
+Europa League,2024/25,third-round,15/08/2024,20:30,si,STATUS_FULL_TIME,Maccabi Tel-Aviv,Panevezys,3,0,3,0,3,0,0,0,0,0,100,0,524,21004,717754
+Europa League,2024/25,third-round,15/08/2024,20:30,si,STATUS_FULL_TIME,Servette,Braga,1,2,12,9,4,3,1,3,11,14,45.3,54.7,20032,2994,717405
+Conference League,2024/25,third-round,15/08/2024,21:00,si,STATUS_FINAL_PEN,Decic,HJK Helsinki,2,1,2,1,2,1,0,0,0,0,0,0,21001,502,717336
+Conference League,2024/25,third-round,15/08/2024,21:00,si,STATUS_FULL_TIME,Hajduk Split,MFK Ruzomberok,0,1,0,0,0,0,0,0,0,0,0,0,489,12207,717790
+Conference League,2024/25,third-round,15/08/2024,21:00,si,STATUS_FINAL_PEN,Larne,Ballkani,0,1,0,1,0,1,0,0,0,0,0,0,20039,21526,717335
+Conference League,2024/25,third-round,15/08/2024,21:00,si,STATUS_FULL_TIME,Puskas Akademia,Ararat-Armenia,3,3,7,16,5,5,2,5,22,11,45,55,20711,20024,717334
+Europa League,2024/25,third-round,15/08/2024,21:00,si,STATUS_FINAL_AET,Borac Banja Luka,KI Klaksvik,3,1,3,1,3,1,0,0,0,0,75,25,20710,2547,717746
+Europa League,2024/25,third-round,15/08/2024,21:00,si,STATUS_FINAL_AET,Shamrock Rovers,NK Celje,3,1,3,1,3,1,0,0,0,0,66.7,33.3,2564,3362,717756
+Conference League,2024/25,third-round,15/08/2024,21:15,si,STATUS_FULL_TIME,Vitória de Guimaraes,FC Zürich,2,0,15,10,5,1,3,2,11,14,54.3,45.7,5309,3019,717816
+Conference League,2024/25,Spareggi preliminari,20/08/2024,18:00,si,STATUS_FULL_TIME,FC Noah,MFK Ruzomberok,3,0,3,0,3,0,0,0,0,0,0,0,20712,12207,719079
+Champions League,2024/25,Spareggi preliminari,20/08/2024,21:00,si,STATUS_FULL_TIME,Bodo/Glimt,Red Star Belgrade,2,1,16,11,4,2,10,2,10,12,65.5,34.5,2980,2290,718510
+Champions League,2024/25,Spareggi preliminari,20/08/2024,21:00,si,STATUS_FULL_TIME,Dinamo Zagreb,FK Qarabag,3,0,20,18,9,4,5,6,18,10,43.4,56.6,597,10414,718509
+Champions League,2024/25,Spareggi preliminari,20/08/2024,21:00,si,STATUS_FULL_TIME,Lille,Slavia Prague,2,0,16,10,7,2,7,3,14,14,61.9,38.1,166,494,718536
+Conference League,2024/25,Spareggi preliminari,21/08/2024,18:45,si,STATUS_FULL_TIME,Vitória de Guimaraes,Zrinjski Mostar,3,0,3,0,3,0,0,0,0,0,100,0,5309,5239,719074
+Champions League,2024/25,Spareggi preliminari,21/08/2024,21:00,si,STATUS_FULL_TIME,Dynamo Kyiv,RB Salzburg,0,2,13,16,3,6,5,6,11,16,51.1,48.9,440,2790,718535
+Champions League,2024/25,Spareggi preliminari,21/08/2024,21:00,si,STATUS_FULL_TIME,FC Midtjylland,Slovan Bratislava,1,1,20,11,6,5,11,4,14,7,60.3,39.7,572,521,718534
+Champions League,2024/25,Spareggi preliminari,21/08/2024,21:00,si,STATUS_FULL_TIME,Malmö FF,Sparta Prague,0,2,10,13,3,4,2,2,10,11,69,31,2720,433,718542
+Champions League,2024/25,Spareggi preliminari,21/08/2024,21:00,si,STATUS_FULL_TIME,Young Boys,Galatasaray,3,2,16,21,5,8,6,7,18,9,47.5,52.5,2722,432,718511
+Conference League,2024/25,Spareggi preliminari,22/08/2024,18:00,si,STATUS_FULL_TIME,Legia Warsaw,Drita Gjilan,2,0,2,0,2,0,0,0,0,0,100,0,555,19243,719077
+Conference League,2024/25,Spareggi preliminari,22/08/2024,18:00,si,STATUS_FULL_TIME,Mlada Boleslav,Paksi SE,2,2,15,8,2,4,5,5,5,10,67.4,32.6,6758,11523,719092
+Conference League,2024/25,Spareggi preliminari,22/08/2024,18:00,si,STATUS_FULL_TIME,Pyunik,NK Celje,1,0,1,0,1,0,0,0,0,0,100,0,2493,3362,719081
+Conference League,2024/25,Spareggi preliminari,22/08/2024,18:30,si,STATUS_FULL_TIME,Panevezys,The New Saints,0,3,0,3,0,3,0,0,0,0,0,100,21004,576,719086
+Conference League,2024/25,Spareggi preliminari,22/08/2024,19:00,si,STATUS_FULL_TIME,BK Häcken,1. FC Heidenheim 1846,1,2,18,5,6,3,5,1,10,13,65.6,34.4,7834,6418,718103
+Conference League,2024/25,Spareggi preliminari,22/08/2024,19:00,si,STATUS_FULL_TIME,Djurgården,NK Maribor,1,0,1,0,1,0,0,0,0,0,100,0,2339,619,719075
+Conference League,2024/25,Spareggi preliminari,22/08/2024,19:00,si,STATUS_FULL_TIME,F.C. København,Kilmarnock,2,0,23,5,4,2,12,4,9,11,78,22,909,260,719076
+Conference League,2024/25,Spareggi preliminari,22/08/2024,19:00,si,STATUS_FULL_TIME,Omonia Nicosia,Zira FK,6,0,6,0,6,0,0,0,0,0,100,0,617,18754,719089
+Conference League,2024/25,Spareggi preliminari,22/08/2024,19:00,si,STATUS_FULL_TIME,SK Brann,FC Astana,2,0,2,0,2,0,0,0,0,0,100,0,620,12124,719087
+Europa League,2024/25,Spareggi preliminari,22/08/2024,19:00,si,STATUS_FULL_TIME,LASK Linz,FCSB,1,1,6,9,1,4,7,1,9,17,59.4,40.6,4411,484,718518
+Europa League,2024/25,Spareggi preliminari,22/08/2024,19:00,si,STATUS_FULL_TIME,Molde,IF Elfsborg,0,1,0,1,0,1,0,0,0,0,0,100,2715,529,719062
+Europa League,2024/25,Spareggi preliminari,22/08/2024,19:00,si,STATUS_FULL_TIME,Rigas Futbola Skola,Apoel Nicosia,2,1,2,1,2,1,0,0,0,0,100,0,12030,2497,719066
+Europa League,2024/25,Spareggi preliminari,22/08/2024,19:00,si,STATUS_FULL_TIME,Viktoria Plzen,Heart of Midlothian,1,0,0,0,0,0,0,0,0,0,0,0,11706,262,718519
+Conference League,2024/25,Spareggi preliminari,22/08/2024,19:30,si,STATUS_FULL_TIME,CFR Cluj-Napoca,Pafos,1,0,1,0,1,0,0,0,0,0,100,0,5260,22281,719085
+Europa League,2024/25,Spareggi preliminari,22/08/2024,19:30,si,STATUS_FULL_TIME,PAOK,Shamrock Rovers,4,0,4,0,4,0,0,0,0,0,100,0,605,2564,719067
+Conference League,2024/25,Spareggi preliminari,22/08/2024,20:00,si,STATUS_FULL_TIME,Fiorentina,Puskas Akademia,3,3,22,9,7,5,15,2,12,25,59.1,40.9,109,20711,718102
+Conference League,2024/25,Spareggi preliminari,22/08/2024,20:00,si,STATUS_FULL_TIME,Kryvbas KR,Real Betis,0,2,6,19,1,9,2,6,14,16,42.1,57.9,22332,244,718105
+Conference League,2024/25,Spareggi preliminari,22/08/2024,20:00,si,STATUS_FULL_TIME,Rijeka,Olimpija Ljubljana,1,1,1,1,1,1,0,0,0,0,100,0,2988,500,719084
+Conference League,2024/25,Spareggi preliminari,22/08/2024,20:00,si,STATUS_FULL_TIME,Vikingur Reykjavik,UE Santa Coloma,5,0,7,0,6,0,0,0,0,0,100,0,8249,11441,719088
+Europa League,2024/25,Spareggi preliminari,22/08/2024,20:00,si,STATUS_FULL_TIME,Ludogorets Razgrad,Petrocub,4,0,4,0,4,0,0,0,0,0,100,0,13018,19250,718540
+Europa League,2024/25,Spareggi preliminari,22/08/2024,20:00,si,STATUS_FULL_TIME,Maccabi Tel-Aviv,FK TSC,3,0,3,0,3,0,0,0,0,0,100,0,524,20713,718517
+Conference League,2024/25,Spareggi preliminari,22/08/2024,20:15,si,STATUS_FULL_TIME,Partizan Belgrade,KAA Gent,0,1,0,1,0,1,0,0,0,0,0,100,541,3611,719080
+Conference League,2024/25,Spareggi preliminari,22/08/2024,20:30,si,STATUS_FULL_TIME,Wisla Krakow,Cercle Brugge KSV,1,6,1,6,1,6,0,0,0,0,25,75,488,3610,719090
+Europa League,2024/25,Spareggi preliminari,22/08/2024,20:30,si,STATUS_FULL_TIME,FC Lugano,Besiktas,3,3,16,11,4,6,2,6,12,12,48.3,51.7,7672,1895,718520
+Conference League,2024/25,Spareggi preliminari,22/08/2024,20:45,si,STATUS_FULL_TIME,KI Klaksvik,HJK Helsinki,2,2,2,2,2,2,0,0,0,0,50,50,2547,502,719091
+Conference League,2024/25,Spareggi preliminari,22/08/2024,20:45,si,STATUS_FULL_TIME,St Patrick's Athletic,Istanbul Basaksehir,0,0,0,0,0,0,0,0,0,0,0,0,7588,7914,719082
+Europa League,2024/25,Spareggi preliminari,22/08/2024,20:45,si,STATUS_FULL_TIME,Dinamo Minsk,Anderlecht,0,1,0,1,0,1,0,0,0,0,0,100,2539,441,718516
+Europa League,2024/25,Spareggi preliminari,22/08/2024,20:45,si,STATUS_FULL_TIME,Jagiellonia Bialystok,Ajax Amsterdam,1,4,11,20,2,10,3,6,3,9,40.2,59.8,11505,139,719064
+Conference League,2024/25,Spareggi preliminari,22/08/2024,21:00,si,STATUS_FULL_TIME,Chelsea,Servette,2,0,14,22,7,6,4,8,6,7,58.6,41.4,363,20032,718101
+Conference League,2024/25,Spareggi preliminari,22/08/2024,21:00,si,STATUS_FULL_TIME,Lens,Panathinaikos,2,1,9,12,6,3,2,3,13,16,35.1,64.9,175,443,718104
+Conference League,2024/25,Spareggi preliminari,22/08/2024,21:00,si,STATUS_FULL_TIME,Lincoln Red Imps,Larne,2,1,2,1,2,1,0,0,0,0,66.7,33.3,17856,20039,719078
+Conference League,2024/25,Spareggi preliminari,22/08/2024,21:00,si,STATUS_FULL_TIME,St. Gallen,Trabzonspor,0,0,11,15,5,6,7,7,14,12,51.9,48.1,557,997,719083
+Europa League,2024/25,Spareggi preliminari,22/08/2024,21:00,si,STATUS_FULL_TIME,Ferencvaros,Borac Banja Luka,0,0,12,6,6,2,6,1,12,8,66.9,33.1,622,20710,719065
+Europa League,2024/25,Spareggi preliminari,22/08/2024,21:30,si,STATUS_FULL_TIME,Braga,Rapid Vienna,2,1,26,4,5,2,11,2,12,9,66.2,33.8,2994,519,719063
+Champions League,2024/25,Spareggi preliminari,27/08/2024,21:00,si,STATUS_FULL_TIME,Galatasaray,Young Boys,0,1,16,16,4,6,5,8,13,10,62.2,37.8,432,2722,718514
+Champions League,2024/25,Spareggi preliminari,27/08/2024,21:00,si,STATUS_FULL_TIME,RB Salzburg,Dynamo Kyiv,1,1,12,19,3,1,7,16,12,8,39.6,60.4,2790,440,718537
+Champions League,2024/25,Spareggi preliminari,27/08/2024,21:00,si,STATUS_FULL_TIME,Sparta Prague,Malmö FF,2,0,13,14,4,4,1,7,11,16,43.1,56.9,433,2720,718543
+Conference League,2024/25,Spareggi preliminari,28/08/2024,18:00,si,STATUS_FULL_TIME,Istanbul Basaksehir,St Patrick's Athletic,2,0,2,0,2,0,0,0,0,0,100,0,7914,7588,719094
+Conference League,2024/25,Spareggi preliminari,28/08/2024,18:00,si,STATUS_FULL_TIME,KAA Gent,Partizan Belgrade,1,0,1,0,1,0,0,0,0,0,100,0,3611,541,719093
+Champions League,2024/25,Spareggi preliminari,28/08/2024,18:45,si,STATUS_FULL_TIME,FK Qarabag,Dinamo Zagreb,0,2,17,8,4,2,5,5,11,13,58,42,10414,597,718513
+Champions League,2024/25,Spareggi preliminari,28/08/2024,21:00,si,STATUS_FULL_TIME,Red Star Belgrade,Bodo/Glimt,2,0,18,5,8,1,8,3,13,12,41.6,58.4,2290,2980,718512
+Champions League,2024/25,Spareggi preliminari,28/08/2024,21:00,si,STATUS_FULL_TIME,Slavia Prague,Lille,2,1,17,8,7,4,3,4,17,15,50.7,49.3,494,166,718539
+Champions League,2024/25,Spareggi preliminari,28/08/2024,21:00,si,STATUS_FULL_TIME,Slovan Bratislava,FC Midtjylland,3,2,15,15,8,7,5,8,9,12,50,50,521,572,718538
+Conference League,2024/25,Spareggi preliminari,29/08/2024,16:00,si,STATUS_FULL_TIME,FC Astana,SK Brann,3,0,3,0,3,0,0,0,0,0,100,0,12124,620,719106
+Conference League,2024/25,Spareggi preliminari,29/08/2024,18:00,si,STATUS_FULL_TIME,HJK Helsinki,KI Klaksvik,2,1,2,1,2,1,0,0,0,0,66.7,33.3,502,2547,719109
+Conference League,2024/25,Spareggi preliminari,29/08/2024,18:00,si,STATUS_FULL_TIME,Zira FK,Omonia Nicosia,1,0,1,0,1,0,0,0,0,0,100,0,18754,617,719108
+Conference League,2024/25,Spareggi preliminari,29/08/2024,18:30,si,STATUS_FULL_TIME,MFK Ruzomberok,FC Noah,3,1,3,1,3,1,0,0,0,0,50,50,12207,20712,719095
+Conference League,2024/25,Spareggi preliminari,29/08/2024,19:00,si,STATUS_FULL_TIME,Olimpija Ljubljana,Rijeka,5,0,5,0,5,0,0,0,0,0,100,0,500,2988,719097
+Conference League,2024/25,Spareggi preliminari,29/08/2024,19:00,si,STATUS_FULL_TIME,Pafos,CFR Cluj-Napoca,3,0,3,0,3,0,0,0,0,0,100,0,22281,5260,719098
+Conference League,2024/25,Spareggi preliminari,29/08/2024,19:00,si,STATUS_FULL_TIME,Paksi SE,Mlada Boleslav,0,3,17,16,8,9,6,2,13,14,49.5,50.5,11523,6758,719111
+Conference League,2024/25,Spareggi preliminari,29/08/2024,19:00,si,STATUS_FINAL_PEN,Trabzonspor,St. Gallen,1,1,29,17,7,6,9,3,17,20,48.4,51.6,997,557,719101
+Europa League,2024/25,Spareggi preliminari,29/08/2024,19:00,si,STATUS_FINAL_PEN,Apoel Nicosia,Rigas Futbola Skola,2,1,2,1,2,1,0,0,0,0,66.7,33.3,2497,12030,719073
+Europa League,2024/25,Spareggi preliminari,29/08/2024,19:00,si,STATUS_FINAL_PEN,IF Elfsborg,Molde,0,1,0,1,0,1,0,0,0,0,0,100,529,2715,719068
+Europa League,2024/25,Spareggi preliminari,29/08/2024,19:00,si,STATUS_FULL_TIME,Petrocub,Ludogorets Razgrad,1,2,1,2,1,2,0,0,0,0,50,50,19250,13018,718541
+Conference League,2024/25,Spareggi preliminari,29/08/2024,19:30,si,STATUS_FULL_TIME,The New Saints,Panevezys,0,0,0,0,0,0,0,0,0,0,0,0,576,21004,719105
+Conference League,2024/25,Spareggi preliminari,29/08/2024,20:00,si,STATUS_FULL_TIME,Cercle Brugge KSV,Wisla Krakow,1,4,1,4,1,4,0,0,0,0,20,80,3610,488,719110
+Conference League,2024/25,Spareggi preliminari,29/08/2024,20:00,si,STATUS_FULL_TIME,Drita Gjilan,Legia Warsaw,0,1,0,1,0,1,0,0,0,0,0,100,19243,555,719103
+Conference League,2024/25,Spareggi preliminari,29/08/2024,20:00,si,STATUS_FULL_TIME,Kilmarnock,F.C. København,1,1,9,14,5,4,1,12,15,11,30.7,69.3,260,909,719104
+Conference League,2024/25,Spareggi preliminari,29/08/2024,20:00,si,STATUS_FULL_TIME,Panathinaikos,Lens,2,0,8,19,4,8,2,6,13,15,39.4,60.6,443,175,718110
+Conference League,2024/25,Spareggi preliminari,29/08/2024,20:00,si,STATUS_FULL_TIME,UE Santa Coloma,Vikingur Reykjavik,0,0,0,0,0,0,0,0,0,0,0,0,11441,8249,719107
+Conference League,2024/25,Spareggi preliminari,29/08/2024,20:00,si,STATUS_FULL_TIME,Zrinjski Mostar,Vitória de Guimaraes,0,4,0,4,0,4,0,0,0,0,0,100,5239,5309,719102
+Europa League,2024/25,Spareggi preliminari,29/08/2024,20:00,si,STATUS_FULL_TIME,Ajax Amsterdam,Jagiellonia Bialystok,3,0,22,4,10,0,4,1,15,6,63.9,36.1,139,11505,719070
+Europa League,2024/25,Spareggi preliminari,29/08/2024,20:00,si,STATUS_FULL_TIME,Anderlecht,Dinamo Minsk,1,0,1,0,1,0,0,0,0,0,100,0,441,2539,718524
+Europa League,2024/25,Spareggi preliminari,29/08/2024,20:00,si,STATUS_FULL_TIME,Besiktas,FC Lugano,5,1,21,10,14,4,4,5,13,10,45.5,54.5,1895,7672,718522
+Conference League,2024/25,Spareggi preliminari,29/08/2024,20:15,si,STATUS_FULL_TIME,NK Celje,Pyunik,4,1,4,1,4,1,0,0,0,0,100,0,3362,2493,719100
+Conference League,2024/25,Spareggi preliminari,29/08/2024,20:15,si,STATUS_FULL_TIME,NK Maribor,Djurgården,0,1,0,1,0,1,0,0,0,0,0,100,619,2339,719096
+Conference League,2024/25,Spareggi preliminari,29/08/2024,20:30,si,STATUS_FULL_TIME,1. FC Heidenheim 1846,BK Häcken,3,2,17,13,5,4,8,4,17,10,36.3,63.7,6418,7834,718108
+Conference League,2024/25,Spareggi preliminari,29/08/2024,20:30,si,STATUS_FULL_TIME,Servette,Chelsea,2,1,15,18,3,7,6,6,7,7,33.1,66.9,20032,363,718106
+Europa League,2024/25,Spareggi preliminari,29/08/2024,20:30,si,STATUS_FULL_TIME,FCSB,LASK Linz,1,0,8,9,3,3,9,9,11,19,56.7,43.3,484,4411,718525
+Europa League,2024/25,Spareggi preliminari,29/08/2024,20:45,si,STATUS_FULL_TIME,Heart of Midlothian,Viktoria Plzen,0,1,0,1,0,1,0,0,0,0,0,100,262,11706,718523
+Conference League,2024/25,Spareggi preliminari,29/08/2024,21:00,si,STATUS_FULL_TIME,Larne,Lincoln Red Imps,3,1,3,1,3,1,0,0,0,0,50,50,20039,17856,719099
+Conference League,2024/25,Spareggi preliminari,29/08/2024,21:00,si,STATUS_FINAL_PEN,Puskas Akademia,Fiorentina,1,1,25,7,9,3,9,3,19,16,56,44,20711,109,718109
+Conference League,2024/25,Spareggi preliminari,29/08/2024,21:00,si,STATUS_FULL_TIME,Real Betis,Kryvbas KR,3,0,20,8,7,0,6,7,10,14,62.5,37.5,244,22332,718107
+Europa League,2024/25,Spareggi preliminari,29/08/2024,21:00,si,STATUS_FINAL_PEN,Borac Banja Luka,Ferencvaros,1,1,6,20,3,2,4,7,18,18,38.6,61.4,20710,622,719072
+Europa League,2024/25,Spareggi preliminari,29/08/2024,21:00,si,STATUS_FULL_TIME,FK TSC,Maccabi Tel-Aviv,1,5,1,5,1,5,0,0,0,0,0,100,20713,524,718521
+Europa League,2024/25,Spareggi preliminari,29/08/2024,21:00,si,STATUS_FULL_TIME,Rapid Vienna,Braga,2,2,9,21,6,3,5,12,10,8,44.5,55.5,519,2994,719069
+Europa League,2024/25,Spareggi preliminari,29/08/2024,21:00,si,STATUS_FULL_TIME,Shamrock Rovers,PAOK,0,2,0,2,0,2,0,0,0,0,0,100,2564,605,719071

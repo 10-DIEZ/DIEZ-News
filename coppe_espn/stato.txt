@@ -1,4 +1,5 @@
-Aggiornato: 28/11/2026 11:09 (ora italiana) - richieste a ESPN: 924
+Aggiornato: 28/11/2026 12:24 (ora italiana) - richieste ESPN 507, football-data 44
+-- coppe
 2024/25 Champions League: 189 partite, 189 giocate, 0 giocate senza statistiche, 0 passate ma ancora 'da giocare' su ESPN
 2024/25 Europa League: 189 partite, 189 giocate, 0 giocate senza statistiche, 0 passate ma ancora 'da giocare' su ESPN
 2024/25 Conference League: 153 partite, 153 giocate, 0 giocate senza statistiche, 0 passate ma ancora 'da giocare' su ESPN
@@ -8,5 +9,50 @@ Aggiornato: 28/11/2026 11:09 (ora italiana) - richieste a ESPN: 924
 2026/27 Champions League: 108 partite, 90 giocate, 0 giocate senza statistiche, 0 passate ma ancora 'da giocare' su ESPN
 2026/27 Europa League: 108 partite, 90 giocate, 0 giocate senza statistiche, 0 passate ma ancora 'da giocare' su ESPN
 2026/27 Conference League: 108 partite, 72 giocate, 0 giocate senza statistiche, 0 passate ma ancora 'da giocare' su ESPN
+-- preliminari (scaricati, non usati nei calcoli)
+2024/25 Champions League: 90 partite, 90 giocate, 0 giocate senza statistiche, 0 passate ma ancora 'da giocare' su ESPN
+2024/25 Europa League: 80 partite, 80 giocate, 0 giocate senza statistiche, 0 passate ma ancora 'da giocare' su ESPN
+2024/25 Conference League: 256 partite, 256 giocate, 9 giocate senza statistiche, 0 passate ma ancora 'da giocare' su ESPN
+   - 10/07/2024 Velez Mostar - Inter D'Escaldes (STATUS_FULL_TIME)
+   - 10/07/2024 FK Auda - B36 Torshavn (STATUS_FULL_TIME)
+   - 11/07/2024 FK Liepaja - Víkingur (STATUS_FULL_TIME)
+   - 11/07/2024 Atlètic Club d'Escaldes - F91 Dudelange (STATUS_FULL_TIME)
+   - 11/07/2024 Torpedo Kutaisi - SK Tirana (STATUS_FULL_TIME)
+   - 11/07/2024 Torpedo Zhodino - FC Milsami (STATUS_FULL_TIME)
+   - 11/07/2024 UNA Strassen - KuPS Kuopio (STATUS_FULL_TIME)
+   - 25/07/2024 SC Dnipro-1 - Puskas Akademia (STATUS_FULL_TIME)
+   - 01/08/2024 Puskas Akademia - SC Dnipro-1 (STATUS_FULL_TIME)
+2025/26 Champions League: 92 partite, 92 giocate, 0 giocate senza statistiche, 0 passate ma ancora 'da giocare' su ESPN
+2025/26 Europa League: 82 partite, 82 giocate, 0 giocate senza statistiche, 0 passate ma ancora 'da giocare' su ESPN
+2025/26 Conference League: 256 partite, 256 giocate, 0 giocate senza statistiche, 0 passate ma ancora 'da giocare' su ESPN
+2026/27 Champions League: 90 partite, 90 giocate, 0 giocate senza statistiche, 0 passate ma ancora 'da giocare' su ESPN
+2026/27 Europa League: 80 partite, 80 giocate, 0 giocate senza statistiche, 0 passate ma ancora 'da giocare' su ESPN
+2026/27 Conference League: 258 partite, 258 giocate, 0 giocate senza statistiche, 0 passate ma ancora 'da giocare' su ESPN
+-- campionati football-data (partite con le statistiche, ultima data)
+Belgio 2025/26: 311 partite, ultima 24/05/2026
+Belgio 2026/27: 108 partite, ultima 22/11/2026
+Bundesliga 2025/26: 306 partite, ultima 16/05/2026
+Bundesliga 2026/27: 90 partite, ultima 22/11/2026
+Premier League 2025/26: 380 partite, ultima 24/05/2026
+Premier League 2026/27: 110 partite, ultima 23/11/2026
+Ligue 1 2025/26: 306 partite, ultima 17/05/2026
+Ligue 1 2026/27: 99 partite, ultima 22/11/2026
+Grecia 2025/26: 236 partite, ultima 21/05/2026
+Grecia 2026/27: 76 partite, ultima 23/11/2026
+Serie A 2025/26: 380 partite, ultima 24/05/2026
+Serie A 2026/27: 120 partite, ultima 23/11/2026
+Olanda 2025/26: 306 partite, ultima 17/05/2026
+Olanda 2026/27: 117 partite, ultima 22/11/2026
+Portogallo 2025/26: 306 partite, ultima 16/05/2026
+Portogallo 2026/27: 98 partite, ultima 08/11/2026
+Scozia 2025/26: 228 partite, ultima 17/05/2026
+Scozia 2026/27: 83 partite, ultima 24/11/2026
+LaLiga 2025/26: 380 partite, ultima 24/05/2026
+LaLiga 2026/27: 129 partite, ultima 23/11/2026
+Turchia 2025/26: 306 partite, ultima 17/05/2026
+Turchia 2026/27: 108 partite, ultima 23/11/2026
+-- squadre delle coppe 2026/27: 108 (5 campionati 38, Portogallo/Olanda/Turchia/Belgio/Grecia/Scozia 25, altre 45)
+   altre (controllare che non ci sia una squadra dei 5 campionati o di football-data): AGF, Ararat-Armenia, Bodo/Glimt, Borac Banja Luka, CSKA Sofia, Dinamo Zagreb, Egnatia, F.C. København, FC Lugano, FC Midtjylland, FC Nordsjælland, FC Thun, Ferencvaros, Hajduk Split, Hapoel Be'er, Iberia 1999, Inter D'Escaldes, Jablonec, Jagiellonia Bialystok, Kairat Almaty, Kauno Zalgiris, KuPS Kuopio, LASK Linz, Lech Poznan, Levski Sofia, Lillestrom, Lincoln Red Imps, Mjällby AIF, NK Celje, Omonia Nicosia, Pafos, RB Salzburg, Red Star Belgrade, Riga FC, SK Brann, SK Sturm Graz, Sabah FK, Shakhtar Donetsk, Slavia Prague, Slovan Bratislava, Sparta Prague, Torreense, Universitatea Craiova, Viking FK, Viktoria Plzen
+-- prossime partite con almeno una squadra dei 5 campionati: 33 {'T5-ALTRE': 13, 'T5-FD': 10, 'T5-T5': 10}
 Errori:
 nessuno

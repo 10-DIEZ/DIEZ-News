@@ -1,0 +1,429 @@
+coppa,stagione,fase,data_ita,ora_ita,giocata,stato,casa,ospite,gol_casa,gol_ospite,tiri_casa,tiri_ospite,porta_casa,porta_ospite,corner_casa,corner_ospite,falli_casa,falli_ospite,possesso_casa,possesso_ospite,casa_id,ospite_id,id_evento
+Champions League,2026/27,first-round,07/07/2026,18:00,si,STATUS_FULL_TIME,Ararat-Armenia,Riga FC,2,0,0,0,0,0,0,0,0,0,0,0,20024,19246,401877833
+Champions League,2026/27,first-round,07/07/2026,18:00,si,STATUS_FULL_TIME,Kauno Zalgiris,Drita Gjilan,1,1,0,0,0,0,0,0,0,0,0,0,20028,19243,401877831
+Champions League,2026/27,first-round,07/07/2026,18:00,si,STATUS_FULL_TIME,Lincoln Red Imps,Inter D'Escaldes,3,1,0,0,0,0,0,0,0,0,0,0,17856,20703,401877823
+Champions League,2026/27,first-round,07/07/2026,18:00,si,STATUS_FULL_TIME,Sabah FK,The New Saints,2,0,0,0,0,0,0,0,0,0,0,0,21922,576,401877829
+Champions League,2026/27,first-round,07/07/2026,19:00,si,STATUS_FULL_TIME,Vardar,KuPS Kuopio,0,2,0,0,0,0,0,0,0,0,0,0,560,8169,401877832
+Conference League,2026/27,first-round,07/07/2026,19:15,si,STATUS_FULL_TIME,UNA Strassen,Fiorita,1,0,0,0,0,0,0,0,0,0,0,0,22291,8594,401877789
+Champions League,2026/27,first-round,07/07/2026,19:30,si,STATUS_FULL_TIME,Floriana FC,Shamrock Rovers,2,0,0,0,0,0,0,0,0,0,0,0,7857,2564,401877826
+Conference League,2026/27,first-round,07/07/2026,20:00,si,STATUS_FULL_TIME,AF Elbasani,BATE Borisov,1,1,0,0,0,0,0,0,0,0,0,0,131797,497,401877984
+Champions League,2026/27,first-round,07/07/2026,20:30,si,STATUS_FULL_TIME,Borac Banja Luka,Levski Sofia,1,1,0,0,0,0,0,0,0,0,0,0,20710,490,401877828
+Champions League,2026/27,first-round,07/07/2026,20:30,si,STATUS_FULL_TIME,Tre Fiori,Larne,0,1,0,0,0,0,0,0,0,0,0,0,8591,20039,401877834
+Champions League,2026/27,first-round,07/07/2026,20:45,si,STATUS_FULL_TIME,KI Klaksvik,FC Atert Bissen,2,1,0,0,0,0,0,0,0,0,0,0,2547,131796,401877978
+Champions League,2026/27,first-round,07/07/2026,21:00,si,STATUS_FULL_TIME,Vikingur Reykjavik,Györi ETO FC,1,0,0,0,0,0,0,0,0,0,0,0,8249,12367,401877827
+Champions League,2026/27,first-round,08/07/2026,17:00,si,STATUS_FULL_TIME,Kairat Almaty,FK Sutjeska,2,1,0,0,0,0,0,0,0,0,0,0,2528,8281,401877824
+Champions League,2026/27,first-round,08/07/2026,18:00,si,STATUS_FULL_TIME,Flora,Iberia 1999,2,3,0,0,0,0,0,0,0,0,0,0,12146,20025,401877825
+Conference League,2026/27,first-round,08/07/2026,18:00,si,STATUS_FULL_TIME,Zira FK,Torpedo Kutaisi,3,0,0,0,0,0,0,0,0,0,0,0,18754,612,401877805
+Champions League,2026/27,first-round,08/07/2026,19:00,si,STATUS_FULL_TIME,ML Vitebsk,Universitatea Craiova,1,4,0,0,0,0,0,0,0,0,0,0,131794,8089,401877979
+Champions League,2026/27,first-round,08/07/2026,19:00,si,STATUS_FULL_TIME,Petrocub,Egnatia,1,1,0,0,0,0,0,0,0,0,0,0,19250,21943,401877830
+Conference League,2026/27,first-round,08/07/2026,19:30,si,STATUS_FULL_TIME,Connah's Quay,Ballkani,0,0,0,0,0,0,0,0,0,0,0,0,7591,21526,401877810
+Conference League,2026/27,first-round,08/07/2026,19:30,si,STATUS_FULL_TIME,FC Differdange 03,FC Ilves,0,0,0,0,0,0,0,0,0,0,0,0,7759,19248,401877804
+Conference League,2026/27,first-round,09/07/2026,16:00,si,STATUS_FULL_TIME,Atlètic Club d'Escaldes,Mornar,2,1,0,0,0,0,0,0,0,0,0,0,21528,22290,401877779
+Conference League,2026/27,first-round,09/07/2026,18:00,si,STATUS_FULL_TIME,Alashkert FC,Yelimay,1,1,0,0,0,0,0,0,0,0,0,0,17858,131792,401877983
+Conference League,2026/27,first-round,09/07/2026,18:00,si,STATUS_FULL_TIME,Dila Gori,AC Virtus,3,1,0,0,0,0,0,0,0,0,0,0,8284,22292,401877795
+Conference League,2026/27,first-round,09/07/2026,18:00,si,STATUS_FULL_TIME,FK Liepaja,Decic,1,0,0,0,0,0,0,0,0,0,0,0,18283,21001,401877780
+Conference League,2026/27,first-round,09/07/2026,18:00,si,STATUS_FULL_TIME,Hegelmann,Paide Linnameeskond,1,1,0,0,0,0,0,0,0,0,0,0,21945,20718,401877797
+Conference League,2026/27,first-round,09/07/2026,18:00,si,STATUS_FULL_TIME,Nomme Kalju,Linfield,1,0,0,0,0,0,0,0,0,0,0,0,10376,2555,401877792
+Europa League,2026/27,first-round,09/07/2026,18:00,si,STATUS_FULL_TIME,FK Qarabag,Vestri,3,0,0,0,0,0,0,0,0,0,0,0,10414,131799,401877921
+Conference League,2026/27,first-round,09/07/2026,19:00,si,STATUS_FULL_TIME,Bohemians,St. Joseph's,2,0,0,0,0,0,0,0,0,0,0,0,615,18751,401877809
+Conference League,2026/27,first-round,09/07/2026,19:00,si,STATUS_FULL_TIME,Dinamo Minsk,FK Sileks ,0,1,0,0,0,0,0,0,0,0,0,0,2539,2940,401877806
+Conference League,2026/27,first-round,09/07/2026,19:00,si,STATUS_FULL_TIME,Marsaxlokk FC,Pyunik,0,3,0,0,0,0,0,0,0,0,0,0,2948,2493,401877799
+Conference League,2026/27,first-round,09/07/2026,19:00,si,STATUS_FULL_TIME,Velez Mostar,FC Milsami,1,1,0,0,0,0,0,0,0,0,0,0,8070,11440,401877807
+Europa League,2026/27,first-round,09/07/2026,19:00,si,STATUS_FULL_TIME,Dynamo Kyiv,Universitatea Cluj,0,0,0,0,0,0,0,0,0,0,0,0,440,8091,401878077
+Europa League,2026/27,first-round,09/07/2026,19:00,si,STATUS_FULL_TIME,Sheriff Tiraspol,Aluminij,0,0,0,0,0,0,0,0,0,0,0,0,614,131800,401877920
+Conference League,2026/27,first-round,09/07/2026,19:15,si,STATUS_FULL_TIME,Mondorf-les-Bains,Dinamo Tbilisi,1,2,0,0,0,0,0,0,0,0,0,0,131793,498,401877985
+Conference League,2026/27,first-round,09/07/2026,19:30,si,STATUS_FULL_TIME,Caernarfon,FC Levadia Tallinn,0,5,0,0,0,0,0,0,0,0,0,0,7590,2540,401877798
+Conference League,2026/27,first-round,09/07/2026,19:30,si,STATUS_FULL_TIME,Europa FC,KF Shkëndija,0,5,0,0,0,0,0,0,0,0,0,0,17503,8151,401877793
+Conference League,2026/27,first-round,09/07/2026,20:00,si,STATUS_FULL_TIME,Vllaznia Shkoder,KF Malisheva,2,1,0,0,0,0,0,0,0,0,0,0,2716,22287,401877788
+Europa League,2026/27,first-round,09/07/2026,20:00,si,STATUS_FULL_TIME,CSKA Sofia,Derry City,3,2,0,0,0,0,0,0,0,0,0,0,10834,2712,401878079
+Europa League,2026/27,first-round,09/07/2026,20:00,si,STATUS_FULL_TIME,Hajduk Split,MSK Zilina,2,0,0,0,0,0,0,0,0,0,0,0,489,2491,401878080
+Europa League,2026/27,first-round,09/07/2026,20:00,si,STATUS_FULL_TIME,Vojvodina,Ferencvaros,1,2,13,11,1,3,4,8,16,16,44.1,55.9,7825,622,401878078
+Conference League,2026/27,first-round,09/07/2026,20:30,si,STATUS_FULL_TIME,Glentoran,Rigas Futbola Skola,1,2,0,0,0,0,0,0,0,0,0,0,571,12030,401877801
+Conference League,2026/27,first-round,09/07/2026,20:45,si,STATUS_FULL_TIME,NSI Runavik,Hamrun Spartans,1,1,0,0,0,0,0,0,0,0,0,0,2710,7858,401877790
+Conference League,2026/27,first-round,09/07/2026,20:45,si,STATUS_FULL_TIME,OFK Petrovac,Zalgiris Vilnius,1,3,0,0,0,0,0,0,0,0,0,0,131798,523,401877800
+Conference League,2026/27,first-round,09/07/2026,20:45,si,STATUS_FULL_TIME,Penybont FC,Santa Coloma,0,1,0,0,0,0,0,0,0,0,0,0,20038,542,401877791
+Conference League,2026/27,first-round,09/07/2026,21:00,si,STATUS_FULL_TIME,Dinamo City,FC Astana,0,1,0,0,0,0,0,0,0,0,0,0,515,12124,401877808
+Conference League,2026/27,first-round,09/07/2026,21:00,si,STATUS_FULL_TIME,FK Sarajevo,FC Inter Turku,1,1,0,0,0,0,0,0,0,0,0,0,551,3726,401877794
+Conference League,2026/27,first-round,09/07/2026,21:00,si,STATUS_FULL_TIME,Stjarnan,Víkingur,3,1,0,0,0,0,0,0,0,0,0,0,7949,13238,401877753
+Champions League,2026/27,first-round,14/07/2026,17:00,si,STATUS_FINAL_AET,KuPS Kuopio,Vardar,2,3,0,0,0,0,0,0,0,0,0,0,8169,560,401877820
+Champions League,2026/27,first-round,14/07/2026,18:00,si,STATUS_FULL_TIME,Iberia 1999,Flora,2,2,0,0,0,0,0,0,0,0,0,0,20025,12146,401877813
+Champions League,2026/27,first-round,14/07/2026,18:00,si,STATUS_FULL_TIME,Inter D'Escaldes,Lincoln Red Imps,1,1,0,0,0,0,0,0,0,0,0,0,20703,17856,401877811
+Champions League,2026/27,first-round,14/07/2026,19:00,si,STATUS_FULL_TIME,Györi ETO FC,Vikingur Reykjavik,2,2,12,10,2,2,5,4,9,9,62.3,37.7,12367,8249,401877815
+Champions League,2026/27,first-round,14/07/2026,19:00,si,STATUS_FULL_TIME,Riga FC,Ararat-Armenia,3,2,0,0,0,0,0,0,0,0,0,0,19246,20024,401877821
+Champions League,2026/27,first-round,14/07/2026,19:30,si,STATUS_FULL_TIME,Levski Sofia,Borac Banja Luka,4,0,0,0,0,0,0,0,0,0,0,0,490,20710,401877816
+Champions League,2026/27,first-round,14/07/2026,19:30,si,STATUS_FULL_TIME,The New Saints,Sabah FK,1,2,0,0,0,0,0,0,0,0,0,0,576,21922,401877817
+Champions League,2026/27,first-round,14/07/2026,20:00,si,STATUS_FULL_TIME,Drita Gjilan,Kauno Zalgiris,2,3,0,0,0,0,0,0,0,0,0,0,19243,20028,401877819
+Champions League,2026/27,first-round,14/07/2026,21:00,si,STATUS_FULL_TIME,Larne,Tre Fiori,2,1,0,0,0,0,0,0,0,0,0,0,20039,8591,401877822
+Champions League,2026/27,first-round,14/07/2026,21:00,si,STATUS_FULL_TIME,Shamrock Rovers,Floriana FC,5,1,0,0,0,0,0,0,0,0,0,0,2564,7857,401877814
+Conference League,2026/27,first-round,14/07/2026,21:00,si,STATUS_FULL_TIME,Fiorita,UNA Strassen,0,2,0,0,0,0,0,0,0,0,0,0,8594,22291,401877746
+Conference League,2026/27,first-round,15/07/2026,16:30,si,STATUS_FULL_TIME,KF Malisheva,Vllaznia Shkoder,5,0,0,0,0,0,0,0,0,0,0,0,22287,2716,401877745
+Champions League,2026/27,first-round,15/07/2026,19:30,si,STATUS_FULL_TIME,Universitatea Craiova,ML Vitebsk,1,0,0,0,0,0,0,0,0,0,0,0,8089,131794,401877976
+Champions League,2026/27,first-round,15/07/2026,20:15,si,STATUS_FULL_TIME,FC Atert Bissen,KI Klaksvik,1,2,0,0,0,0,0,0,0,0,0,0,131796,2547,401877977
+Conference League,2026/27,first-round,15/07/2026,20:30,si,STATUS_FULL_TIME,Decic,FK Liepaja,1,2,0,0,0,0,0,0,0,0,0,0,21001,18283,401877803
+Champions League,2026/27,first-round,15/07/2026,21:00,si,STATUS_FULL_TIME,Egnatia,Petrocub,6,1,0,0,0,0,0,0,0,0,0,0,21943,19250,401877818
+Champions League,2026/27,first-round,15/07/2026,21:00,si,STATUS_FULL_TIME,FK Sutjeska,Kairat Almaty,0,2,0,0,0,0,0,0,0,0,0,0,8281,2528,401877812
+Conference League,2026/27,first-round,16/07/2026,17:00,si,STATUS_FINAL_AET,FC Astana,Dinamo City,1,4,0,0,0,0,0,0,0,0,0,0,12124,515,401877785
+Conference League,2026/27,first-round,16/07/2026,17:00,si,STATUS_FULL_TIME,FC Inter Turku,FK Sarajevo,2,1,0,0,0,0,0,0,0,0,0,0,3726,551,401877751
+Conference League,2026/27,first-round,16/07/2026,17:00,si,STATUS_FINAL_PEN,Yelimay,Alashkert FC,2,2,0,0,0,0,0,0,0,0,0,0,131792,17858,401877980
+Conference League,2026/27,first-round,16/07/2026,18:00,si,STATUS_FULL_TIME,FC Ilves,FC Differdange 03,3,1,0,0,0,0,0,0,0,0,0,0,19248,7759,401877781
+Conference League,2026/27,first-round,16/07/2026,18:00,si,STATUS_FULL_TIME,Paide Linnameeskond,Hegelmann,3,0,0,0,0,0,0,0,0,0,0,0,20718,21945,401877754
+Conference League,2026/27,first-round,16/07/2026,18:00,si,STATUS_FULL_TIME,Pyunik,Marsaxlokk FC,1,0,0,0,0,0,0,0,0,0,0,0,2493,2948,401877756
+Conference League,2026/27,first-round,16/07/2026,18:00,si,STATUS_FULL_TIME,St. Joseph's,Bohemians,0,0,0,0,0,0,0,0,0,0,0,0,18751,615,401877786
+Conference League,2026/27,first-round,16/07/2026,18:00,si,STATUS_FULL_TIME,Torpedo Kutaisi,Zira FK,0,3,0,0,0,0,0,0,0,0,0,0,612,18754,401877782
+Conference League,2026/27,first-round,16/07/2026,18:30,si,STATUS_FULL_TIME,FC Levadia Tallinn,Caernarfon,5,0,0,0,0,0,0,0,0,0,0,0,2540,7590,401877755
+Conference League,2026/27,first-round,16/07/2026,18:30,si,STATUS_FULL_TIME,Rigas Futbola Skola,Glentoran,2,0,0,0,0,0,0,0,0,0,0,0,12030,571,401877778
+Conference League,2026/27,first-round,16/07/2026,19:00,si,STATUS_FINAL_PEN,BATE Borisov,AF Elbasani,0,0,0,0,0,0,0,0,0,0,0,0,497,131797,401877981
+Conference League,2026/27,first-round,16/07/2026,19:00,si,STATUS_FINAL_AET,Dinamo Tbilisi,Mondorf-les-Bains,1,1,0,0,0,0,0,0,0,0,0,0,498,131793,401877982
+Conference League,2026/27,first-round,16/07/2026,19:00,si,STATUS_FULL_TIME,FC Milsami,Velez Mostar,0,1,0,0,0,0,0,0,0,0,0,0,11440,8070,401877784
+Conference League,2026/27,first-round,16/07/2026,19:00,si,STATUS_FULL_TIME,Santa Coloma,Penybont FC,3,0,0,0,0,0,0,0,0,0,0,0,542,20038,401877748
+Conference League,2026/27,first-round,16/07/2026,19:00,si,STATUS_FULL_TIME,Víkingur,Stjarnan,2,2,0,0,0,0,0,0,0,0,0,0,13238,7949,401877796
+Conference League,2026/27,first-round,16/07/2026,19:00,si,STATUS_FULL_TIME,Zalgiris Vilnius,OFK Petrovac,2,1,0,0,0,0,0,0,0,0,0,0,523,131798,401877757
+Conference League,2026/27,first-round,16/07/2026,19:30,si,STATUS_FULL_TIME,Hamrun Spartans,NSI Runavik,1,2,0,0,0,0,0,0,0,0,0,0,7858,2710,401877747
+Europa League,2026/27,first-round,16/07/2026,19:30,si,STATUS_FULL_TIME,Derry City,CSKA Sofia,1,2,0,0,0,0,0,0,0,0,0,0,2712,10834,401878075
+Europa League,2026/27,first-round,16/07/2026,19:30,si,STATUS_FINAL_PEN,Universitatea Cluj,Dynamo Kyiv,0,0,0,0,0,0,0,0,0,0,0,0,8091,440,401878073
+Conference League,2026/27,first-round,16/07/2026,20:00,si,STATUS_FULL_TIME,Ballkani,Connah's Quay,3,2,0,0,0,0,0,0,0,0,0,0,21526,7591,401877787
+Conference League,2026/27,first-round,16/07/2026,20:00,si,STATUS_FINAL_PEN,FK Sileks ,Dinamo Minsk,0,1,0,0,0,0,0,0,0,0,0,0,2940,2539,401877783
+Conference League,2026/27,first-round,16/07/2026,20:00,si,STATUS_FULL_TIME,KF Shkëndija,Europa FC,1,0,0,0,0,0,0,0,0,0,0,0,8151,17503,401877750
+Europa League,2026/27,first-round,16/07/2026,20:00,si,STATUS_FULL_TIME,Aluminij,Sheriff Tiraspol,0,1,0,0,0,0,0,0,0,0,0,0,131800,614,401877922
+Europa League,2026/27,first-round,16/07/2026,20:15,si,STATUS_FULL_TIME,Ferencvaros,Vojvodina,3,0,16,8,4,3,6,2,13,11,69.8,30.2,622,7825,401878074
+Europa League,2026/27,first-round,16/07/2026,20:30,si,STATUS_FULL_TIME,MSK Zilina,Hajduk Split,2,1,0,0,0,0,0,0,0,0,0,0,2491,489,401878076
+Conference League,2026/27,first-round,16/07/2026,20:45,si,STATUS_FULL_TIME,Linfield,Nomme Kalju,2,2,0,0,0,0,0,0,0,0,0,0,2555,10376,401877749
+Conference League,2026/27,first-round,16/07/2026,20:45,si,STATUS_FULL_TIME,Mornar,Atlètic Club d'Escaldes,1,2,0,0,0,0,0,0,0,0,0,0,22290,21528,401877802
+Conference League,2026/27,first-round,16/07/2026,21:00,si,STATUS_FULL_TIME,AC Virtus,Dila Gori,1,0,0,0,0,0,0,0,0,0,0,0,22292,8284,401877752
+Europa League,2026/27,first-round,16/07/2026,22:00,si,STATUS_FULL_TIME,Vestri,FK Qarabag,0,3,0,0,0,0,0,0,0,0,0,0,131799,10414,401877923
+Champions League,2026/27,second-round,21/07/2026,18:00,si,STATUS_FULL_TIME,Ararat-Armenia,Shamrock Rovers,2,0,0,0,0,0,0,0,0,0,0,0,20024,2564,401891670
+Champions League,2026/27,second-round,21/07/2026,18:00,si,STATUS_FULL_TIME,Iberia 1999,Slovan Bratislava,0,2,0,0,0,0,0,0,0,0,0,0,20025,521,401891563
+Champions League,2026/27,second-round,21/07/2026,18:00,si,STATUS_FULL_TIME,Mjällby AIF,Lincoln Red Imps,3,0,0,0,0,0,0,0,0,0,0,0,20301,17856,401891564
+Champions League,2026/27,second-round,21/07/2026,18:00,si,STATUS_FULL_TIME,Sabah FK,KuPS Kuopio,1,0,0,0,0,0,0,0,0,0,0,0,21922,8169,401891587
+Champions League,2026/27,second-round,21/07/2026,19:00,si,STATUS_FULL_TIME,AGF,Lech Poznan,1,4,11,17,4,7,4,2,11,12,43.3,56.7,7853,2990,401877837
+Conference League,2026/27,second-round,21/07/2026,19:00,si,STATUS_FULL_TIME,IFK Göteborg,FC Levadia Tallinn,1,2,0,0,0,0,0,0,0,0,0,0,2556,2540,401896207
+Conference League,2026/27,second-round,21/07/2026,19:30,si,STATUS_FULL_TIME,Floriana FC,Drita Gjilan,1,1,0,0,0,0,0,0,0,0,0,0,7857,19243,401891785
+Champions League,2026/27,second-round,21/07/2026,20:00,si,STATUS_FULL_TIME,FC Thun,Dinamo Zagreb,1,1,16,20,3,6,9,5,19,13,42.6,57.4,3024,597,401877769
+Champions League,2026/27,second-round,21/07/2026,20:00,si,STATUS_FULL_TIME,Fenerbahce,Gornik Zabrze,1,0,15,2,6,1,9,2,15,11,78.7,21.3,436,8180,401877768
+Conference League,2026/27,second-round,21/07/2026,20:15,si,STATUS_FULL_TIME,FC Atert Bissen,Györi ETO FC,2,6,21,15,10,10,5,5,10,12,49.3,50.7,131796,12367,401892010
+Champions League,2026/27,second-round,21/07/2026,20:30,si,STATUS_FULL_TIME,SK Sturm Graz,Heart of Midlothian,4,0,20,19,6,6,4,12,18,13,33,67,3746,262,401877836
+Champions League,2026/27,second-round,21/07/2026,20:45,si,STATUS_FULL_TIME,KI Klaksvik,Kauno Zalgiris,0,0,0,0,0,0,0,0,0,0,0,0,2547,20028,401891845
+Champions League,2026/27,second-round,21/07/2026,21:00,si,STATUS_FULL_TIME,Larne,Red Star Belgrade,0,4,0,0,0,0,0,0,0,0,0,0,20039,2290,401891687
+Champions League,2026/27,second-round,21/07/2026,21:00,si,STATUS_FULL_TIME,Vikingur Reykjavik,Hapoel Be'er,2,1,0,0,0,0,0,0,0,0,0,0,8249,13083,401891588
+Conference League,2026/27,second-round,22/07/2026,18:00,si,STATUS_FULL_TIME,Neftchi,Dinamo Minsk,2,4,0,0,0,0,0,0,0,0,0,0,504,2539,401896222
+Champions League,2026/27,second-round,22/07/2026,19:00,si,STATUS_FULL_TIME,Omonia Nicosia,Kairat Almaty,1,0,0,0,0,0,0,0,0,0,0,0,617,2528,401891884
+Conference League,2026/27,second-round,22/07/2026,19:00,si,STATUS_FULL_TIME,Bohemians,Ballkani,2,1,0,0,0,0,0,0,0,0,0,0,615,21526,401896215
+Champions League,2026/27,second-round,22/07/2026,19:30,si,STATUS_FULL_TIME,Levski Sofia,Universitatea Craiova,1,0,0,0,0,0,0,0,0,0,0,0,490,8089,401891788
+Conference League,2026/27,second-round,22/07/2026,19:45,si,STATUS_FULL_TIME,Istanbul Basaksehir,FC Inter Turku,1,1,24,12,9,5,8,1,13,9,67.5,32.5,7914,3726,401893763
+Conference League,2026/27,second-round,22/07/2026,20:00,si,STATUS_FULL_TIME,Vardar,Riga FC,2,3,0,0,0,0,0,0,0,0,0,0,560,19246,401891772
+Conference League,2026/27,second-round,22/07/2026,20:30,si,STATUS_FULL_TIME,FC Spartak Trnava,CSKA 1948 Sofia,0,0,0,0,0,0,0,0,0,0,0,0,3929,21947,401878141
+Champions League,2026/27,second-round,22/07/2026,21:00,si,STATUS_FULL_TIME,Egnatia,NK Celje,3,3,0,0,0,0,0,0,0,0,0,0,21943,3362,401891883
+Conference League,2026/27,second-round,22/07/2026,21:00,si,STATUS_FULL_TIME,Zeleznicar Pancevo,Braga,0,1,0,0,0,0,0,0,0,0,0,0,22298,2994,401878133
+Conference League,2026/27,second-round,23/07/2026,16:30,si,STATUS_FULL_TIME,KF Malisheva,Hibernian,2,0,0,0,0,0,0,0,0,0,0,0,22287,258,401891786
+Conference League,2026/27,second-round,23/07/2026,17:00,si,STATUS_FULL_TIME,Alashkert FC,CFR Cluj-Napoca,1,1,0,0,0,0,0,0,0,0,0,0,17858,5260,401893764
+Conference League,2026/27,second-round,23/07/2026,17:00,si,STATUS_FULL_TIME,FK Liepaja,Austria Vienna,0,2,14,10,3,3,6,3,9,12,48.2,51.8,18283,1382,401891933
+Conference League,2026/27,second-round,23/07/2026,17:30,si,STATUS_FULL_TIME,Panevezys,Tobol Kostanay,1,1,0,0,0,0,0,0,0,0,0,0,21004,6748,401878131
+Conference League,2026/27,second-round,23/07/2026,18:00,si,STATUS_FULL_TIME,Debrecen,Pyunik,1,0,20,18,1,3,4,4,14,7,50.2,49.8,532,2493,401893762
+Conference League,2026/27,second-round,23/07/2026,18:00,si,STATUS_FULL_TIME,Dila Gori,Apollon Limassol,0,4,0,0,0,0,0,0,0,0,0,0,8284,525,401896223
+Conference League,2026/27,second-round,23/07/2026,18:00,si,STATUS_FULL_TIME,Flora,The New Saints,1,0,0,0,0,0,0,0,0,0,0,0,12146,576,401891771
+Conference League,2026/27,second-round,23/07/2026,18:00,si,STATUS_FULL_TIME,HJK Helsinki,Coleraine,5,0,0,0,0,0,0,0,0,0,0,0,502,2723,401877937
+Conference League,2026/27,second-round,23/07/2026,18:00,si,STATUS_FULL_TIME,Paide Linnameeskond,Zira FK,1,0,0,0,0,0,0,0,0,0,0,0,20718,18754,401893761
+Europa League,2026/27,second-round,23/07/2026,18:00,si,STATUS_FULL_TIME,FK Qarabag,CSKA Sofia,0,0,0,0,0,0,0,0,0,0,0,0,10414,10834,401896233
+Conference League,2026/27,second-round,23/07/2026,18:30,si,STATUS_FULL_TIME,AEK Larnaca,Beitar Jerusalem,0,1,0,0,0,0,0,0,0,0,0,0,4039,5218,401878135
+Conference League,2026/27,second-round,23/07/2026,18:30,si,STATUS_FULL_TIME,Dunajska Streda,Velez Mostar,1,0,0,0,0,0,0,0,0,0,0,0,19247,8070,401896205
+Conference League,2026/27,second-round,23/07/2026,18:30,si,STATUS_FULL_TIME,Raków Czestochowa,Valletta,3,1,0,0,0,0,0,0,0,0,0,0,21005,2698,401878139
+Conference League,2026/27,second-round,23/07/2026,18:30,si,STATUS_FULL_TIME,Rigas Futbola Skola,Vestri,4,1,0,0,0,0,0,0,0,0,0,0,12030,131799,401896232
+Conference League,2026/27,second-round,23/07/2026,19:00,si,STATUS_FULL_TIME,BATE Borisov,FC Sion,1,1,9,23,2,8,1,8,11,10,34.3,65.7,497,3076,401896204
+Conference League,2026/27,second-round,23/07/2026,19:00,si,STATUS_FULL_TIME,Dinamo Tbilisi,Zalgiris Vilnius,3,0,0,0,0,0,0,0,0,0,0,0,498,523,401896206
+Conference League,2026/27,second-round,23/07/2026,19:00,si,STATUS_FULL_TIME,GAIS,FC Nordsjælland,1,0,16,10,4,1,8,6,13,13,39.6,60.4,8222,3101,401878137
+Conference League,2026/27,second-round,23/07/2026,19:00,si,STATUS_FULL_TIME,ML Vitebsk,FK Sutjeska,3,0,0,0,0,0,0,0,0,0,0,0,131794,8281,401892012
+Conference League,2026/27,second-round,23/07/2026,19:00,si,STATUS_FULL_TIME,Santa Coloma,Rapid Vienna,1,3,10,21,2,8,2,7,9,13,37.3,62.7,542,519,401896208
+Conference League,2026/27,second-round,23/07/2026,19:00,si,STATUS_FULL_TIME,Universitatea Cluj,SK Brann,2,2,0,0,0,0,0,0,0,0,0,0,8091,620,401892167
+Conference League,2026/27,second-round,23/07/2026,19:00,si,STATUS_FULL_TIME,Zimbru Chisinau,FC Noah,1,1,0,0,0,0,0,0,0,0,0,0,540,20712,401878136
+Europa League,2026/27,second-round,23/07/2026,19:00,si,STATUS_FULL_TIME,Dynamo Kyiv,PAOK,2,3,10,14,5,7,2,1,10,13,58,42,440,605,401896234
+Europa League,2026/27,second-round,23/07/2026,19:00,si,STATUS_FULL_TIME,Hammarby IF,Anderlecht,1,1,0,0,0,0,0,0,0,0,0,0,2495,441,401878087
+Europa League,2026/27,second-round,23/07/2026,19:00,si,STATUS_FULL_TIME,Sheriff Tiraspol,Maccabi Tel-Aviv,0,5,0,0,0,0,0,0,0,0,0,0,614,524,401892170
+Europa League,2026/27,second-round,23/07/2026,19:00,si,STATUS_FULL_TIME,Tromso,FC Hradec Králové,0,1,0,0,0,0,0,0,0,0,0,0,5270,131860,401878086
+Conference League,2026/27,second-round,23/07/2026,19:30,si,STATUS_FULL_TIME,FC Vaduz,Atlètic Club d'Escaldes,4,0,0,0,0,0,0,0,0,0,0,0,562,21528,401896213
+Conference League,2026/27,second-round,23/07/2026,19:45,si,STATUS_FULL_TIME,FCSB,FK Auda,2,3,0,0,0,0,0,0,0,0,0,0,484,21948,401877936
+Conference League,2026/27,second-round,23/07/2026,20:00,si,STATUS_FULL_TIME,Aluminij,Dinamo City,1,1,0,0,0,0,0,0,0,0,0,0,131800,515,401896224
+Conference League,2026/27,second-round,23/07/2026,20:00,si,STATUS_FULL_TIME,Paksi SE,Panathinaikos,1,2,15,18,2,6,5,4,9,13,40.1,59.9,11523,443,401878134
+Conference League,2026/27,second-round,23/07/2026,20:00,si,STATUS_FULL_TIME,Polissya Zhitomir,F.C. København,3,3,20,11,7,7,2,3,8,13,50,50,22294,909,401878142
+Conference League,2026/27,second-round,23/07/2026,20:00,si,STATUS_FULL_TIME,Varteks,Jablonec,3,2,0,0,0,0,0,0,0,0,0,0,561,7922,401883597
+Conference League,2026/27,second-round,23/07/2026,20:00,si,STATUS_FULL_TIME,Vojvodina,Ajax Amsterdam,1,4,9,18,4,10,1,10,18,7,33.6,66.4,7825,139,401896225
+Europa League,2026/27,second-round,23/07/2026,20:00,si,STATUS_FULL_TIME,Besiktas,FC Midtjylland,1,0,28,5,7,1,5,2,12,9,74.6,25.4,1895,572,401878085
+Europa League,2026/27,second-round,23/07/2026,20:00,si,STATUS_FULL_TIME,FC Twente,Ferencvaros,1,2,18,9,7,2,4,4,11,7,68.6,31.4,152,622,401896231
+Europa League,2026/27,second-round,23/07/2026,20:00,si,STATUS_FULL_TIME,St. Gallen,Benfica,2,1,17,14,6,4,6,5,15,13,38.6,61.4,557,1929,401878088
+Conference League,2026/27,second-round,23/07/2026,20:30,si,STATUS_FULL_TIME,Borac Banja Luka,Petrocub,3,0,0,0,0,0,0,0,0,0,0,0,20710,19250,401892011
+Conference League,2026/27,second-round,23/07/2026,20:30,si,STATUS_FULL_TIME,FC Lugano,Dukagjini,1,0,24,12,7,3,7,3,17,12,71.6,28.4,7672,21944,401878140
+Conference League,2026/27,second-round,23/07/2026,20:30,si,STATUS_FULL_TIME,Hapoel Tel Aviv,Ludogorets Razgrad,2,0,0,0,0,0,0,0,0,0,0,0,1037,13018,401877938
+Conference League,2026/27,second-round,23/07/2026,20:30,si,STATUS_FULL_TIME,LNZ Cherkasy,KAA Gent,0,0,0,0,0,0,0,0,0,0,0,0,131795,3611,401879336
+Conference League,2026/27,second-round,23/07/2026,20:30,si,STATUS_FULL_TIME,MSK Zilina,GKS Katowice,2,1,0,0,0,0,0,0,0,0,0,0,2491,132427,401896567
+Conference League,2026/27,second-round,23/07/2026,20:45,si,STATUS_FULL_TIME,Motherwell,HB Torshavn,2,0,0,0,0,0,0,0,0,0,0,0,266,566,401878132
+Conference League,2026/27,second-round,23/07/2026,20:45,si,STATUS_FULL_TIME,NK Bravo,KF Shkëndija,2,1,0,0,0,0,0,0,0,0,0,0,22288,8151,401892166
+Conference League,2026/27,second-round,23/07/2026,20:45,si,STATUS_FULL_TIME,NSI Runavik,FC Koper,0,2,0,0,0,0,0,0,0,0,0,0,2710,3364,401896209
+Conference League,2026/27,second-round,23/07/2026,20:45,si,STATUS_FULL_TIME,Rijeka,Derry City,1,0,0,0,0,0,0,0,0,0,0,0,2988,2712,401896226
+Conference League,2026/27,second-round,23/07/2026,20:45,si,STATUS_FULL_TIME,Shelbourne,Nomme Kalju,5,2,0,0,0,0,0,0,0,0,0,0,20297,10376,401896214
+Conference League,2026/27,second-round,23/07/2026,21:00,si,STATUS_FULL_TIME,Partizan Belgrade,UNA Strassen,4,0,0,0,0,0,0,0,0,0,0,0,541,22291,401891669
+Conference League,2026/27,second-round,23/07/2026,21:00,si,STATUS_FULL_TIME,Stjarnan,FC Ilves,1,0,0,0,0,0,0,0,0,0,0,0,7949,19248,401896203
+Europa League,2026/27,second-round,23/07/2026,21:00,si,STATUS_FULL_TIME,Hajduk Split,Pafos,2,0,0,0,0,0,0,0,0,0,0,0,489,22281,401896235
+Conference League,2026/27,second-round,23/07/2026,21:15,si,STATUS_FULL_TIME,Valur Reykjavik,Zrinjski Mostar,1,0,0,0,0,0,0,0,0,0,0,0,6742,5239,401878138
+Champions League,2026/27,second-round,28/07/2026,17:00,si,STATUS_FULL_TIME,KuPS Kuopio,Sabah FK,0,2,0,0,0,0,0,0,0,0,0,0,8169,21922,401891534
+Champions League,2026/27,second-round,28/07/2026,18:00,si,STATUS_FULL_TIME,Lincoln Red Imps,Mjällby AIF,0,0,0,0,0,0,0,0,0,0,0,0,17856,20301,401891562
+Conference League,2026/27,second-round,28/07/2026,19:00,si,STATUS_FULL_TIME,Apollon Limassol,Dila Gori,3,0,0,0,0,0,0,0,0,0,0,0,525,8284,401896216
+Conference League,2026/27,second-round,28/07/2026,19:00,si,STATUS_FINAL_AET,Riga FC,Vardar,5,2,0,0,0,0,0,0,0,0,0,0,19246,560,401891722
+Conference League,2026/27,second-round,28/07/2026,19:30,si,STATUS_FINAL_PEN,CSKA 1948 Sofia,FC Spartak Trnava,0,0,0,0,0,0,0,0,0,0,0,0,21947,3929,401878129
+Champions League,2026/27,second-round,28/07/2026,20:00,si,STATUS_FINAL_AET,Dinamo Zagreb,FC Thun,3,2,29,8,6,3,14,1,15,13,75.7,24.3,597,3024,401877835
+Conference League,2026/27,second-round,28/07/2026,20:00,si,STATUS_FINAL_AET,Drita Gjilan,Floriana FC,2,1,0,0,0,0,0,0,0,0,0,0,19243,7857,401891783
+Champions League,2026/27,second-round,28/07/2026,20:15,si,STATUS_FINAL_PEN,NK Celje,Egnatia,2,2,0,0,0,0,0,0,0,0,0,0,3362,21943,401891861
+Champions League,2026/27,second-round,28/07/2026,20:45,si,STATUS_FULL_TIME,Heart of Midlothian,SK Sturm Graz,0,2,15,17,4,9,8,2,10,15,64,36,262,3746,401877765
+Champions League,2026/27,second-round,28/07/2026,21:00,si,STATUS_FULL_TIME,Shamrock Rovers,Ararat-Armenia,2,1,0,0,0,0,0,0,0,0,0,0,2564,20024,401891668
+Conference League,2026/27,second-round,29/07/2026,16:30,si,STATUS_FULL_TIME,Dukagjini,FC Lugano,1,5,9,12,4,7,1,5,16,16,36.8,63.2,21944,7672,401878124
+Champions League,2026/27,second-round,29/07/2026,17:00,si,STATUS_FINAL_PEN,Kairat Almaty,Omonia Nicosia,1,0,0,0,0,0,0,0,0,0,0,0,2528,617,401891862
+Champions League,2026/27,second-round,29/07/2026,18:00,si,STATUS_FULL_TIME,Kauno Zalgiris,KI Klaksvik,1,0,0,0,0,0,0,0,0,0,0,0,20028,2547,401891844
+Champions League,2026/27,second-round,29/07/2026,19:00,si,STATUS_FINAL_PEN,Lech Poznan,AGF,1,4,18,14,9,6,14,3,12,14,49,51,2990,7853,401877766
+Conference League,2026/27,second-round,29/07/2026,19:00,si,STATUS_FULL_TIME,F.C. København,Polissya Zhitomir,2,1,5,26,2,4,2,14,6,12,30.2,69.8,909,22294,401877935
+Champions League,2026/27,second-round,29/07/2026,19:30,si,STATUS_FULL_TIME,Hapoel Be'er,Vikingur Reykjavik,2,0,0,0,0,0,0,0,0,0,0,0,13083,8249,401891533
+Champions League,2026/27,second-round,29/07/2026,19:30,si,STATUS_FULL_TIME,Universitatea Craiova,Levski Sofia,2,2,0,0,0,0,0,0,0,0,0,0,8089,490,401891787
+Champions League,2026/27,second-round,29/07/2026,20:00,si,STATUS_FULL_TIME,Gornik Zabrze,Fenerbahce,1,1,15,14,6,2,9,7,8,15,48,52,8180,436,401877767
+Champions League,2026/27,second-round,29/07/2026,20:00,si,STATUS_FULL_TIME,Red Star Belgrade,Larne,5,0,0,0,0,0,0,0,0,0,0,0,2290,20039,401891667
+Champions League,2026/27,second-round,29/07/2026,20:15,si,STATUS_FULL_TIME,Slovan Bratislava,Iberia 1999,1,1,0,0,0,0,0,0,0,0,0,0,521,20025,401891561
+Conference League,2026/27,second-round,29/07/2026,20:30,si,STATUS_FULL_TIME,Rapid Vienna,Santa Coloma,6,2,15,6,10,2,2,3,9,19,54.1,45.9,519,542,401896201
+Conference League,2026/27,second-round,30/07/2026,16:00,si,STATUS_FULL_TIME,Atlètic Club d'Escaldes,FC Vaduz,0,2,0,0,0,0,0,0,0,0,0,0,21528,562,401896211
+Conference League,2026/27,second-round,30/07/2026,16:00,si,STATUS_FINAL_PEN,Tobol Kostanay,Panevezys,1,1,0,0,0,0,0,0,0,0,0,0,6748,21004,401878126
+Conference League,2026/27,second-round,30/07/2026,18:00,si,STATUS_FINAL_PEN,FC Ilves,Stjarnan,2,1,0,0,0,0,0,0,0,0,0,0,19248,7949,401896198
+Conference League,2026/27,second-round,30/07/2026,18:00,si,STATUS_FULL_TIME,FC Inter Turku,Istanbul Basaksehir,2,0,10,12,7,1,1,8,8,11,41.5,58.5,3726,7914,401893758
+Conference League,2026/27,second-round,30/07/2026,18:00,si,STATUS_FULL_TIME,FC Noah,Zimbru Chisinau,2,1,0,0,0,0,0,0,0,0,0,0,20712,540,401877932
+Conference League,2026/27,second-round,30/07/2026,18:00,si,STATUS_FULL_TIME,FK Auda,FCSB,4,1,0,0,0,0,0,0,0,0,0,0,21948,484,401878122
+Conference League,2026/27,second-round,30/07/2026,18:00,si,STATUS_FULL_TIME,Jablonec,Varteks,2,0,0,0,0,0,0,0,0,0,0,0,7922,561,401883598
+Conference League,2026/27,second-round,30/07/2026,18:00,si,STATUS_FULL_TIME,Nomme Kalju,Shelbourne,2,1,0,0,0,0,0,0,0,0,0,0,10376,20297,401896210
+Conference League,2026/27,second-round,30/07/2026,18:00,si,STATUS_FULL_TIME,Pyunik,Debrecen,0,0,18,16,4,5,7,10,8,11,49.9,50.1,2493,532,401893759
+Conference League,2026/27,second-round,30/07/2026,18:00,si,STATUS_FULL_TIME,Zira FK,Paide Linnameeskond,1,1,0,0,0,0,0,0,0,0,0,0,18754,20718,401893757
+Europa League,2026/27,second-round,30/07/2026,18:00,si,STATUS_FULL_TIME,Maccabi Tel-Aviv,Sheriff Tiraspol,1,0,0,0,0,0,0,0,0,0,0,0,524,614,401896229
+Conference League,2026/27,second-round,30/07/2026,18:30,si,STATUS_FINAL_AET,FC Levadia Tallinn,IFK Göteborg,1,3,0,0,0,0,0,0,0,0,0,0,2540,2556,401896197
+Conference League,2026/27,second-round,30/07/2026,19:00,si,STATUS_FULL_TIME,Dinamo Minsk,Neftchi,0,1,0,0,0,0,0,0,0,0,0,0,2539,504,401896220
+Conference League,2026/27,second-round,30/07/2026,19:00,si,STATUS_FULL_TIME,FC Nordsjælland,GAIS,6,0,22,10,10,2,2,1,17,14,57.1,42.9,3101,8222,401878127
+Conference League,2026/27,second-round,30/07/2026,19:00,si,STATUS_FULL_TIME,Györi ETO FC,FC Atert Bissen,1,1,10,17,3,7,2,4,16,8,53.8,46.2,12367,131796,401891986
+Conference League,2026/27,second-round,30/07/2026,19:00,si,STATUS_FULL_TIME,HB Torshavn,Motherwell,0,3,0,0,0,0,0,0,0,0,0,0,566,266,401877934
+Conference League,2026/27,second-round,30/07/2026,19:00,si,STATUS_FULL_TIME,Petrocub,Borac Banja Luka,3,3,0,0,0,0,0,0,0,0,0,0,19250,20710,401891985
+Conference League,2026/27,second-round,30/07/2026,19:00,si,STATUS_FULL_TIME,SK Brann,Universitatea Cluj,3,1,0,0,0,0,0,0,0,0,0,0,620,8091,401896221
+Conference League,2026/27,second-round,30/07/2026,19:00,si,STATUS_FULL_TIME,Velez Mostar,Dunajska Streda,0,3,0,0,0,0,0,0,0,0,0,0,8070,19247,401896200
+Conference League,2026/27,second-round,30/07/2026,19:00,si,STATUS_FULL_TIME,Zalgiris Vilnius,Dinamo Tbilisi,7,2,0,0,0,0,0,0,0,0,0,0,523,498,401896196
+Europa League,2026/27,second-round,30/07/2026,19:00,si,STATUS_FULL_TIME,FC Hradec Králové,Tromso,3,1,0,0,0,0,0,0,0,0,0,0,131860,5270,401878081
+Europa League,2026/27,second-round,30/07/2026,19:00,si,STATUS_FULL_TIME,FC Midtjylland,Besiktas,0,2,16,14,4,4,5,1,15,18,50.6,49.4,572,1895,401878084
+Europa League,2026/27,second-round,30/07/2026,19:00,si,STATUS_FINAL_AET,Pafos,Hajduk Split,4,0,0,0,0,0,0,0,0,0,0,0,22281,489,401896230
+Conference League,2026/27,second-round,30/07/2026,19:30,si,STATUS_FINAL_PEN,Beitar Jerusalem,AEK Larnaca,2,3,0,0,0,0,0,0,0,0,0,0,5218,4039,401877933
+Conference League,2026/27,second-round,30/07/2026,19:30,si,STATUS_FULL_TIME,Derry City,Rijeka,0,1,0,0,0,0,0,0,0,0,0,0,2712,2988,401896218
+Conference League,2026/27,second-round,30/07/2026,19:30,si,STATUS_FINAL_PEN,The New Saints,Flora,1,0,0,0,0,0,0,0,0,0,0,0,576,12146,401891784
+Conference League,2026/27,second-round,30/07/2026,19:30,si,STATUS_FULL_TIME,Valletta,Raków Czestochowa,0,4,0,0,0,0,0,0,0,0,0,0,2698,21005,401878121
+Europa League,2026/27,second-round,30/07/2026,19:45,si,STATUS_FULL_TIME,PAOK,Dynamo Kyiv,2,0,13,13,6,4,2,6,13,18,47,53,605,440,401896228
+Conference League,2026/27,second-round,30/07/2026,20:00,si,STATUS_FULL_TIME,Ajax Amsterdam,Vojvodina,4,1,27,3,11,2,8,2,9,17,70.8,29.2,139,7825,401896219
+Conference League,2026/27,second-round,30/07/2026,20:00,si,STATUS_FINAL_PEN,Ballkani,Bohemians,3,2,0,0,0,0,0,0,0,0,0,0,21526,615,401896212
+Conference League,2026/27,second-round,30/07/2026,20:00,si,STATUS_FULL_TIME,KF Shkëndija,NK Bravo,3,1,0,0,0,0,0,0,0,0,0,0,8151,22288,401892165
+Conference League,2026/27,second-round,30/07/2026,20:00,si,STATUS_FULL_TIME,Ludogorets Razgrad,Hapoel Tel Aviv,2,2,0,0,0,0,0,0,0,0,0,0,13018,1037,401878130
+Conference League,2026/27,second-round,30/07/2026,20:00,si,STATUS_FULL_TIME,Vestri,Rigas Futbola Skola,1,1,0,0,0,0,0,0,0,0,0,0,131799,12030,401892168
+Europa League,2026/27,second-round,30/07/2026,20:00,si,STATUS_FINAL_PEN,CSKA Sofia,FK Qarabag,0,0,0,0,0,0,0,0,0,0,0,0,10834,10414,401896227
+Conference League,2026/27,second-round,30/07/2026,20:15,si,STATUS_FULL_TIME,FC Sion,BATE Borisov,4,0,17,5,8,0,10,1,15,11,53.3,46.7,3076,497,401896199
+Conference League,2026/27,second-round,30/07/2026,20:15,si,STATUS_FULL_TIME,UNA Strassen,Partizan Belgrade,0,1,0,0,0,0,0,0,0,0,0,0,22291,541,401891666
+Conference League,2026/27,second-round,30/07/2026,20:30,si,STATUS_FULL_TIME,Austria Vienna,FK Liepaja,3,1,17,10,10,4,8,3,10,9,66.2,33.8,1382,18283,401891918
+Conference League,2026/27,second-round,30/07/2026,20:30,si,STATUS_FULL_TIME,CFR Cluj-Napoca,Alashkert FC,3,0,0,0,0,0,0,0,0,0,0,0,5260,17858,401893760
+Conference League,2026/27,second-round,30/07/2026,20:30,si,STATUS_FULL_TIME,GKS Katowice,MSK Zilina,3,1,0,0,0,0,0,0,0,0,0,0,132427,2491,401896566
+Conference League,2026/27,second-round,30/07/2026,20:30,si,STATUS_FINAL_PEN,KAA Gent,LNZ Cherkasy,0,0,0,0,0,0,0,0,0,0,0,0,3611,131795,401879335
+Conference League,2026/27,second-round,30/07/2026,20:30,si,STATUS_FULL_TIME,Panathinaikos,Paksi SE,2,2,20,8,8,4,8,5,13,19,70.7,29.3,443,11523,401878125
+Conference League,2026/27,second-round,30/07/2026,20:30,si,STATUS_FULL_TIME,Zrinjski Mostar,Valur Reykjavik,2,2,0,0,0,0,0,0,0,0,0,0,5239,6742,401878128
+Europa League,2026/27,second-round,30/07/2026,20:30,si,STATUS_FULL_TIME,Anderlecht,Hammarby IF,3,1,0,0,0,0,0,0,0,0,0,0,441,2495,401878082
+Europa League,2026/27,second-round,30/07/2026,20:30,si,STATUS_FULL_TIME,Ferencvaros,FC Twente,2,2,5,21,3,4,2,8,10,13,32.9,67.1,622,152,401892169
+Conference League,2026/27,second-round,30/07/2026,20:45,si,STATUS_FULL_TIME,Coleraine,HJK Helsinki,0,3,0,0,0,0,0,0,0,0,0,0,2723,502,401878123
+Conference League,2026/27,second-round,30/07/2026,20:45,si,STATUS_FINAL_PEN,FC Koper,NSI Runavik,1,3,0,0,0,0,0,0,0,0,0,0,3364,2710,401896202
+Conference League,2026/27,second-round,30/07/2026,21:00,si,STATUS_FULL_TIME,Braga,Zeleznicar Pancevo,4,0,0,0,0,0,0,0,0,0,0,0,2994,22298,401878120
+Conference League,2026/27,second-round,30/07/2026,21:00,si,STATUS_FULL_TIME,Dinamo City,Aluminij,3,0,0,0,0,0,0,0,0,0,0,0,515,131800,401896217
+Conference League,2026/27,second-round,30/07/2026,21:00,si,STATUS_FULL_TIME,FK Sutjeska,ML Vitebsk,1,2,0,0,0,0,0,0,0,0,0,0,8281,131794,401892009
+Conference League,2026/27,second-round,30/07/2026,21:00,si,STATUS_FULL_TIME,Hibernian,KF Malisheva,4,1,0,0,0,0,0,0,0,0,0,0,258,22287,401891834
+Europa League,2026/27,second-round,30/07/2026,21:00,si,STATUS_FULL_TIME,Benfica,St. Gallen,5,0,25,11,10,3,9,2,5,12,71.9,28.1,1929,557,401878083
+Champions League,2026/27,third-round,04/08/2026,18:00,si,STATUS_FULL_TIME,Ararat-Armenia,NK Celje,2,1,0,0,0,0,0,0,0,0,0,0,20024,3362,401902564
+Champions League,2026/27,third-round,04/08/2026,18:00,si,STATUS_FULL_TIME,Mjällby AIF,Slovan Bratislava,1,2,0,0,0,0,0,0,0,0,0,0,20301,521,401902705
+Conference League,2026/27,third-round,04/08/2026,18:00,si,STATUS_FULL_TIME,FK Auda,Dinamo City,1,0,0,0,0,0,0,0,0,0,0,0,21948,515,401903148
+Champions League,2026/27,third-round,04/08/2026,19:30,si,STATUS_FULL_TIME,Hapoel Be'er,Red Star Belgrade,1,0,0,0,0,0,0,0,0,0,0,0,13083,2290,401902702
+Champions League,2026/27,third-round,04/08/2026,19:30,si,STATUS_FULL_TIME,Levski Sofia,Kairat Almaty,1,0,0,0,0,0,0,0,0,0,0,0,490,2528,401902701
+Champions League,2026/27,third-round,04/08/2026,20:00,si,STATUS_FULL_TIME,Dinamo Zagreb,Kauno Zalgiris,5,0,0,0,0,0,0,0,0,0,0,0,597,20028,401902668
+Champions League,2026/27,third-round,04/08/2026,20:00,si,STATUS_FULL_TIME,Olympiacos,NEC Nijmegen,0,0,12,13,5,4,5,2,11,16,54,46,435,147,401898019
+Champions League,2026/27,third-round,04/08/2026,20:00,si,STATUS_FULL_TIME,Sparta Prague,Lyon,2,1,9,11,3,4,6,9,11,7,51.9,48.1,433,167,401898023
+Champions League,2026/27,third-round,04/08/2026,20:00,si,STATUS_FULL_TIME,Union St.-Gilloise,Bodo/Glimt,3,3,0,0,0,0,0,0,0,0,0,0,5807,2980,401898024
+Europa League,2026/27,third-round,04/08/2026,21:00,si,STATUS_FULL_TIME,Larne,Iberia 1999,0,0,0,0,0,0,0,0,0,0,0,0,20039,20025,401902704
+Europa League,2026/27,third-round,04/08/2026,21:00,si,STATUS_FULL_TIME,Shamrock Rovers,Egnatia,3,1,0,0,0,0,0,0,0,0,0,0,2564,21943,401902448
+Conference League,2026/27,third-round,05/08/2026,19:00,si,STATUS_FULL_TIME,SK Brann,Apollon Limassol,0,1,0,0,0,0,0,0,0,0,0,0,620,525,401903010
+Champions League,2026/27,third-round,05/08/2026,19:10,si,STATUS_FULL_TIME,AGF,Sabah FK,2,1,10,15,3,4,6,5,13,11,44.3,55.7,7853,21922,401902678
+Champions League,2026/27,third-round,05/08/2026,20:00,si,STATUS_FULL_TIME,Fenerbahce,SK Sturm Graz,2,0,17,5,10,1,4,2,10,19,71.8,28.2,436,3746,401902674
+Europa League,2026/27,third-round,05/08/2026,20:15,si,STATUS_FULL_TIME,Ferencvaros,Gornik Zabrze,1,0,15,10,4,1,2,5,12,9,55.2,44.8,622,8180,401902943
+Conference League,2026/27,third-round,05/08/2026,20:30,si,STATUS_FULL_TIME,Panathinaikos,CSKA 1948 Sofia,1,1,14,19,5,2,8,7,9,11,68.8,31.2,443,21947,401903141
+Conference League,2026/27,third-round,06/08/2026,17:00,si,STATUS_FULL_TIME,FC Inter Turku,FC Vaduz,2,1,0,0,0,0,0,0,0,0,0,0,3726,562,401902956
+Europa League,2026/27,third-round,06/08/2026,17:00,si,STATUS_FULL_TIME,KuPS Kuopio,Universitatea Craiova,1,1,0,0,0,0,0,0,0,0,0,0,8169,8089,401902673
+Conference League,2026/27,third-round,06/08/2026,18:00,si,STATUS_FULL_TIME,FC Noah,FC Sion,2,2,11,15,4,6,1,2,16,10,53.4,46.6,20712,3076,401903147
+Conference League,2026/27,third-round,06/08/2026,18:00,si,STATUS_FULL_TIME,HJK Helsinki,Motherwell,1,1,0,0,0,0,0,0,0,0,0,0,502,266,401903143
+Conference League,2026/27,third-round,06/08/2026,18:00,si,STATUS_FULL_TIME,Jablonec,Rigas Futbola Skola,2,0,0,0,0,0,0,0,0,0,0,0,7922,12030,401903144
+Conference League,2026/27,third-round,06/08/2026,18:00,si,STATUS_FULL_TIME,Paide Linnameeskond,Rapid Vienna,1,4,8,23,2,8,4,5,13,12,25.5,74.5,20718,519,401902957
+Europa League,2026/27,third-round,06/08/2026,18:00,si,STATUS_FULL_TIME,Jagiellonia Bialystok,Rangers,2,1,0,0,0,0,0,0,0,0,0,0,11505,257,401898001
+Europa League,2026/27,third-round,06/08/2026,18:00,si,STATUS_FULL_TIME,Maccabi Tel-Aviv,CSKA Sofia,0,3,0,0,0,0,0,0,0,0,0,0,524,10834,401902945
+Conference League,2026/27,third-round,06/08/2026,18:30,si,STATUS_FULL_TIME,CFR Cluj-Napoca,Tromso,0,5,0,0,0,0,0,0,0,0,0,0,5260,5270,401903116
+Conference League,2026/27,third-round,06/08/2026,19:00,si,STATUS_FULL_TIME,Debrecen,F.C. København,0,3,13,16,2,10,7,5,12,18,53.1,46.9,532,909,401903011
+Conference League,2026/27,third-round,06/08/2026,19:00,si,STATUS_FULL_TIME,Dynamo Kyiv,FK Qarabag,1,0,0,0,0,0,0,0,0,0,0,0,440,10414,401903150
+Conference League,2026/27,third-round,06/08/2026,19:00,si,STATUS_FULL_TIME,IFK Göteborg,KAA Gent,0,1,0,0,0,0,0,0,0,0,0,0,2556,3611,401903142
+Conference League,2026/27,third-round,06/08/2026,19:00,si,STATUS_FULL_TIME,Inter D'Escaldes,Flora,2,0,0,0,0,0,0,0,0,0,0,0,20703,12146,401902951
+Conference League,2026/27,third-round,06/08/2026,19:00,si,STATUS_FULL_TIME,Raków Czestochowa,Hammarby IF,0,0,0,0,0,0,0,0,0,0,0,0,21005,2495,401903145
+Conference League,2026/27,third-round,06/08/2026,19:00,si,STATUS_FULL_TIME,Riga FC,Györi ETO FC,1,0,18,4,6,2,8,1,18,15,61.1,38.9,19246,12367,401902954
+Conference League,2026/27,third-round,06/08/2026,19:00,si,STATUS_FULL_TIME,Sheriff Tiraspol,St. Gallen,1,3,15,26,7,5,6,8,14,7,32.2,67.8,614,557,401903151
+Conference League,2026/27,third-round,06/08/2026,19:00,si,STATUS_FULL_TIME,Zalgiris Vilnius,Hajduk Split,2,5,0,0,0,0,0,0,0,0,0,0,523,489,401903139
+Europa League,2026/27,third-round,06/08/2026,19:00,si,STATUS_FULL_TIME,FC Hradec Králové,Besiktas,0,1,12,22,9,5,8,5,10,6,48.4,51.6,131860,1895,401902936
+Europa League,2026/27,third-round,06/08/2026,19:00,si,STATUS_FULL_TIME,Lech Poznan,KI Klaksvik,1,0,0,0,0,0,0,0,0,0,0,0,2990,2547,401902703
+Europa League,2026/27,third-round,06/08/2026,19:00,si,STATUS_FULL_TIME,Lincoln Red Imps,Omonia Nicosia,1,1,0,0,0,0,0,0,0,0,0,0,17856,617,401902667
+Europa League,2026/27,third-round,06/08/2026,19:00,si,STATUS_FULL_TIME,RB Salzburg,Pafos,1,0,13,7,3,1,13,0,13,11,59.3,40.7,2790,22281,401902937
+Conference League,2026/27,third-round,06/08/2026,19:30,si,STATUS_FULL_TIME,Beitar Jerusalem,Austria Vienna,1,2,14,9,4,5,6,1,18,15,69.4,30.6,5218,1382,401903146
+Europa League,2026/27,third-round,06/08/2026,19:45,si,STATUS_FULL_TIME,PAOK,Anderlecht,0,1,16,4,2,2,5,1,15,19,64.6,35.4,605,441,401902942
+Conference League,2026/27,third-round,06/08/2026,20:00,si,STATUS_FULL_TIME,Ajax Amsterdam,Shelbourne,3,1,32,3,11,3,14,0,11,4,71.3,28.7,139,20297,401903149
+Conference League,2026/27,third-round,06/08/2026,20:00,si,STATUS_FULL_TIME,FC Twente,Dunajska Streda,6,0,20,10,10,4,7,5,12,11,63.1,36.9,152,19247,401903123
+Conference League,2026/27,third-round,06/08/2026,20:00,si,STATUS_FULL_TIME,Hapoel Tel Aviv,GKS Katowice,2,0,0,0,0,0,0,0,0,0,0,0,1037,132427,401903117
+Europa League,2026/27,third-round,06/08/2026,20:00,si,STATUS_FULL_TIME,FC Thun,Vikingur Reykjavik,3,0,24,9,7,2,6,4,9,11,45.9,54.1,3024,8249,401902672
+Conference League,2026/27,third-round,06/08/2026,20:30,si,STATUS_FULL_TIME,Borac Banja Luka,ML Vitebsk,1,0,0,0,0,0,0,0,0,0,0,0,20710,131794,401903138
+Conference League,2026/27,third-round,06/08/2026,20:30,si,STATUS_FULL_TIME,Braga,Dinamo Minsk,1,0,0,0,0,0,0,0,0,0,0,0,2994,2539,401903125
+Conference League,2026/27,third-round,06/08/2026,20:30,si,STATUS_FULL_TIME,FC Lugano,NSI Runavik,2,0,31,5,9,1,15,3,16,3,68.7,31.3,7672,2710,401903115
+Conference League,2026/27,third-round,06/08/2026,20:30,si,STATUS_FULL_TIME,Valur Reykjavik,FC Nordsjælland,0,2,6,22,2,6,3,9,6,15,34.8,65.2,6742,3101,401903140
+Conference League,2026/27,third-round,06/08/2026,20:45,si,STATUS_FULL_TIME,Bohemians,FC Midtjylland,0,2,6,7,2,5,3,8,11,16,36.6,63.4,615,572,401903152
+Conference League,2026/27,third-round,06/08/2026,20:45,si,STATUS_FULL_TIME,Rijeka,FC Ilves,1,0,0,0,0,0,0,0,0,0,0,0,2988,19248,401903018
+Conference League,2026/27,third-round,06/08/2026,21:00,si,STATUS_FULL_TIME,Hibernian,KF Shkëndija,2,1,0,0,0,0,0,0,0,0,0,0,258,8151,401903124
+Conference League,2026/27,third-round,06/08/2026,21:00,si,STATUS_FULL_TIME,Partizan Belgrade,Tobol Kostanay,3,0,0,0,0,0,0,0,0,0,0,0,541,6748,401903122
+Conference League,2026/27,third-round,06/08/2026,21:00,si,STATUS_FULL_TIME,Tre Fiori,Drita Gjilan,1,4,0,0,0,0,0,0,0,0,0,0,8591,19243,401902561
+Europa League,2026/27,third-round,06/08/2026,21:00,si,STATUS_FULL_TIME,Benfica,Heart of Midlothian,6,1,24,10,11,2,6,2,12,12,67.1,32.9,1929,262,401902961
+Champions League,2026/27,third-round,11/08/2026,17:00,si,STATUS_FULL_TIME,Kairat Almaty,Levski Sofia,0,1,21,9,7,2,9,4,10,14,55.7,44.3,2528,490,401902671
+Champions League,2026/27,third-round,11/08/2026,18:00,si,STATUS_FINAL_AET,Bodo/Glimt,Union St.-Gilloise,3,2,23,19,9,5,10,1,11,10,70.1,29.9,2980,5807,401898018
+Champions League,2026/27,third-round,11/08/2026,18:00,si,STATUS_FULL_TIME,Sabah FK,AGF,4,0,29,14,10,5,7,4,11,10,50.2,49.8,21922,7853,401902676
+Europa League,2026/27,third-round,11/08/2026,18:00,si,STATUS_FINAL_AET,Iberia 1999,Larne,2,1,0,0,0,0,0,0,0,0,0,0,20025,20039,401902679
+Champions League,2026/27,third-round,11/08/2026,19:00,si,STATUS_FULL_TIME,Kauno Zalgiris,Dinamo Zagreb,1,2,0,0,0,0,0,0,0,0,0,0,20028,597,401902666
+Conference League,2026/27,third-round,11/08/2026,19:00,si,STATUS_FINAL_AET,Apollon Limassol,SK Brann,2,4,0,0,0,0,0,0,0,0,0,0,525,620,401902949
+Champions League,2026/27,third-round,11/08/2026,19:30,si,STATUS_FINAL_AET,NEC Nijmegen,Olympiacos,2,1,16,10,7,2,3,4,17,19,54.1,45.9,147,435,401898002
+Conference League,2026/27,third-round,11/08/2026,19:30,si,STATUS_FINAL_AET,CSKA 1948 Sofia,Panathinaikos,1,2,14,21,5,11,3,6,13,13,49.5,50.5,21947,443,401903121
+Champions League,2026/27,third-round,11/08/2026,20:00,si,STATUS_FULL_TIME,Red Star Belgrade,Hapoel Be'er,0,2,0,0,0,0,0,0,0,0,0,0,2290,13083,401902670
+Champions League,2026/27,third-round,11/08/2026,20:15,si,STATUS_FULL_TIME,NK Celje,Ararat-Armenia,2,0,0,0,0,0,0,0,0,0,0,0,3362,20024,401902563
+Champions League,2026/27,third-round,11/08/2026,20:15,si,STATUS_FULL_TIME,Slovan Bratislava,Mjällby AIF,2,0,0,0,0,0,0,0,0,0,0,0,521,20301,401902677
+Champions League,2026/27,third-round,11/08/2026,20:30,si,STATUS_FULL_TIME,SK Sturm Graz,Fenerbahce,0,1,19,11,2,6,7,6,12,13,49.9,50.1,3746,436,401902700
+Champions League,2026/27,third-round,11/08/2026,21:00,si,STATUS_FULL_TIME,Lyon,Sparta Prague,3,0,19,6,11,1,7,1,20,14,55.4,44.6,167,433,401898000
+Conference League,2026/27,third-round,12/08/2026,18:00,si,STATUS_FULL_TIME,F.C. København,Debrecen,5,1,22,10,11,2,6,3,16,12,57.4,42.6,909,532,401903009
+Conference League,2026/27,third-round,12/08/2026,18:00,si,STATUS_FULL_TIME,GKS Katowice,Hapoel Tel Aviv,2,1,0,0,0,0,0,0,0,0,0,0,132427,1037,401903099
+Conference League,2026/27,third-round,12/08/2026,18:00,si,STATUS_FULL_TIME,Rapid Vienna,Paide Linnameeskond,2,0,23,2,7,1,5,1,11,3,65.1,34.9,519,20718,401902952
+Conference League,2026/27,third-round,13/08/2026,17:00,si,STATUS_FULL_TIME,Tobol Kostanay,Partizan Belgrade,1,2,0,0,0,0,0,0,0,0,0,0,6748,541,401903118
+Conference League,2026/27,third-round,13/08/2026,18:00,si,STATUS_FULL_TIME,FC Ilves,Rijeka,1,1,0,0,0,0,0,0,0,0,0,0,19248,2988,401902953
+Conference League,2026/27,third-round,13/08/2026,18:00,si,STATUS_FULL_TIME,FK Qarabag,Dynamo Kyiv,2,0,0,0,0,0,0,0,0,0,0,0,10414,440,401903112
+Conference League,2026/27,third-round,13/08/2026,18:00,si,STATUS_FULL_TIME,Flora,Inter D'Escaldes,0,4,0,0,0,0,0,0,0,0,0,0,12146,20703,401902955
+Conference League,2026/27,third-round,13/08/2026,18:30,si,STATUS_FULL_TIME,Rigas Futbola Skola,Jablonec,1,2,0,0,0,0,0,0,0,0,0,0,12030,7922,401903110
+Conference League,2026/27,third-round,13/08/2026,19:00,si,STATUS_FULL_TIME,Dinamo Minsk,Braga,0,0,0,0,0,0,0,0,0,0,0,0,2539,2994,401903102
+Conference League,2026/27,third-round,13/08/2026,19:00,si,STATUS_FULL_TIME,Dunajska Streda,FC Twente,3,3,19,24,9,12,3,12,9,12,40.6,59.4,19247,152,401903101
+Conference League,2026/27,third-round,13/08/2026,19:00,si,STATUS_FULL_TIME,FC Midtjylland,Bohemians,3,2,15,11,7,4,6,3,22,11,62.6,37.4,572,615,401903114
+Conference League,2026/27,third-round,13/08/2026,19:00,si,STATUS_FULL_TIME,FC Nordsjælland,Valur Reykjavik,5,0,34,7,14,2,10,2,19,10,66.1,33.9,3101,6742,401903120
+Conference League,2026/27,third-round,13/08/2026,19:00,si,STATUS_FULL_TIME,Hammarby IF,Raków Czestochowa,0,1,0,0,0,0,0,0,0,0,0,0,2495,21005,401903109
+Conference League,2026/27,third-round,13/08/2026,19:00,si,STATUS_FINAL_PEN,ML Vitebsk,Borac Banja Luka,2,1,0,0,0,0,0,0,0,0,0,0,131794,20710,401903100
+Conference League,2026/27,third-round,13/08/2026,19:00,si,STATUS_FULL_TIME,Tromso,CFR Cluj-Napoca,2,1,0,0,0,0,0,0,0,0,0,0,5270,5260,401903098
+Europa League,2026/27,third-round,13/08/2026,19:00,si,STATUS_FULL_TIME,Besiktas,FC Hradec Králové,1,0,24,10,5,2,2,4,10,17,57.7,42.3,1895,131860,401902935
+Europa League,2026/27,third-round,13/08/2026,19:00,si,STATUS_FULL_TIME,Gornik Zabrze,Ferencvaros,1,1,19,10,5,3,9,6,11,12,57.4,42.6,8180,622,401902940
+Europa League,2026/27,third-round,13/08/2026,19:00,si,STATUS_FULL_TIME,Omonia Nicosia,Lincoln Red Imps,1,0,0,0,0,0,0,0,0,0,0,0,617,17856,401902665
+Europa League,2026/27,third-round,13/08/2026,19:00,si,STATUS_FULL_TIME,Pafos,RB Salzburg,3,3,15,18,9,6,4,2,12,16,51.6,48.4,22281,2790,401902717
+Europa League,2026/27,third-round,13/08/2026,19:00,si,STATUS_FULL_TIME,Universitatea Craiova,KuPS Kuopio,2,1,0,0,0,0,0,0,0,0,0,0,8089,8169,401902699
+Conference League,2026/27,third-round,13/08/2026,19:30,si,STATUS_FULL_TIME,FC Vaduz,FC Inter Turku,2,2,0,0,0,0,0,0,0,0,0,0,562,3726,401903008
+Conference League,2026/27,third-round,13/08/2026,19:30,si,STATUS_FULL_TIME,NSI Runavik,FC Lugano,2,2,6,18,4,9,5,3,14,14,40.1,59.9,2710,7672,401903037
+Europa League,2026/27,third-round,13/08/2026,19:30,si,STATUS_FULL_TIME,Vikingur Reykjavik,FC Thun,3,2,15,10,7,5,2,3,10,15,57.2,42.8,8249,3024,401902698
+Conference League,2026/27,third-round,13/08/2026,20:00,si,STATUS_FULL_TIME,Drita Gjilan,Tre Fiori,5,0,0,0,0,0,0,0,0,0,0,0,19243,8591,401902560
+Conference League,2026/27,third-round,13/08/2026,20:00,si,STATUS_FULL_TIME,KF Shkëndija,Hibernian,0,0,0,0,0,0,0,0,0,0,0,0,8151,258,401903107
+Conference League,2026/27,third-round,13/08/2026,20:00,si,STATUS_FULL_TIME,St. Gallen,Sheriff Tiraspol,5,1,21,13,11,2,6,3,15,18,65.4,34.6,557,614,401903113
+Europa League,2026/27,third-round,13/08/2026,20:00,si,STATUS_FULL_TIME,CSKA Sofia,Maccabi Tel-Aviv,1,3,0,0,0,0,0,0,0,0,0,0,10834,524,401902944
+Conference League,2026/27,third-round,13/08/2026,20:15,si,STATUS_FULL_TIME,FC Sion,FC Noah,2,1,17,8,5,3,7,3,9,22,53.1,46.9,3076,20712,401903103
+Conference League,2026/27,third-round,13/08/2026,20:30,si,STATUS_FINAL_PEN,Austria Vienna,Beitar Jerusalem,1,2,8,20,4,9,2,7,22,22,33.8,66.2,1382,5218,401903111
+Conference League,2026/27,third-round,13/08/2026,20:30,si,STATUS_FULL_TIME,Györi ETO FC,Riga FC,1,1,10,22,4,7,2,11,9,12,36.5,63.5,12367,19246,401902950
+Conference League,2026/27,third-round,13/08/2026,20:30,si,STATUS_FULL_TIME,KAA Gent,IFK Göteborg,1,1,0,0,0,0,0,0,0,0,0,0,3611,2556,401903106
+Conference League,2026/27,third-round,13/08/2026,20:30,si,STATUS_FULL_TIME,Motherwell,HJK Helsinki,2,0,0,0,0,0,0,0,0,0,0,0,266,502,401903108
+Europa League,2026/27,third-round,13/08/2026,20:30,si,STATUS_FULL_TIME,Anderlecht,PAOK,3,2,15,13,9,4,2,8,12,8,44.5,55.5,441,605,401902941
+Europa League,2026/27,third-round,13/08/2026,20:30,si,STATUS_FULL_TIME,Rangers,Jagiellonia Bialystok,1,1,0,0,0,0,0,0,0,0,0,0,257,11505,401898017
+Conference League,2026/27,third-round,13/08/2026,20:45,si,STATUS_FULL_TIME,Shelbourne,Ajax Amsterdam,2,2,12,19,5,7,4,11,10,12,27.6,72.4,20297,139,401903105
+Europa League,2026/27,third-round,13/08/2026,20:45,si,STATUS_FULL_TIME,Heart of Midlothian,Benfica,1,1,5,20,3,5,0,11,5,13,38.6,61.4,262,1929,401902960
+Conference League,2026/27,third-round,13/08/2026,21:00,si,STATUS_FULL_TIME,Dinamo City,FK Auda,4,0,0,0,0,0,0,0,0,0,0,0,515,21948,401903104
+Conference League,2026/27,third-round,13/08/2026,21:00,si,STATUS_FULL_TIME,Hajduk Split,Zalgiris Vilnius,4,0,0,0,0,0,0,0,0,0,0,0,489,523,401903119
+Europa League,2026/27,third-round,13/08/2026,21:00,si,STATUS_FULL_TIME,Egnatia,Shamrock Rovers,5,1,0,0,0,0,0,0,0,0,0,0,21943,2564,401902562
+Europa League,2026/27,third-round,14/08/2026,20:00,si,STATUS_FULL_TIME,KI Klaksvik,Lech Poznan,0,5,0,0,0,0,0,0,0,0,0,0,2547,2990,401902675
+Champions League,2026/27,Spareggi preliminari,18/08/2026,21:00,si,STATUS_FULL_TIME,Dinamo Zagreb,Viking FK,2,2,23,6,4,3,10,3,12,10,59.7,40.3,597,510,401909158
+Champions League,2026/27,Spareggi preliminari,18/08/2026,21:00,si,STATUS_FULL_TIME,Fenerbahce,Lyon,1,1,12,12,5,5,3,0,13,13,51.5,48.5,436,167,401909204
+Champions League,2026/27,Spareggi preliminari,18/08/2026,21:00,si,STATUS_FULL_TIME,Levski Sofia,AEK Athens,0,0,15,12,3,1,1,2,8,17,51.7,48.3,490,887,401909156
+Champions League,2026/27,Spareggi preliminari,19/08/2026,21:00,si,STATUS_FULL_TIME,Celtic,LASK Linz,3,0,17,20,7,8,8,3,6,9,64.1,35.9,256,4411,401903528
+Champions League,2026/27,Spareggi preliminari,19/08/2026,21:00,si,STATUS_FULL_TIME,Hapoel Be'er,Sabah FK,2,1,18,8,7,5,3,2,12,6,67.1,32.9,13083,21922,401909193
+Champions League,2026/27,Spareggi preliminari,19/08/2026,21:00,si,STATUS_FULL_TIME,NEC Nijmegen,Bodo/Glimt,1,3,22,8,6,4,7,2,9,12,69.3,30.7,147,2980,401909197
+Champions League,2026/27,Spareggi preliminari,19/08/2026,21:00,si,STATUS_FULL_TIME,Slovan Bratislava,NK Celje,1,1,14,8,2,4,4,0,12,13,49.7,50.3,521,3362,401909195
+Europa League,2026/27,Spareggi preliminari,20/08/2026,17:00,si,STATUS_FULL_TIME,Kairat Almaty,Anderlecht,0,3,0,0,0,0,0,0,0,0,0,0,2528,441,401910972
+Conference League,2026/27,Spareggi preliminari,20/08/2026,18:00,si,STATUS_FULL_TIME,FC Inter Turku,F.C. København,0,0,10,11,2,3,9,8,10,13,57.8,42.2,3726,909,401909622
+Conference League,2026/27,Spareggi preliminari,20/08/2026,18:00,si,STATUS_FULL_TIME,Lincoln Red Imps,Larne,0,2,0,0,0,0,0,0,0,0,0,0,17856,20039,401910970
+Europa League,2026/27,Spareggi preliminari,20/08/2026,18:00,si,STATUS_FULL_TIME,Jagiellonia Bialystok,Iberia 1999,4,0,0,0,0,0,0,0,0,0,0,0,11505,20025,401910973
+Europa League,2026/27,Spareggi preliminari,20/08/2026,18:00,si,STATUS_FULL_TIME,Mjällby AIF,RB Salzburg,0,1,10,24,1,8,2,6,12,7,31,69,20301,2790,401909833
+Conference League,2026/27,Spareggi preliminari,20/08/2026,19:00,si,STATUS_FULL_TIME,FC Midtjylland,Rijeka,2,0,18,9,10,1,5,4,17,19,60.4,39.6,572,2988,401910952
+Conference League,2026/27,Spareggi preliminari,20/08/2026,19:00,si,STATUS_FULL_TIME,FC Nordsjælland,St. Gallen,1,0,12,19,4,6,3,5,18,21,53.7,46.3,3101,557,401909626
+Conference League,2026/27,Spareggi preliminari,20/08/2026,19:00,si,STATUS_FULL_TIME,Tromso,Brighton & Hove Albion,0,0,5,25,1,6,5,11,7,19,32,68,5270,331,401910953
+Europa League,2026/27,Spareggi preliminari,20/08/2026,19:00,si,STATUS_FULL_TIME,Besiktas,Kauno Zalgiris,3,0,21,3,6,0,15,2,3,16,74.6,25.4,1895,20028,401909829
+Europa League,2026/27,Spareggi preliminari,20/08/2026,19:00,si,STATUS_FULL_TIME,Egnatia,Lillestrom,0,0,0,0,0,0,0,0,0,0,0,0,21943,987,401909636
+Europa League,2026/27,Spareggi preliminari,20/08/2026,19:00,si,STATUS_FULL_TIME,Lech Poznan,FC Thun,7,0,20,9,11,4,5,3,8,16,56.2,43.8,2990,3024,401909650
+Europa League,2026/27,Spareggi preliminari,20/08/2026,19:00,si,STATUS_FULL_TIME,Trabzonspor,Ferencvaros,0,1,24,11,3,4,7,5,3,24,66.1,33.9,997,622,401909832
+Europa League,2026/27,Spareggi preliminari,20/08/2026,19:00,si,STATUS_FULL_TIME,Universitatea Craiova,Ararat-Armenia,1,1,0,0,0,0,0,0,0,0,0,0,8089,20024,401909616
+Conference League,2026/27,Spareggi preliminari,20/08/2026,19:30,si,STATUS_FULL_TIME,KI Klaksvik,Riga FC,0,0,0,0,0,0,0,0,0,0,0,0,2547,19246,401911219
+Conference League,2026/27,Spareggi preliminari,20/08/2026,19:45,si,STATUS_FULL_TIME,PAOK,SK Brann,1,1,23,6,6,1,8,3,5,11,43.2,56.8,605,620,401910987
+Conference League,2026/27,Spareggi preliminari,20/08/2026,20:00,si,STATUS_FULL_TIME,Drita Gjilan,Inter D'Escaldes,2,2,0,0,0,0,0,0,0,0,0,0,19243,20703,401910956
+Conference League,2026/27,Spareggi preliminari,20/08/2026,20:00,si,STATUS_FULL_TIME,FC Twente,FK Qarabag,0,1,21,7,5,4,6,3,13,4,60.8,39.2,152,10414,401909620
+Conference League,2026/27,Spareggi preliminari,20/08/2026,20:00,si,STATUS_FULL_TIME,Gornik Zabrze,AS Monaco,2,3,17,14,6,6,7,4,13,15,51.3,48.7,8180,174,401909629
+Conference League,2026/27,Spareggi preliminari,20/08/2026,20:00,si,STATUS_FULL_TIME,Vikingur Reykjavik,Borac Banja Luka,1,3,0,0,0,0,0,0,0,0,0,0,8249,20710,401910971
+Europa League,2026/27,Spareggi preliminari,20/08/2026,20:00,si,STATUS_FULL_TIME,OFI Crete,CSKA Sofia,3,0,0,0,0,0,0,0,0,0,0,0,1010,10834,401910963
+Europa League,2026/27,Spareggi preliminari,20/08/2026,20:00,si,STATUS_FULL_TIME,Red Star Belgrade,Viktoria Plzen,3,0,0,0,0,0,0,0,0,0,0,0,2290,11706,401909222
+Europa League,2026/27,Spareggi preliminari,20/08/2026,20:00,si,STATUS_FULL_TIME,Sint-Truidense,Omonia Nicosia,1,0,16,8,3,2,6,1,13,9,57,43,936,617,401909615
+Conference League,2026/27,Spareggi preliminari,20/08/2026,20:15,si,STATUS_FULL_TIME,FC Sion,Ajax Amsterdam,2,4,12,23,4,8,5,7,7,10,38.1,61.9,3076,139,401909632
+Conference League,2026/27,Spareggi preliminari,20/08/2026,20:30,si,STATUS_FULL_TIME,Atalanta,Hapoel Tel Aviv,0,0,9,7,5,4,3,1,10,15,62.4,37.6,105,1037,401909472
+Conference League,2026/27,Spareggi preliminari,20/08/2026,20:30,si,STATUS_FULL_TIME,FC Lugano,Maccabi Tel-Aviv,2,1,11,11,2,1,0,4,17,15,41.3,58.7,7672,524,401910969
+Conference League,2026/27,Spareggi preliminari,20/08/2026,20:30,si,STATUS_FULL_TIME,KAA Gent,Hibernian,0,0,0,0,0,0,0,0,0,0,0,0,3611,258,401909630
+Conference League,2026/27,Spareggi preliminari,20/08/2026,20:30,si,STATUS_FULL_TIME,Motherwell,SC Freiburg,1,3,4,26,1,10,2,8,14,15,39.6,60.4,266,126,401910991
+Conference League,2026/27,Spareggi preliminari,20/08/2026,20:30,si,STATUS_FULL_TIME,Panathinaikos,FC Hradec Králové,2,2,0,0,0,0,0,0,0,0,0,0,443,131860,401910974
+Conference League,2026/27,Spareggi preliminari,20/08/2026,20:45,si,STATUS_FULL_TIME,Heart of Midlothian,Rapid Vienna,2,2,17,9,4,6,4,5,8,17,39.3,60.7,262,519,401910986
+Conference League,2026/27,Spareggi preliminari,20/08/2026,20:45,si,STATUS_FULL_TIME,Rangers,Jablonec,1,0,13,5,3,4,3,3,18,10,56.8,43.2,257,7922,401909637
+Conference League,2026/27,Spareggi preliminari,20/08/2026,21:00,si,STATUS_FULL_TIME,Braga,Austria Vienna,2,0,14,5,5,1,5,4,12,18,58.3,41.7,2994,1382,401910989
+Conference League,2026/27,Spareggi preliminari,20/08/2026,21:00,si,STATUS_FULL_TIME,Dinamo City,Pafos,1,1,0,0,0,0,0,0,0,0,0,0,515,22281,401909635
+Conference League,2026/27,Spareggi preliminari,20/08/2026,21:00,si,STATUS_FULL_TIME,Getafe,Partizan Belgrade,3,1,12,8,5,1,1,3,15,15,61.3,38.7,2922,541,401909826
+Conference League,2026/27,Spareggi preliminari,20/08/2026,21:00,si,STATUS_FULL_TIME,Hajduk Split,Raków Czestochowa,2,2,0,0,0,0,0,0,0,0,0,0,489,21005,401909634
+Conference League,2026/27,Spareggi preliminari,20/08/2026,21:00,si,STATUS_FULL_TIME,Shamrock Rovers,KuPS Kuopio,1,1,0,0,0,0,0,0,0,0,0,0,2564,8169,401910985
+Europa League,2026/27,Spareggi preliminari,20/08/2026,21:00,si,STATUS_FULL_TIME,Benfica,AGF,3,1,32,3,13,1,11,1,10,17,70.6,29.4,1929,7853,401910978
+Champions League,2026/27,Spareggi preliminari,25/08/2026,18:45,si,STATUS_FINAL_AET,Sabah FK,Hapoel Be'er,5,2,33,14,12,5,11,3,22,13,54.3,45.7,21922,13083,401909192
+Champions League,2026/27,Spareggi preliminari,25/08/2026,21:00,si,STATUS_FULL_TIME,Bodo/Glimt,NEC Nijmegen,3,0,21,3,9,2,4,2,10,8,79.7,20.3,2980,147,401909196
+Champions League,2026/27,Spareggi preliminari,25/08/2026,21:00,si,STATUS_FINAL_AET,LASK Linz,Celtic,5,1,40,8,8,3,10,5,20,14,48.9,51.1,4411,256,401903707
+Conference League,2026/27,Spareggi preliminari,26/08/2026,18:45,si,STATUS_FINAL_PEN,Rapid Vienna,Heart of Midlothian,2,2,33,12,6,7,13,6,20,18,68.2,31.8,519,262,401910982
+Champions League,2026/27,Spareggi preliminari,26/08/2026,21:00,si,STATUS_FULL_TIME,AEK Athens,Levski Sofia,4,0,18,11,7,3,6,3,16,9,47.7,52.3,887,490,401909181
+Champions League,2026/27,Spareggi preliminari,26/08/2026,21:00,si,STATUS_FULL_TIME,Lyon,Fenerbahce,1,2,17,16,6,7,5,7,12,17,59.3,40.7,167,436,401909203
+Champions League,2026/27,Spareggi preliminari,26/08/2026,21:00,si,STATUS_FINAL_AET,NK Celje,Slovan Bratislava,1,2,20,17,7,8,5,8,15,12,61.7,38.3,3362,521,401909194
+Champions League,2026/27,Spareggi preliminari,26/08/2026,21:00,si,STATUS_FULL_TIME,Viking FK,Dinamo Zagreb,3,1,13,20,8,4,3,5,16,12,37.4,62.6,510,597,401909157
+Conference League,2026/27,Spareggi preliminari,27/08/2026,17:00,si,STATUS_FULL_TIME,KuPS Kuopio,Shamrock Rovers,1,0,0,0,0,0,0,0,0,0,0,0,8169,2564,401910981
+Conference League,2026/27,Spareggi preliminari,27/08/2026,18:00,si,STATUS_FINAL_AET,FK Qarabag,FC Twente,1,4,9,29,1,10,1,9,21,16,39.2,60.8,10414,152,401909619
+Conference League,2026/27,Spareggi preliminari,27/08/2026,18:00,si,STATUS_FINAL_PEN,Jablonec,Rangers,1,0,16,9,5,1,5,4,16,17,53.8,46.2,7922,257,401910984
+Conference League,2026/27,Spareggi preliminari,27/08/2026,18:00,si,STATUS_FULL_TIME,Maccabi Tel-Aviv,FC Lugano,1,1,20,9,7,2,6,4,12,10,59.3,40.7,524,7672,401910968
+Europa League,2026/27,Spareggi preliminari,27/08/2026,18:00,si,STATUS_FULL_TIME,Ararat-Armenia,Universitatea Craiova,1,0,5,22,2,7,3,7,8,13,49,51,20024,8089,401909613
+Europa League,2026/27,Spareggi preliminari,27/08/2026,18:00,si,STATUS_FULL_TIME,Iberia 1999,Jagiellonia Bialystok,1,2,19,16,5,5,6,4,9,16,63.7,36.3,20025,11505,401909627
+Conference League,2026/27,Spareggi preliminari,27/08/2026,18:45,si,STATUS_FULL_TIME,AS Monaco,Gornik Zabrze,4,1,15,7,6,5,5,2,12,11,66.7,33.3,174,8180,401909628
+Conference League,2026/27,Spareggi preliminari,27/08/2026,18:45,si,STATUS_FULL_TIME,SC Freiburg,Motherwell,4,1,29,2,11,1,7,1,6,11,70.2,29.8,126,266,401910990
+Conference League,2026/27,Spareggi preliminari,27/08/2026,19:00,si,STATUS_FULL_TIME,F.C. København,FC Inter Turku,4,1,21,5,9,2,9,1,10,12,52.9,47.1,909,3726,401909621
+Conference League,2026/27,Spareggi preliminari,27/08/2026,19:00,si,STATUS_FINAL_AET,FC Hradec Králové,Panathinaikos,1,2,21,15,8,5,12,8,16,10,59.7,40.3,131860,443,401910967
+Conference League,2026/27,Spareggi preliminari,27/08/2026,19:00,si,STATUS_FINAL_PEN,Inter D'Escaldes,Drita Gjilan,0,0,0,0,0,0,0,0,0,0,0,0,20703,19243,401910955
+Conference League,2026/27,Spareggi preliminari,27/08/2026,19:00,si,STATUS_FINAL_AET,Pafos,Dinamo City,4,2,21,7,8,2,5,2,29,22,49.5,50.5,22281,515,401910980
+Conference League,2026/27,Spareggi preliminari,27/08/2026,19:00,si,STATUS_FINAL_AET,Raków Czestochowa,Hajduk Split,2,3,20,12,5,4,5,4,13,22,68.1,31.9,21005,489,401909633
+Conference League,2026/27,Spareggi preliminari,27/08/2026,19:00,si,STATUS_FULL_TIME,Riga FC,KI Klaksvik,2,1,0,0,0,0,0,0,0,0,0,0,19246,2547,401911218
+Conference League,2026/27,Spareggi preliminari,27/08/2026,19:00,si,STATUS_FULL_TIME,SK Brann,PAOK,3,2,0,0,0,0,0,0,0,0,0,0,620,605,401910983
+Europa League,2026/27,Spareggi preliminari,27/08/2026,19:00,si,STATUS_FULL_TIME,Kauno Zalgiris,Besiktas,1,0,8,12,2,4,2,5,16,9,28.5,71.5,20028,1895,401909828
+Europa League,2026/27,Spareggi preliminari,27/08/2026,19:00,si,STATUS_FINAL_AET,Lillestrom,Egnatia,2,1,0,0,0,0,0,0,0,0,0,0,987,21943,401910979
+Europa League,2026/27,Spareggi preliminari,27/08/2026,19:00,si,STATUS_FULL_TIME,Omonia Nicosia,Sint-Truidense,4,2,20,15,5,5,5,6,10,12,47.3,52.7,617,936,401909830
+Europa League,2026/27,Spareggi preliminari,27/08/2026,19:00,si,STATUS_FULL_TIME,RB Salzburg,Mjällby AIF,3,0,16,3,7,2,7,0,5,10,69.5,30.5,2790,20301,401909614
+Europa League,2026/27,Spareggi preliminari,27/08/2026,19:00,si,STATUS_FINAL_AET,Viktoria Plzen,Red Star Belgrade,5,1,41,8,12,2,8,3,30,21,55.1,44.9,11706,2290,401909221
+Conference League,2026/27,Spareggi preliminari,27/08/2026,20:00,si,STATUS_FULL_TIME,Ajax Amsterdam,FC Sion,5,3,26,11,15,4,5,2,5,7,54.6,45.4,139,3076,401909631
+Conference League,2026/27,Spareggi preliminari,27/08/2026,20:00,si,STATUS_FULL_TIME,Hapoel Tel Aviv,Atalanta,0,1,11,14,3,4,7,6,12,13,49.9,50.1,1037,105,401909471
+Conference League,2026/27,Spareggi preliminari,27/08/2026,20:00,si,STATUS_FULL_TIME,St. Gallen,FC Nordsjælland,2,3,21,16,6,5,2,5,13,12,43.4,56.6,557,3101,401910962
+Europa League,2026/27,Spareggi preliminari,27/08/2026,20:00,si,STATUS_FULL_TIME,AGF,Benfica,1,3,8,15,3,8,3,5,11,9,41.6,58.4,7853,1929,401910977
+Europa League,2026/27,Spareggi preliminari,27/08/2026,20:00,si,STATUS_FULL_TIME,CSKA Sofia,OFI Crete,0,2,19,16,6,7,7,5,15,16,56.4,43.6,10834,1010,401910961
+Europa League,2026/27,Spareggi preliminari,27/08/2026,20:00,si,STATUS_FULL_TIME,FC Thun,Lech Poznan,2,2,10,13,3,3,6,3,21,12,38.9,61.1,3024,2990,401911217
+Conference League,2026/27,Spareggi preliminari,27/08/2026,20:30,si,STATUS_FULL_TIME,Austria Vienna,Braga,0,0,8,9,1,4,2,5,17,17,50.9,49.1,1382,2994,401910988
+Conference League,2026/27,Spareggi preliminari,27/08/2026,20:30,si,STATUS_FULL_TIME,Borac Banja Luka,Vikingur Reykjavik,3,1,0,0,0,0,0,0,0,0,0,0,20710,8249,401910966
+Conference League,2026/27,Spareggi preliminari,27/08/2026,20:30,si,STATUS_FULL_TIME,Brighton & Hove Albion,Tromso,4,0,21,5,8,0,7,1,13,6,78.1,21.9,331,5270,401909618
+Europa League,2026/27,Spareggi preliminari,27/08/2026,20:30,si,STATUS_FULL_TIME,Anderlecht,Kairat Almaty,3,0,15,6,8,3,7,3,13,11,58.4,41.6,441,2528,401910975
+Europa League,2026/27,Spareggi preliminari,27/08/2026,20:30,si,STATUS_FULL_TIME,Ferencvaros,Trabzonspor,4,0,27,6,11,2,9,4,10,14,67.7,32.3,622,997,401909831
+Conference League,2026/27,Spareggi preliminari,27/08/2026,20:45,si,STATUS_FULL_TIME,Rijeka,FC Midtjylland,1,4,9,19,4,8,2,7,15,13,43.5,56.5,2988,572,401909617
+Conference League,2026/27,Spareggi preliminari,27/08/2026,21:00,si,STATUS_FULL_TIME,Hibernian,KAA Gent,2,3,14,13,5,5,6,7,8,9,44.3,55.7,258,3611,401910976
+Conference League,2026/27,Spareggi preliminari,27/08/2026,21:00,si,STATUS_FINAL_AET,Larne,Lincoln Red Imps,0,3,0,0,0,0,0,0,0,0,0,0,20039,17856,401910965
+Conference League,2026/27,Spareggi preliminari,27/08/2026,21:00,si,STATUS_FULL_TIME,Partizan Belgrade,Getafe,2,1,18,9,4,4,4,7,11,17,59.9,40.1,541,2922,401909825
